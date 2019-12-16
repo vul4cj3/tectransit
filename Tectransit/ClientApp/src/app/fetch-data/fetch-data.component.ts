@@ -9,9 +9,8 @@ export class FetchDataComponent {
   public forecasts: sRole[];
 
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    debugger
     http.get<sRole[]>(baseUrl + 'api/TSRoles').subscribe(result => {
-      this.forecasts = result;      
+      this.forecasts = result;
     }, error => console.error(error));
   }
 }

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tectransit.Datas;
+using System.Collections;
 
 namespace Tectransit.Controllers
 {
@@ -12,15 +10,20 @@ namespace Tectransit.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        //private IHttpContextAccessor _accessor;
-        //[HttpPost("[action]")]
-        //public IEnumerable<string> Login(IHttpContextAccessor accessor)
-        //{
-        //    _accessor = accessor;
-        //    string clientIP = _accessor.HttpContext.Connection.RemoteIpAddress?.ToString();
+        [HttpPost]
+        public dynamic PostLogin([FromBody] object form)
+        {
+            var jsonData = JObject.FromObject(form);
+            string clientIP = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-        //    user objuser = new user();
-        //    return objuser.Login();
-        //}
+            Hashtable htData = new Hashtable();
+            htData["USERCODE"] = jsonData.Value<string>("USERCODE");
+            htData["PASSWORD"] = jsonData.Value<string>("PASSWORD");
+            htData["HOSTNAME"] = HttpContext.Request.Host.Host;
+            htData["ClientIP"] = clientIP;
+
+            user objuser = new user();
+            return objuser.Login(htData, true);
+        }
     }
 }

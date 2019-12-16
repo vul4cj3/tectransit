@@ -1,1 +1,47 @@
-<p>login works!</p>
+<div class="container-login">
+  <div class="login-div">
+    <form class="text-center border border-light p-5" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <p class="h4 fcom-s">後台管理系統</p>
+
+      <!-- Account -->
+      <div class="wrap-login">
+        <input type="text" id="AccountID" class="form-control mb-4 space_" formControlName="username" placeholder="Account">
+        <span class="focus-login"></span>
+        <span class="symbol-login">
+          <i class="fas fa-user"></i>
+        </span>
+      </div>
+
+      <!-- Password -->
+      <div class="wrap-login">
+        <input type="password" id="ACPassword" class="form-control mb-4 space_" formControlName="password" placeholder="Password">
+        <span class="focus-login"></span>
+        <span class="symbol-login">
+          <i class="fas fa-lock"></i>
+        </span>
+      </div>
+
+      <div class="d-flex justify-content-around">
+        <div>
+          <!-- Remember me -->
+          <mdb-checkbox>
+            <p class="fcom-s">Remember me</p>
+          </mdb-checkbox>
+        </div>
+        <div>
+          <!-- Forgot password -->
+          <a href="">
+            <p class="fcom-s">忘記密碼?</p>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sign in button -->
+      <button mdbBtn color="info" block="true" class="my-4" type="submit">Login</button>
+
+
+    </form>
+  </div>
+
+</div>
