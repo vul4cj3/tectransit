@@ -1,11 +1,45 @@
-<ul class="top-menu">
-  <li>
-    <a routerLink="/role_list" routerLinkActive="active">role_list</a>
-  </li>
-  <li>
-      <a routerLink="/role_edit" routerLinkActive="active">role_edit</a>
-  </li>
-  <li>
-      <a routerLink="">Home</a>
-  </li>
-</ul>
+<div class="sidebar-mobile-overlay"></div>
+<div class="app-sidebar bg-royal sidebar-text-light sidebar-shadow">
+  <!--LOGO section-->
+  <div class="app-header__logo">
+    <div class="logo-src"></div>
+    <div class="header__pane ml-auto">
+    </div>
+  </div>
+  <div class="app-header__mobile-menu">
+    <div>
+    </div>
+  </div>
+  <div class="app-header__menu">
+    <span>
+      <Button>
+        <div class="btn-icon-wrapper"></div>
+      </Button>
+    </span>
+  </div>
+  <!--Menu Section-->
+  <div class="scrollbar-container ps">
+      <div class="app-sidebar__inner">
+          <!--<h5 class="app-sidebar__heading">Title</h5>-->
+          <div class="metismenu vertical-nav-menu" *ngFor="let item of menuItem let idx = index">
+              <ul class="metismenu-container">
+                  <li class="metismenu-item">
+                      <a class="metismenu-link" (click)="activeNav[idx]=!activeNav[idx]">
+                          <i class="metismenu-icon {{item.iconurl}}"></i>
+                          {{item.menuname}}
+                          <i class="metismenu-state-icon pe-7s-angle-down caret-left" [ngClass]="{'rotate-minus-90': activeNav[idx]}"></i>
+                      </a>
+                      <ul class="metismenu-container" [ngClass]="{'visible': activeNav[idx]}">
+                        <ng-container *ngFor="let subitem of menuSubItem">
+                        <li class="metismenu-item" *ngIf="subitem.parentcode == item.menucode">
+                          <a class="metismenu-link" routerLinkActive="active" routerLink="{{subitem.menuurl}}"><i class="metismenu-icon"></i>{{subitem.menuname}}</a>
+                        </li>
+                      </ng-container>
+                      </ul>
+                  </li>
+              </ul>
+          </div>
+      </div>
+  </div>
+  <div class="app-sidebar-bg opacity-06" style="background-image: url('/admin/assets/bg/sidebar-img.jpg');"></div>
+</div>

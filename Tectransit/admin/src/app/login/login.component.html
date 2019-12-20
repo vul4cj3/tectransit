@@ -6,7 +6,7 @@
 
       <!-- Account -->
       <div class="wrap-login">
-        <input type="text" id="AccountID" class="form-control mb-4 space_" formControlName="username" placeholder="Account">
+        <input type="text" id="AccountID" class="form-control mb-4 space_" [ngClass]="{'is-invalid': isErr}" formControlName="username" placeholder="Account">
         <span class="focus-login"></span>
         <span class="symbol-login">
           <i class="fas fa-user"></i>
@@ -15,7 +15,7 @@
 
       <!-- Password -->
       <div class="wrap-login">
-        <input type="password" id="ACPassword" class="form-control mb-4 space_" formControlName="password" placeholder="Password">
+        <input type="password" id="ACPassword" class="form-control mb-4 space_" [ngClass]="{'is-invalid': isErr}" formControlName="password" placeholder="Password">
         <span class="focus-login"></span>
         <span class="symbol-login">
           <i class="fas fa-lock"></i>

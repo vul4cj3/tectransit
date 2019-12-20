@@ -20,12 +20,21 @@ namespace Tectransit.Datas
             //將PWD改為MD5
             if (IsEncode)
                 sPASSWORD = GetMd5Hash(sPASSWORD);
-
+            
             //用戶名密碼驗證
             bool IsPWCorr = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT USERPASSWORD AS COL1 FROM T_S_USER WHERE USERCODE = '{sUSERCODE}' AND USERPASSWORD = '{sPASSWORD}'"));
 
             if (IsPWCorr)
-                return new { status = "error", message = "登入密碼錯誤！" };
+                return new { status = "error", message = "登入帳號或密碼錯誤！" };
+
+            //用戶狀態及權限組停用驗證
+            string IsUSEREnable = DBUtil.GetSingleValue1($@"SELECT DISTINCT A.USERCODE AS COL1 FROM T_S_USER A
+                                                          LEFT JOIN T_S_USERROLEMAP B ON A.USERCODE = B.USERCODE
+                                                          LEFT JOIN T_S_ROLE C ON C.ROLECODE = B.ROLECODE
+                                                          WHERE A.USERCODE = '{sUSERCODE}' AND A.ISENABLE = 'true' AND C.ISENABLE = 'true'");
+
+            if (string.IsNullOrEmpty(IsUSEREnable))
+                return new { status = "error", message = "帳號或權限已被停用，請洽資訊人員！" };
 
             //登入後處理
             UpdateUserLoginCountAndDate(sUSERCODE); //更新用戶登入次數及時間

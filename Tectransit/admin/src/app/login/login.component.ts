@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
   submitted = false;
   returnUrl: string;
   error: string;
+  isErr = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -60,6 +61,9 @@ export class LoginComponent implements OnInit {
         data => {
           if (data.status === 'success') {
             this.router.navigate([this.returnUrl]);
+          } else {
+            this.isErr = true;
+            alert(data.message);
           }
         },
         error => {
