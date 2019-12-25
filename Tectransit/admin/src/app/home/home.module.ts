@@ -8,7 +8,7 @@ import { RoleEditComponent } from './role-edit/role-edit.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { CommonService } from '../services/common.service';
 import { PaginationComponent } from './pagination/pagination.component';
-import { SysService } from '../services/sys.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -20,9 +20,10 @@ import { SysService } from '../services/sys.service';
   ],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     HomeRoutingModule
   ],
-  providers: [CommonService, SysService],
+  providers: [CommonService],
   exports: [HomeComponent]
 })
 

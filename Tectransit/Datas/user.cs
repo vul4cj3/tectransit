@@ -39,7 +39,6 @@ namespace Tectransit.Datas
             //登入後處理
             UpdateUserLoginCountAndDate(sUSERCODE); //更新用戶登入次數及時間
             AppendLoginHistory(request);           //增加登入log
-            //LoginHandler(request);
 
             //返回登入成功
             return new { status = "success", ID = sUSERCODE, message = "登入成功！" };

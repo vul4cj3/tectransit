@@ -18,8 +18,8 @@
       <div class="card-header">權限列表
         <div class="btn-actions-pane-right">
           <div class="btn-group-sm btn-group" role="group">
-            <button class="mb-2 mr-2 btn-hover-shine btn btn-info">新增</button>
-            <button class="mb-2 mr-2 btn-hover-shine btn btn-info">停用</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/roles/edit/0">新增</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doIsenable(data.length)">停用</button>
           </div>
         </div>
       </div>
@@ -27,16 +27,8 @@
         <table class="align-middle mb-0 table table-borderless table-striped table-hover">
           <thead>
             <tr>
-              <th class="text-center">#</th>
-              <th>代碼</th>
-              <th>名稱</th>
-              <th>敘述</th>
-              <th>建立時間</th>
-              <th>建立者</th>
-              <th>更新時間</th>
-              <th>更新者</th>
-              <th>停用</th>
-              <th>編輯</th>
+              <th *ngFor="let titleItem of tableTitle let id = index" [ngClass]="{'text-center': id === 0}">
+                {{titleItem}}</th>
             </tr>
           </thead>
           <tbody>
@@ -49,9 +41,25 @@
               <td>{{item.creby}}</td>
               <td>{{item.upddate}}</td>
               <td>{{item.updby}}</td>
-              <td class="text-center text-muted"><input type="checkbox" disabled="disabled"></td>
-              <td><i class="pe-7s-close"></i></td>
-              <!--<td><a routerLink="/role_edit"><i class="pe-7s-note2"></i></a></td>-->
+              <td class="text-center text-muted">
+                <label class="chkbox-container">
+                <input type="checkbox" name="activeChk" id="chk{{idx}}" (click)="activeSelChange($event.toElement.value, $event.toElement.checked)" [checked]="item.isenable === '0'" [disabled]="item.roleid === 1"
+                    value="{{item.roleid}}">
+                  <span class="checkmark"></span>
+                </label>
+              </td>
+              <td>
+                <a routerLink="/roles/edit/{{item.roleid}}" *ngIf="item.roleid > 1; else editClose">
+                  <span class="symbol-edit">
+                    <i class="pe-7s-note2"></i>
+                  </span>
+                </a>
+                <ng-template #editClose>
+                    <span class="symbol-edit">
+                        <i class="pe-7s-close"></i>
+                      </span>
+                </ng-template>
+              </td>
             </tr>
           </tbody>
         </table>

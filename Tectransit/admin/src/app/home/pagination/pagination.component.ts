@@ -12,7 +12,6 @@ export class PaginationComponent implements OnInit, OnChanges {
   pageChanged = new EventEmitter<any>();
 
   newPage = 0;
-  pageSize = 10;
 
   constructor(
     public pageService: CommonService

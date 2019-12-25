@@ -1887,6 +1887,10 @@ textarea.form-control {
   background-color: rgba(115, 168, 57, 0.9);
   border-radius: 0.25rem; }
 
+.btn-two {
+padding-left:2px;
+}
+
 .was-validated .form-control:valid, .form-control.is-valid {
   border-color: #73A839;
   padding-right: 2.25rem;
@@ -9185,6 +9189,18 @@ body {
     opacity: 1; } }
 .form-control {
   transition: all .2s; }
+
+.form-control.small {
+  width: 5%;
+}
+
+.form-control.middle {
+  width: 20%;
+}
+
+.form-control.large {
+  width: 50%;
+}
 
 .dropdown-toggle::after {
   position: relative;

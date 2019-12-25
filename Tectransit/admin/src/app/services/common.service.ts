@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 
 @Injectable({
   providedIn: 'root'
@@ -14,17 +15,17 @@ export class CommonService {
   private navUrl = 'GetNavMenu';
 
   /* pagination variables*/
-  rowTotal = 0; // 資料總筆數
+  rowTotal = 0; // data count
 
   currentPage = 1;
-  pageSize = 10; // 一頁顯示筆數
+  pageSize = 10;
   pageTotal = 0;
 
-  pageNum: Array<number> = []; // 頁面上顯示頁數
-  pageNumStart = 0; // 最大頁數值
-  pageNumEnd = 0; // 最大頁數值
-  currentPageGroup = 0; // 目前所在群組
-  totalPageGroup = 0; // 所有群組數
+  pageNum: Array<number> = []; // pagenum in page
+  pageNumStart = 0; // min page
+  pageNumEnd = 0; // max page
+  currentPageGroup = 0; // current group
+  totalPageGroup = 0; // all group
 
   preApper = false;
   nextApper = false;
@@ -35,6 +36,7 @@ export class CommonService {
 
   }
 
+  /* --- Get sidebar data --- */
   getMenu(usercode) {
     const postData = { USERCODE: usercode };
     return this.http.post<any>(this.baseUrl + this.navUrl, postData)
@@ -43,6 +45,7 @@ export class CommonService {
       }));
   }
 
+  /* --- Pagination function start --- */
   set_pageNumArray(srowTotal, spageSize, scurrentPage) {
     // reset pagination array
     this.pageNum = [];
@@ -96,6 +99,58 @@ export class CommonService {
     this.nextGroupApper = (this.currentPageGroup < this.totalPageGroup) ? true : false;
     this.nextApper = (this.currentPage < this.pageTotal) ? true : false;
 
+  }
+  /* --- Pagination function end --- */
+
+  /* --- Page's CRUD Common function --- */
+  getListData(pageIndex: number, pageSize: number, pageUrl: string) {
+    const postData = { PAGE_INDEX: pageIndex, PAGE_SIZE: pageSize };
+    return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  getSingleData(id, pageUrl: string) {
+    return this.http.get<any>(`${pageUrl}/${id}`)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  editSingleData(form, pageUrl: string) {
+    const postData = { formdata: form };
+    return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  editEnableData(arraydata, pageUrl: string) {
+    const postData = { formdata: arraydata };
+    return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  delData(arraydata, pageUrl: string) {
+    const postData = { id: arraydata };
+    return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  /* form common function */
+  formChanges(obj1, obj2) {
+    const obj = {};
+    for (const k in obj1) {
+      if (obj1[k] !== obj2[k]) {
+        obj[k] = obj1[k];
+      }
+    }
+    return obj;
   }
 
 }

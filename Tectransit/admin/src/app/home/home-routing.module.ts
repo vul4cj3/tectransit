@@ -12,11 +12,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
-        path: 'role_list',
+        path: 'roles',
         component: RoleListComponent,
       },
       {
-        path: 'role_edit',
+        path: 'roles/edit/:id',
         component: RoleEditComponent,
       }
     ],

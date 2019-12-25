@@ -1,9 +1,9 @@
 <div class="pagelist">
-  <!--<a class="pagelist_btn preGroup" *ngIf="this.pageService.preGroupApper"><i class="fas fa-angle-double-left"></i></a>-->
+  <a class="pagelist_btn preGroup" *ngIf="this.pageService.preGroupApper" (click)=pageEdit(this.pageService.currentPage-10)><i class="fas fa-angle-double-left"></i></a>
   <a class="pagelist_btn pre" *ngIf="this.pageService.preApper" (click)=pageEdit(this.pageService.currentPage-1)><i class="fas fa-angle-left"></i></a>
   <span *ngFor="let item of this.pageService.pageNum">
     <a class="pagelist_btn" [ngClass]="{'active': item === this.pageService.currentPage}" (click)=pageEdit(item)>{{item}}</a>
   </span>
   <a class="pagelist_btn next" *ngIf="this.pageService.nextApper" (click)=pageEdit(this.pageService.currentPage+1)><i class="fas fa-angle-right"></i></a>
-  <!--<a class="pagelist_btn nextGroup" *ngIf="this.pageService.nextGroupApper"><i class="fas fa-angle-double-right"></i></a>-->
+  <a class="pagelist_btn nextGroup" *ngIf="this.pageService.nextGroupApper" (click)=pageEdit(this.pageService.currentPage+10)><i class="fas fa-angle-double-right"></i></a>
 </div>
