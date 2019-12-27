@@ -9,6 +9,85 @@
  =========================================================
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  */
+ app-jw-modal {
+  display: none;
+}
+
+app-jw-confirm {
+  display: none;
+}
+
+.jw-modal {
+  /* modal container fixed across whole screen */
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  /* z-index must be higher than .jw-modal-background */
+  z-index: 1000;
+
+  /* enables scrolling for tall modals */
+  overflow: auto;
+}
+
+.jw-modal-body {
+  width: 65%;
+  height: 80%;
+  padding: 20px;
+  background: #fff;
+
+  /* margin exposes part of the modal background */
+  margin-top: 5%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 5%;
+  overflow: auto;
+}
+
+.jw-modal-body.small {
+  width: 50%;
+  height: 50%;
+  padding: 20px;
+  background: #fff;
+
+  /* margin exposes part of the modal background */
+  margin-top: 5%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 5%;
+  overflow: auto;
+}
+
+.jw-modal-background {
+  /* modal background fixed across whole screen */
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  /* semi-transparent black  */
+  background-color: #000;
+  opacity: 0.50;
+
+  /* z-index must be below .jw-modal and above everything else  */
+  z-index: 900;
+}
+
+body.jw-modal-open {
+  /* body overflow is hidden to hide main scrollbar when modal window is open */
+  overflow: hidden;
+}
+
+.confirm-text-middle {
+  position: relative;
+  padding-top: 5%;
+  padding-left: 15%;
+}
+
+
 .border-primary {
   border-color: #033C73; }
 
@@ -159,6 +238,85 @@
     color: #fff;
     background-color: #3a2264;
     border-color: #3a2264; }
+
+.symbol-edit {
+  font-size: 25px;
+
+}
+
+.symbol-edit.middle{
+  padding-left: 20px;
+}
+
+/* checkbox style */
+.chkbox-container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+  /* Hide the browser's default checkbox */
+  .chkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  height: 15px;
+  width: 15px;
+  background-color: #eee;
+  border: #ccc solid 1px;
+}
+
+/* On mouse-over, add a grey background color */
+.chkbox-container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.chkbox-container input:checked ~ .checkmark {
+  background-color: #4eb2eb;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.chkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.chkbox-container .checkmark:after {
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
 
 .bg-primary {
   background-color: #033C73 !important; }
@@ -4436,7 +4594,7 @@ a.close.disabled {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  /*width: 100%;*/
   pointer-events: auto;
   background-color: #fff;
   background-clip: padding-box;

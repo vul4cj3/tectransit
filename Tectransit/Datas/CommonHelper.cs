@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Tectransit.Datas
 {
@@ -28,7 +30,7 @@ namespace Tectransit.Datas
                 {
                     List<MenuInfo> pmenuList = new List<MenuInfo>();
                     List<MenuInfo> dmenuList = new List<MenuInfo>();
-                    for (int i=0; i<dtMenulist.Rows.Count;i++)
+                    for (int i = 0; i < dtMenulist.Rows.Count; i++)
                     {
                         MenuInfo m = new MenuInfo();
                         m.MENUCODE = dtMenulist.Rows[i]["MENUCODE"]?.ToString();
@@ -43,7 +45,7 @@ namespace Tectransit.Datas
                             dmenuList.Add(m);
                     }
 
-                    return new {status = "0", pList = pmenuList, item = dmenuList };
+                    return new { status = "0", pList = pmenuList, item = dmenuList };
                 }
 
                 return new { status = "99", pList = "", item = "" };
@@ -51,10 +53,101 @@ namespace Tectransit.Datas
             else
                 return new { status = "99", pList = "", item = "" };
 
-        }        
+        }
+
+        //取得所有後台選單資料
+        public dynamic GetAllMenu(string code)
+        {
+            DataTable dtMenulist = DBUtil.SelectDataTable($@"SELECT A.MENUSEQ, A.MENUCODE, A.PARENTCODE,A.MENUURL, A.MENUNAME, A.ICONURL FROM T_S_MENU A
+                                                             WHERE A.ISBACK = 'true' AND ISENABLE = 'true'
+                                                             ORDER BY A.MENUCODE");
+            if (dtMenulist.Rows.Count > 0)
+            {
+                List<MenuInfo> pmenuList = new List<MenuInfo>();
+                List<MenuInfo> dmenuList = new List<MenuInfo>();
+                for (int i = 0; i < dtMenulist.Rows.Count; i++)
+                {
+                    MenuInfo m = new MenuInfo();
+                    m.MENUCODE = dtMenulist.Rows[i]["MENUCODE"]?.ToString();
+                    m.PARENTCODE = dtMenulist.Rows[i]["PARENTCODE"]?.ToString();
+                    m.MENUURL = dtMenulist.Rows[i]["MENUURL"]?.ToString();
+                    m.MENUNAME = dtMenulist.Rows[i]["MENUNAME"]?.ToString();
+                    m.ICONURL = dtMenulist.Rows[i]["ICONURL"]?.ToString();
+                    // 0:無權限 1:有權限
+                    m.HASPOWER = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT MENUCODE AS COL1 FROM T_S_ROLEMENUMAP WHERE ROLECODE = '{code}' AND MENUCODE = '{m.MENUCODE}'")) ? "0" : "1";
+
+                    if (m.PARENTCODE == "0")
+                        pmenuList.Add(m);
+                    else
+                        dmenuList.Add(m);
+                }
+
+                return new { status = "0", pList = pmenuList, item = dmenuList };
+            }
+
+            return new { status = "99", pList = "", item = "" };
+
+        }
+
+        //取得所有權限組資料
+        public dynamic GetAllRole(string code)
+        {
+            DataTable dtlist = DBUtil.SelectDataTable($@"SELECT A.ID AS ROLEID, A.ROLECODE, A.ROLENAME, A.ROLESEQ FROM T_S_ROLE A
+                                                         ORDER BY A.ROLESEQ");
+            if (dtlist.Rows.Count > 0)
+            {
+                List<UserRoleInfo> roleList = new List<UserRoleInfo>();
+                for (int i = 0; i < dtlist.Rows.Count; i++)
+                {
+                    UserRoleInfo m = new UserRoleInfo();
+                    m.ROLEID = dtlist.Rows[i]["ROLEID"]?.ToString();
+                    m.ROLECODE = dtlist.Rows[i]["ROLECODE"]?.ToString();
+                    m.ROLENAME = dtlist.Rows[i]["ROLENAME"]?.ToString();
+                    m.ROLESEQ = dtlist.Rows[i]["ROLESEQ"]?.ToString();
+                    // 0:無權限 1:有權限
+                    m.HASPOWER = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT USERCODE AS COL1 FROM T_S_USERROLEMAP WHERE USERCODE = '{code}' AND ROLECODE = '{m.ROLECODE}'")) ? "0" : "1";
+
+                    roleList.Add(m);
+                }
+
+                return new { status = "0", item = roleList };
+            }
+
+            return new { status = "99", pList = "", item = "" };
+
+        }
+
+        /// <summary>
+        /// POSITION: 頁面URL
+        /// TARGET: 頁面名稱
+        /// MESSAGE: 操作Log --> 1:新增, 2:修改, 3:刪除
+        /// </summary>
+        public void AddUserControlLog(Hashtable sData, string position, string target, int type, string msg = "")
+        {
+            Hashtable htData = new Hashtable();
+            htData["USERCODE"] = sData["_usercode"];
+            htData["USERNAME"] = sData["_username"];
+            htData["POSITION"] = position;
+            htData["TARGET"] = target;
+            htData["MESSAGE"] = (type == 1 ? "新增:" : (type == 2 ? "修改:" : "刪除:")) + msg;
+            htData["LOG_DATE"] = DateTime.Now;
+
+            string sql = $@"INSERT INTO T_S_USERLOG(USERCODE, USERNAME, POSITION, TARGET, MESSAGE, LOG_DATE)
+                            VALUES (@USERCODE, @USERNAME, @POSITION, @TARGET, @MESSAGE, @LOG_DATE)";
+
+            DBUtil.EXECUTE(sql, htData);
+
+        }
+
+        public string GetMd5Hash(string argInput)
+        {
+            using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
+            {
+                return BitConverter.ToString(md5.ComputeHash(UTF8Encoding.Default.GetBytes(argInput))).Replace("-", "");
+            }
+        }
 
     }
-
 
     public class MenuInfo
     {
@@ -63,6 +156,7 @@ namespace Tectransit.Datas
         public string MENUURL { set; get; }
         public string MENUNAME { set; get; }
         public string ICONURL { set; get; }
+        public string HASPOWER { set; get; }
     }
-
+    
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
+import { MenuInfo } from 'src/app/_Helper/models';
 
 @Component({
   selector: 'app-nav-menu',
@@ -33,10 +34,3 @@ export class NavMenuComponent implements OnInit {
   }
 }
 
-interface MenuInfo {
-  menucode: string;
-  parentcode: string;
-  menuurl: string;
-  menuname: string;
-  iconurl: string;
-}

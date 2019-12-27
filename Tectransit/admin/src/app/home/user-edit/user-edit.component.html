@@ -4,8 +4,8 @@
     <div class="app-page-title">
       <div class="page-title-wrapper">
         <div class="page-title-heading">
-          <div class="page-title-icon"><i class="fas fa-users"></i></div>
-          <div>權限組管理 - 編輯</div>
+          <div class="page-title-icon"><i class="fas fa-user"></i></div>
+          <div>用戶管理 - 編輯</div>
         </div>
       </div>
     </div>
@@ -18,26 +18,30 @@
       <div class="card-body">
         <h5 class="card-title"></h5>
         <form [formGroup]="dataForm" (ngSubmit)="saveData(dataForm.value)">
-          <input type="hidden" id="roleid" formControlName="roleid">
+          <input type="hidden" id="userid" formControlName="userid">
           <div class="form-group">
-            <label for="rolecode">權限組代碼</label>
-            <input type="text" id="rolecode" class="form-control middle" [ngClass]="{'is-invalid': isErr}"
-              formControlName="rolecode" placeholder="請輸入英數字組合">
+            <label for="usercode">用戶代碼</label>
+            <input type="text" id="usercode" class="form-control middle" [ngClass]="{'is-invalid': isErr}"
+              formControlName="usercode" placeholder="請輸入英數字組合">
           </div>
           <div class="form-group">
-            <label for="rolename">權限組名稱</label>
-            <input type="text" id="rolename" class="form-control middle" formControlName="rolename">
+            <label for="username">用戶名稱</label>
+            <input type="text" id="username" class="form-control middle" formControlName="username">
           </div>
           <div class="form-group">
-            <label for="roledesc">權限組敘述</label>
-            <input type="text" id="roledesc" class="form-control large" formControlName="roledesc">
+            <label for="userdesc">用戶敘述</label>
+            <input type="text" id="userdesc" class="form-control large" formControlName="userdesc">
           </div>
           <!--
+            <div class="form-group">
+              <label for="roleseq">排序</label>
+              <input type="text" id="roleseq" class="form-control small" formControlName="roleseq">
+            </div>
+          -->
           <div class="form-group">
-            <label for="roleseq">排序</label>
-            <input type="text" id="roleseq" class="form-control small" formControlName="roleseq">
+            <label for="roleseq">Email</label>
+            <input type="text" id="email" class="form-control middle" formControlName="email">
           </div>
-        -->
           <div class="form-group">
             <label for="isenable">啟用/停用</label>
             <select id="isenable" class="mb-2 form-control middle" formControlName="isenable">
@@ -45,7 +49,7 @@
               <option value="0">停用</option>
             </select>
           </div>
-          <ng-container *ngIf="dataForm.value.roleid !== 0">
+          <ng-container *ngIf="dataForm.value.userid !== 0">
             <div class="form-group">
               <label for>建立時間</label>
               <p>{{dataForm.value.credate}}</p>
@@ -65,7 +69,7 @@
           </ng-container>
           <div class="btn-two">
             <button class="mb-2 mr-2 btn-hover-shine btn btn-info" type="submit">保存</button>
-            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/roles">回列表</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/users">回列表</button>
           </div>
         </form>
       </div>

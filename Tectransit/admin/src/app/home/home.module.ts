@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { HomeComponent } from './home.component';
@@ -8,22 +8,37 @@ import { RoleEditComponent } from './role-edit/role-edit.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { CommonService } from '../services/common.service';
 import { PaginationComponent } from './pagination/pagination.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { UserListComponent } from './user-list/user-list.component';
+import { UserEditComponent } from './user-edit/user-edit.component';
+import { ModalService } from '../services/modal.service';
+import { ModalComponent } from './modal.component';
+import { ConfirmService } from '../services/confirm.service';
+import { ConfirmComponent } from './confirm.component';
+import { MenuListComponent } from './menu-list/menu-list.component';
+import { MenuEditComponent } from './menu-edit/menu-edit.component';
 
 @NgModule({
   declarations: [
-     HomeComponent,
-     NavMenuComponent,
-     RoleListComponent,
-     RoleEditComponent,
-     PaginationComponent
+    HomeComponent,
+    NavMenuComponent,
+    RoleListComponent,
+    RoleEditComponent,
+    PaginationComponent,
+    UserListComponent,
+    UserEditComponent,
+    ModalComponent,
+    ConfirmComponent,
+    MenuListComponent,
+    MenuEditComponent
   ],
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     HomeRoutingModule
   ],
-  providers: [CommonService],
+  providers: [CommonService, ModalService, ConfirmService],
   exports: [HomeComponent]
 })
 

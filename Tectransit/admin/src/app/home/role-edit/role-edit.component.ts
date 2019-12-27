@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormBuilder, FormsModule, Validators } from '@angular/forms';
 import { CommonService } from 'src/app/services/common.service';
 import { RoleInfo } from 'src/app/_Helper/models';
@@ -26,6 +26,7 @@ export class RoleEditComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
+    private router: Router,
     private commonService: CommonService
   ) { }
 
@@ -46,6 +47,11 @@ export class RoleEditComponent implements OnInit {
 
     // get parameters id then get data
     this.roleID = this.route.snapshot.paramMap.get('id');
+    // 禁止修改系統最高權限
+    if (this.roleID === '1') {
+      this.router.navigate(['/roles']);
+    }
+
     if (this.roleID !== '0') {
       this.getData(this.roleID);
     }

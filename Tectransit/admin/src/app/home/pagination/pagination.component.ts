@@ -8,6 +8,19 @@ import { CommonService } from 'src/app/services/common.service';
 })
 export class PaginationComponent implements OnInit, OnChanges {
 
+  @Input()
+  currentPage: number;
+  @Input()
+  preGroupApper: false;
+  @Input()
+  preApper: false;
+  @Input()
+  nextApper: false;
+  @Input()
+  nextGroupApper: false;
+  @Input()
+  pageNum: Array<number> = [];
+
   @Output()
   pageChanged = new EventEmitter<any>();
 

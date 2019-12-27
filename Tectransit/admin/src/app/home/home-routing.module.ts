@@ -4,6 +4,10 @@ import { HomeComponent } from './home.component';
 import { AuthGuard } from '../_Helper/auth.guard';
 import { RoleListComponent } from './role-list/role-list.component';
 import { RoleEditComponent } from './role-edit/role-edit.component';
+import { UserListComponent } from './user-list/user-list.component';
+import { UserEditComponent } from './user-edit/user-edit.component';
+import { MenuListComponent } from './menu-list/menu-list.component';
+import { MenuEditComponent } from './menu-edit/menu-edit.component';
 
 const routes: Routes = [
   {
@@ -18,6 +22,22 @@ const routes: Routes = [
       {
         path: 'roles/edit/:id',
         component: RoleEditComponent,
+      },
+      {
+        path: 'users',
+        component: UserListComponent,
+      },
+      {
+        path: 'users/edit/:id',
+        component: UserEditComponent,
+      },
+      {
+        path: 'menu',
+        component: MenuListComponent,
+      },
+      {
+        path: 'menu/edit/:id',
+        component: MenuEditComponent,
       }
     ],
   },
@@ -25,7 +45,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, {enableTracing: true })
+    RouterModule.forRoot(routes, { enableTracing: true })
   ],
   exports: [RouterModule]
 })

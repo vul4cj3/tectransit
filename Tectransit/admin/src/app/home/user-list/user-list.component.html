@@ -4,8 +4,8 @@
     <div class="app-page-title">
       <div class="page-title-wrapper">
         <div class="page-title-heading">
-          <div class="page-title-icon"><i class="fas fa-users"></i></div>
-          <div>權限組管理</div>
+          <div class="page-title-icon"><i class="fas fa-user"></i></div>
+          <div>用戶管理</div>
         </div>
       </div>
     </div>
@@ -20,13 +20,13 @@
 
           <div class="form-inline">
             <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
-              <label for="srolecode" class="mr-sm-2">代碼</label>
-              <input type="text" id="srolecode" formControlName="srolecode" class="form-control">
+              <label for="susercode" class="mr-sm-2">代碼</label>
+              <input type="text" id="susercode" formControlName="susercode" class="form-control">
             </div>
             <div class="col-md-4">
               <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
-                <label for="srolename" class="mr-sm-2">名稱</label>
-                <input type="text" id="srolename" formControlName="srolename" class="form-control">
+                <label for="susername" class="mr-sm-2">名稱</label>
+                <input type="text" id="susername" formControlName="susername" class="form-control">
               </div>
             </div>
           </div>
@@ -46,10 +46,10 @@
 <div class="row">
   <div class="col-md-12">
     <div class="main-card mb-3 card">
-      <div class="card-header">權限列表
+      <div class="card-header">用戶列表
         <div class="btn-actions-pane-right">
           <div class="btn-group-sm btn-group" role="group">
-            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/roles/edit/0">新增</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/users/edit/0">新增</button>
             <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doIsenable(data.length)">停用</button>
           </div>
         </div>
@@ -65,9 +65,9 @@
           <tbody>
             <tr *ngFor="let item of data let idx = index">
               <td class="text-center text-muted">{{item.rowid}}</td>
-              <td>{{item.rolecode}}</td>
-              <td>{{item.rolename}}</td>
-              <td>{{item.roledesc}}</td>
+              <td>{{item.usercode}}</td>
+              <td>{{item.username}}</td>
+              <td>{{item.userdesc}}</td>
               <td>{{item.credate}}</td>
               <td>{{item.creby}}</td>
               <td>{{item.upddate}}</td>
@@ -76,33 +76,30 @@
                 <label class="chkbox-container">
                   <input type="checkbox" name="activeChk" id="chk{{idx}}"
                     (click)="activeSelChange($event.toElement.value, $event.toElement.checked)"
-                    [checked]="item.isenable === '0'" [disabled]="item.roleid === 1" value="{{item.roleid}}">
+                    [checked]="item.isenable === '0'" value="{{item.userid}}">
                   <span class="checkmark"></span>
                 </label>
               </td>
               <td>
-                <a routerLink="/roles/edit/{{item.roleid}}" *ngIf="item.roleid > 1; else editClose1">
+                <a routerLink="/users/edit/{{item.userid}}">
                   <span class="symbol-edit">
                     <i class="pe-7s-note2"></i>
                   </span>
                 </a>
-                <ng-template #editClose1>
-                  <span class="symbol-edit">
-                    <i class="pe-7s-close"></i>
-                  </span>
-                </ng-template>
               </td>
               <td>
-                <a (click)="openModal('custom-modal-1', item.rolecode)" *ngIf="item.roleid > 1; else editClose2">
+                <a (click)="openModal('custom-modal-1', item.usercode)">
                   <span class="symbol-edit middle">
                     <i class="pe-7s-tools"></i>
                   </span>
                 </a>
-                <ng-template #editClose2>
-                    <span class="symbol-edit middle">
-                      <i class="pe-7s-close"></i>
-                    </span>
-                  </ng-template>
+              </td>
+              <td>
+                <a (click)="openComfirm('custom-modal-1', item.userid, item.usercode)">
+                  <span class="symbol-edit middle">
+                    <i class="pe-7s-key"></i>
+                  </span>
+                </a>
               </td>
             </tr>
           </tbody>
@@ -130,20 +127,14 @@
   <div class="modal-body">
     <div class="position-relative form-group">
       <div>
-        <ng-container *ngFor="let item of menuItem let idx = index">
-          <h5 class="card-title">{{item.menuname}}
-            <div class="custom-checkbox custom-control custom-control-inline">
-                <input type="checkbox" class="custom-control-input" id="menuP_{{idx}}" value="{{item.menucode}}"
-                (click)="selAllChange($event.toElement.value, $event.toElement.checked)">
-                <label class="custom-control-label" for="menuP_{{idx}}"></label>
-            </div>
-          </h5>
+        <ng-container>
+          <h5 class="card-title">權限設定</h5>
           <!--checkbox start-->
           <div class="custom-checkbox custom-control custom-control-inline"
-            *ngFor="let subitem of menuSubItem let subid = index">
-            <input type="checkbox" id="menu{{subid}}" [checked]="subitem.haspower === '1'" class="custom-control-input"
-              (click)="powerSelChange($event.toElement.value, $event.toElement.checked)" value="{{subitem.menucode}}">
-            <label class="custom-control-label" for="menu{{subid}}">{{subitem.menuname}}</label>
+            *ngFor="let subitem of RUMapItem let subid = index">
+            <input type="checkbox" id="role{{subid}}" [checked]="subitem.haspower === '1'" class="custom-control-input"
+              (click)="powerSelChange($event.toElement.value, $event.toElement.checked)" value="{{subitem.rolecode}}">
+            <label class="custom-control-label" for="role{{subid}}">{{subitem.rolename}}</label>
           </div>
           <!--checkbox end-->
         </ng-container>
@@ -155,3 +146,21 @@
     <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="savePowerData()">保存</button>
   </div>
 </app-jw-modal>
+
+<app-jw-confirm id="custom-modal-1">
+  <div class="modal-header">
+    <button class="close" (click)="closeComfirm('custom-modal-1')">
+      <span><i class="pe-7s-close-circle"></i>
+      </span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="confirm-text-middle">
+        <h5>是否確定要重置用戶代碼[{{pUsercode}}]的密碼？</h5>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="closeComfirm('custom-modal-1')">取消</button>
+    <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="resetData('custom-modal-1')">確定</button>
+  </div>
+</app-jw-confirm>

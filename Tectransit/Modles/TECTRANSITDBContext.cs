@@ -24,6 +24,8 @@ namespace Tectransit.Modles
         public virtual DbSet<TNShippingH> TNShippingH { get; set; }
         public virtual DbSet<TSAccount> TSAccount { get; set; }
         public virtual DbSet<TSAcdeclarantmap> TSAcdeclarantmap { get; set; }
+        public virtual DbSet<TSAclog> TSAclog { get; set; }
+        public virtual DbSet<TSAcloginlog> TSAcloginlog { get; set; }
         public virtual DbSet<TSAcrankmap> TSAcrankmap { get; set; }
         public virtual DbSet<TSButton> TSButton { get; set; }
         public virtual DbSet<TSDeclarant> TSDeclarant { get; set; }
@@ -33,16 +35,18 @@ namespace Tectransit.Modles
         public virtual DbSet<TSRolebuttonmap> TSRolebuttonmap { get; set; }
         public virtual DbSet<TSRolemenumap> TSRolemenumap { get; set; }
         public virtual DbSet<TSUser> TSUser { get; set; }
+        public virtual DbSet<TSUserlog> TSUserlog { get; set; }
+        public virtual DbSet<TSUserloginlog> TSUserloginlog { get; set; }
         public virtual DbSet<TSUserrolemap> TSUserrolemap { get; set; }
-        
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer("Data Source=SiaWu-NB;Initial Catalog=TECTRANSITDB;Integrated Security=True");
-//            }
-//        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Data Source=SiaWu-NB;Initial Catalog=TECTRANSITDB;Integrated Security=True");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -514,6 +518,66 @@ namespace Tectransit.Modles
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<TSAclog>(entity =>
+            {
+                entity.ToTable("T_S_ACLOG");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.LogDate)
+                    .HasColumnName("LOG_DATE")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Message).HasColumnName("MESSAGE");
+
+                entity.Property(e => e.Position)
+                    .HasColumnName("POSITION")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Target)
+                    .HasColumnName("TARGET")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Usercode)
+                    .HasColumnName("USERCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Username)
+                    .HasColumnName("USERNAME")
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<TSAcloginlog>(entity =>
+            {
+                entity.ToTable("T_S_ACLOGINLOG");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Hostip)
+                    .HasColumnName("HOSTIP")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Hostname)
+                    .HasColumnName("HOSTNAME")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.LoginDate)
+                    .HasColumnName("LOGIN_DATE")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Usercode)
+                    .HasColumnName("USERCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Username)
+                    .HasColumnName("USERNAME")
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<TSAcrankmap>(entity =>
             {
                 entity.ToTable("T_S_ACRANKMAP");
@@ -855,7 +919,14 @@ namespace Tectransit.Modles
                     .HasColumnName("CREDATE")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.Email)
+                    .HasColumnName("EMAIL")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Isenable).HasColumnName("ISENABLE");
+
+                entity.Property(e => e.Isresetpw).HasColumnName("ISRESETPW");
 
                 entity.Property(e => e.Lastlogindate)
                     .HasColumnName("LASTLOGINDATE")
@@ -894,6 +965,66 @@ namespace Tectransit.Modles
                     .HasColumnName("USERSEQ")
                     .HasMaxLength(10)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<TSUserlog>(entity =>
+            {
+                entity.ToTable("T_S_USERLOG");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.LogDate)
+                    .HasColumnName("LOG_DATE")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Message).HasColumnName("MESSAGE");
+
+                entity.Property(e => e.Position)
+                    .HasColumnName("POSITION")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Target)
+                    .HasColumnName("TARGET")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Usercode)
+                    .HasColumnName("USERCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Username)
+                    .HasColumnName("USERNAME")
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<TSUserloginlog>(entity =>
+            {
+                entity.ToTable("T_S_USERLOGINLOG");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Hostip)
+                    .HasColumnName("HOSTIP")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Hostname)
+                    .HasColumnName("HOSTNAME")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.LoginDate)
+                    .HasColumnName("LOGIN_DATE")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Usercode)
+                    .HasColumnName("USERCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Username)
+                    .HasColumnName("USERNAME")
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<TSUserrolemap>(entity =>

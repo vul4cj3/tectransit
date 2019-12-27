@@ -11,6 +11,8 @@ namespace Tectransit.Modles
         public string Userseq { get; set; }
         public string Username { get; set; }
         public string Userdesc { get; set; }
+        public string Email { get; set; }
+        public bool Isresetpw { get; set; }
         public bool Isenable { get; set; }
         public int? Logincount { get; set; }
         public DateTime? Lastlogindate { get; set; }

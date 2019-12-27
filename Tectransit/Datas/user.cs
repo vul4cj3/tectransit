@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections;
-using System.Security.Cryptography;
-using System.Text;
+using Tectransit.Datas;
+
 
 namespace Tectransit.Datas
 {
     public class user
     {
+        CommonHelper objComm = new CommonHelper();
         public dynamic Login(Hashtable request, bool IsEncode)
         {
             string sUSERCODE = ConvertString(request["USERCODE"]).ToUpper();
@@ -19,7 +20,7 @@ namespace Tectransit.Datas
 
             //將PWD改為MD5
             if (IsEncode)
-                sPASSWORD = GetMd5Hash(sPASSWORD);
+                sPASSWORD = objComm.GetMd5Hash(sPASSWORD);
             
             //用戶名密碼驗證
             bool IsPWCorr = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT USERPASSWORD AS COL1 FROM T_S_USER WHERE USERCODE = '{sUSERCODE}' AND USERPASSWORD = '{sPASSWORD}'"));
@@ -67,15 +68,7 @@ namespace Tectransit.Datas
                              VALUES (@USERCODE, @USERNAME, @HOSTNAME, @HOSTIP, @LOGIN_DATE)", htData);
 
         }
-
-        public static string GetMd5Hash(string argInput)
-        {
-            using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
-            {
-                return BitConverter.ToString(md5.ComputeHash(UTF8Encoding.Default.GetBytes(argInput))).Replace("-", "");
-            }
-        }
-
+        
         private string ConvertString(object str)
         {
             if (str == null)

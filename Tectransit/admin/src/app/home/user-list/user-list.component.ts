@@ -1,48 +1,49 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
-import { RoleInfo, MenuInfo } from 'src/app/_Helper/models';
+import { UserInfo, RoleUserMapInfo } from 'src/app/_Helper/models';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ModalService } from 'src/app/services/modal.service';
-import { $ } from 'protractor';
+import { ConfirmService } from 'src/app/services/confirm.service';
 
 @Component({
-  selector: 'app-role-list',
-  templateUrl: './role-list.component.html',
-  styleUrls: ['./role-list.component.css']
+  selector: 'app-user-list',
+  templateUrl: './user-list.component.html',
+  styleUrls: ['./user-list.component.css']
 })
-export class RoleListComponent implements OnInit {
+export class UserListComponent implements OnInit {
   /* Web api url*/
   private baseUrl = window.location.origin + '/api/SysHelp/';
-  private dataUrl = 'GetTSRoleListData';
-  private enableUrl = 'EditTSRoleEnableData';
-  private rolemenuUrl = 'EditRoleMenuData';
+  private dataUrl = 'GetTSUserListData';
+  private enableUrl = 'EditTSUserEnableData';
+  private userroleUrl = 'EditUserRoleData';
 
   tableTitle = ['#', '代碼', '名稱', '敘述', '建立時間',
-    '建立者', '更新時間', '更新者', '停用', '編輯', '選單權限'];
-  data: RoleInfo[];
+    '建立者', '更新時間', '更新者', '停用', '編輯', '權限設定', '重置密碼'];
+  data: UserInfo[];
   rowTotal = 0;
   currentpage = 1;
   pageSize = 10;
   srhForm: FormGroup;
 
-  menuItem: MenuInfo[];
-  menuSubItem: MenuInfo[];
+  RUMapItem: RoleUserMapInfo[];
   activeList: any = [];
   powerList: any = [];
-  pRolecode: string;
+  pUserid: string;
+  pUsercode: string;
   chkNum = 1;
 
   constructor(
     private formBuilder: FormBuilder,
     public commonService: CommonService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private confirmService: ConfirmService
   ) { }
 
   ngOnInit() {
     // built form controls and default form value
     this.srhForm = this.formBuilder.group({
-      srolecode: '',
-      srolename: ''
+      susercode: '',
+      susername: ''
     });
 
     this.crePagination(this.currentpage);
@@ -130,18 +131,18 @@ export class RoleListComponent implements OnInit {
         this.activeList.push({ id: val, isenable: Ischk });
       }
     }
+
+    console.log(this.activeList);
   }
 
   /* Popup window function */
   openModal(id: string, code: string) {
-    this.pRolecode = code;
-    this.commonService.getAllMenu(code).subscribe(data => {
+    this.pUsercode = code;
+    this.commonService.getAllRole(code).subscribe(data => {
       if (data.status === '0') {
-        this.menuItem = data.pList;
-        this.menuSubItem = data.item;
+        this.RUMapItem = data.item;
       } else {
-        this.menuItem = null;
-        this.menuSubItem = null;
+        this.RUMapItem = null;
       }
     }, error => {
       console.log(error);
@@ -151,24 +152,9 @@ export class RoleListComponent implements OnInit {
   }
 
   closeModal(id: string) {
-    this.pRolecode = '';
+    this.pUsercode = '';
     this.powerList = [];
     this.modalService.close(id);
-  }
-
-  // Select All Onchange
-  selAllChange(val, Ischk) {
-    for (let i = 0; i < this.menuSubItem.length; i++) {
-      const subChk = document.getElementById('menu' + i);
-      if (subChk.getAttribute('value').substring(0, 2) === val) {
-        this.powerSelChange(subChk.getAttribute('value'), Ischk);
-        if (Ischk) {
-          (subChk as HTMLInputElement).checked = true;
-        } else {
-          (subChk as HTMLInputElement).checked = false;
-        }
-      }
-    }
   }
 
   powerSelChange(val, Ischk) {
@@ -190,8 +176,8 @@ export class RoleListComponent implements OnInit {
   }
 
   savePowerData() {
-    if (this.pRolecode !== '' && this.powerList.length > 0) {
-      this.commonService.editPowerData(this.pRolecode, this.powerList, this.baseUrl + this.rolemenuUrl)
+    if (this.pUsercode !== '' && this.powerList.length > 0) {
+      this.commonService.editPowerData(this.pUsercode, this.powerList, this.baseUrl + this.userroleUrl)
         .subscribe(data => {
           alert(data.msg);
         },
@@ -201,6 +187,30 @@ export class RoleListComponent implements OnInit {
     } else {
       alert('頁面無數據被修改！');
     }
+  }
+
+  openComfirm(id: string, userid: string, code: string) {
+    this.pUserid = userid;
+    this.pUsercode = code;
+    this.confirmService.open(id);
+  }
+
+  closeComfirm(id: string) {
+    this.pUserid = '';
+    this.pUsercode = '';
+    this.confirmService.close(id);
+  }
+
+  resetData(id: string) {
+    this.confirmService.close(id);
+    this.commonService.resetPW(this.pUserid)
+      .subscribe(data => {
+        alert(data.msg);
+      },
+        error => {
+          console.log(error);
+        });
+
   }
 
 }

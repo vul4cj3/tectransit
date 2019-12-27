@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +8,13 @@ import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrie
 export class CommonService {
   /* Common Variables*/
   private baseUrl = window.location.origin + '/api/CommonHelp/';
+  private sysUrl = window.location.origin + '/api/SysHelp/';
 
   /* Web api action url*/
   private navUrl = 'GetNavMenu';
+  private allnavUrl = 'GetAllMenu';
+  private allroleUrl = 'GetAllRole';
+  private resetPWUrl = 'ResetPassword';
 
   /* pagination variables*/
   rowTotal = 0; // data count
@@ -21,16 +23,16 @@ export class CommonService {
   pageSize = 10;
   pageTotal = 0;
 
-  pageNum: Array<number> = []; // pagenum in page
+  public pageNum: Array<number> = []; // pagenum in page
   pageNumStart = 0; // min page
   pageNumEnd = 0; // max page
   currentPageGroup = 0; // current group
   totalPageGroup = 0; // all group
 
-  preApper = false;
-  nextApper = false;
-  preGroupApper = false;
-  nextGroupApper = false;
+  public preApper = false;
+  public nextApper = false;
+  public preGroupApper = false;
+  public nextGroupApper = false;
 
   constructor(private http: HttpClient) {
 
@@ -44,6 +46,31 @@ export class CommonService {
         return data;
       }));
   }
+
+
+  /* System settings power data */
+  getAllMenu(code) {
+    return this.http.get<any>(`${this.baseUrl + this.allnavUrl}/${code}`)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  getAllRole(code) {
+    return this.http.get<any>(`${this.baseUrl + this.allroleUrl}/${code}`)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  /* System settings reset data */
+  resetPW(id) {
+    return this.http.get<any>(`${this.sysUrl + this.resetPWUrl}/${id}`)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
 
   /* --- Pagination function start --- */
   set_pageNumArray(srowTotal, spageSize, scurrentPage) {
@@ -60,15 +87,15 @@ export class CommonService {
     }
 
     // Current page count
-    this.currentPage = scurrentPage + 1;
+    this.currentPage = scurrentPage;
 
     if (this.currentPage > this.pageTotal) {
       this.currentPage = this.pageTotal;
-      scurrentPage = this.pageTotal - 1;
+      scurrentPage = this.pageTotal;
     }
     if (this.currentPage < 0) {
       this.currentPage = 1;
-      scurrentPage = 0;
+      scurrentPage = 1;
     }
 
     // All groups count
@@ -103,8 +130,8 @@ export class CommonService {
   /* --- Pagination function end --- */
 
   /* --- Page's CRUD Common function --- */
-  getListData(pageIndex: number, pageSize: number, pageUrl: string) {
-    const postData = { PAGE_INDEX: pageIndex, PAGE_SIZE: pageSize };
+  getListData(sWhere, pageIndex: number, pageSize: number, pageUrl: string) {
+    const postData = { srhForm: sWhere, PAGE_INDEX: pageIndex, PAGE_SIZE: pageSize };
     return this.http.post<any>(pageUrl, postData)
       .pipe(map(data => {
         return data;
@@ -128,6 +155,14 @@ export class CommonService {
 
   editEnableData(arraydata, pageUrl: string) {
     const postData = { formdata: arraydata };
+    return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  editPowerData(code: string, arraydata, pageUrl: string) {
+    const postData = { id: code, formdata: arraydata };
     return this.http.post<any>(pageUrl, postData)
       .pipe(map(data => {
         return data;
