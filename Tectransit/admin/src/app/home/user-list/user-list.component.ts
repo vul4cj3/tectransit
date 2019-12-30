@@ -132,7 +132,7 @@ export class UserListComponent implements OnInit {
       }
     }
 
-    console.log(this.activeList);
+    // console.log(this.activeList);
   }
 
   /* Popup window function */

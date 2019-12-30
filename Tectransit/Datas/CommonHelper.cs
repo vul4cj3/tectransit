@@ -117,6 +117,82 @@ namespace Tectransit.Datas
 
         }
 
+        //取得前後台選單資料
+        public dynamic GetAllBacknFrontMenu()
+        {
+            DataTable dtlist = DBUtil.SelectDataTable($@"SELECT ID, MENUCODE, PARENTCODE, MENUURL, MENUDESC, MENUSEQ, MENUNAME,
+                                                         ISBACK, ISVISIBLE, ISENABLE, CREATEBY AS CREBY, CREDATE, UPDDATE,UPDBY
+                                                         FROM T_S_MENU ORDER BY MENUCODE, MENUSEQ");
+            if (dtlist.Rows.Count > 0)
+            {
+                List<MenuInfo> bList = new List<MenuInfo>();
+                List<MenuInfo> fList = new List<MenuInfo>();
+                for (int i = 0; i < dtlist.Rows.Count; i++)
+                {
+                    MenuInfo m = new MenuInfo();
+                    m.MENUID = dtlist.Rows[i]["ID"]?.ToString();
+                    m.MENUCODE = dtlist.Rows[i]["MENUCODE"]?.ToString();
+                    m.PARENTCODE = dtlist.Rows[i]["PARENTCODE"]?.ToString();
+                    m.MENUNAME = dtlist.Rows[i]["MENUNAME"]?.ToString();
+                    m.MENUDESC = dtlist.Rows[i]["MENUDESC"]?.ToString();
+                    m.MENUURL = dtlist.Rows[i]["MENUURL"]?.ToString();
+                    m.ISBACK = Convert.ToBoolean(dtlist.Rows[i]["ISBACK"]) == true ? "1" : "0";
+                    m.ISVISIBLE = Convert.ToBoolean(dtlist.Rows[i]["ISVISIBLE"]) == true ? "1" : "0";
+                    m.ISENABLE = Convert.ToBoolean(dtlist.Rows[i]["ISENABLE"]) == true ? "1" : "0";
+                    m.CREDATE = dtlist.Rows[i]["CREDATE"]?.ToString();
+                    m.CREBY = dtlist.Rows[i]["CREBY"]?.ToString();
+                    m.UPDDATE = dtlist.Rows[i]["UPDDATE"]?.ToString();
+                    m.UPDBY = dtlist.Rows[i]["UPDBY"]?.ToString();
+
+                    if (m.ISBACK == "1")
+                        bList.Add(m);
+                    else
+                        fList.Add(m);
+                }
+
+                return new { status = "0", backList = bList, frontList = fList };
+            }
+
+            return new { status = "99", backList = "", frontList = "" };
+        }
+
+        //取得前後台父選單項目
+        public dynamic GetParentMenu(string isback)
+        {
+            DataTable dtlist = DBUtil.SelectDataTable($@"SELECT ID, MENUCODE, PARENTCODE, MENUURL, MENUDESC, MENUSEQ, MENUNAME,
+                                                         ISBACK, ISVISIBLE, ISENABLE, CREATEBY AS CREBY, CREDATE, UPDDATE,UPDBY
+                                                         FROM T_S_MENU
+                                                         WHERE PARENTCODE = '0' AND ISBACK = " + (isback == "1" ? "'true'" : "'false'")
+                                                         + "ORDER BY MENUCODE, MENUSEQ");
+            if (dtlist.Rows.Count > 0)
+            {
+                List<MenuInfo> parentList = new List<MenuInfo>();
+                for (int i = 0; i < dtlist.Rows.Count; i++)
+                {
+                    MenuInfo m = new MenuInfo();
+                    m.MENUID = dtlist.Rows[i]["ID"]?.ToString();
+                    m.MENUCODE = dtlist.Rows[i]["MENUCODE"]?.ToString();
+                    m.PARENTCODE = dtlist.Rows[i]["PARENTCODE"]?.ToString();
+                    m.MENUNAME = dtlist.Rows[i]["MENUNAME"]?.ToString();
+                    m.MENUDESC = dtlist.Rows[i]["MENUDESC"]?.ToString();
+                    m.MENUURL = dtlist.Rows[i]["MENUURL"]?.ToString();
+                    m.ISBACK = Convert.ToBoolean(dtlist.Rows[i]["ISBACK"]) == true ? "1" : "0";
+                    m.ISVISIBLE = Convert.ToBoolean(dtlist.Rows[i]["ISVISIBLE"]) == true ? "1" : "0";
+                    m.ISENABLE = Convert.ToBoolean(dtlist.Rows[i]["ISENABLE"]) == true ? "1" : "0";
+                    m.CREDATE = dtlist.Rows[i]["CREDATE"]?.ToString();
+                    m.CREBY = dtlist.Rows[i]["CREBY"]?.ToString();
+                    m.UPDDATE = dtlist.Rows[i]["UPDDATE"]?.ToString();
+                    m.UPDBY = dtlist.Rows[i]["UPDBY"]?.ToString();
+
+                    parentList.Add(m);
+                }
+
+                return new { status = "0", pList = parentList };
+            }
+
+            return new { status = "99", pList = "" };
+        }
+
         /// <summary>
         /// POSITION: 頁面URL
         /// TARGET: 頁面名稱
@@ -151,11 +227,21 @@ namespace Tectransit.Datas
 
     public class MenuInfo
     {
+        public string MENUID { set; get; }
         public string MENUCODE { set; get; }
         public string PARENTCODE { set; get; }
         public string MENUURL { set; get; }
         public string MENUNAME { set; get; }
+        public string MENUDESC { set; get; }
+        public string MENUSEQ { set; get; }
         public string ICONURL { set; get; }
+        public string ISBACK { set; get; }
+        public string ISVISIBLE { set; get; }
+        public string ISENABLE { set; get; }
+        public string CREDATE { set; get; }
+        public string CREBY { set; get; }
+        public string UPDDATE { set; get; }
+        public string UPDBY { set; get; }
         public string HASPOWER { set; get; }
     }
     

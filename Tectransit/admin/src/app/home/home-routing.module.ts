@@ -7,7 +7,6 @@ import { RoleEditComponent } from './role-edit/role-edit.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { MenuListComponent } from './menu-list/menu-list.component';
-import { MenuEditComponent } from './menu-edit/menu-edit.component';
 
 const routes: Routes = [
   {
@@ -34,10 +33,6 @@ const routes: Routes = [
       {
         path: 'menu',
         component: MenuListComponent,
-      },
-      {
-        path: 'menu/edit/:id',
-        component: MenuEditComponent,
       }
     ],
   },

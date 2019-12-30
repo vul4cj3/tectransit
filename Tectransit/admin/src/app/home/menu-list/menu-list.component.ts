@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
-import { UserInfo, RoleUserMapInfo } from 'src/app/_Helper/models';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { MenuInfo } from 'src/app/_Helper/models';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ModalService } from 'src/app/services/modal.service';
-import { ConfirmService } from 'src/app/services/confirm.service';
 
 @Component({
   selector: 'app-menu-list',
@@ -13,58 +12,51 @@ import { ConfirmService } from 'src/app/services/confirm.service';
 export class MenuListComponent implements OnInit {
   /* Web api url*/
   private baseUrl = window.location.origin + '/api/SysHelp/';
-  private dataUrl = 'GetTSUserListData';
-  private enableUrl = 'EditTSUserEnableData';
-  private userroleUrl = 'EditUserRoleData';
+  private visibleUrl = 'EditTSMenuVisibleData';
+  private enableUrl = 'EditTSMenuEnableData';
+  private menuDataUrl = 'GetMenuData';
+  private menuEditUrl = 'EditMenuData';
 
-  tableTitle = ['#', '代碼', '名稱', '敘述', '建立時間',
-    '建立者', '更新時間', '更新者', '停用', '編輯'];
-  data: UserInfo[];
-  rowTotal = 0;
-  currentpage = 1;
-  pageSize = 10;
-  srhForm: FormGroup;
+  tableTitle = ['名稱', '代碼', 'URL', '敘述', '建立時間',
+    '建立者', '更新時間', '更新者', '列表顯示', '停用', '編輯'];
+  Backdata: MenuInfo[];
+  Frontdata: MenuInfo[];
+  dataForm: FormGroup;
+  parentData: MenuInfo[];
+  menuData: MenuInfo;
+  dataChange;
 
-  RUMapItem: RoleUserMapInfo[];
+  visibleList: any = [];
   activeList: any = [];
+  activeback = true;
+  isErr = false;
   chkNum = 1;
+  modalid: string;
 
   constructor(
     private formBuilder: FormBuilder,
-    public commonService: CommonService
+    public commonService: CommonService,
+    private modalService: ModalService
   ) { }
 
   ngOnInit() {
     // built form controls and default form value
-    this.srhForm = this.formBuilder.group({
-      susercode: '',
-      susername: ''
-    });
+    this.resetForm();
 
-    this.crePagination(this.currentpage);
+    this.getData();
   }
 
-  searchData() {
-    this.currentpage = 1;
-    this.crePagination(this.currentpage);
-  }
-
-  crePagination(newPage: number) {
-    this.commonService.getListData(this.srhForm.value, newPage, this.pageSize, this.baseUrl + this.dataUrl)
+  getData() {
+    // get menu
+    this.commonService.getBacknFrontMenu()
       .subscribe(
         data => {
-          if (data.total > 0) {
-            this.data = data.rows;
-            this.rowTotal = data.total;
-            this.currentpage = newPage;
-
-            this.commonService.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
+          if (data.status === '0') {
+            this.Backdata = data.backList;
+            this.Frontdata = data.frontList;
           } else {
-            this.data = null;
-            this.rowTotal = 0;
-            this.currentpage = 1;
-
-            this.commonService.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
+            this.Backdata = null;
+            this.Frontdata = null;
           }
         },
         error => {
@@ -72,29 +64,44 @@ export class MenuListComponent implements OnInit {
         });
   }
 
-  changeData(newPage: number) {
-    if (newPage !== this.currentpage) {
-      this.commonService.getListData(this.srhForm.value, newPage, this.pageSize, this.baseUrl + this.dataUrl)
-        .subscribe(
-          data => {
-            if (data.total > 0) {
-              this.data = data.rows;
-              this.rowTotal = data.total;
-              this.currentpage = newPage;
+  tabSwitch(id) {
+    if (id === 'tab1') {
+      this.activeback = true;
+    } else {
+      this.activeback = false;
+    }
+  }
 
-              this.commonService.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
-            } else {
-              this.data = null;
-              this.rowTotal = 0;
-              this.currentpage = 1;
-
-              this.commonService.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
-            }
-          },
+  doIsvisible() {
+    if (this.visibleList.length > 0) {
+      this.commonService.editEnableData(this.visibleList, this.baseUrl + this.visibleUrl)
+        .subscribe(data => {
+          alert(data.msg);
+        },
           error => {
             console.log(error);
           });
+
+    } else { alert('頁面無項目變更！'); }
+  }
+
+  visibleSelChange(val, Ischk) {
+    this.chkNum = 0;
+    this.visibleList.map((item) => {
+      if (item.id === val) {
+        item.isenable = Ischk;
+        this.chkNum++;
+      }
+    });
+
+    if (this.visibleList.length === 0) {
+      this.visibleList.push({ id: val, isenable: Ischk });
+    } else {
+      if (this.chkNum === 0) {
+        this.visibleList.push({ id: val, isenable: Ischk });
+      }
     }
+
   }
 
   doIsenable() {
@@ -110,7 +117,7 @@ export class MenuListComponent implements OnInit {
     } else { alert('頁面無項目變更！'); }
   }
 
-  activeSelChange(val, Ischk) {
+  enableSelChange(val, Ischk) {
     this.chkNum = 0;
     this.activeList.map((item) => {
       if (item.id === val) {
@@ -126,8 +133,96 @@ export class MenuListComponent implements OnInit {
         this.activeList.push({ id: val, isenable: Ischk });
       }
     }
+  }
 
-    console.log(this.activeList);
+  /* Popup window function */
+  openModal(id: string, menuid) {
+
+    this.modalid = id;
+    // get menuParentData
+    this.parentData = null;
+    this.commonService.getParentMenu(this.activeback ? '1' : '0')
+      .subscribe(data => {
+        this.parentData = data.pList;
+      },
+        error => {
+          console.log(error);
+        });
+
+    // get menuData
+    if (menuid !== 0) {
+      this.commonService.getSingleData(menuid, this.baseUrl + this.menuDataUrl)
+        .subscribe(data => {
+          this.dataForm.patchValue(data.rows);
+          this.dataForm.controls.menucode.disable();
+          this.menuData = data.rows;
+        },
+          error => {
+            console.log(error);
+          });
+    }
+
+    this.modalService.open(id);
+  }
+
+  closeModal(id: string) {
+    this.isErr = false;
+    this.dataForm.controls.menucode.enable();
+    this.resetForm();
+    this.modalService.close(id);
+  }
+
+  saveData(form) {
+    // check Form
+    if (this.dataForm.invalid) {
+      this.isErr = true;
+      return alert('代碼不能為空！');
+    }
+
+    form.isback = this.activeback ? '1' : '0';
+
+    if (form.menuid !== 0) {
+      this.dataChange = this.commonService.formChanges(form, this.menuData);
+    } else { this.dataChange = form; }
+
+    if (Object.keys(this.dataChange).length > 0) {
+      const postData = { id: form.menuid, formdata: this.dataChange };
+      this.commonService.editSingleData(postData, this.baseUrl + this.menuEditUrl)
+        .subscribe(data => {
+          if (data.status === '0') {
+            alert(data.msg);
+            this.getData();
+            this.closeModal(this.modalid);
+          } else {
+            this.isErr = true;
+            alert(data.msg);
+          }
+        },
+          error => {
+            console.log(error);
+          });
+    } else { alert('頁面無數據被修改！'); }
+
+  }
+
+  resetForm() {
+    this.dataForm = this.formBuilder.group({
+      menuid: 0,
+      parentcode: '0',
+      menucode: ['', Validators.required],
+      menuname: '',
+      menudesc: '',
+      menuseq: '0',
+      menuurl: '',
+      iconurl: '',
+      isback: '0',
+      isvisible: '0',
+      isenable: '1',
+      credate: '',
+      creby: '',
+      upddate: '',
+      updby: ''
+    });
   }
 
 }

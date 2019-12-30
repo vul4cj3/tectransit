@@ -152,6 +152,41 @@ namespace Tectransit.Datas
             return new { rows = "" };
         }
 
+        public dynamic GetMenuData(long sID)
+        {
+            string sql = $@"
+                            SELECT ID, MENUCODE, PARENTCODE, MENUURL, MENUDESC, MENUSEQ, MENUNAME, ICONURL,
+                                   ISBACK, ISVISIBLE, ISENABLE, CREATEBY AS CREBY, CREDATE, UPDDATE,UPDBY
+                            FROM T_S_MENU
+                            WHERE ID = {sID}";
+
+            DataTable DT = DBUtil.SelectDataTable(sql);
+            if (DT.Rows.Count > 0)
+            {
+                MenuInfo m = new MenuInfo();
+                m.MENUID = DT.Rows[0]["ID"]?.ToString();
+                m.PARENTCODE = DT.Rows[0]["PARENTCODE"]?.ToString();
+                m.MENUSEQ = DT.Rows[0]["MENUSEQ"]?.ToString();
+                m.MENUCODE = DT.Rows[0]["MENUCODE"]?.ToString();
+                m.MENUNAME = DT.Rows[0]["MENUNAME"]?.ToString();
+                m.MENUDESC = DT.Rows[0]["MENUDESC"]?.ToString();
+                m.MENUURL = DT.Rows[0]["MENUURL"]?.ToString();
+                m.ICONURL = DT.Rows[0]["ICONURL"]?.ToString();
+                m.ISBACK = Convert.ToBoolean(DT.Rows[0]["ISBACK"]) == true ? "1" : "0";
+                m.ISVISIBLE = Convert.ToBoolean(DT.Rows[0]["ISVISIBLE"]) == true ? "1" : "0";
+                m.ISENABLE = Convert.ToBoolean(DT.Rows[0]["ISENABLE"]) == true ? "1" : "0";
+                m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
+                m.CREBY = DT.Rows[0]["CREBY"]?.ToString();
+                m.UPDDATE = DT.Rows[0]["UPDDATE"]?.ToString();
+                m.UPDBY = DT.Rows[0]["UPDBY"]?.ToString();
+                m.ISENABLE = Convert.ToBoolean(DT.Rows[0]["ISENABLE"]) ? "1" : "0";
+
+                return new { rows = m };
+            }
+
+            return new { rows = "" };
+        }
+
     }
 
     public class RoleInfo

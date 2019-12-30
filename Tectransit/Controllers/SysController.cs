@@ -22,6 +22,7 @@ namespace Tectransit.Controllers
             _context = context;
         }
 
+        /* --- ROLE --- */
         [HttpPost]
         public dynamic GetTSRoleListData([FromBody] object form)
         {
@@ -135,7 +136,7 @@ namespace Tectransit.Controllers
             }
         }
 
-        /*USER*/
+        /* --- USER --- */
 
         [HttpPost]
         public dynamic GetTSUserListData([FromBody] object form)
@@ -273,7 +274,144 @@ namespace Tectransit.Controllers
             }
         }
 
-        /*TWOTABLE MAP*/
+
+        /* --- Menu --- */
+        [HttpPost]
+        public dynamic EditTSMenuVisibleData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "MENUID");
+                        dataKey.Add("isenable", "ISVISIBLE");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        UpdateMenu(Convert.ToInt64(sData["MENUID"]), sData);
+                    }
+                }
+
+                return new { status = "0", msg = "修改成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+
+        [HttpPost]
+        public dynamic EditTSMenuEnableData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "MENUID");
+                        dataKey.Add("isenable", "ISENABLE");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "0" : "1";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        UpdateMenu(Convert.ToInt64(sData["MENUID"]), sData);
+                    }
+                }
+
+                return new { status = "0", msg = "修改成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+        
+        [HttpGet("{id}")]
+        public dynamic GetMenuData(long id)
+        {
+            return objSys.GetMenuData(id);
+        }
+
+        [HttpPost]
+        public dynamic EditMenuData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+
+                long id = Convert.ToInt64(arrData.Value<string>("id"));
+                JObject temp = arrData.Value<JObject>("formdata");
+
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[t.Key.ToUpper()] = t.Value?.ToString();
+
+                //get cookies
+                htData["_usercode"] = Request.Cookies["_usercode"];
+                htData["_username"] = Request.Cookies["_username"];
+
+                return EditMenuData(id, htData);
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return err;
+            }
+        }
+
+
+        /* --- TWOTABLE MAP --- */
 
         [HttpPost]
         public dynamic EditRoleMenuData([FromBody] object form)
@@ -691,6 +829,104 @@ namespace Tectransit.Controllers
         {
             _context.TSUserrolemap.Remove(rm);
             _context.SaveChanges();
+        }
+
+        private dynamic EditMenuData(long id, Hashtable htData)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    //檢查CODE是否重複
+                    bool IsRepeat = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT MENUCODE AS COL1 FROM T_S_MENU WHERE MENUCODE = '{htData["MENUCODE"]}'")) ? false : true;
+                    if (IsRepeat)
+                        return new { status = "99", msg = "已存在相同的CODE！" };
+
+                    InsertMenu(htData);
+
+                    //add user log
+                    objComm.AddUserControlLog(htData, "menu/edit/0", "選單管理", 1, htData["MENUCODE"]?.ToString());
+                }
+                else
+                {
+                    UpdateMenu(id, htData);
+
+                    string updMsg = "";
+                    foreach (DictionaryEntry ht in htData)
+                    {
+                        if (ht.Key.ToString() == "_usercode" || ht.Key.ToString() == "_username") { }
+                        else
+                            updMsg += (updMsg == "" ? "" : ",") + ht.Key + ":" + ht.Value;
+                    }
+
+                    //add user log
+                    objComm.AddUserControlLog(htData, $"menu/edit/{id}", "選單管理", 2, updMsg);
+                }
+
+                return new { status = "0", msg = "保存成功！" };
+
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message?.ToString();
+                return new { status = "99", msg = "保存失敗！" };
+            }
+        }
+
+        private void InsertMenu(Hashtable sData)
+        {
+            Hashtable htData = sData;
+            htData["ISBACK"] = htData["ISBACK"]?.ToString() == "1" ? true : false;
+            htData["ISVISIBLE"] = htData["ISVISIBLE"]?.ToString() == "1" ? true : false;
+            htData["ISENABLE"] = htData["ISENABLE"]?.ToString() == "1" ? true : false;
+            htData["CREDATE"] = DateTime.Now;
+            htData["CREATEBY"] = sData["_usercode"];
+            htData["UPDDATE"] = htData["CREDATE"];
+            htData["UPDBY"] = htData["CREATEBY"];
+
+            string sql = @"INSERT INTO T_S_MENU(MENUCODE, PARENTCODE, MENUURL, MENUSEQ, MENUNAME, MENUDESC, ISBACK, ISVISIBLE, ISENABLE, ICONURL, CREDATE, CREATEBY, UPDDATE, UPDBY) 
+                                        VALUES (@MENUCODE, @PARENTCODE, @MENUURL, @MENUSEQ, @MENUNAME, @MENUDESC, @ISBACK, @ISVISIBLE, @ISENABLE, @ICONURL, @CREDATE, @CREATEBY, @UPDDATE, @UPDBY)";
+
+            DBUtil.EXECUTE(sql, htData);
+        }
+
+        private void UpdateMenu(long id, Hashtable sData)
+        {
+            var query = _context.TSMenu.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                TSMenu rowTSM = query;
+
+                if (sData["MENUCODE"] != null)
+                    rowTSM.Menucode = sData["MENUCODE"]?.ToString();
+                if (sData["PARENTCODE"] != null)
+                    rowTSM.Parentcode = sData["PARENTCODE"]?.ToString();
+                if (sData["MENUNAME"] != null)
+                    rowTSM.Menuname = sData["MENUNAME"]?.ToString();
+                if (sData["MENUSEQ"] != null)
+                    rowTSM.Menuseq = sData["MENUSEQ"]?.ToString();
+                if (sData["MENUDESC"] != null)
+                    rowTSM.Menudesc = sData["MENUDESC"]?.ToString();
+                if (sData["MENUURL"] != null)
+                    rowTSM.Menuurl = sData["MENUURL"]?.ToString();
+                if (sData["ICONURL"] != null)
+                    rowTSM.Iconurl = sData["ICONURL"]?.ToString();
+                if (sData["ISBACK"] != null)
+                    rowTSM.Isback = sData["ISBACK"]?.ToString() == "1" ? true : false;
+                if (sData["ISENABLE"] != null)
+                    rowTSM.Isenable = sData["ISENABLE"]?.ToString() == "1" ? true : false;
+                if (sData["ISVISIBLE"] != null)
+                    rowTSM.Isvisible = sData["ISVISIBLE"]?.ToString() == "1" ? true : false;
+
+                if (sData.Count > 2)//排除cookies
+                {
+                    rowTSM.Upddate = DateTime.Now;
+                    rowTSM.Updby = sData["_usercode"]?.ToString();
+
+                    _context.SaveChanges();
+                }
+            }
         }
 
     }

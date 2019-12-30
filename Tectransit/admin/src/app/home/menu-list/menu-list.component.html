@@ -1,103 +1,262 @@
 <!--Top Section-->
 <div>
-    <div>
-      <div class="app-page-title">
-        <div class="page-title-wrapper">
-          <div class="page-title-heading">
-            <div class="page-title-icon"><i class="fab fa-elementor"></i></div>
-            <div>選單管理</div>
-          </div>
+  <div>
+    <div class="app-page-title">
+      <div class="page-title-wrapper">
+        <div class="page-title-heading">
+          <div class="page-title-icon"><i class="fab fa-elementor"></i></div>
+          <div>選單管理</div>
         </div>
       </div>
     </div>
   </div>
-  <!--Search Section -->
-  <div class="row">
-    <div class="col-md-12">
-      <div class="main-card mb-3 card">
-        <form [formGroup]="srhForm" (ngSubmit)="searchData()">
-          <div class="card-body">
-
-            <div class="form-inline">
-              <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
-                <label for="susercode" class="mr-sm-2">代碼</label>
-                <input type="text" id="susercode" formControlName="susercode" class="form-control">
+</div>
+<!--TableList Section-->
+<div class="row">
+  <div class="col-md-12">
+    <div class="main-card mb-3 card">
+      <div class="card-header-tab card-header">
+        <ul class="nav">
+          <li class="nav-item">
+            <a id="tab1" class="nav-link" [ngClass]="{'active': activeback}"
+              (click)="tabSwitch($event.toElement.id)">後台選單</a>
+          </li>
+          <li class="nav-item">
+            <a id="tab2" class="nav-link" [ngClass]="{'active': !activeback}"
+              (click)="tabSwitch($event.toElement.id)">前台選單</a>
+          </li>
+        </ul>
+        <div class="btn-actions-pane-right">
+          <div class="btn-group-sm btn-group" role="group">
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="openModal('custom-modal-1', 0)">新增</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doIsvisible()">顯示</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doIsenable()">停用</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tab-content">
+          <!-- backend section start-->
+          <div class="tab-pane active" *ngIf="activeback;else fronttab">
+            <div class="table-responsive">
+              <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th *ngFor="let titleItem of tableTitle let id = index">
+                      {{titleItem}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of Backdata let idx = index">
+                    <td class="text-left"
+                      [ngClass]="{'text-left': item.parentcode === '0', 'text-right': item.parentcode !== '0'}">
+                      <span *ngIf="item.parentcode === '0'">&#x25B8;</span>
+                      <b>{{item.menuname}}</b>
+                    </td>
+                    <td>{{item.menucode}}</td>
+                    <td>{{item.menuurl}}</td>
+                    <td>{{item.menudesc}}</td>
+                    <td>{{item.credate}}</td>
+                    <td>{{item.creby}}</td>
+                    <td>{{item.upddate}}</td>
+                    <td>{{item.updby}}</td>
+                    <td class="text-center text-muted">
+                      <label class="chkbox-container">
+                        <input type="checkbox" name="visibleChk" id="vchk{{idx}}"
+                          (click)="visibleSelChange($event.toElement.value, $event.toElement.checked)"
+                          [checked]="item.isvisible === '1'" value="{{item.menuid}}">
+                        <span class="checkmark"></span>
+                      </label>
+                    </td>
+                    <td class="text-center text-muted">
+                      <label class="chkbox-container">
+                        <input type="checkbox" name="activeChk" id="achk{{idx}}"
+                          (click)="enableSelChange($event.toElement.value, $event.toElement.checked)"
+                          [checked]="item.isenable === '0'" value="{{item.menuid}}">
+                        <span class="checkmark"></span>
+                      </label>
+                    </td>
+                    <td>
+                      <a (click)="openModal('custom-modal-1', item.menuid)">
+                        <span class="symbol-edit">
+                          <i class="pe-7s-note2"></i>
+                        </span>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- backend section end-->
+          <!-- front section start-->
+          <ng-template #fronttab>
+            <div class="tab-pane active">
+              <div class="table-responsive">
+                <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th *ngFor="let titleItem of tableTitle let id = index">
+                        {{titleItem}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let fitem of Frontdata let idx = index">
+                      <td class="text-center text-muted">
+                        <span *ngIf="fitem.parentcode === '0'">></span>
+                        {{fitem.menuname}}
+                      </td>
+                      <td>{{fitem.menucode}}</td>
+                      <td>{{fitem.menuurl}}</td>
+                      <td>{{fitem.menudesc}}</td>
+                      <td>{{fitem.credate}}</td>
+                      <td>{{fitem.creby}}</td>
+                      <td>{{fitem.upddate}}</td>
+                      <td>{{fitem.updby}}</td>
+                      <td class="text-center text-muted">
+                        <label class="chkbox-container">
+                          <input type="checkbox" name="visibleChk" id="vchk{{idx}}"
+                            (click)="visibleSelChange($event.toElement.value, $event.toElement.checked)"
+                            [checked]="fitem.isvisible === '1'" value="{{fitem.menuid}}">
+                          <span class="checkmark"></span>
+                        </label>
+                      </td>
+                      <td class="text-center text-muted">
+                        <label class="chkbox-container">
+                          <input type="checkbox" name="activeChk" id="achk{{idx}}"
+                            (click)="enableSelChange($event.toElement.value, $event.toElement.checked)"
+                            [checked]="fitem.isenable === '0'" value="{{fitem.menuid}}">
+                          <span class="checkmark"></span>
+                        </label>
+                      </td>
+                      <td>
+                        <a (click)="openModal('custom-modal-1', fitem.menuid)">
+                          <span class="symbol-edit">
+                            <i class="pe-7s-note2"></i>
+                          </span>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-              <div class="col-md-4">
-                <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
-                  <label for="susername" class="mr-sm-2">名稱</label>
-                  <input type="text" id="susername" formControlName="susername" class="form-control">
+            </div>
+          </ng-template>
+          <!-- front section end-->
+        </div>
+      </div>
+      <div class="d-block text-center card-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Popup window section-->
+<app-jw-modal id="custom-modal-1">
+  <div class="modal-header">
+    <button class="close" (click)="closeModal('custom-modal-1')">
+      <span><i class="pe-7s-close-circle"></i>
+      </span>
+    </button>
+  </div>
+  <form [formGroup]="dataForm">
+    <div class="modal-body">
+      <div class="position-relative form-group">
+        <div>
+          <ng-container>
+            <h5 class="card-title">選單-編輯</h5>
+            <!--  edit content start -->
+            <div class="position-relative row form-group">
+              <label class="col-sm-2 col-form-label" for="menucode">代碼</label>
+              <div class="col-sm-10">
+                <input type="text" id="menucode" class="form-control middle" [ngClass]="{'is-invalid': isErr}" maxlength="5" formControlName="menucode">
+              </div>
+            </div>
+            <div class="position-relative row form-group">
+              <label class="col-sm-2 col-form-label" for="menuname">名稱</label>
+              <div class="col-sm-10">
+                <input type="text" id="menuname" class="form-control middle" formControlName="menuname">
+              </div>
+            </div>
+            <div class="position-relative row form-group">
+              <label class="col-sm-2 col-form-label" for="menuurl">URL</label>
+              <div class="col-sm-10">
+                <input type="text" id="menuurl" class="form-control large" formControlName="menuurl">
+              </div>
+            </div>
+            <div class="position-relative row form-group">
+              <label class="col-sm-2 col-form-label" for="menudesc">敘述</label>
+              <div class="col-sm-10">
+                <input type="text" id="menudesc" class="form-control large" formControlName="menudesc">
+              </div>
+            </div>
+            <div class="position-relative row form-group">
+              <label class="col-sm-2 col-form-label" for="iconurl">icon url</label>
+              <div class="col-sm-10">
+                <input type="text" id="iconurl" class="form-control middle" formControlName="iconurl">
+              </div>
+            </div>
+            <div class="position-relative row form-group">
+              <label class="col-sm-2 col-form-label" for="parentcode">選單</label>
+              <div class="col-sm-10">
+                <select id="parentcode" class="mb-2 form-control middle" formControlName="parentcode">
+                  <option value="0">主選單</option>
+                  <ng-container *ngIf="this.parentData !== null">
+                      <option value="{{subitem.menucode}}" *ngFor="let subitem of parentData">{{subitem.menuname}}</option>
+                  </ng-container>
+                </select>
+              </div>
+            </div>
+            <div class="position-relative row form-group">
+                <label class="col-sm-2 col-form-label" for="menuseq">排序</label>
+                <div class="col-sm-10">
+                  <input type="text" id="menuseq" class="form-control middle" maxlength="3" formControlName="menuseq">
                 </div>
               </div>
+            <div class="position-relative row form-group">
+              <label class="col-sm-2 col-form-label" for="isvisible">列表顯示</label>
+              <div class="col-sm-10">
+                <select id="isvisible" class="mb-2 form-control middle" formControlName="isvisible">
+                  <option value="1">是</option>
+                  <option value="0">否</option>
+                </select>
+              </div>
             </div>
-
-          </div>
-          <div class="card-footer">
-            <div>
-              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" type="submit">查詢</button>
-              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" type="reset">清除查詢</button>
+            <div class="position-relative row form-group">
+              <label class="col-sm-2 col-form-label" for="isenable">啟用/停用</label>
+              <div class="col-sm-10">
+                <select id="isenable" class="mb-2 form-control middle" formControlName="isenable">
+                  <option value="1">啟用</option>
+                  <option value="0">停用</option>
+                </select>
+              </div>
             </div>
-          </div>
-        </form>
+            <ng-container *ngIf="dataForm.value.menuid !== 0">
+                <div class="position-relative row form-group">
+                  <label class="col-sm-2 col-form-label">建立時間</label>
+                  <div class="col-sm-10"><p>{{dataForm.value.credate}}</p></div>
+                </div>
+                <div class="position-relative row form-group">
+                  <label class="col-sm-2 col-form-label">建立者</label>
+                  <div class="col-sm-10"><p>{{dataForm.value.creby}}</p></div>
+                </div>
+                <div class="position-relative row form-group">
+                  <label class="col-sm-2 col-form-label">更新時間</label>
+                  <div class="col-sm-10"><p>{{dataForm.value.upddate}}</p></div>
+                </div>
+                <div class="position-relative row form-group">
+                  <label class="col-sm-2 col-form-label">更新者</label>
+                  <div class="col-sm-10"><p>{{dataForm.value.updby}}</p></div>
+                </div>
+              </ng-container>
+            <!--  edit content end -->
+          </ng-container>
+        </div>
       </div>
     </div>
-  </div>
-  <!--TableList Section-->
-  <div class="row">
-    <div class="col-md-12">
-      <div class="main-card mb-3 card">
-        <div class="card-header">選單列表
-          <div class="btn-actions-pane-right">
-            <div class="btn-group-sm btn-group" role="group">
-              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/menu/edit/0">新增</button>
-              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doIsenable(data.length)">停用</button>
-            </div>
-          </div>
-        </div>
-        <div class="table-responsive">
-          <table class="align-middle mb-0 table table-borderless table-striped table-hover">
-            <thead>
-              <tr>
-                <th *ngFor="let titleItem of tableTitle let id = index" [ngClass]="{'text-center': id === 0}">
-                  {{titleItem}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of data let idx = index">
-                <td class="text-center text-muted">{{item.rowid}}</td>
-                <td>{{item.usercode}}</td>
-                <td>{{item.username}}</td>
-                <td>{{item.userdesc}}</td>
-                <td>{{item.credate}}</td>
-                <td>{{item.creby}}</td>
-                <td>{{item.upddate}}</td>
-                <td>{{item.updby}}</td>
-                <td class="text-center text-muted">
-                  <label class="chkbox-container">
-                    <input type="checkbox" name="activeChk" id="chk{{idx}}"
-                      (click)="activeSelChange($event.toElement.value, $event.toElement.checked)"
-                      [checked]="item.isenable === '0'" value="{{item.userid}}">
-                    <span class="checkmark"></span>
-                  </label>
-                </td>
-                <td>
-                  <a routerLink="/menu/edit/{{item.userid}}">
-                    <span class="symbol-edit">
-                      <i class="pe-7s-note2"></i>
-                    </span>
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!--pagination section start-->
-        <div class="d-block text-center card-footer">
-          <app-pagination [currentPage]="this.currentpage" [preApper]="this.commonService.preApper"
-            [nextApper]="this.commonService.nextApper" [pageNum]="this.commonService.pageNum"
-            (pageChanged)="changeData($event)"></app-pagination>
-        </div>
-        <!--pagination section end-->
-      </div>
+    <div class="modal-footer">
+      <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="closeModal('custom-modal-1')">取消</button>
+      <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="saveData(dataForm.value)">保存</button>
     </div>
-  </div>
+  </form>
+</app-jw-modal>

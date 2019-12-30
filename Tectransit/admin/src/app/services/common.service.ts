@@ -13,8 +13,10 @@ export class CommonService {
   /* Web api action url*/
   private navUrl = 'GetNavMenu';
   private allnavUrl = 'GetAllMenu';
+  private allmenuUrl = 'GetAllBacknFrontMenu';
   private allroleUrl = 'GetAllRole';
   private resetPWUrl = 'ResetPassword';
+  private pbacknforntUrl = 'GetParentMenu';
 
   /* pagination variables*/
   rowTotal = 0; // data count
@@ -47,8 +49,22 @@ export class CommonService {
       }));
   }
 
+  /* --- Get Data --- */
+  getBacknFrontMenu() {
+    return this.http.get<any>(`${this.baseUrl + this.allmenuUrl}/`)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
 
-  /* System settings power data */
+  getParentMenu(isBack) {
+    return this.http.get<any>(`${this.baseUrl + this.pbacknforntUrl}/${isBack}`)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  /* --- System settings power data --- */
   getAllMenu(code) {
     return this.http.get<any>(`${this.baseUrl + this.allnavUrl}/${code}`)
       .pipe(map(data => {

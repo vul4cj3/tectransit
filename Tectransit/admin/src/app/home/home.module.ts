@@ -16,7 +16,6 @@ import { ModalComponent } from './modal.component';
 import { ConfirmService } from '../services/confirm.service';
 import { ConfirmComponent } from './confirm.component';
 import { MenuListComponent } from './menu-list/menu-list.component';
-import { MenuEditComponent } from './menu-edit/menu-edit.component';
 
 @NgModule({
   declarations: [
@@ -29,8 +28,7 @@ import { MenuEditComponent } from './menu-edit/menu-edit.component';
     UserEditComponent,
     ModalComponent,
     ConfirmComponent,
-    MenuListComponent,
-    MenuEditComponent
+    MenuListComponent
   ],
   imports: [
     CommonModule,

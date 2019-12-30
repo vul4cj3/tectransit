@@ -99,10 +99,10 @@
                   </span>
                 </a>
                 <ng-template #editClose2>
-                    <span class="symbol-edit middle">
-                      <i class="pe-7s-close"></i>
-                    </span>
-                  </ng-template>
+                  <span class="symbol-edit middle">
+                    <i class="pe-7s-close"></i>
+                  </span>
+                </ng-template>
               </td>
             </tr>
           </tbody>
@@ -133,18 +133,23 @@
         <ng-container *ngFor="let item of menuItem let idx = index">
           <h5 class="card-title">{{item.menuname}}
             <div class="custom-checkbox custom-control custom-control-inline">
-                <input type="checkbox" class="custom-control-input" id="menuP_{{idx}}" value="{{item.menucode}}"
+              <input type="checkbox" class="custom-control-input" id="menuP_{{idx}}" value="{{item.menucode}}"
                 (click)="selAllChange($event.toElement.value, $event.toElement.checked)">
-                <label class="custom-control-label" for="menuP_{{idx}}"></label>
+              <label class="custom-control-label" for="menuP_{{idx}}"></label>
             </div>
           </h5>
           <!--checkbox start-->
-          <div class="custom-checkbox custom-control custom-control-inline"
-            *ngFor="let subitem of menuSubItem let subid = index">
-            <input type="checkbox" id="menu{{subid}}" [checked]="subitem.haspower === '1'" class="custom-control-input"
-              (click)="powerSelChange($event.toElement.value, $event.toElement.checked)" value="{{subitem.menucode}}">
-            <label class="custom-control-label" for="menu{{subid}}">{{subitem.menuname}}</label>
-          </div>
+          <ng-container *ngFor="let subitem of menuSubItem let subid = index">
+            <ng-container *ngIf="subitem.parentcode === item.menucode">
+              <div class="custom-checkbox custom-control custom-control-inline">
+                <input type="checkbox" id="menu{{subid}}" [checked]="subitem.haspower === '1'"
+                  class="custom-control-input"
+                  (click)="powerSelChange($event.toElement.value, $event.toElement.checked)"
+                  value="{{subitem.menucode}}">
+                <label class="custom-control-label" for="menu{{subid}}">{{subitem.menuname}}</label>
+              </div>
+            </ng-container>
+          </ng-container>
           <!--checkbox end-->
         </ng-container>
       </div>

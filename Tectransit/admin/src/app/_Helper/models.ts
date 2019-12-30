@@ -1,10 +1,19 @@
 export interface MenuInfo {
+  menuid: number;
   menucode: string;
   parentcode: string;
   menuurl: string;
   menuname: string;
+  menudesc: string;
   iconurl: string;
+  isback: string;
+  isvisible: string;
+  isenable: string;
   haspower: string;
+  credate: string;
+  creby: string;
+  upddate: string;
+  updby: string;
 }
 
 export interface RoleInfo {
