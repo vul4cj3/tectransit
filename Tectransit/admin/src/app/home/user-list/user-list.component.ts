@@ -40,18 +40,21 @@ export class UserListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // built form controls and default form value
-    this.srhForm = this.formBuilder.group({
-      susercode: '',
-      susername: ''
-    });
-
+    this.resetData();
     this.crePagination(this.currentpage);
   }
 
   searchData() {
     this.currentpage = 1;
     this.crePagination(this.currentpage);
+  }
+
+  resetData() {
+    // built form controls and default form value
+    this.srhForm = this.formBuilder.group({
+      susercode: '',
+      susername: ''
+    });
   }
 
   crePagination(newPage: number) {
@@ -107,6 +110,7 @@ export class UserListComponent implements OnInit {
       this.commonService.editEnableData(this.activeList, this.baseUrl + this.enableUrl)
         .subscribe(data => {
           alert(data.msg);
+          this.crePagination(this.currentpage);
         },
           error => {
             console.log(error);
@@ -201,7 +205,7 @@ export class UserListComponent implements OnInit {
     this.confirmService.close(id);
   }
 
-  resetData(id: string) {
+  resetPWData(id: string) {
     this.confirmService.close(id);
     this.commonService.resetPW(this.pUserid)
       .subscribe(data => {

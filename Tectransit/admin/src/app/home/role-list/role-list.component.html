@@ -15,7 +15,7 @@
 <div class="row">
   <div class="col-md-12">
     <div class="main-card mb-3 card">
-      <form [formGroup]="srhForm" (ngSubmit)="searchData()">
+      <form [formGroup]="srhForm">
         <div class="card-body">
 
           <div class="form-inline">
@@ -34,8 +34,8 @@
         </div>
         <div class="card-footer">
           <div>
-            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" type="submit">查詢</button>
-            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" type="reset">清除查詢</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="searchData()">查詢</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="resetData()">清除查詢</button>
           </div>
         </div>
       </form>

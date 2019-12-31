@@ -7,6 +7,10 @@ import { RoleEditComponent } from './role-edit/role-edit.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { MenuListComponent } from './menu-list/menu-list.component';
+import { RankListComponent } from './rank-list/rank-list.component';
+import { RankEditComponent } from './rank-edit/rank-edit.component';
+import { AccountsListComponent } from './accounts-list/accounts-list.component';
+import { AccountsEditComponent } from './accounts-edit/accounts-edit.component';
 
 const routes: Routes = [
   {
@@ -33,6 +37,22 @@ const routes: Routes = [
       {
         path: 'menu',
         component: MenuListComponent,
+      },
+      {
+        path: 'rank',
+        component: RankListComponent,
+      },
+      {
+        path: 'rank/edit/:id',
+        component: RankEditComponent,
+      },
+      {
+        path: 'accounts',
+        component: AccountsListComponent,
+      },
+      {
+        path: 'accounts/edit/:id',
+        component: AccountsEditComponent,
       }
     ],
   },

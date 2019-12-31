@@ -117,6 +117,35 @@ namespace Tectransit.Datas
 
         }
 
+        //取得前台用戶權限組
+        public dynamic GetAllRank(string code)
+        {
+            DataTable dtlist = DBUtil.SelectDataTable($@"SELECT A.ID AS RANKID, A.RANKCODE, A.RANKNAME, A.RANKSEQ FROM T_S_RANK A
+                                                         WHERE A.RANKTYPE = '1'
+                                                         ORDER BY A.RANKSEQ");
+            if (dtlist.Rows.Count > 0)
+            {
+                List<RankAccountInfo> roleList = new List<RankAccountInfo>();
+                for (int i = 0; i < dtlist.Rows.Count; i++)
+                {
+                    RankAccountInfo m = new RankAccountInfo();
+                    m.RANKID = dtlist.Rows[i]["RANKID"]?.ToString();
+                    m.RANKCODE = dtlist.Rows[i]["RANKCODE"]?.ToString();
+                    m.RANKNAME = dtlist.Rows[i]["RANKNAME"]?.ToString();
+                    m.RANKSEQ = dtlist.Rows[i]["RANKSEQ"]?.ToString();
+                    // 0:無權限 1:有權限
+                    m.HASPOWER = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT USERCODE AS COL1 FROM T_S_ACRANKMAP WHERE USERCODE = '{code}' AND RANKID = {m.RANKID}")) ? "0" : "1";
+
+                    roleList.Add(m);
+                }
+
+                return new { status = "0", item = roleList };
+            }
+
+            return new { status = "99", pList = "", item = "" };
+
+        }
+
         //取得前後台選單資料
         public dynamic GetAllBacknFrontMenu()
         {
@@ -223,26 +252,6 @@ namespace Tectransit.Datas
             }
         }
 
-    }
-
-    public class MenuInfo
-    {
-        public string MENUID { set; get; }
-        public string MENUCODE { set; get; }
-        public string PARENTCODE { set; get; }
-        public string MENUURL { set; get; }
-        public string MENUNAME { set; get; }
-        public string MENUDESC { set; get; }
-        public string MENUSEQ { set; get; }
-        public string ICONURL { set; get; }
-        public string ISBACK { set; get; }
-        public string ISVISIBLE { set; get; }
-        public string ISENABLE { set; get; }
-        public string CREDATE { set; get; }
-        public string CREBY { set; get; }
-        public string UPDDATE { set; get; }
-        public string UPDBY { set; get; }
-        public string HASPOWER { set; get; }
-    }
+    }    
     
 }

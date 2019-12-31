@@ -16,6 +16,10 @@ import { ModalComponent } from './modal.component';
 import { ConfirmService } from '../services/confirm.service';
 import { ConfirmComponent } from './confirm.component';
 import { MenuListComponent } from './menu-list/menu-list.component';
+import { AccountsListComponent } from './accounts-list/accounts-list.component';
+import { AccountsEditComponent } from './accounts-edit/accounts-edit.component';
+import { RankListComponent } from './rank-list/rank-list.component';
+import { RankEditComponent } from './rank-edit/rank-edit.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +32,11 @@ import { MenuListComponent } from './menu-list/menu-list.component';
     UserEditComponent,
     ModalComponent,
     ConfirmComponent,
-    MenuListComponent
+    MenuListComponent,
+    AccountsListComponent,
+    AccountsEditComponent,
+    RankListComponent,
+    RankEditComponent
   ],
   imports: [
     CommonModule,

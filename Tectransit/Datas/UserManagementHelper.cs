@@ -1,39 +1,35 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Transactions;
-using Tectransit.Modles;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Tectransit.Datas
 {
-    public class SysHelper
+    public class UserManagementHelper
     {
-
-        //取得權限資料(List)
-        public dynamic GetRoleListData(string sWhere, int pageIndex, int pageSize)
+        public dynamic GetRankListData(string sWhere, int pageIndex, int pageSize)
         {
             string sql = $@"SELECT * FROM (
-                                            SELECT ROW_NUMBER() OVER (ORDER BY ROLESEQ) AS ROW_ID, ID, ROLECODE, ROLENAME, ROLEDESC,
+                                             SELECT ROW_NUMBER() OVER (ORDER BY RANKSEQ) AS ROW_ID, ID, RANKCODE, RANKTYPE, RANKNAME, RANKDESC,
                                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
                                                    CREATEBY AS CREBY, UPDBY, ISENABLE
-                                            From T_S_ROLE
+                                            From T_S_RANK
                                             {sWhere}
                             ) AS A";
             string sql1 = sql + $@" WHERE ROW_ID BETWEEN {((pageIndex - 1) * pageSize + 1).ToString()} AND {(pageIndex * pageSize).ToString()}";
             DataTable DT = DBUtil.SelectDataTable(sql1);
             if (DT.Rows.Count > 0)
             {
-                List<RoleInfo> rowList = new List<RoleInfo>();
+                List<RankInfo> rowList = new List<RankInfo>();
                 for (int i = 0; i < DT.Rows.Count; i++)
                 {
-                    RoleInfo m = new RoleInfo();
+                    RankInfo m = new RankInfo();
                     m.ROWID = Convert.ToInt64(DT.Rows[i]["ROW_ID"]);
-                    m.ROLEID = Convert.ToInt64(DT.Rows[i]["ID"]);
-                    m.ROLECODE = DT.Rows[i]["ROLECODE"]?.ToString();
-                    m.ROLENAME = DT.Rows[i]["ROLENAME"]?.ToString();
-                    m.ROLEDESC = DT.Rows[i]["ROLEDESC"]?.ToString();
+                    m.RANKID = Convert.ToInt64(DT.Rows[i]["ID"]);
+                    m.RANKCODE = DT.Rows[i]["RANKCODE"]?.ToString();
+                    m.RANKNAME = DT.Rows[i]["RANKNAME"]?.ToString();
+                    m.RANKDESC = DT.Rows[i]["RANKDESC"]?.ToString();
                     m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
                     m.CREBY = DT.Rows[i]["CREBY"]?.ToString();
                     m.UPDDATE = DT.Rows[i]["UPDDATE"]?.ToString();
@@ -52,23 +48,23 @@ namespace Tectransit.Datas
             return new { rows = "", total = 0 };
         }
 
-        public dynamic GetRoleData(long sID)
+        public dynamic GetRankData(long sID)
         {
             string sql = $@"
-                            SELECT ID, ROLECODE, ROLENAME, ROLEDESC, ROLESEQ,
+                            SELECT ID, RANKCODE, RANKTYPE, RANKNAME, RANKDESC, RANKSEQ,
                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
                                    CREATEBY AS CREBY, UPDBY, ISENABLE
-                            From T_S_ROLE
+                            From T_S_RANK
                             WHERE ID = {sID}";
             DataTable DT = DBUtil.SelectDataTable(sql);
             if (DT.Rows.Count > 0)
             {
-                RoleInfo m = new RoleInfo();
-                m.ROLEID = Convert.ToInt64(DT.Rows[0]["ID"]);
-                m.ROLESEQ = DT.Rows[0]["ROLESEQ"]?.ToString();
-                m.ROLECODE = DT.Rows[0]["ROLECODE"]?.ToString();
-                m.ROLENAME = DT.Rows[0]["ROLENAME"]?.ToString();
-                m.ROLEDESC = DT.Rows[0]["ROLEDESC"]?.ToString();
+                RankInfo m = new RankInfo();
+                m.RANKID = Convert.ToInt64(DT.Rows[0]["ID"]);
+                m.RANKSEQ = DT.Rows[0]["RANKSEQ"]?.ToString();
+                m.RANKCODE = DT.Rows[0]["RANKCODE"]?.ToString();
+                m.RANKNAME = DT.Rows[0]["RANKNAME"]?.ToString();
+                m.RANKDESC = DT.Rows[0]["RANKDESC"]?.ToString();
                 m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
                 m.CREBY = DT.Rows[0]["CREBY"]?.ToString();
                 m.UPDDATE = DT.Rows[0]["UPDDATE"]?.ToString();
@@ -81,33 +77,31 @@ namespace Tectransit.Datas
             return new { rows = "" };
         }
 
-        //取得用戶資料(List)
-        public dynamic GetUserListData(string sWhere, int pageIndex, int pageSize)
+        public dynamic GetAccountListData(string sWhere, int pageIndex, int pageSize)
         {
             string sql = $@"SELECT * FROM (
                                             SELECT ROW_NUMBER() OVER (ORDER BY USERSEQ) AS ROW_ID, ID, USERCODE, USERNAME, USERDESC, EMAIL,
-                                                   FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
-                                                   CREATEBY AS CREBY, UPDBY, ISENABLE
-                                            From T_S_USER
+                                                   FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(LASTLOGINDATE, 'yyyy-MM-dd HH:mm:ss') As LASTLOGINDATE,
+                                                   LOGINCOUNT, ISENABLE
+                                            From T_S_ACCOUNT
                                             {sWhere}) AS A";
             string sql1 = sql + $@" WHERE ROW_ID BETWEEN {((pageIndex - 1) * pageSize + 1).ToString()} AND {(pageIndex * pageSize).ToString()}";
             DataTable DT = DBUtil.SelectDataTable(sql1);
             if (DT.Rows.Count > 0)
             {
-                List<UserInfo> rowList = new List<UserInfo>();
+                List<AccountInfo> rowList = new List<AccountInfo>();
                 for (int i = 0; i < DT.Rows.Count; i++)
                 {
-                    UserInfo m = new UserInfo();
+                    AccountInfo m = new AccountInfo();
                     m.ROWID = Convert.ToInt64(DT.Rows[i]["ROW_ID"]);
                     m.USERID = Convert.ToInt64(DT.Rows[i]["ID"]);
                     m.USERCODE = DT.Rows[i]["USERCODE"]?.ToString();
                     m.USERNAME = DT.Rows[i]["USERNAME"]?.ToString();
                     m.USERDESC = DT.Rows[i]["USERDESC"]?.ToString();
                     m.EMAIL = DT.Rows[i]["EMAIL"]?.ToString();
+                    m.LASTLOGINDATE = DT.Rows[i]["LASTLOGINDATE"]?.ToString();
                     m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
-                    m.CREBY = DT.Rows[i]["CREBY"]?.ToString();
-                    m.UPDDATE = DT.Rows[i]["UPDDATE"]?.ToString();
-                    m.UPDBY = DT.Rows[i]["UPDBY"]?.ToString();
+                    m.LOGINCOUNT = DT.Rows[i]["LOGINCOUNT"]?.ToString();
                     m.ISENABLE = Convert.ToBoolean(DT.Rows[i]["ISENABLE"]) ? "1" : "0";
 
                     rowList.Add(m);
@@ -122,24 +116,33 @@ namespace Tectransit.Datas
             return new { rows = "", total = 0 };
         }
 
-        public dynamic GetUserData(long sID)
+        public dynamic GetAccountData(long sID)
         {
             string sql = $@"
-                            SELECT ID, USERCODE, USERNAME, USERDESC, USERSEQ, EMAIL,
+                            SELECT ID, USERCODE, WAREHOUSENO, USERNAME, USERDESC, USERSEQ, EMAIL, IDPHOTO_F, IDPHOTO_B, PHONE, MOBILE,
                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
-                                   CREATEBY AS CREBY, UPDBY, ISENABLE
-                            From T_S_USER
+                                   CREATEBY AS CREBY, UPDBY, ISENABLE, LASTLOGINDATE, LOGINCOUNT, ADDR, TAXID
+                            From T_S_ACCOUNT
                             WHERE ID = {sID}";
             DataTable DT = DBUtil.SelectDataTable(sql);
             if (DT.Rows.Count > 0)
             {
-                UserInfo m = new UserInfo();
+                AccountInfo m = new AccountInfo();
                 m.USERID = Convert.ToInt64(DT.Rows[0]["ID"]);
+                m.WAREHOUSENO = DT.Rows[0]["WAREHOUSENO"]?.ToString();
                 m.USERSEQ = DT.Rows[0]["USERSEQ"]?.ToString();
                 m.USERCODE = DT.Rows[0]["USERCODE"]?.ToString();
                 m.USERNAME = DT.Rows[0]["USERNAME"]?.ToString();
                 m.USERDESC = DT.Rows[0]["USERDESC"]?.ToString();
                 m.EMAIL = DT.Rows[0]["EMAIL"]?.ToString();
+                m.TAXID = DT.Rows[0]["TAXID"]?.ToString();
+                m.IDPHOTO_F = DT.Rows[0]["IDPHOTO_F"]?.ToString();
+                m.IDPHOTO_B = DT.Rows[0]["IDPHOTO_B"]?.ToString();
+                m.PHONE = DT.Rows[0]["PHONE"]?.ToString();
+                m.MOBILE = DT.Rows[0]["MOBILE"]?.ToString();
+                m.ADDR = DT.Rows[0]["ADDR"]?.ToString();
+                m.LASTLOGINDATE = DT.Rows[0]["LASTLOGINDATE"]?.ToString();
+                m.LOGINCOUNT = DT.Rows[0]["LOGINCOUNT"]?.ToString();
                 m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
                 m.CREBY = DT.Rows[0]["CREBY"]?.ToString();
                 m.UPDDATE = DT.Rows[0]["UPDDATE"]?.ToString();
@@ -152,41 +155,46 @@ namespace Tectransit.Datas
             return new { rows = "" };
         }
 
-        public dynamic GetMenuData(long sID)
+        public dynamic GetDeclarantnReceiverData(string sID, long sType)
         {
             string sql = $@"
-                            SELECT ID, MENUCODE, PARENTCODE, MENUURL, MENUDESC, MENUSEQ, MENUNAME, ICONURL,
-                                   ISBACK, ISVISIBLE, ISENABLE, CREATEBY AS CREBY, CREDATE, UPDDATE,UPDBY
-                            FROM T_S_MENU
-                            WHERE ID = {sID}";
-
+                            SELECT A.ID, A.NAME, A.IDPHOTO_F, A.IDPHOTO_B, A.PHONE, A.MOBILE, A.ADDR, A.TAXID, A.APPOINTMENT,
+                                   FORMAT(A.CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(A.UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
+                                   A.CREATEBY AS CREBY, A.UPDBY
+                            From T_S_DECLARANT A
+							LEFT JOIN T_S_ACDECLARANTMAP B ON A.ID = B.DECLARANTID
+							WHERE B.USERCODE = '{sID}' AND A.TYPE = {sType}";
+            List<DeclarantInfo> rowList = new List<DeclarantInfo>();
             DataTable DT = DBUtil.SelectDataTable(sql);
             if (DT.Rows.Count > 0)
             {
-                MenuInfo m = new MenuInfo();
-                m.MENUID = DT.Rows[0]["ID"]?.ToString();
-                m.PARENTCODE = DT.Rows[0]["PARENTCODE"]?.ToString();
-                m.MENUSEQ = DT.Rows[0]["MENUSEQ"]?.ToString();
-                m.MENUCODE = DT.Rows[0]["MENUCODE"]?.ToString();
-                m.MENUNAME = DT.Rows[0]["MENUNAME"]?.ToString();
-                m.MENUDESC = DT.Rows[0]["MENUDESC"]?.ToString();
-                m.MENUURL = DT.Rows[0]["MENUURL"]?.ToString();
-                m.ICONURL = DT.Rows[0]["ICONURL"]?.ToString();
-                m.ISBACK = Convert.ToBoolean(DT.Rows[0]["ISBACK"]) == true ? "1" : "0";
-                m.ISVISIBLE = Convert.ToBoolean(DT.Rows[0]["ISVISIBLE"]) == true ? "1" : "0";
-                m.ISENABLE = Convert.ToBoolean(DT.Rows[0]["ISENABLE"]) == true ? "1" : "0";
-                m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
-                m.CREBY = DT.Rows[0]["CREBY"]?.ToString();
-                m.UPDDATE = DT.Rows[0]["UPDDATE"]?.ToString();
-                m.UPDBY = DT.Rows[0]["UPDBY"]?.ToString();
-                m.ISENABLE = Convert.ToBoolean(DT.Rows[0]["ISENABLE"]) ? "1" : "0";
 
-                return new { rows = m };
+                for (int i = 0; i < DT.Rows.Count; i++)
+                {
+                    DeclarantInfo m = new DeclarantInfo();
+                    m.ROWID = i + 1;
+                    m.ID = Convert.ToInt64(DT.Rows[i]["ID"]);
+                    m.NAME = DT.Rows[i]["NAME"]?.ToString();
+                    m.IDPHOTO_F = DT.Rows[i]["IDPHOTO_F"]?.ToString();
+                    m.IDPHOTO_B = DT.Rows[i]["IDPHOTO_B"]?.ToString();
+                    m.PHONE = DT.Rows[i]["PHONE"]?.ToString();
+                    m.MOBILE = DT.Rows[i]["MOBILE"]?.ToString();
+                    m.ADDR = DT.Rows[i]["ADDR"]?.ToString();
+                    m.TAXID = DT.Rows[i]["TAXID"]?.ToString();
+                    m.APPOINTMENT = DT.Rows[i]["APPOINTMENT"]?.ToString();
+                    m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
+                    m.CREBY = DT.Rows[i]["CREBY"]?.ToString();
+                    m.UPDDATE = DT.Rows[i]["UPDDATE"]?.ToString();
+                    m.UPDBY = DT.Rows[i]["UPDBY"]?.ToString();
+
+                    rowList.Add(m);
+                }
+
+                return new { rows = rowList };
             }
 
             return new { rows = "" };
         }
 
-    }    
-
+    }
 }

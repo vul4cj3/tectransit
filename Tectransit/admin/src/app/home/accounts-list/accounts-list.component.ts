@@ -1,41 +1,44 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
-import { CommonService } from 'src/app/services/common.service';
-import { RoleInfo, MenuInfo } from 'src/app/_Helper/models';
+import { Component, OnInit } from '@angular/core';
+import { AccountInfo, RankAccMapInfo, DeclarantInfo } from 'src/app/_Helper/models';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { CommonService } from 'src/app/services/common.service';
 import { ModalService } from 'src/app/services/modal.service';
-import { $ } from 'protractor';
+import { ConfirmService } from 'src/app/services/confirm.service';
 
 @Component({
-  selector: 'app-role-list',
-  templateUrl: './role-list.component.html',
-  styleUrls: ['./role-list.component.css']
+  selector: 'app-accounts-list',
+  templateUrl: './accounts-list.component.html',
+  styleUrls: ['./accounts-list.component.css']
 })
-export class RoleListComponent implements OnInit {
+export class AccountsListComponent implements OnInit {
   /* Web api url*/
-  private baseUrl = window.location.origin + '/api/SysHelp/';
-  private dataUrl = 'GetTSRoleListData';
-  private enableUrl = 'EditTSRoleEnableData';
-  private rolemenuUrl = 'EditRoleMenuData';
+  private baseUrl = window.location.origin + '/api/UserHelp/';
+  private dataUrl = 'GetTSAccountListData';
+  private enableUrl = 'EditTSAccountEnableData';
+  private accrankUrl = 'EditAccountRankData';
+  private decnrecUrl = 'GetDeclarantnReceiverData';
 
-  tableTitle = ['#', '代碼', '名稱', '敘述', '建立時間',
-    '建立者', '更新時間', '更新者', '停用', '編輯', '選單權限'];
-  data: RoleInfo[];
+  tableTitle = ['#', '帳號', '姓名', 'Email', '註冊時間',
+    '最後登入時間', '登入次數', '停用', '編輯', '權限設定', '申報人', '收件人'];
+  data: AccountInfo[];
   rowTotal = 0;
   currentpage = 1;
   pageSize = 10;
   srhForm: FormGroup;
 
-  menuItem: MenuInfo[];
-  menuSubItem: MenuInfo[];
+  RAMapItem: RankAccMapInfo[];
+  DecList: DeclarantInfo[];
   activeList: any = [];
   powerList: any = [];
-  pRolecode: string;
+  pUserid: string;
+  pUsercode: string;
   chkNum = 1;
 
   constructor(
     private formBuilder: FormBuilder,
     public commonService: CommonService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private confirmService: ConfirmService
   ) { }
 
   ngOnInit() {
@@ -51,8 +54,9 @@ export class RoleListComponent implements OnInit {
   resetData() {
     // built form controls and default form value
     this.srhForm = this.formBuilder.group({
-      srolecode: '',
-      srolename: ''
+      susercode: '',
+      susername: '',
+      semail: ''
     });
   }
 
@@ -134,45 +138,45 @@ export class RoleListComponent implements OnInit {
         this.activeList.push({ id: val, isenable: Ischk });
       }
     }
+
+    // console.log(this.activeList);
   }
 
   /* Popup window function */
   openModal(id: string, code: string) {
-    this.pRolecode = code;
-    this.commonService.getAllMenu(code).subscribe(data => {
-      if (data.status === '0') {
-        this.menuItem = data.pList;
-        this.menuSubItem = data.item;
-      } else {
-        this.menuItem = null;
-        this.menuSubItem = null;
-      }
-    }, error => {
-      console.log(error);
-    });
+    if (id === 'custom-modal-1') {
+      this.pUsercode = code;
+      this.commonService.getAllRank(code).subscribe(data => {
+        if (data.status === '0') {
+          this.RAMapItem = data.item;
+        } else {
+          this.RAMapItem = null;
+        }
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      const type = id === 'custom-modal-2' ? 2 : 1;
+      this.commonService.getDecnRecData(type, code, this.baseUrl + this.decnrecUrl)
+        .subscribe(data => {
+          if (data.status === '0') {
+            this.DecList = data.item;
+          } else {
+            this.DecList = null;
+          }
+        },
+          error => {
+            console.log(error);
+          });
+    }
 
     this.modalService.open(id);
   }
 
   closeModal(id: string) {
-    this.pRolecode = '';
+    this.pUsercode = '';
     this.powerList = [];
     this.modalService.close(id);
-  }
-
-  // Select All Onchange
-  selAllChange(val, Ischk) {
-    for (let i = 0; i < this.menuSubItem.length; i++) {
-      const subChk = document.getElementById('menu' + i);
-      if (subChk.getAttribute('value').substring(0, 2) === val) {
-        this.powerSelChange(subChk.getAttribute('value'), Ischk);
-        if (Ischk) {
-          (subChk as HTMLInputElement).checked = true;
-        } else {
-          (subChk as HTMLInputElement).checked = false;
-        }
-      }
-    }
   }
 
   powerSelChange(val, Ischk) {
@@ -194,8 +198,8 @@ export class RoleListComponent implements OnInit {
   }
 
   savePowerData() {
-    if (this.pRolecode !== '' && this.powerList.length > 0) {
-      this.commonService.editPowerData(this.pRolecode, this.powerList, this.baseUrl + this.rolemenuUrl)
+    if (this.pUsercode !== '' && this.powerList.length > 0) {
+      this.commonService.editPowerData(this.pUsercode, this.powerList, this.baseUrl + this.accrankUrl)
         .subscribe(data => {
           alert(data.msg);
         },

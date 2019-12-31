@@ -15,6 +15,7 @@ export class CommonService {
   private allnavUrl = 'GetAllMenu';
   private allmenuUrl = 'GetAllBacknFrontMenu';
   private allroleUrl = 'GetAllRole';
+  private allrankUrl = 'GetAllRank';
   private resetPWUrl = 'ResetPassword';
   private pbacknforntUrl = 'GetParentMenu';
 
@@ -64,6 +65,13 @@ export class CommonService {
       }));
   }
 
+  getDecnRecData(isDec, code, pageUrl) {
+    return this.http.get<any>(`${pageUrl}/${isDec}/${code}`)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
   /* --- System settings power data --- */
   getAllMenu(code) {
     return this.http.get<any>(`${this.baseUrl + this.allnavUrl}/${code}`)
@@ -74,6 +82,13 @@ export class CommonService {
 
   getAllRole(code) {
     return this.http.get<any>(`${this.baseUrl + this.allroleUrl}/${code}`)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  getAllRank(code) {
+    return this.http.get<any>(`${this.baseUrl + this.allrankUrl}/${code}`)
       .pipe(map(data => {
         return data;
       }));
