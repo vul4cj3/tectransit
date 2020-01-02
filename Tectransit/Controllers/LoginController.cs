@@ -42,16 +42,21 @@ namespace Tectransit.Controllers
         }
 
         private void LoginHandler(string ID)
-        {  
-            string ucode_cookie = Request.Cookies["_usercode"];
+        {
+            /*string ucode_cookie = Request.Cookies["_usercode"];
             string uname_cookie = Request.Cookies["_username"];
             if (string.IsNullOrEmpty(ucode_cookie) && string.IsNullOrEmpty(uname_cookie))
             {
-                Set("_usercode", ID, 10);
+                Set("_usercode", ID, 120);
                 string userName = DBUtil.GetSingleValue1($@"SELECT USERNAME AS COL1 FROM T_S_USER WHERE USERCODE = '{ID}' AND ISENABLE = 'true'");
-                Set("_username", userName, 10);
+                Set("_username", userName, 120);
             }
-            
+            */
+
+            Set("_usercode", ID, 480);
+            string userName = DBUtil.GetSingleValue1($@"SELECT USERNAME AS COL1 FROM T_S_USER WHERE USERCODE = '{ID}' AND ISENABLE = 'true'");
+            Set("_username", userName, 480);
+
         }
         
         /// <summary>  
@@ -62,6 +67,7 @@ namespace Tectransit.Controllers
         /// <param name="expireTime">expiration time</param>  
         public void Set(string key, string value, int? expireTime)
         {
+            
             CookieOptions option = new CookieOptions();
             if (expireTime.HasValue)
                 option.Expires = DateTime.Now.AddMinutes(expireTime.Value);

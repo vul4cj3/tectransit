@@ -20,6 +20,12 @@ import { AccountsListComponent } from './accounts-list/accounts-list.component';
 import { AccountsEditComponent } from './accounts-edit/accounts-edit.component';
 import { RankListComponent } from './rank-list/rank-list.component';
 import { RankEditComponent } from './rank-edit/rank-edit.component';
+import { CompanyrankListComponent } from './companyrank-list/companyrank-list.component';
+import { CompanyrankEditComponent } from './companyrank-edit/companyrank-edit.component';
+import { CompanyListComponent } from './company-list/company-list.component';
+import { CompanyEditComponent } from './company-edit/company-edit.component';
+import { UserlogComponent } from './userlog/userlog.component';
+import { BannerListComponent } from './banner-list/banner-list.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +42,13 @@ import { RankEditComponent } from './rank-edit/rank-edit.component';
     AccountsListComponent,
     AccountsEditComponent,
     RankListComponent,
-    RankEditComponent
+    RankEditComponent,
+    CompanyrankListComponent,
+    CompanyrankEditComponent,
+    CompanyListComponent,
+    CompanyEditComponent,
+    UserlogComponent,
+    BannerListComponent
   ],
   imports: [
     CommonModule,

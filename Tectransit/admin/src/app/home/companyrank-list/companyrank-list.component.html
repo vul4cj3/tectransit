@@ -1,0 +1,104 @@
+<!--Top Section-->
+<div>
+    <div>
+      <div class="app-page-title">
+        <div class="page-title-wrapper">
+          <div class="page-title-heading">
+            <div class="page-title-icon"><i class="far fa-address-book"></i></div>
+            <div>廠商權限管理</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Search Section -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="main-card mb-3 card">
+        <form [formGroup]="srhForm">
+          <div class="card-body">
+
+            <div class="form-inline">
+              <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
+                <label for="srankcode" class="mr-sm-2">代碼</label>
+                <input type="text" id="srankcode" formControlName="srankcode" class="form-control">
+              </div>
+              <div class="col-md-4">
+                <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
+                  <label for="srankname" class="mr-sm-2">名稱</label>
+                  <input type="text" id="srankname" formControlName="srankname" class="form-control">
+                </div>
+              </div>
+              <input type="hidden" id="sranktype" formControlName="sranktype" value="2" class="form-control">
+            </div>
+
+          </div>
+          <div class="card-footer">
+            <div>
+              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="searchData()">查詢</button>
+              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="resetData()">清除查詢</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!--TableList Section-->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="main-card mb-3 card">
+        <div class="card-header-tab card-header">權限列表
+          <div class="btn-actions-pane-right">
+            <div class="btn-group-sm btn-group" role="group">
+              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/companyrank/edit/0">新增</button>
+              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doIsenable(data.length)">停用</button>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+            <thead>
+              <tr>
+                <th *ngFor="let titleItem of tableTitle let id = index" [ngClass]="{'text-center': id === 0}">
+                  {{titleItem}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of data let idx = index">
+                <td class="text-center text-muted">{{item.rowid}}</td>
+                <td>{{item.rankcode}}</td>
+                <td>{{item.rankname}}</td>
+                <td>{{item.rankdesc}}</td>
+                <td>{{item.credate}}</td>
+                <td>{{item.creby}}</td>
+                <td>{{item.upddate}}</td>
+                <td>{{item.updby}}</td>
+                <td class="text-center text-muted">
+                  <label class="chkbox-container">
+                    <input type="checkbox" name="activeChk" id="chk{{idx}}"
+                      (click)="activeSelChange($event.toElement.value, $event.toElement.checked)"
+                      [checked]="item.isenable === '0'" value="{{item.rankid}}">
+                    <span class="checkmark"></span>
+                  </label>
+                </td>
+                <td>
+                  <a routerLink="/companyrank/edit/{{item.rankid}}">
+                    <span class="symbol-edit">
+                      <i class="pe-7s-note2"></i>
+                    </span>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--pagination section start-->
+        <div class="d-block text-center card-footer">
+          <app-pagination [currentPage]="this.currentpage" [preApper]="this.commonService.preApper"
+            [nextApper]="this.commonService.nextApper" [pageNum]="this.commonService.pageNum"
+            (pageChanged)="changeData($event)"></app-pagination>
+        </div>
+        <!--pagination section end-->
+      </div>
+    </div>
+  </div>

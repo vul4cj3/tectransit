@@ -4,11 +4,11 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
-  selector: 'app-rank-list',
-  templateUrl: './rank-list.component.html',
-  styleUrls: ['./rank-list.component.css']
+  selector: 'app-companyrank-list',
+  templateUrl: './companyrank-list.component.html',
+  styleUrls: ['./companyrank-list.component.css']
 })
-export class RankListComponent implements OnInit {
+export class CompanyrankListComponent implements OnInit {
 
   /* Web api url*/
   private baseUrl = window.location.origin + '/api/UserHelp/';
@@ -47,7 +47,7 @@ export class RankListComponent implements OnInit {
     this.srhForm = this.formBuilder.group({
       srankcode: '',
       srankname: '',
-      sranktype: '1'
+      sranktype: '2'
     });
   }
 

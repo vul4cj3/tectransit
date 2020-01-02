@@ -80,10 +80,12 @@ namespace Tectransit.Datas
         public dynamic GetAccountListData(string sWhere, int pageIndex, int pageSize)
         {
             string sql = $@"SELECT * FROM (
-                                            SELECT ROW_NUMBER() OVER (ORDER BY USERSEQ) AS ROW_ID, ID, USERCODE, USERNAME, USERDESC, EMAIL,
-                                                   FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(LASTLOGINDATE, 'yyyy-MM-dd HH:mm:ss') As LASTLOGINDATE,
-                                                   LOGINCOUNT, ISENABLE
-                                            From T_S_ACCOUNT
+                                            SELECT ROW_NUMBER() OVER (ORDER BY A.USERSEQ) AS ROW_ID, A.ID, A.USERCODE, A.USERNAME, A.USERDESC, A.EMAIL,
+                                                   FORMAT(A.CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(A.LASTLOGINDATE, 'yyyy-MM-dd HH:mm:ss') As LASTLOGINDATE,
+                                                   A.LOGINCOUNT, A.ISENABLE
+                                            From T_S_ACCOUNT A
+                                            LEFT JOIN T_S_ACRANKMAP B ON A.USERCODE = B.USERCODE
+                                            LEFT JOIN T_S_RANK C ON B.RANKID = C.ID
                                             {sWhere}) AS A";
             string sql1 = sql + $@" WHERE ROW_ID BETWEEN {((pageIndex - 1) * pageSize + 1).ToString()} AND {(pageIndex * pageSize).ToString()}";
             DataTable DT = DBUtil.SelectDataTable(sql1);
@@ -153,6 +155,47 @@ namespace Tectransit.Datas
             }
 
             return new { rows = "" };
+        }
+
+        public dynamic GetCompanyListData(string sWhere, int pageIndex, int pageSize)
+        {
+            string sql = $@"SELECT * FROM (
+                                            SELECT ROW_NUMBER() OVER (ORDER BY A.USERSEQ) AS ROW_ID, A.ID, A.USERCODE, A.USERNAME, A.USERDESC, A.EMAIL,
+                                                   FORMAT(A.CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(A.LASTLOGINDATE, 'yyyy-MM-dd HH:mm:ss') As LASTLOGINDATE,
+                                                   A.LOGINCOUNT, A.ISENABLE
+                                            From T_S_ACCOUNT A
+                                            LEFT JOIN T_S_ACRANKMAP B ON A.USERCODE = B.USERCODE
+                                            LEFT JOIN T_S_RANK C ON B.RANKID = C.ID
+                                            {sWhere}) AS A";
+            string sql1 = sql + $@" WHERE ROW_ID BETWEEN {((pageIndex - 1) * pageSize + 1).ToString()} AND {(pageIndex * pageSize).ToString()}";
+            DataTable DT = DBUtil.SelectDataTable(sql1);
+            if (DT.Rows.Count > 0)
+            {
+                List<AccountInfo> rowList = new List<AccountInfo>();
+                for (int i = 0; i < DT.Rows.Count; i++)
+                {
+                    AccountInfo m = new AccountInfo();
+                    m.ROWID = Convert.ToInt64(DT.Rows[i]["ROW_ID"]);
+                    m.USERID = Convert.ToInt64(DT.Rows[i]["ID"]);
+                    m.USERCODE = DT.Rows[i]["USERCODE"]?.ToString();
+                    m.USERNAME = DT.Rows[i]["USERNAME"]?.ToString();
+                    m.USERDESC = DT.Rows[i]["USERDESC"]?.ToString();
+                    m.EMAIL = DT.Rows[i]["EMAIL"]?.ToString();
+                    m.LASTLOGINDATE = DT.Rows[i]["LASTLOGINDATE"]?.ToString();
+                    m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
+                    m.LOGINCOUNT = DT.Rows[i]["LOGINCOUNT"]?.ToString();
+                    m.ISENABLE = Convert.ToBoolean(DT.Rows[i]["ISENABLE"]) ? "1" : "0";
+
+                    rowList.Add(m);
+                }
+
+                sql = "SELECT COUNT(*) as COL1 FROM (" + sql + ") AS B ";
+                string totalCt = DBUtil.GetSingleValue1(sql);
+
+                return new { rows = rowList, total = totalCt };
+            }
+
+            return new { rows = "", total = 0 };
         }
 
         public dynamic GetDeclarantnReceiverData(string sID, long sType)

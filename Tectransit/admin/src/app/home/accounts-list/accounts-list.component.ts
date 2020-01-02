@@ -112,8 +112,13 @@ export class AccountsListComponent implements OnInit {
     if (this.activeList.length > 0) {
       this.commonService.editEnableData(this.activeList, this.baseUrl + this.enableUrl)
         .subscribe(data => {
-          alert(data.msg);
-          this.crePagination(this.currentpage);
+          if (data.status === '0') {
+            alert(data.msg);
+            this.crePagination(this.currentpage);
+            this.activeList = [];
+          } else {
+            alert(data.msg);
+          }
         },
           error => {
             console.log(error);

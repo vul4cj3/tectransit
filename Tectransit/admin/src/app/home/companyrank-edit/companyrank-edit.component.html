@@ -1,0 +1,75 @@
+<!--Top Section-->
+<div>
+    <div>
+      <div class="app-page-title">
+        <div class="page-title-wrapper">
+          <div class="page-title-heading">
+            <div class="page-title-icon"><i class="far fa-address-book"></i></div>
+            <div>權限組管理 - 編輯</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Info Section-->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="main-card mb-3 card">
+        <div class="card-body">
+          <h5 class="card-title"></h5>
+          <form [formGroup]="dataForm" (ngSubmit)="saveData(dataForm.value)">
+            <input type="hidden" id="rankid" formControlName="rankid">
+            <div class="form-group">
+              <label for="rankcode">權限組代碼</label>
+              <input type="text" id="rankcode" class="form-control middle" [ngClass]="{'is-invalid': isErr}"
+                formControlName="rankcode" placeholder="請輸入英數字組合">
+            </div>
+            <div class="form-group">
+              <label for="rankname">權限組名稱</label>
+              <input type="text" id="rankname" class="form-control middle" formControlName="rankname">
+            </div>
+            <div class="form-group">
+              <label for="rankdesc">權限組敘述</label>
+              <input type="text" id="rankdesc" class="form-control large" formControlName="rankdesc">
+            </div>
+            <!--
+              <div class="form-group">
+                <label for="rankseq">排序</label>
+                <input type="text" id="rankseq" class="form-control small" formControlName="rankseq">
+              </div>
+            -->
+            <input type="hidden" id="ranktype" formControlName="ranktype" value="2">
+            <div class="form-group">
+              <label for="isenable">啟用/停用</label>
+              <select id="isenable" class="mb-2 form-control middle" formControlName="isenable">
+                <option value="1">啟用</option>
+                <option value="0">停用</option>
+              </select>
+            </div>
+            <ng-container *ngIf="dataForm.value.rankid !== 0">
+              <div class="form-group">
+                <label for>建立時間</label>
+                <p>{{dataForm.value.credate}}</p>
+              </div>
+              <div class="form-group">
+                <label for>建立者</label>
+                <p>{{dataForm.value.creby}}</p>
+              </div>
+              <div class="form-group">
+                <label for>更新時間</label>
+                <p>{{dataForm.value.upddate}}</p>
+              </div>
+              <div class="form-group">
+                <label for>更新者</label>
+                <p>{{dataForm.value.updby}}</p>
+              </div>
+            </ng-container>
+            <div class="btn-two">
+              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" type="submit">保存</button>
+              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/companyrank">回列表</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

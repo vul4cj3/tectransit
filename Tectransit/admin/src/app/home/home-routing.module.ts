@@ -11,6 +11,10 @@ import { RankListComponent } from './rank-list/rank-list.component';
 import { RankEditComponent } from './rank-edit/rank-edit.component';
 import { AccountsListComponent } from './accounts-list/accounts-list.component';
 import { AccountsEditComponent } from './accounts-edit/accounts-edit.component';
+import { CompanyrankListComponent } from './companyrank-list/companyrank-list.component';
+import { CompanyrankEditComponent } from './companyrank-edit/companyrank-edit.component';
+import { CompanyListComponent } from './company-list/company-list.component';
+import { CompanyEditComponent } from './company-edit/company-edit.component';
 
 const routes: Routes = [
   {
@@ -53,6 +57,22 @@ const routes: Routes = [
       {
         path: 'accounts/edit/:id',
         component: AccountsEditComponent,
+      },
+      {
+        path: 'companyrank',
+        component: CompanyrankListComponent,
+      },
+      {
+        path: 'companyrank/edit/:id',
+        component: CompanyrankEditComponent,
+      },
+      {
+        path: 'company',
+        component: CompanyListComponent,
+      },
+      {
+        path: 'company/edit/:id',
+        component: CompanyEditComponent,
       }
     ],
   },

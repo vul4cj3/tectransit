@@ -91,6 +91,7 @@ namespace Tectransit.Controllers
         {
             try
             {
+                string logMsg = "";
                 var jsonData = JObject.FromObject(form);
                 JArray arrData = jsonData.Value<JArray>("formdata");
 
@@ -124,8 +125,16 @@ namespace Tectransit.Controllers
                     {
                         Hashtable sData = (Hashtable)AL[i];
                         UpdateRole(Convert.ToInt64(sData["ROLEID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[ROLEID({sData["ROLEID"]}):{((sData["ISENABLE"]?.ToString() == "0") ? "true" : "false")}]";
                     }
                 }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/roles", "權限管理-停用變更", 2, logMsg);
 
                 return new { status = "0", msg = "修改成功！" };
             }
@@ -207,6 +216,7 @@ namespace Tectransit.Controllers
         {
             try
             {
+                string logMsg = "";
                 var jsonData = JObject.FromObject(form);
                 JArray arrData = jsonData.Value<JArray>("formdata");
 
@@ -240,8 +250,16 @@ namespace Tectransit.Controllers
                     {
                         Hashtable sData = (Hashtable)AL[i];
                         UpdateUser(Convert.ToInt64(sData["USERID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[USERID({sData["USERID"]}):{((sData["ISENABLE"]?.ToString() == "0") ? "true" : "false")}]";
                     }
                 }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/users", "用戶管理-停用變更", 2, logMsg);
 
                 return new { status = "0", msg = "修改成功！" };
             }
@@ -281,6 +299,7 @@ namespace Tectransit.Controllers
         {
             try
             {
+                string logMsg = "";
                 var jsonData = JObject.FromObject(form);
                 JArray arrData = jsonData.Value<JArray>("formdata");
 
@@ -314,8 +333,16 @@ namespace Tectransit.Controllers
                     {
                         Hashtable sData = (Hashtable)AL[i];
                         UpdateMenu(Convert.ToInt64(sData["MENUID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[MENUID({sData["MENUID"]}):{((sData["ISVISIBLE"]?.ToString() == "1") ? "true" : "false")}]";
                     }
                 }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/menu", "選單管理-列表顯示", 2, logMsg);
 
                 return new { status = "0", msg = "修改成功！" };
             }
@@ -331,6 +358,7 @@ namespace Tectransit.Controllers
         {
             try
             {
+                string logMsg = "";
                 var jsonData = JObject.FromObject(form);
                 JArray arrData = jsonData.Value<JArray>("formdata");
 
@@ -364,8 +392,16 @@ namespace Tectransit.Controllers
                     {
                         Hashtable sData = (Hashtable)AL[i];
                         UpdateMenu(Convert.ToInt64(sData["MENUID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[MENUID({sData["MENUID"]}):{((sData["ISENABLE"]?.ToString() == "0") ? "true" : "false")}]";
                     }
                 }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/menu", "選單管理-停用變更", 2, logMsg);
 
                 return new { status = "0", msg = "修改成功！" };
             }

@@ -76,7 +76,13 @@ export class MenuListComponent implements OnInit {
     if (this.visibleList.length > 0) {
       this.commonService.editEnableData(this.visibleList, this.baseUrl + this.visibleUrl)
         .subscribe(data => {
-          alert(data.msg);
+          if (data.status === '0') {
+            alert(data.msg);
+            this.getData();
+            this.visibleList = [];
+          } else {
+            alert(data.msg);
+          }
         },
           error => {
             console.log(error);
@@ -108,7 +114,13 @@ export class MenuListComponent implements OnInit {
     if (this.activeList.length > 0) {
       this.commonService.editEnableData(this.activeList, this.baseUrl + this.enableUrl)
         .subscribe(data => {
-          alert(data.msg);
+          if (data.status === '0') {
+            alert(data.msg);
+            this.getData();
+            this.activeList = [];
+          } else {
+            alert(data.msg);
+          }
         },
           error => {
             console.log(error);
