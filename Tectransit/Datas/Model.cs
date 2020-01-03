@@ -166,4 +166,20 @@ namespace Tectransit.Datas
         public string UPDDATE { set; get; }
         public string UPDBY { set; get; }
     }
+
+    public class NewsInfo
+    {
+        public long NEWSID { set; get; }
+        public string TITLE { set; get; }
+        public string DESCR { set; get; }
+        public string NEWSSEQ { set; get; }
+        public string UPSDATE { set; get; }
+        public string UPEDATE { set; get; }
+        public string ISTOP { set; get; }
+        public string ISENABLE { set; get; }
+        public string CREDATE { set; get; }
+        public string CREBY { set; get; }
+        public string UPDDATE { set; get; }
+        public string UPDBY { set; get; }
+    }
 }

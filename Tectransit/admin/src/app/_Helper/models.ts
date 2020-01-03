@@ -141,3 +141,18 @@ export interface BannerInfo {
   updby: string;
   isenable: string;
 }
+
+export interface NewsInfo {
+  newsid: number;
+  title: string;
+  descr: string;
+  newsseq: string;
+  upsdate: string;
+  upedate: string;
+  istop: string;
+  credate: string;
+  creby: string;
+  upddate: string;
+  updby: string;
+  isenable: string;
+}
