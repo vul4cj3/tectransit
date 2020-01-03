@@ -69,6 +69,17 @@ namespace Tectransit.Datas
         public string ISENABLE { set; get; }
     }
 
+    public class UserLogInfo
+    {
+        public long ROWID { set; get; }
+        public string USERCODE { set; get; }
+        public string USERNAME { set; get; }
+        public string POSITION { set; get; }
+        public string TARGET { set; get; }
+        public string MESSAGE { set; get; }
+        public string LOGDATE { set; get; }
+    }
+
     public class RankInfo
     {
         public long ROWID { set; get; }
@@ -132,6 +143,24 @@ namespace Tectransit.Datas
         public string MOBILE { set; get; }
         public string ADDR { set; get; }
         public string APPOINTMENT { set; get; }
+        public string CREDATE { set; get; }
+        public string CREBY { set; get; }
+        public string UPDDATE { set; get; }
+        public string UPDBY { set; get; }
+    }
+
+    public class BannerInfo
+    {
+        public long BANID { set; get; }
+        public string TITLE { set; get; }
+        public string DESCR { set; get; }
+        public string IMGURL { set; get; }
+        public string URL { set; get; }
+        public string BANSEQ { set; get; }
+        public string UPSDATE { set; get; }
+        public string UPEDATE { set; get; }
+        public string ISTOP { set; get; }
+        public string ISENABLE { set; get; }
         public string CREDATE { set; get; }
         public string CREBY { set; get; }
         public string UPDDATE { set; get; }

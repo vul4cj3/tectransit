@@ -52,6 +52,16 @@ export interface UserInfo {
   isenable: string;
 }
 
+export interface UserLog {
+  rowid: number;
+  usercode: string;
+  username: string;
+  position: string;
+  target: string;
+  message: string;
+  logdate: string;
+}
+
 export interface RankInfo {
   rowid: number;
   rankid: number;
@@ -113,4 +123,21 @@ export interface DeclarantInfo {
   creby: string;
   upddate: string;
   updby: string;
+}
+
+export interface BannerInfo {
+  banid: number;
+  title: string;
+  descr: string;
+  imgurl: string;
+  url: string;
+  banseq: string;
+  upsdate: string;
+  upedate: string;
+  istop: string;
+  credate: string;
+  creby: string;
+  upddate: string;
+  updby: string;
+  isenable: string;
 }

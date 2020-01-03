@@ -222,6 +222,45 @@ namespace Tectransit.Datas
             return new { status = "99", pList = "" };
         }
 
+        //取得所有Banner
+        public dynamic GetAllBanner()
+        {
+            DataTable dtlist = DBUtil.SelectDataTable($@"SELECT ID, TITLE, DESCR, IMGURL, URL, BANSEQ, UPSDATE, UPEDATE,
+                                                                ISTOP, ISENABLE, FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') AS CREDATE,
+                                                                FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') AS UPDDATE, CREATEBY AS CREBY, UPDBY
+                                                         FROM T_D_BANNER
+                                                         ORDER BY BANSEQ");
+            if (dtlist.Rows.Count > 0)
+            {
+                List<BannerInfo> bList = new List<BannerInfo>();
+                for (int i = 0; i < dtlist.Rows.Count; i++)
+                {
+                    BannerInfo m = new BannerInfo();
+                    m.BANID = Convert.ToInt64(dtlist.Rows[i]["ID"]);
+                    m.TITLE = dtlist.Rows[i]["TITLE"]?.ToString();
+                    m.DESCR = dtlist.Rows[i]["DESCR"]?.ToString();
+                    m.IMGURL = dtlist.Rows[i]["IMGURL"]?.ToString();
+                    m.URL = dtlist.Rows[i]["URL"]?.ToString();
+                    m.BANSEQ = dtlist.Rows[i]["BANSEQ"]?.ToString();
+                    m.UPSDATE = dtlist.Rows[i]["UPSDATE"]?.ToString();
+                    m.UPEDATE = dtlist.Rows[i]["UPEDATE"]?.ToString();
+                    m.ISTOP = Convert.ToBoolean(dtlist.Rows[i]["ISTOP"]) == true ? "1" : "0";
+                    m.ISENABLE = Convert.ToBoolean(dtlist.Rows[i]["ISENABLE"]) == true ? "1" : "0";
+                    m.CREDATE = dtlist.Rows[i]["CREDATE"]?.ToString();
+                    m.CREBY = dtlist.Rows[i]["CREBY"]?.ToString();
+                    m.UPDDATE = dtlist.Rows[i]["UPDDATE"]?.ToString();
+                    m.UPDBY = dtlist.Rows[i]["UPDBY"]?.ToString();
+
+                    bList.Add(m);
+                    
+                }
+
+                return new { status = "0", dataList = bList };
+            }
+
+            return new { status = "99", backList = "", frontList = "" };
+        }
+
         /// <summary>
         /// POSITION: 頁面URL
         /// TARGET: 頁面名稱

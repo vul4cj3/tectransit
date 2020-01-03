@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -16,6 +16,7 @@ export class CommonService {
   private allmenuUrl = 'GetAllBacknFrontMenu';
   private allroleUrl = 'GetAllRole';
   private allrankUrl = 'GetAllRank';
+  private allbannerUrl = 'GetAllBanner';
   private resetPWUrl = 'ResetPassword';
   private pbacknforntUrl = 'GetParentMenu';
 
@@ -89,6 +90,13 @@ export class CommonService {
 
   getAllRank(code) {
     return this.http.get<any>(`${this.baseUrl + this.allrankUrl}/${code}`)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  getAllBanner() {
+    return this.http.get<any>(`${this.baseUrl + this.allbannerUrl}/`)
       .pipe(map(data => {
         return data;
       }));
@@ -200,9 +208,24 @@ export class CommonService {
       }));
   }
 
-  delData(arraydata, pageUrl: string) {
-    const postData = { id: arraydata };
+  editTopData(arraydata, pageUrl: string) {
+    const postData = { formdata: arraydata };
     return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  delData(arraydata, pageUrl: string) {
+    const postData = { formdata: arraydata };
+    return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  fileUpload(formData, pageUrl: string) {
+    return this.http.post<any>(pageUrl, formData)
       .pipe(map(data => {
         return data;
       }));

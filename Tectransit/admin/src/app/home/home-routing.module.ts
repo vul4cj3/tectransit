@@ -15,6 +15,8 @@ import { CompanyrankListComponent } from './companyrank-list/companyrank-list.co
 import { CompanyrankEditComponent } from './companyrank-edit/companyrank-edit.component';
 import { CompanyListComponent } from './company-list/company-list.component';
 import { CompanyEditComponent } from './company-edit/company-edit.component';
+import { UserlogComponent } from './userlog/userlog.component';
+import { BannerListComponent } from './banner-list/banner-list.component';
 
 const routes: Routes = [
   {
@@ -37,6 +39,10 @@ const routes: Routes = [
       {
         path: 'users/edit/:id',
         component: UserEditComponent,
+      },
+      {
+        path: 'userlog',
+        component: UserlogComponent,
       },
       {
         path: 'menu',
@@ -73,6 +79,10 @@ const routes: Routes = [
       {
         path: 'company/edit/:id',
         component: CompanyEditComponent,
+      },
+      {
+        path: 'banner',
+        component: BannerListComponent,
       }
     ],
   },

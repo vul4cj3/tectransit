@@ -1,1 +1,199 @@
-<p>banner-list works!</p>
+<!--Top Section-->
+<div>
+    <div>
+      <div class="app-page-title">
+        <div class="page-title-wrapper">
+          <div class="page-title-heading">
+            <div class="page-title-icon"><i class="fab fa-elementor"></i></div>
+            <div>首頁廣告管理</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--TableList Section-->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="main-card mb-3 card">
+        <div class="card-header">
+          廣告列表
+          <div class="btn-actions-pane-right">
+            <div class="btn-group-sm btn-group" role="group">
+              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="openModal('custom-modal-1', 0)">新增</button>
+              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doIstop()">置頂</button>
+              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doIsenable()">停用</button>
+              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doDelete()">刪除</button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <!-- backend section start-->
+          <div class="table-responsive">
+            <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+              <thead>
+                <tr>
+                  <th *ngFor="let titleItem of tableTitle let id = index">
+                    {{titleItem}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of data let idx = index">
+                  <td class="text-center text-muted">
+                    <label class="chkbox-container">
+                      <input type="checkbox" name="Chk" id="chk{{idx}}"
+                        (click)="SelChange($event.toElement.value, $event.toElement.checked)" value="{{item.banid}}">
+                      <span class="checkmark"></span>
+                    </label>
+                  </td>
+                  <td>{{item.title}}</td>
+                  <td>{{item.descr}}</td>
+                  <td>{{item.imgurl}}</td>
+                  <td>{{item.url}}</td>
+                  <td>
+                    <ng-container *ngIf="item.upsdate!=='' && item.upedate!==''">
+                      {{item.upsdate.replace('T',' ')}}~{{item.upedate.replace('T',' ')}}
+                    </ng-container>
+                  </td>
+                  <td class="text-center text-muted">
+                    <label class="chkbox-container">
+                      <input type="checkbox" name="topChk" id="topchk{{idx}}"
+                        (click)="topSelChange($event.toElement.value, $event.toElement.checked)" [checked]="item.istop === '1'" value="{{item.banid}}">
+                      <span class="checkmark"></span>
+                    </label>
+                  </td>
+                  <td class="text-center text-muted">
+                    <label class="chkbox-container">
+                      <input type="checkbox" name="topChk" id="topchk{{idx}}"
+                        (click)="enableSelChange($event.toElement.value, $event.toElement.checked)" [checked]="item.isenable === '0'" value="{{item.banid}}">
+                      <span class="checkmark"></span>
+                    </label>
+                  </td>
+                  <td>
+                    <a (click)="openModal('custom-modal-1', item.banid)">
+                      <span class="symbol-edit">
+                        <i class="pe-7s-note2"></i>
+                      </span>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- backend section end-->
+        </div>
+        <div class="d-block text-center card-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Popup window section-->
+  <app-jw-modal id="custom-modal-1">
+    <div class="modal-header">
+      <button class="close" (click)="closeModal('custom-modal-1')">
+        <span><i class="pe-7s-close-circle"></i>
+        </span>
+      </button>
+    </div>
+    <form [formGroup]="dataForm">
+      <div class="modal-body">
+        <div class="position-relative form-group">
+          <div>
+            <ng-container>
+              <h5 class="card-title">廣告-編輯</h5>
+              <!--  edit content start -->
+              <div class="position-relative row form-group">
+                <label class="col-sm-2 col-form-label" for="title">標題</label>
+                <div class="col-sm-10">
+                  <input type="text" id="title" class="form-control middle" [ngClass]="{'is-invalid': isErr}" formControlName="title">
+                </div>
+              </div>
+              <div class="position-relative row form-group">
+                <label class="col-sm-2 col-form-label" for="descr">簡述</label>
+                <div class="col-sm-10">
+                  <input type="text" id="descr" class="form-control large" formControlName="descr">
+                </div>
+              </div>
+              <div class="position-relative row form-group">
+                <label class="col-sm-2 col-form-label" for="imgurl">圖片上傳</label>
+                <div class="col-sm-10">
+                  <input type="file" #file accept=".png,.jpg,.jpeg,.gif" (change)="fileChange(file.files)">
+                  <ng-container *ngIf="dataForm.value.imgurl !== ''">
+                    <img [src]="dataForm.value.imgurl">
+                  </ng-container>
+                </div>
+              </div>
+              <div class="position-relative row form-group">
+                <label class="col-sm-2 col-form-label" for="url">Url</label>
+                <div class="col-sm-10">
+                  <input type="text" id="url" class="form-control large" formControlName="url">
+                </div>
+              </div>
+              <div class="position-relative row form-group">
+                <label class="col-sm-2 col-form-label" for="upsdate">上架日期</label>
+                <div class="col-sm-10">
+                  <input type="datetime-local" id="upsdate" formControlName="upsdate"> ~
+                  <input type="datetime-local" id="upedate" formControlName="upedate">
+                </div>
+              </div>
+              <div class="position-relative row form-group">
+                <label class="col-sm-2 col-form-label" for="banseq">排序</label>
+                <div class="col-sm-10">
+                  <input type="text" id="banseq" class="form-control middle" maxlength="3" formControlName="banseq">
+                </div>
+              </div>
+              <div class="position-relative row form-group">
+                <label class="col-sm-2 col-form-label" for="istop">置頂</label>
+                <div class="col-sm-10">
+                  <select id="istop" class="mb-2 form-control middle" formControlName="istop">
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                  </select>
+                </div>
+              </div>
+              <div class="position-relative row form-group">
+                <label class="col-sm-2 col-form-label" for="isenable">啟用/停用</label>
+                <div class="col-sm-10">
+                  <select id="isenable" class="mb-2 form-control middle" formControlName="isenable">
+                    <option value="1">啟用</option>
+                    <option value="0">停用</option>
+                  </select>
+                </div>
+              </div>
+              <ng-container *ngIf="dataForm.value.banid !== 0">
+                <div class="position-relative row form-group">
+                  <label class="col-sm-2 col-form-label">建立時間</label>
+                  <div class="col-sm-10">
+                    <p>{{dataForm.value.credate}}</p>
+                  </div>
+                </div>
+                <div class="position-relative row form-group">
+                  <label class="col-sm-2 col-form-label">建立者</label>
+                  <div class="col-sm-10">
+                    <p>{{dataForm.value.creby}}</p>
+                  </div>
+                </div>
+                <div class="position-relative row form-group">
+                  <label class="col-sm-2 col-form-label">更新時間</label>
+                  <div class="col-sm-10">
+                    <p>{{dataForm.value.upddate}}</p>
+                  </div>
+                </div>
+                <div class="position-relative row form-group">
+                  <label class="col-sm-2 col-form-label">更新者</label>
+                  <div class="col-sm-10">
+                    <p>{{dataForm.value.updby}}</p>
+                  </div>
+                </div>
+              </ng-container>
+              <!--  edit content end -->
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="closeModal('custom-modal-1')">取消</button>
+        <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="saveData(dataForm.value)">保存</button>
+      </div>
+    </form>
+  </app-jw-modal>

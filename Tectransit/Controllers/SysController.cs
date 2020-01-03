@@ -270,6 +270,38 @@ namespace Tectransit.Controllers
             }
         }
 
+        [HttpPost]
+        public dynamic GetTSUserLogListData([FromBody] object form)
+        {
+            string sWhere = "";
+            var jsonData = JObject.FromObject(form);
+            int pageIndex = jsonData.Value<int>("PAGE_INDEX");
+            int pageSize = jsonData.Value<int>("PAGE_SIZE");
+
+            JObject temp = jsonData.Value<JObject>("srhForm");
+
+            if (temp.Count > 0)
+            {
+                Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                srhKey.Add("sstartdate", "STARTDATE");
+                srhKey.Add("senddate", "ENDDATE");
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[srhKey[t.Key]] = t.Value?.ToString();
+
+                if(!string.IsNullOrEmpty(htData["STARTDATE"]?.ToString()) && string.IsNullOrEmpty(htData["ENDDATE"]?.ToString()))
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + $@" LOG_DATE >= '{htData["STARTDATE"]?.ToString()} 00:00:00'";
+
+                if (string.IsNullOrEmpty(htData["STARTDATE"]?.ToString()) && !string.IsNullOrEmpty(htData["ENDDATE"]?.ToString()))
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + $@" LOG_DATE <= '{htData["ENDDATE"]?.ToString()} 23:59:59'";
+
+                if (!string.IsNullOrEmpty(htData["STARTDATE"]?.ToString()) && !string.IsNullOrEmpty(htData["ENDDATE"]?.ToString()))
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + $@" LOG_DATE BETWEEN '{htData["STARTDATE"]?.ToString()} 00:00:00' AND '{htData["ENDDATE"]?.ToString()} 23:59:59'";                
+            }
+
+            return objSys.GetUserLogListData(sWhere, pageIndex, pageSize);
+        }
+
         [HttpGet("{id}")]
         public dynamic ResetPassword(long id)
         {

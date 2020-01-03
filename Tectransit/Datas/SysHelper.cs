@@ -152,6 +152,41 @@ namespace Tectransit.Datas
             return new { rows = "" };
         }
 
+        public dynamic GetUserLogListData(string sWhere, int pageIndex, int pageSize)
+        {
+            string sql = $@"SELECT * FROM (
+                                            SELECT ROW_NUMBER() OVER (ORDER BY ID DESC) AS ROW_ID, ID, USERCODE, USERNAME, POSITION, TARGET, MESSAGE,
+                                                   FORMAT(LOG_DATE, 'yyyy-MM-dd HH:mm:ss') As LOG_DATE
+                                            From T_S_USERLOG
+                                            {sWhere}) AS A";
+            string sql1 = sql + $@" WHERE ROW_ID BETWEEN {((pageIndex - 1) * pageSize + 1).ToString()} AND {(pageIndex * pageSize).ToString()}";
+            DataTable DT = DBUtil.SelectDataTable(sql1);
+            if (DT.Rows.Count > 0)
+            {
+                List<UserLogInfo> rowList = new List<UserLogInfo>();
+                for (int i = 0; i < DT.Rows.Count; i++)
+                {
+                    UserLogInfo m = new UserLogInfo();
+                    m.ROWID = Convert.ToInt64(DT.Rows[i]["ROW_ID"]);
+                    m.USERCODE = DT.Rows[i]["USERCODE"]?.ToString();
+                    m.USERNAME = DT.Rows[i]["USERNAME"]?.ToString();
+                    m.POSITION = DT.Rows[i]["POSITION"]?.ToString();
+                    m.TARGET = DT.Rows[i]["TARGET"]?.ToString();
+                    m.MESSAGE = DT.Rows[i]["MESSAGE"]?.ToString();
+                    m.LOGDATE = DT.Rows[i]["LOG_DATE"]?.ToString();
+
+                    rowList.Add(m);
+                }
+
+                sql = "SELECT COUNT(*) as COL1 FROM (" + sql + ") AS B ";
+                string totalCt = DBUtil.GetSingleValue1(sql);
+
+                return new { rows = rowList, total = totalCt };
+            }
+
+            return new { rows = "", total = 0 };
+        }
+
         public dynamic GetMenuData(long sID)
         {
             string sql = $@"

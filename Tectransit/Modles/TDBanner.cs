@@ -11,6 +11,8 @@ namespace Tectransit.Modles
         public string Imgurl { get; set; }
         public string Url { get; set; }
         public string Banseq { get; set; }
+        public string Upsdate { get; set; }
+        public string Upedate { get; set; }
         public bool Istop { get; set; }
         public bool Isenable { get; set; }
         public DateTime? Credate { get; set; }

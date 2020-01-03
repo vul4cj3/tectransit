@@ -9,6 +9,8 @@ namespace Tectransit.Modles
         public string Title { get; set; }
         public string Descr { get; set; }
         public string Newsseq { get; set; }
+        public string Upsdate { get; set; }
+        public string Upedate { get; set; }
         public bool Istop { get; set; }
         public bool Isenable { get; set; }
         public DateTime? Credate { get; set; }
