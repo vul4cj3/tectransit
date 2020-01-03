@@ -131,6 +131,11 @@ namespace Tectransit.Modles
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Faqhid)
+                    .HasColumnName("FAQHID")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Isenable).HasColumnName("ISENABLE");
 
                 entity.Property(e => e.Istop).HasColumnName("ISTOP");

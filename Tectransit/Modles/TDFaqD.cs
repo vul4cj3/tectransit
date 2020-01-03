@@ -15,5 +15,6 @@ namespace Tectransit.Modles
         public string Createby { get; set; }
         public DateTime? Upddate { get; set; }
         public string Updby { get; set; }
+        public string Faqhid { get; set; }
     }
 }

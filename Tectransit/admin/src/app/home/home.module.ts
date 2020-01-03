@@ -26,6 +26,8 @@ import { CompanyListComponent } from './company-list/company-list.component';
 import { CompanyEditComponent } from './company-edit/company-edit.component';
 import { UserlogComponent } from './userlog/userlog.component';
 import { BannerListComponent } from './banner-list/banner-list.component';
+import { NewsListComponent } from './news-list/news-list.component';
+import { NewsEditComponent } from './news-edit/news-edit.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,9 @@ import { BannerListComponent } from './banner-list/banner-list.component';
     CompanyListComponent,
     CompanyEditComponent,
     UserlogComponent,
-    BannerListComponent
+    BannerListComponent,
+    NewsListComponent,
+    NewsEditComponent
   ],
   imports: [
     CommonModule,
