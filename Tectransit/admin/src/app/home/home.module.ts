@@ -28,6 +28,7 @@ import { UserlogComponent } from './userlog/userlog.component';
 import { BannerListComponent } from './banner-list/banner-list.component';
 import { NewsListComponent } from './news-list/news-list.component';
 import { NewsEditComponent } from './news-edit/news-edit.component';
+import { CKEditorModule } from 'ckeditor4-angular';
 
 @NgModule({
   declarations: [
@@ -58,10 +59,12 @@ import { NewsEditComponent } from './news-edit/news-edit.component';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HomeRoutingModule
+    HomeRoutingModule,
+    CKEditorModule
   ],
   providers: [CommonService, ModalService, ConfirmService],
-  exports: [HomeComponent]
+  exports: [HomeComponent],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 
 export class HomeModule { }

@@ -16,6 +16,30 @@ export class NewsEditComponent implements OnInit {
   private userUrl = 'GetTDNewsData';
   private userEditUrl = 'EditTDNewsData';
 
+  public editorConfig = {
+    toolbarGroups: [{ name: 'document', groups: ['mode'] },
+    { name: 'clipboard', groups: ['undo'] },
+    { name: 'editing', groups: ['find', 'selection'] },
+    { name: 'styles' },
+      '/',
+    { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+    { name: 'colors', groups: ['TextColor', 'BGColor'] },
+    { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align'] },
+    { name: 'links' },
+    { name: 'insert' },
+      '/'
+    ],
+    removeButtons: 'Strike,Subscript,Superscript,Anchor,Styles,Specialchar',
+    extraPlugins: 'font',
+    filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+    filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?type=Images',
+    filebrowserFlashBrowseUrl: '/ckfinder/ckfinder.html?type=Flash',
+    filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+    filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+    filebrowserFlashUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Flash',
+    height: 300
+  };
+
   dataChange;
   dataForm: FormGroup;
   newsID = '';

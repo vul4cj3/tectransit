@@ -81,7 +81,7 @@ namespace Tectransit.Controllers
                         file.CopyTo(stream);
                     }
 
-                    dbPath = dbPath.Replace(@"admin\src\", "").Replace(@"\", @"/");
+                    dbPath = dbPath.Replace(@"admin\src", "").Replace(@"\", @"/");
 
                     return new { status = "0", imgurl = dbPath };
                 }
