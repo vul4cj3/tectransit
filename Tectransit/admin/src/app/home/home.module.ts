@@ -33,6 +33,10 @@ import { AboutCategorylistComponent } from './about-categorylist/about-categoryl
 import { AboutCategoryeditComponent } from './about-categoryedit/about-categoryedit.component';
 import { AboutListComponent } from './about-list/about-list.component';
 import { AboutEditComponent } from './about-edit/about-edit.component';
+import { FaqCategorylistComponent } from './faq-categorylist/faq-categorylist.component';
+import { FaqCategoryeditComponent } from './faq-categoryedit/faq-categoryedit.component';
+import { FaqListComponent } from './faq-list/faq-list.component';
+import { FaqEditComponent } from './faq-edit/faq-edit.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +65,11 @@ import { AboutEditComponent } from './about-edit/about-edit.component';
     AboutCategorylistComponent,
     AboutCategoryeditComponent,
     AboutListComponent,
-    AboutEditComponent
+    AboutEditComponent,
+    FaqCategorylistComponent,
+    FaqCategoryeditComponent,
+    FaqListComponent,
+    FaqEditComponent
   ],
   imports: [
     CommonModule,

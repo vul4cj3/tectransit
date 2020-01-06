@@ -23,6 +23,10 @@ import { AboutCategorylistComponent } from './about-categorylist/about-categoryl
 import { AboutCategoryeditComponent } from './about-categoryedit/about-categoryedit.component';
 import { AboutListComponent } from './about-list/about-list.component';
 import { AboutEditComponent } from './about-edit/about-edit.component';
+import { FaqCategorylistComponent } from './faq-categorylist/faq-categorylist.component';
+import { FaqCategoryeditComponent } from './faq-categoryedit/faq-categoryedit.component';
+import { FaqListComponent } from './faq-list/faq-list.component';
+import { FaqEditComponent } from './faq-edit/faq-edit.component';
 
 const routes: Routes = [
   {
@@ -111,8 +115,24 @@ const routes: Routes = [
         component: AboutListComponent,
       },
       {
-        path: 'about/infoedit/:id',
+        path: 'about/infoedit/:id/:id2',
         component: AboutEditComponent,
+      },
+      {
+        path: 'faq',
+        component: FaqCategorylistComponent,
+      },
+      {
+        path: 'faq/edit/:id',
+        component: FaqCategoryeditComponent,
+      },
+      {
+        path: 'faq/info/:id',
+        component: FaqListComponent,
+      },
+      {
+        path: 'faq/infoedit/:id/:id2',
+        component: FaqEditComponent,
       }
     ],
   },

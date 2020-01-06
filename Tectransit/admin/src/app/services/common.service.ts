@@ -172,12 +172,24 @@ export class CommonService {
     // Add page num buttons
     this.pageNumStart = (Math.floor(scurrentPage / 10) * 10 + 1);
     this.pageNumEnd = this.pageNumStart + (10 - 1);
+
+    if (this.pageNumStart > this.pageTotal) {
+      this.pageNumStart = this.pageTotal;
+    }
+
     if (this.pageNumEnd > this.pageTotal) {
       this.pageNumEnd = this.pageTotal;
     }
 
     for (let i = this.pageNumStart; i <= this.pageNumEnd; i++) {
       this.pageNum.push(i);
+    }
+
+    // 防呆
+    if (this.pageNum.length === 1 && this.pageNum[0] === 1) {
+      this.pageNum = [];
+    } else if (this.pageNum[0] === 0) {
+      this.pageNum = [];
     }
 
     // Appear next or next group button
@@ -196,8 +208,24 @@ export class CommonService {
       }));
   }
 
+  getAllData(sWhere, pageUrl: string) {
+    const postData = { srhForm: sWhere };
+    return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
   getSingleData(id, pageUrl: string) {
     return this.http.get<any>(`${pageUrl}/${id}`)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  getInfoListData(cateID, sWhere, pageIndex: number, pageSize: number, pageUrl: string) {
+    const postData = {CID: cateID, srhForm: sWhere, PAGE_INDEX: pageIndex, PAGE_SIZE: pageSize };
+    return this.http.post<any>(pageUrl, postData)
       .pipe(map(data => {
         return data;
       }));

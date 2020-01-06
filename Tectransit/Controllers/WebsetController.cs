@@ -25,6 +25,8 @@ namespace Tectransit.Controllers
             _context = context;
         }
 
+        /* --- Banner --- */
+
         [HttpGet("{id}")]
         public dynamic GetBanData(long id)
         {
@@ -232,6 +234,545 @@ namespace Tectransit.Controllers
                 logData["_usercode"] = Request.Cookies["_usercode"];
                 logData["_username"] = Request.Cookies["_username"];
                 objComm.AddUserControlLog(logData, "/banner", "首頁廣告管理", 3, logMsg);
+
+                return new { status = "0", msg = "刪除成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "刪除失敗！" };
+            }
+        }
+
+        /* --- About Category --- */
+        [HttpPost]
+        public dynamic GetTDAboutCateListData([FromBody] object form)
+        {
+            string sWhere = "";
+            var jsonData = JObject.FromObject(form);
+            int pageIndex = jsonData.Value<int>("PAGE_INDEX");
+            int pageSize = jsonData.Value<int>("PAGE_SIZE");
+            JObject temp = jsonData.Value<JObject>("srhForm");
+
+            if (temp.Count > 0)
+            {
+                Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                srhKey.Add("skeyword", "KEYWORD");
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[srhKey[t.Key]] = t.Value?.ToString();
+
+                if (!string.IsNullOrEmpty(htData["KEYWORD"]?.ToString()))
+                {
+                    sWhere += (sWhere == "" ? "WHERE" : " OR") + " TITLE LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
+                    sWhere += (sWhere == "" ? "WHERE" : " OR") + " DESCR LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
+                }
+
+
+            }
+
+            return objWebs.GetAboutCateListData(sWhere, pageIndex, pageSize);
+        }
+
+        [HttpPost]
+        public dynamic GetTDAboutCateData([FromBody] object form)
+        {
+            string sWhere = "";
+            var jsonData = JObject.FromObject(form);
+            /*
+            JObject temp = jsonData.Value<JObject>("srhForm");
+
+            if (temp.Count > 0)
+            {
+                Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                srhKey.Add("skeyword", "KEYWORD");
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[srhKey[t.Key]] = t.Value?.ToString();
+                
+            }
+            */
+
+            return objWebs.GetTDAboutCateData(sWhere);
+        }
+
+        [HttpGet("{id}")]
+        public dynamic GetAboutCateData(long id)
+        {
+            return objWebs.GetAboutCateData(id);
+        }
+
+        [HttpPost]
+        public dynamic EditTDAboutCateData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+
+                long id = Convert.ToInt64(arrData.Value<string>("id"));
+                JObject temp = arrData.Value<JObject>("formdata");
+
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[t.Key.ToUpper()] = t.Value?.ToString();
+
+                //get cookies
+                htData["_usercode"] = Request.Cookies["_usercode"];
+                htData["_username"] = Request.Cookies["_username"];
+                
+                return EditAboutCateData(id, htData);
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return err;
+            }
+        }
+
+        [HttpPost]
+        public dynamic EditTDAboutCateTopData([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "CATEID");
+                        dataKey.Add("isenable", "ISTOP");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        UpdateAboutCate(Convert.ToInt64(sData["CATEID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[CATEID({sData["CATEID"]}):{((sData["ISTOP"]?.ToString() == "1") ? "true" : "false")}]";
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/about", "集貨介紹管理-分類-置頂變更", 2, logMsg);
+
+                return new { status = "0", msg = "修改成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+
+        [HttpPost]
+        public dynamic EditTDAboutCateEnableData([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "CATEID");
+                        dataKey.Add("isenable", "ISENABLE");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "0" : "1";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        UpdateAboutCate(Convert.ToInt64(sData["CATEID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[CATEID({sData["CATEID"]}):{((sData["ISENABLE"]?.ToString() == "0") ? "true" : "false")}]";
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/about", "集貨介紹管理-分類-停用變更", 2, logMsg);
+
+                return new { status = "0", msg = "修改成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+
+        [HttpPost]
+        public dynamic DelAboutCateData([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                string logMsg2 = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "CATEID");
+                        dataKey.Add("isenable", "ISENABLE");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+
+                        if (sData["ISENABLE"]?.ToString() == "1")
+                        {
+                            var query = _context.TDAboutH.Where(q => q.Id == Convert.ToInt64(sData["CATEID"])).FirstOrDefault();
+                            if (query != null)
+                            {
+                                //檢查是否有細項並刪掉
+                                var AL_D = _context.TDAboutD.Where(q => q.Abouthid == sData["CATEID"].ToString()).ToList();
+                                if (AL_D.Count > 0)
+                                {
+                                    foreach (var D in AL_D)
+                                    {
+                                        logMsg2 += (logMsg2 == "" ? "" : ",") + $@"[ABOUTID({D.Id})]";
+                                        delAbout(D);
+                                    }
+                                }
+
+                                //刪掉分類
+                                delAboutCate(query);
+                            }
+
+                            logMsg += (logMsg == "" ? "" : ",") + $@"[CATEID({sData["CATEID"]})]";
+                        }
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/about", "集貨介紹管理-分類", 3, logMsg);
+                if (!string.IsNullOrEmpty(logMsg2))
+                    objComm.AddUserControlLog(logData, "/about", "集貨介紹管理-細項", 3, logMsg2);
+
+                return new { status = "0", msg = "刪除成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "刪除失敗！" };
+            }
+        }
+
+        /* --- About --- */
+        [HttpPost]
+        public dynamic GetTDAboutListData([FromBody] object form)
+        {
+            string sWhere = "";
+            var jsonData = JObject.FromObject(form);
+            string cateID = jsonData.Value<string>("CID");
+            int pageIndex = jsonData.Value<int>("PAGE_INDEX");
+            int pageSize = jsonData.Value<int>("PAGE_SIZE");
+            JObject temp = jsonData.Value<JObject>("srhForm");
+
+            if (temp.Count > 0)
+            {
+                Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                srhKey.Add("skeyword", "KEYWORD");
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[srhKey[t.Key]] = t.Value?.ToString();
+
+
+                sWhere += (sWhere == "" ? "WHERE" : " AND") + " ABOUTHID = '" + cateID + "'";
+
+                if (!string.IsNullOrEmpty(htData["KEYWORD"]?.ToString()))
+                {
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " (TITLE LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
+                    sWhere += (sWhere == "" ? "WHERE" : " OR") + " DESCR LIKE '%" + htData["KEYWORD"]?.ToString() + "%')";
+                }
+
+
+            }
+
+            return objWebs.GetAboutListData(sWhere, pageIndex, pageSize);
+        }
+
+        [HttpGet("{id}")]
+        public dynamic GetAboutData(long id)
+        {
+            return objWebs.GetAboutData(id);
+        }
+
+        [HttpPost]
+        public dynamic EditTDAboutData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+
+                long id = Convert.ToInt64(arrData.Value<string>("id"));
+                JObject temp = arrData.Value<JObject>("formdata");
+
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[t.Key.ToUpper()] = t.Value?.ToString();
+
+                //get cookies
+                htData["_usercode"] = Request.Cookies["_usercode"];
+                htData["_username"] = Request.Cookies["_username"];
+
+                return EditAboutData(id, htData);
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return err;
+            }
+        }
+
+        [HttpPost]
+        public dynamic EditTDAboutTopData([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "ABOUTID");
+                        dataKey.Add("isenable", "ISTOP");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        UpdateAbout(Convert.ToInt64(sData["ABOUTID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[ABOUTID({sData["ABOUTID"]}):{((sData["ISTOP"]?.ToString() == "1") ? "true" : "false")}]";
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/about/info", "集貨介紹管理-細項-置頂變更", 2, logMsg);
+
+                return new { status = "0", msg = "修改成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+
+        [HttpPost]
+        public dynamic EditTDAboutEnableData([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "ABOUTID");
+                        dataKey.Add("isenable", "ISENABLE");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "0" : "1";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        UpdateAbout(Convert.ToInt64(sData["ABOUTID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[ABOUTID({sData["ABOUTID"]}):{((sData["ISENABLE"]?.ToString() == "0") ? "true" : "false")}]";
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/about/info", "集貨介紹管理-細項-停用變更", 2, logMsg);
+
+                return new { status = "0", msg = "修改成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+
+        [HttpPost]
+        public dynamic DelAboutData([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "ABOUTID");
+                        dataKey.Add("isenable", "ISENABLE");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+
+                        if (sData["ISENABLE"]?.ToString() == "1")
+                        {
+                            var query = _context.TDAboutD.Where(q => q.Id == Convert.ToInt64(sData["ABOUTID"])).FirstOrDefault();
+                            if (query != null)
+                            {
+                                delAbout(query);
+                            }
+
+                            logMsg += (logMsg == "" ? "" : ",") + $@"[ABOUTID({sData["ABOUTID"]})]";
+                        }
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/about/info", "集貨介紹管理-細項", 3, logMsg);
 
                 return new { status = "0", msg = "刪除成功！" };
             }
@@ -527,7 +1068,7 @@ namespace Tectransit.Controllers
             }
         }
 
-
+        
         /* --- private CRUD function --- */
 
         private dynamic EditBanData(long id, Hashtable htData)
@@ -718,6 +1259,191 @@ namespace Tectransit.Controllers
         private void delNews(TDNews rm)
         {
             _context.TDNews.Remove(rm);
+            _context.SaveChanges();
+        }
+
+        private dynamic EditAboutCateData(long id, Hashtable htData)
+        {
+            try
+            {
+
+                if (id == 0)
+                {
+
+                    InsertAboutCate(htData);
+
+                    //add user log
+                    objComm.AddUserControlLog(htData, "about/edit/0", "集貨介紹管理-分類", 1, htData["CATEID"]?.ToString());
+                }
+                else
+                {
+                    UpdateAboutCate(id, htData);
+
+                    string updMsg = "";
+                    foreach (DictionaryEntry ht in htData)
+                    {
+                        if (ht.Key.ToString() == "_usercode" || ht.Key.ToString() == "_username") { }
+                        else
+                            updMsg += (updMsg == "" ? "" : ",") + ht.Key + ":" + ht.Value;
+                    }
+
+                    //add user log
+                    objComm.AddUserControlLog(htData, $"about/edit/{id}", "集貨介紹管理-分類", 2, updMsg);
+                }
+
+                return new { status = "0", msg = "保存成功！" };
+
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message?.ToString();
+                return new { status = "99", msg = "保存失敗！" };
+            }
+        }
+
+        private void InsertAboutCate(Hashtable sData)
+        {
+            Hashtable htData = sData;
+            htData["ISTOP"] = false;
+            htData["ISENABLE"] = htData["ISENABLE"]?.ToString() == "1" ? true : false;
+            htData["ABOUTHSEQ"] = htData["ABOUTSEQ"];
+            htData["CREDATE"] = DateTime.Now;
+            htData["CREATEBY"] = sData["_usercode"];
+            htData["UPDDATE"] = htData["CREDATE"];
+            htData["UPDBY"] = htData["CREATEBY"];
+
+            string sql = @"INSERT INTO T_D_ABOUT_H(TITLE, DESCR, ABOUTHSEQ, ISTOP, ISENABLE, CREDATE, UPDDATE, CREATEBY, UPDBY) 
+                                        VALUES (@TITLE, @DESCR, @ABOUTHSEQ, @ISTOP, @ISENABLE, @CREDATE, @UPDDATE, @CREATEBY, @UPDBY)";
+
+            DBUtil.EXECUTE(sql, htData);
+        }
+
+        private void UpdateAboutCate(long id, Hashtable sData)
+        {
+            var query = _context.TDAboutH.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                TDAboutH rowTDA = query;
+
+                if (sData["TITLE"] != null)
+                    rowTDA.Title = sData["TITLE"]?.ToString();
+                if (sData["DESCR"] != null)
+                    rowTDA.Descr = sData["DESCR"]?.ToString();
+                if (sData["ABOUTSEQ"] != null)
+                    rowTDA.Abouthseq = sData["ABOUTSEQ"]?.ToString();
+                if (sData["ISTOP"] != null)
+                    rowTDA.Istop = sData["ISTOP"]?.ToString() == "1" ? true : false;
+                if (sData["ISENABLE"] != null)
+                    rowTDA.Isenable = sData["ISENABLE"]?.ToString() == "1" ? true : false;
+
+                if (sData.Count > 2)//排除cookies
+                {
+                    rowTDA.Upddate = DateTime.Now;
+                    rowTDA.Updby = sData["_usercode"]?.ToString();
+
+                    _context.SaveChanges();
+                }
+            }
+        }
+
+        private void delAboutCate(TDAboutH rm)
+        {
+            _context.TDAboutH.Remove(rm);
+            _context.SaveChanges();
+        }
+
+        private dynamic EditAboutData(long id, Hashtable htData)
+        {
+            try
+            {
+
+                if (id == 0)
+                {
+
+                    InsertAbout(htData);
+
+                    //add user log
+                    objComm.AddUserControlLog(htData, "about/infoedit/0", "集貨介紹管理-細項", 1, htData["ABOUTID"]?.ToString());
+                }
+                else
+                {
+                    UpdateAbout(id, htData);
+
+                    string updMsg = "";
+                    foreach (DictionaryEntry ht in htData)
+                    {
+                        if (ht.Key.ToString() == "_usercode" || ht.Key.ToString() == "_username") { }
+                        else
+                            updMsg += (updMsg == "" ? "" : ",") + ht.Key + ":" + ht.Value;
+                    }
+
+                    //add user log
+                    objComm.AddUserControlLog(htData, $"about/infoedit/{id}", "集貨介紹管理-細項", 2, updMsg);
+                }
+
+                return new { status = "0", msg = "保存成功！" };
+
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message?.ToString();
+                return new { status = "99", msg = "保存失敗！" };
+            }
+        }
+
+        private void InsertAbout(Hashtable sData)
+        {
+            Hashtable htData = sData;
+            //encode context
+            htData["DESCR"] = HttpUtility.HtmlEncode(htData["DESCR"]);
+            htData["ISTOP"] = htData["ISTOP"]?.ToString() == "1" ? true : false;
+            htData["ISENABLE"] = htData["ISENABLE"]?.ToString() == "1" ? true : false;
+            htData["ABOUTDSEQ"] = htData["ABOUTSEQ"];
+            htData["CREDATE"] = DateTime.Now;
+            htData["CREATEBY"] = sData["_usercode"];
+            htData["UPDDATE"] = htData["CREDATE"];
+            htData["UPDBY"] = htData["CREATEBY"];
+            htData["ABOUTHID"] = htData["CATEID"];
+
+            string sql = @"INSERT INTO T_D_ABOUT_D(TITLE, DESCR, ABOUTDSEQ, ISTOP, ISENABLE, CREDATE, UPDDATE, CREATEBY, UPDBY, ABOUTHID) 
+                                        VALUES (@TITLE, @DESCR, @ABOUTDSEQ, @ISTOP, @ISENABLE, @CREDATE, @UPDDATE, @CREATEBY, @UPDBY, @ABOUTHID)";
+
+            DBUtil.EXECUTE(sql, htData);
+        }
+
+        private void UpdateAbout(long id, Hashtable sData)
+        {
+            var query = _context.TDAboutD.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                TDAboutD rowTDA = query;
+
+                if (sData["TITLE"] != null)
+                    rowTDA.Title = sData["TITLE"]?.ToString();
+                if (sData["DESCR"] != null)
+                    rowTDA.Descr = HttpUtility.HtmlEncode(sData["DESCR"]?.ToString()); //encode context
+                if (sData["ABOUTSEQ"] != null)
+                    rowTDA.Aboutdseq = sData["ABOUTSEQ"]?.ToString();
+                if (sData["ISTOP"] != null)
+                    rowTDA.Istop = sData["ISTOP"]?.ToString() == "1" ? true : false;
+                if (sData["ISENABLE"] != null)
+                    rowTDA.Isenable = sData["ISENABLE"]?.ToString() == "1" ? true : false;
+
+                if (sData.Count > 2)//排除cookies
+                {
+                    rowTDA.Upddate = DateTime.Now;
+                    rowTDA.Updby = sData["_usercode"]?.ToString();
+
+                    _context.SaveChanges();
+                }
+            }
+        }
+
+        private void delAbout(TDAboutD rm)
+        {
+            _context.TDAboutD.Remove(rm);
             _context.SaveChanges();
         }
     }

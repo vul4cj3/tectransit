@@ -12,10 +12,10 @@ export class AboutCategorylistComponent implements OnInit {
 
   /* Web api url*/
   private baseUrl = window.location.origin + '/api/WebSetHelp/';
-  private dataUrl = 'GetTDAboutListData';
-  private enableUrl = 'EditTDAboutEnableData';
-  private topUrl = 'EditTDAboutTopData';
-  private delUrl = 'DelAboutData';
+  private dataUrl = 'GetTDAboutCateListData';
+  private enableUrl = 'EditTDAboutCateEnableData';
+  private topUrl = 'EditTDAboutCateTopData';
+  private delUrl = 'DelAboutCateData';
 
   tableTitle = ['#', '標題', '敘述', '建立時間', '建立者',
     '更新時間', '更新者', '停用', '編輯', '細項'];
@@ -145,7 +145,7 @@ export class AboutCategorylistComponent implements OnInit {
   }
 
   doDelete() {
-    const IsConfirm = confirm('確定要刪除？');
+    const IsConfirm = confirm('確定要刪除(會連細項一併刪除)？');
     if (IsConfirm === true) {
       if (this.chkList.length > 0) {
         this.commonService.delData(this.chkList, this.baseUrl + this.delUrl)
