@@ -1,0 +1,109 @@
+<!--Top Section-->
+<div>
+  <div>
+    <div class="app-page-title">
+      <div class="page-title-wrapper">
+        <div class="page-title-heading">
+          <div class="page-title-icon"><i class="fas fa-archive"></i></div>
+          <div>集運介紹管理</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Search Section -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="main-card mb-3 card">
+      <form [formGroup]="srhForm">
+        <div class="card-body">
+          <div class="form-inline">
+            <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
+              <label for="skeyword" class="mr-sm-2">關鍵字</label>
+              <input type="text" id="skeyword" formControlName="skeyword" class="form-control">
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="searchData()">查詢</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="resetData()">清除查詢</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--TableList Section-->
+<div class="row">
+  <div class="col-md-12">
+    <div class="main-card mb-3 card">
+      <div class="card-header">分類列表
+        <div class="btn-actions-pane-right">
+          <div class="btn-group-sm btn-group" role="group">
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/about/edit/0">新增</button>
+            <!--<button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doIstop()">置頂</button>-->
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doIsenable()">停用</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doDelete()">刪除</button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+          <thead>
+            <tr>
+              <th *ngFor="let titleItem of tableTitle let id = index" [ngClass]="{'text-center': id === 0}">
+                {{titleItem}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data let idx = index">
+              <td class="text-center text-muted">
+                <label class="chkbox-container">
+                  <input type="checkbox" name="Chk" id="chk{{idx}}"
+                    (click)="SelChange($event.toElement.value, $event.toElement.checked)" value="{{item.cateid}}">
+                  <span class="checkmark"></span>
+                </label>
+              </td>
+              <td>{{item.title}}</td>
+              <td>{{item.descr}}</td>
+              <td>{{item.credate}}</td>
+              <td>{{item.creby}}</td>
+              <td>{{item.upddate}}</td>
+              <td>{{item.updby}}</td>
+              <td class="text-center text-muted">
+                <label class="chkbox-container">
+                  <input type="checkbox" name="topChk" id="topchk{{idx}}"
+                    (click)="enableSelChange($event.toElement.value, $event.toElement.checked)"
+                    [checked]="item.isenable === '0'" value="{{item.cateid}}">
+                  <span class="checkmark"></span>
+                </label>
+              </td>
+              <td>
+                <a routerLink="/about/edit/{{item.cateid}}">
+                  <span class="symbol-edit">
+                    <i class="pe-7s-note"></i>
+                  </span>
+                </a>
+              </td>
+              <td>
+                <a routerLink="/about/info/{{item.cateid}}">
+                  <span class="symbol-edit">
+                    <i class="pe-7s-note2"></i>
+                  </span>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--pagination section start-->
+      <div class="d-block text-center card-footer">
+        <app-pagination [currentPage]="this.currentpage" [preApper]="this.commonService.preApper"
+          [nextApper]="this.commonService.nextApper" [pageNum]="this.commonService.pageNum"
+          (pageChanged)="changeData($event)"></app-pagination>
+      </div>
+      <!--pagination section end-->
+    </div>
+  </div>
+</div>

@@ -19,6 +19,10 @@ import { UserlogComponent } from './userlog/userlog.component';
 import { BannerListComponent } from './banner-list/banner-list.component';
 import { NewsListComponent } from './news-list/news-list.component';
 import { NewsEditComponent } from './news-edit/news-edit.component';
+import { AboutCategorylistComponent } from './about-categorylist/about-categorylist.component';
+import { AboutCategoryeditComponent } from './about-categoryedit/about-categoryedit.component';
+import { AboutListComponent } from './about-list/about-list.component';
+import { AboutEditComponent } from './about-edit/about-edit.component';
 
 const routes: Routes = [
   {
@@ -93,6 +97,22 @@ const routes: Routes = [
       {
         path: 'news/edit/:id',
         component: NewsEditComponent,
+      },
+      {
+        path: 'about',
+        component: AboutCategorylistComponent,
+      },
+      {
+        path: 'about/edit/:id',
+        component: AboutCategoryeditComponent,
+      },
+      {
+        path: 'about/info/:id',
+        component: AboutListComponent,
+      },
+      {
+        path: 'about/infoedit/:id',
+        component: AboutEditComponent,
       }
     ],
   },

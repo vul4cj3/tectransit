@@ -156,3 +156,30 @@ export interface NewsInfo {
   updby: string;
   isenable: string;
 }
+
+export interface AboutCate {
+  cateid: number;
+  title: string;
+  descr: string;
+  aboutseq: string;
+  istop: string;
+  credate: string;
+  creby: string;
+  upddate: string;
+  updby: string;
+  isenable: string;
+}
+
+export interface AboutInfo {
+  aboutid: number;
+  title: string;
+  descr: string;
+  aboutseq: string;
+  istop: string;
+  credate: string;
+  creby: string;
+  upddate: string;
+  updby: string;
+  isenable: string;
+  cateid: string;
+}

@@ -29,6 +29,10 @@ import { BannerListComponent } from './banner-list/banner-list.component';
 import { NewsListComponent } from './news-list/news-list.component';
 import { NewsEditComponent } from './news-edit/news-edit.component';
 import { CKEditorModule } from 'ckeditor4-angular';
+import { AboutCategorylistComponent } from './about-categorylist/about-categorylist.component';
+import { AboutCategoryeditComponent } from './about-categoryedit/about-categoryedit.component';
+import { AboutListComponent } from './about-list/about-list.component';
+import { AboutEditComponent } from './about-edit/about-edit.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +57,11 @@ import { CKEditorModule } from 'ckeditor4-angular';
     UserlogComponent,
     BannerListComponent,
     NewsListComponent,
-    NewsEditComponent
+    NewsEditComponent,
+    AboutCategorylistComponent,
+    AboutCategoryeditComponent,
+    AboutListComponent,
+    AboutEditComponent
   ],
   imports: [
     CommonModule,
