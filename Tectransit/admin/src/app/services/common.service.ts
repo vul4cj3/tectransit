@@ -170,7 +170,7 @@ export class CommonService {
     this.preApper = (this.currentPage > 1) ? true : false;
 
     // Add page num buttons
-    this.pageNumStart = (Math.floor(scurrentPage / 10) * 10 + 1);
+    this.pageNumStart = scurrentPage % 10 === 0 ? (Math.floor(scurrentPage / 10) * 10) : (Math.floor(scurrentPage / 10) * 10 + 1);
     this.pageNumEnd = this.pageNumStart + (10 - 1);
 
     if (this.pageNumStart > this.pageTotal) {
@@ -224,7 +224,7 @@ export class CommonService {
   }
 
   getInfoListData(cateID, sWhere, pageIndex: number, pageSize: number, pageUrl: string) {
-    const postData = {CID: cateID, srhForm: sWhere, PAGE_INDEX: pageIndex, PAGE_SIZE: pageSize };
+    const postData = { CID: cateID, srhForm: sWhere, PAGE_INDEX: pageIndex, PAGE_SIZE: pageSize };
     return this.http.post<any>(pageUrl, postData)
       .pipe(map(data => {
         return data;
