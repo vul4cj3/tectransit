@@ -13,32 +13,10 @@ export class NewsEditComponent implements OnInit {
 
   /* Web api url */
   private baseUrl = window.location.origin + '/api/WebSetHelp/';
-  private userUrl = 'GetTDNewsData';
+  private userUrl = 'GetNewsData';
   private userEditUrl = 'EditTDNewsData';
 
-  public editorConfig = {
-    toolbarGroups: [{ name: 'document', groups: ['mode'] },
-    { name: 'clipboard', groups: ['undo'] },
-    { name: 'editing', groups: ['find', 'selection'] },
-    { name: 'styles' },
-      '/',
-    { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
-    { name: 'colors', groups: ['TextColor', 'BGColor'] },
-    { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align'] },
-    { name: 'links' },
-    { name: 'insert' },
-      '/'
-    ],
-    removeButtons: 'Strike,Subscript,Superscript,Anchor,Styles,Specialchar',
-    extraPlugins: 'font',
-    filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
-    filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?type=Images',
-    filebrowserFlashBrowseUrl: '/ckfinder/ckfinder.html?type=Flash',
-    filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
-    filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
-    filebrowserFlashUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Flash',
-    height: 300
-  };
+  public config = this.commonService.editorConfig;
 
   dataChange;
   dataForm: FormGroup;
@@ -81,7 +59,6 @@ export class NewsEditComponent implements OnInit {
     this.commonService.getSingleData(id, this.baseUrl + this.userUrl)
       .subscribe(data => {
         this.dataForm.patchValue(data.rows);
-        this.dataForm.controls.usercode.disable();
         this.newsData = data.rows;
       },
         error => {
@@ -90,7 +67,6 @@ export class NewsEditComponent implements OnInit {
   }
 
   saveData(form) {
-
     // check Form
     if (this.dataForm.invalid) {
       this.isErr = true;

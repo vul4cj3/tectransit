@@ -20,6 +20,25 @@ export class CommonService {
   private resetPWUrl = 'ResetPassword';
   private pbacknforntUrl = 'GetParentMenu';
 
+  /* ckeditor config settings*/
+  public editorConfig = {
+    toolbarGroups: [{ name: 'document', groups: ['mode'] },
+    { name: 'clipboard', groups: ['undo'] },
+    { name: 'editing', groups: ['find', 'selection'] },
+    { name: 'styles' },
+      '/',
+    { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+    { name: 'colors', groups: ['TextColor', 'BGColor'] },
+    { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align'] },
+    { name: 'links' },
+    { name: 'insert' },
+      '/'
+    ],
+    removeButtons: 'Strike,Subscript,Superscript,Anchor,Styles,Specialchar',
+    filebrowserImageUploadUrl: '/test2/',
+    height: 300
+  };
+
   /* pagination variables*/
   rowTotal = 0; // data count
 

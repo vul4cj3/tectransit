@@ -9356,6 +9356,10 @@ body {
   width: 20%;
 }
 
+.form-control.xlmiddle {
+  width: 25%;
+}
+
 .form-control.large {
   width: 50%;
 }

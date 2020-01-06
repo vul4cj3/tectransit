@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Tectransit.Datas
 {
@@ -96,9 +97,9 @@ namespace Tectransit.Datas
             {
                 NewsInfo m = new NewsInfo();
                 m.NEWSID = Convert.ToInt64(DT.Rows[0]["ID"]);
-                m.NEWSSEQ = DT.Rows[0]["BANSEQ"]?.ToString();
+                m.NEWSSEQ = DT.Rows[0]["NEWSSEQ"]?.ToString();
                 m.TITLE = DT.Rows[0]["TITLE"]?.ToString();
-                m.DESCR = DT.Rows[0]["DESCR"]?.ToString();
+                m.DESCR = HttpUtility.HtmlDecode(DT.Rows[0]["DESCR"]?.ToString());
                 m.UPSDATE = DT.Rows[0]["UPSDATE"]?.ToString();
                 m.UPEDATE = DT.Rows[0]["UPEDATE"]?.ToString();
                 m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();

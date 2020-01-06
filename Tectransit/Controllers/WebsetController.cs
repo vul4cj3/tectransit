@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -261,8 +262,8 @@ namespace Tectransit.Controllers
 
                 if (!string.IsNullOrEmpty(htData["KEYWORD"]?.ToString()))
                 {
-                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " TITLE LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
-                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " DESCR LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
+                    sWhere += (sWhere == "" ? "WHERE" : " OR") + " TITLE LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
+                    sWhere += (sWhere == "" ? "WHERE" : " OR") + " DESCR LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
                 }
                 
 
@@ -295,6 +296,44 @@ namespace Tectransit.Controllers
                 //get cookies
                 htData["_usercode"] = Request.Cookies["_usercode"];
                 htData["_username"] = Request.Cookies["_username"];
+
+                #region 檢查上架日期
+                if (!string.IsNullOrEmpty(htData["UPSDATE"]?.ToString()) && !string.IsNullOrEmpty(htData["UPEDATE"]?.ToString()))
+                {
+                    DateTime sDate = Convert.ToDateTime(htData["UPSDATE"]);
+                    DateTime eDate = Convert.ToDateTime(htData["UPEDATE"]);
+
+                    if (sDate > eDate)
+                        return new { status = "99", msg = "上架日期(起)不可晚於上架日期(迄)！" };
+                    
+                }
+                else if (!string.IsNullOrEmpty(htData["UPSDATE"]?.ToString()))
+                {
+                    string tempDate = DBUtil.GetSingleValue1($@"SELECT UPEDATE AS COL1 FROM T_D_NEWS WHERE ID = {id}");
+                    if (!string.IsNullOrEmpty(tempDate))
+                    {
+                        DateTime sDate = Convert.ToDateTime(htData["UPSDATE"]);
+                        DateTime eDate = Convert.ToDateTime(tempDate);
+
+                        if (sDate > eDate)
+                            return new { status = "99", msg = "上架日期(起)不可晚於上架日期(迄)！" };
+                    }
+                    
+                }
+                else if (!string.IsNullOrEmpty(htData["UPEDATE"]?.ToString()))
+                {
+                    string tempDate = DBUtil.GetSingleValue1($@"SELECT UPSDATE AS COL1 FROM T_D_NEWS WHERE ID = {id}");
+                    if (!string.IsNullOrEmpty(tempDate))
+                    {
+                        DateTime sDate = Convert.ToDateTime(tempDate);
+                        DateTime eDate = Convert.ToDateTime(htData["UPEDATE"]);
+
+                        if (sDate > eDate)
+                            return new { status = "99", msg = "上架日期(起)不可晚於上架日期(迄)！" };
+                    }
+                }
+                else { }
+                #endregion
 
                 return EditNewsData(id, htData);
             }
@@ -592,6 +631,7 @@ namespace Tectransit.Controllers
         {
             try
             {
+                
                 if (id == 0)
                 {
 
@@ -629,6 +669,8 @@ namespace Tectransit.Controllers
         private void InsertNews(Hashtable sData)
         {
             Hashtable htData = sData;
+            //Encode context
+            htData["DESCR"] = HttpUtility.HtmlEncode(htData["DESCR"]);
             htData["ISTOP"] = htData["ISTOP"]?.ToString() == "1" ? true : false;
             htData["ISENABLE"] = htData["ISENABLE"]?.ToString() == "1" ? true : false;
             htData["CREDATE"] = DateTime.Now;
@@ -653,7 +695,7 @@ namespace Tectransit.Controllers
                 if (sData["TITLE"] != null)
                     rowTDN.Title = sData["TITLE"]?.ToString();
                 if (sData["DESCR"] != null)
-                    rowTDN.Descr = sData["DESCR"]?.ToString();
+                    rowTDN.Descr = HttpUtility.HtmlEncode(sData["DESCR"]?.ToString());//Encode context
                 if (sData["UPSDATE"] != null)
                     rowTDN.Upsdate = sData["UPSDATE"]?.ToString();
                 if (sData["UPEDATE"] != null)
