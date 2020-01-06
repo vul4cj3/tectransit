@@ -15,6 +15,8 @@ namespace Tectransit.Modles
         {
         }
 
+        public virtual DbSet<TDAboutD> TDAboutD { get; set; }
+        public virtual DbSet<TDAboutH> TDAboutH { get; set; }
         public virtual DbSet<TDBanner> TDBanner { get; set; }
         public virtual DbSet<TDFaqD> TDFaqD { get; set; }
         public virtual DbSet<TDFaqH> TDFaqH { get; set; }
@@ -50,6 +52,87 @@ namespace Tectransit.Modles
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<TDAboutD>(entity =>
+            {
+                entity.ToTable("T_D_ABOUT_D");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Aboutdseq)
+                    .HasColumnName("ABOUTDSEQ")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Abouthid)
+                    .HasColumnName("ABOUTHID")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Createby)
+                    .HasColumnName("CREATEBY")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Credate)
+                    .HasColumnName("CREDATE")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Descr).HasColumnName("DESCR");
+
+                entity.Property(e => e.Isenable).HasColumnName("ISENABLE");
+
+                entity.Property(e => e.Istop).HasColumnName("ISTOP");
+
+                entity.Property(e => e.Title)
+                    .HasColumnName("TITLE")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Updby)
+                    .HasColumnName("UPDBY")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Upddate)
+                    .HasColumnName("UPDDATE")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<TDAboutH>(entity =>
+            {
+                entity.ToTable("T_D_ABOUT_H");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Abouthseq)
+                    .HasColumnName("ABOUTHSEQ")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Createby)
+                    .HasColumnName("CREATEBY")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Credate)
+                    .HasColumnName("CREDATE")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Descr).HasColumnName("DESCR");
+
+                entity.Property(e => e.Isenable).HasColumnName("ISENABLE");
+
+                entity.Property(e => e.Istop).HasColumnName("ISTOP");
+
+                entity.Property(e => e.Title)
+                    .HasColumnName("TITLE")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Updby)
+                    .HasColumnName("UPDBY")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Upddate)
+                    .HasColumnName("UPDDATE")
+                    .HasColumnType("datetime");
+            });
+
             modelBuilder.Entity<TDBanner>(entity =>
             {
                 entity.ToTable("T_D_BANNER");
