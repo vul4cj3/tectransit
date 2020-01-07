@@ -75,6 +75,11 @@ namespace Tectransit
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"admin/src/assets")),
                 RequestPath = new PathString("/assets")
             });
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"ClientApp/src/assets")),
+                RequestPath = new PathString("/res/assets")
+            });
 
             app.UseMvc(routes =>
             {
