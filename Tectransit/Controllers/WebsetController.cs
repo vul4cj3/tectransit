@@ -26,7 +26,7 @@ namespace Tectransit.Controllers
         }
 
         /* --- Banner --- */
-
+        #region 首頁廣告
         [HttpGet("{id}")]
         public dynamic GetBanData(long id)
         {
@@ -243,8 +243,10 @@ namespace Tectransit.Controllers
                 return new { status = "99", msg = "刪除失敗！" };
             }
         }
+        #endregion
 
         /* --- About Category --- */
+        #region 集貨介紹-分類
         [HttpPost]
         public dynamic GetTDAboutCateListData([FromBody] object form)
         {
@@ -279,19 +281,6 @@ namespace Tectransit.Controllers
         {
             string sWhere = "";
             var jsonData = JObject.FromObject(form);
-            /*
-            JObject temp = jsonData.Value<JObject>("srhForm");
-
-            if (temp.Count > 0)
-            {
-                Dictionary<string, string> srhKey = new Dictionary<string, string>();
-                srhKey.Add("skeyword", "KEYWORD");
-                Hashtable htData = new Hashtable();
-                foreach (var t in temp)
-                    htData[srhKey[t.Key]] = t.Value?.ToString();
-                
-            }
-            */
 
             return objWebs.GetTDAboutCateData(sWhere);
         }
@@ -320,7 +309,7 @@ namespace Tectransit.Controllers
                 //get cookies
                 htData["_usercode"] = Request.Cookies["_usercode"];
                 htData["_username"] = Request.Cookies["_username"];
-                
+
                 return EditAboutCateData(id, htData);
             }
             catch (Exception ex)
@@ -529,8 +518,10 @@ namespace Tectransit.Controllers
                 return new { status = "99", msg = "刪除失敗！" };
             }
         }
+        #endregion
 
         /* --- About --- */
+        #region 集貨介紹-細項
         [HttpPost]
         public dynamic GetTDAboutListData([FromBody] object form)
         {
@@ -782,8 +773,10 @@ namespace Tectransit.Controllers
                 return new { status = "99", msg = "刪除失敗！" };
             }
         }
+        #endregion
 
         /* --- News --- */
+        #region 公告消息
         [HttpPost]
         public dynamic GetTDNewsListData([FromBody] object form)
         {
@@ -806,7 +799,7 @@ namespace Tectransit.Controllers
                     sWhere += (sWhere == "" ? "WHERE" : " OR") + " TITLE LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
                     sWhere += (sWhere == "" ? "WHERE" : " OR") + " DESCR LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
                 }
-                
+
 
             }
 
@@ -846,7 +839,7 @@ namespace Tectransit.Controllers
 
                     if (sDate > eDate)
                         return new { status = "99", msg = "上架日期(起)不可晚於上架日期(迄)！" };
-                    
+
                 }
                 else if (!string.IsNullOrEmpty(htData["UPSDATE"]?.ToString()))
                 {
@@ -859,7 +852,7 @@ namespace Tectransit.Controllers
                         if (sDate > eDate)
                             return new { status = "99", msg = "上架日期(起)不可晚於上架日期(迄)！" };
                     }
-                    
+
                 }
                 else if (!string.IsNullOrEmpty(htData["UPEDATE"]?.ToString()))
                 {
@@ -1067,8 +1060,538 @@ namespace Tectransit.Controllers
                 return new { status = "99", msg = "刪除失敗！" };
             }
         }
+        #endregion
 
-        
+        /* --- Faq Category --- */
+        #region 常見問題-分類
+        [HttpPost]
+        public dynamic GetTDFaqCateListData([FromBody] object form)
+        {
+            string sWhere = "";
+            var jsonData = JObject.FromObject(form);
+            int pageIndex = jsonData.Value<int>("PAGE_INDEX");
+            int pageSize = jsonData.Value<int>("PAGE_SIZE");
+            JObject temp = jsonData.Value<JObject>("srhForm");
+
+            if (temp.Count > 0)
+            {
+                Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                srhKey.Add("skeyword", "KEYWORD");
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[srhKey[t.Key]] = t.Value?.ToString();
+
+                if (!string.IsNullOrEmpty(htData["KEYWORD"]?.ToString()))
+                {
+                    sWhere += (sWhere == "" ? "WHERE" : " OR") + " TITLE LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
+                    sWhere += (sWhere == "" ? "WHERE" : " OR") + " DESCR LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
+                }
+
+
+            }
+
+            return objWebs.GetFaqCateListData(sWhere, pageIndex, pageSize);
+        }
+
+        [HttpPost]
+        public dynamic GetTDFaqCateData([FromBody] object form)
+        {
+            string sWhere = "";
+            var jsonData = JObject.FromObject(form);
+
+            return objWebs.GetTDFaqCateData(sWhere);
+        }
+
+        [HttpGet("{id}")]
+        public dynamic GetFaqCateData(long id)
+        {
+            return objWebs.GetFaqCateData(id);
+        }
+
+        [HttpPost]
+        public dynamic EditTDFaqCateData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+
+                long id = Convert.ToInt64(arrData.Value<string>("id"));
+                JObject temp = arrData.Value<JObject>("formdata");
+
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[t.Key.ToUpper()] = t.Value?.ToString();
+
+                //get cookies
+                htData["_usercode"] = Request.Cookies["_usercode"];
+                htData["_username"] = Request.Cookies["_username"];
+
+                return EditFaqCateData(id, htData);
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return err;
+            }
+        }
+
+        [HttpPost]
+        public dynamic EditTDFaqCateTopData([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "CATEID");
+                        dataKey.Add("isenable", "ISTOP");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        UpdateFaqCate(Convert.ToInt64(sData["CATEID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[CATEID({sData["CATEID"]}):{((sData["ISTOP"]?.ToString() == "1") ? "true" : "false")}]";
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/faq", "常見問題管理-分類-置頂變更", 2, logMsg);
+
+                return new { status = "0", msg = "修改成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+
+        [HttpPost]
+        public dynamic EditTDFaqCateEnableData([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "CATEID");
+                        dataKey.Add("isenable", "ISENABLE");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "0" : "1";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        UpdateFaqCate(Convert.ToInt64(sData["CATEID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[CATEID({sData["CATEID"]}):{((sData["ISENABLE"]?.ToString() == "0") ? "true" : "false")}]";
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/faq", "常見問題管理-分類-停用變更", 2, logMsg);
+
+                return new { status = "0", msg = "修改成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+
+        [HttpPost]
+        public dynamic DelFaqCateData([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                string logMsg2 = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "CATEID");
+                        dataKey.Add("isenable", "ISENABLE");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+
+                        if (sData["ISENABLE"]?.ToString() == "1")
+                        {
+                            var query = _context.TDFaqH.Where(q => q.Id == Convert.ToInt64(sData["CATEID"])).FirstOrDefault();
+                            if (query != null)
+                            {
+                                //檢查是否有細項並刪掉
+                                var AL_D = _context.TDFaqD.Where(q => q.Faqhid == sData["CATEID"].ToString()).ToList();
+                                if (AL_D.Count > 0)
+                                {
+                                    foreach (var D in AL_D)
+                                    {
+                                        logMsg2 += (logMsg2 == "" ? "" : ",") + $@"[FAQID({D.Id})]";
+                                        delFaq(D);
+                                    }
+                                }
+
+                                //刪掉分類
+                                delFaqCate(query);
+                            }
+
+                            logMsg += (logMsg == "" ? "" : ",") + $@"[CATEID({sData["CATEID"]})]";
+                        }
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/faq", "常見問題管理-分類", 3, logMsg);
+                if (!string.IsNullOrEmpty(logMsg2))
+                    objComm.AddUserControlLog(logData, "/faq", "常見問題管理-細項", 3, logMsg2);
+
+                return new { status = "0", msg = "刪除成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "刪除失敗！" };
+            }
+        }
+        #endregion
+
+        /* --- Faq --- */
+        #region 常見問題-細項
+        [HttpPost]
+        public dynamic GetTDFaqListData([FromBody] object form)
+        {
+            string sWhere = "";
+            var jsonData = JObject.FromObject(form);
+            string cateID = jsonData.Value<string>("CID");
+            int pageIndex = jsonData.Value<int>("PAGE_INDEX");
+            int pageSize = jsonData.Value<int>("PAGE_SIZE");
+            JObject temp = jsonData.Value<JObject>("srhForm");
+
+            if (temp.Count > 0)
+            {
+                Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                srhKey.Add("skeyword", "KEYWORD");
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[srhKey[t.Key]] = t.Value?.ToString();
+
+
+                sWhere += (sWhere == "" ? "WHERE" : " AND") + " FAQHID = '" + cateID + "'";
+
+                if (!string.IsNullOrEmpty(htData["KEYWORD"]?.ToString()))
+                {
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " (TITLE LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
+                    sWhere += (sWhere == "" ? "WHERE" : " OR") + " DESCR LIKE '%" + htData["KEYWORD"]?.ToString() + "%')";
+                }
+
+
+            }
+
+            return objWebs.GetFaqListData(sWhere, pageIndex, pageSize);
+        }
+
+        [HttpGet("{id}")]
+        public dynamic GetFaqData(long id)
+        {
+            return objWebs.GetFaqData(id);
+        }
+
+        [HttpPost]
+        public dynamic EditTDFaqData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+
+                long id = Convert.ToInt64(arrData.Value<string>("id"));
+                JObject temp = arrData.Value<JObject>("formdata");
+
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[t.Key.ToUpper()] = t.Value?.ToString();
+
+                //get cookies
+                htData["_usercode"] = Request.Cookies["_usercode"];
+                htData["_username"] = Request.Cookies["_username"];
+
+                return EditFaqData(id, htData);
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return err;
+            }
+        }
+
+        [HttpPost]
+        public dynamic EditTDFaqTopData([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "FAQID");
+                        dataKey.Add("isenable", "ISTOP");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        UpdateFaq(Convert.ToInt64(sData["FAQID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[FAQID({sData["ABOUTID"]}):{((sData["ISTOP"]?.ToString() == "1") ? "true" : "false")}]";
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/faq/info", "常見問題管理-細項-置頂變更", 2, logMsg);
+
+                return new { status = "0", msg = "修改成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+
+        [HttpPost]
+        public dynamic EditTDFaqEnableData([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "FAQID");
+                        dataKey.Add("isenable", "ISENABLE");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "0" : "1";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        UpdateFaq(Convert.ToInt64(sData["FAQID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[FAQID({sData["FAQID"]}):{((sData["ISENABLE"]?.ToString() == "0") ? "true" : "false")}]";
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/faq/info", "常見問題管理-細項-停用變更", 2, logMsg);
+
+                return new { status = "0", msg = "修改成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+
+        [HttpPost]
+        public dynamic DelFaqData([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "FAQID");
+                        dataKey.Add("isenable", "ISENABLE");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+
+                        if (sData["ISENABLE"]?.ToString() == "1")
+                        {
+                            var query = _context.TDFaqD.Where(q => q.Id == Convert.ToInt64(sData["FAQID"])).FirstOrDefault();
+                            if (query != null)
+                            {
+                                delFaq(query);
+                            }
+
+                            logMsg += (logMsg == "" ? "" : ",") + $@"[FAQID({sData["FAQID"]})]";
+                        }
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/faq/info", "常見問題管理-細項", 3, logMsg);
+
+                return new { status = "0", msg = "刪除成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "刪除失敗！" };
+            }
+        }
+        #endregion
+
         /* --- private CRUD function --- */
 
         private dynamic EditBanData(long id, Hashtable htData)
@@ -1077,7 +1600,7 @@ namespace Tectransit.Controllers
             {
                 if (id == 0)
                 {
-                    
+
                     InsertBan(htData);
 
                     //add user log
@@ -1172,7 +1695,7 @@ namespace Tectransit.Controllers
         {
             try
             {
-                
+
                 if (id == 0)
                 {
 
@@ -1444,6 +1967,191 @@ namespace Tectransit.Controllers
         private void delAbout(TDAboutD rm)
         {
             _context.TDAboutD.Remove(rm);
+            _context.SaveChanges();
+        }
+
+        private dynamic EditFaqCateData(long id, Hashtable htData)
+        {
+            try
+            {
+
+                if (id == 0)
+                {
+
+                    InsertFaqCate(htData);
+
+                    //add user log
+                    objComm.AddUserControlLog(htData, "faq/edit/0", "常見問題管理-分類", 1, htData["CATEID"]?.ToString());
+                }
+                else
+                {
+                    UpdateFaqCate(id, htData);
+
+                    string updMsg = "";
+                    foreach (DictionaryEntry ht in htData)
+                    {
+                        if (ht.Key.ToString() == "_usercode" || ht.Key.ToString() == "_username") { }
+                        else
+                            updMsg += (updMsg == "" ? "" : ",") + ht.Key + ":" + ht.Value;
+                    }
+
+                    //add user log
+                    objComm.AddUserControlLog(htData, $"faq/edit/{id}", "常見問題管理-分類", 2, updMsg);
+                }
+
+                return new { status = "0", msg = "保存成功！" };
+
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message?.ToString();
+                return new { status = "99", msg = "保存失敗！" };
+            }
+        }
+
+        private void InsertFaqCate(Hashtable sData)
+        {
+            Hashtable htData = sData;
+            htData["ISTOP"] = false;
+            htData["ISENABLE"] = htData["ISENABLE"]?.ToString() == "1" ? true : false;
+            htData["FAQHSEQ"] = htData["FAQSEQ"];
+            htData["CREDATE"] = DateTime.Now;
+            htData["CREATEBY"] = sData["_usercode"];
+            htData["UPDDATE"] = htData["CREDATE"];
+            htData["UPDBY"] = htData["CREATEBY"];
+
+            string sql = @"INSERT INTO T_D_FAQ_H(TITLE, DESCR, FAQHSEQ, ISTOP, ISENABLE, CREDATE, UPDDATE, CREATEBY, UPDBY) 
+                                        VALUES (@TITLE, @DESCR, @FAQHSEQ, @ISTOP, @ISENABLE, @CREDATE, @UPDDATE, @CREATEBY, @UPDBY)";
+
+            DBUtil.EXECUTE(sql, htData);
+        }
+
+        private void UpdateFaqCate(long id, Hashtable sData)
+        {
+            var query = _context.TDFaqH.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                TDFaqH rowTDF = query;
+
+                if (sData["TITLE"] != null)
+                    rowTDF.Title = sData["TITLE"]?.ToString();
+                if (sData["DESCR"] != null)
+                    rowTDF.Descr = sData["DESCR"]?.ToString();
+                if (sData["FAQSEQ"] != null)
+                    rowTDF.Faqhseq = sData["FAQSEQ"]?.ToString();
+                if (sData["ISTOP"] != null)
+                    rowTDF.Istop = sData["ISTOP"]?.ToString() == "1" ? true : false;
+                if (sData["ISENABLE"] != null)
+                    rowTDF.Isenable = sData["ISENABLE"]?.ToString() == "1" ? true : false;
+
+                if (sData.Count > 2)//排除cookies
+                {
+                    rowTDF.Upddate = DateTime.Now;
+                    rowTDF.Updby = sData["_usercode"]?.ToString();
+
+                    _context.SaveChanges();
+                }
+            }
+        }
+
+        private void delFaqCate(TDFaqH rm)
+        {
+            _context.TDFaqH.Remove(rm);
+            _context.SaveChanges();
+        }
+
+        private dynamic EditFaqData(long id, Hashtable htData)
+        {
+            try
+            {
+
+                if (id == 0)
+                {
+
+                    InsertFaq(htData);
+
+                    //add user log
+                    objComm.AddUserControlLog(htData, "faq/infoedit/0", "常見問題管理-細項", 1, htData["FAQID"]?.ToString());
+                }
+                else
+                {
+                    UpdateFaq(id, htData);
+
+                    string updMsg = "";
+                    foreach (DictionaryEntry ht in htData)
+                    {
+                        if (ht.Key.ToString() == "_usercode" || ht.Key.ToString() == "_username") { }
+                        else
+                            updMsg += (updMsg == "" ? "" : ",") + ht.Key + ":" + ht.Value;
+                    }
+
+                    //add user log
+                    objComm.AddUserControlLog(htData, $"faq/infoedit/{id}", "常見問題管理-細項", 2, updMsg);
+                }
+
+                return new { status = "0", msg = "保存成功！" };
+
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message?.ToString();
+                return new { status = "99", msg = "保存失敗！" };
+            }
+        }
+
+        private void InsertFaq(Hashtable sData)
+        {
+            Hashtable htData = sData;
+            //encode context
+            htData["DESCR"] = HttpUtility.HtmlEncode(htData["DESCR"]);
+            htData["ISTOP"] = htData["ISTOP"]?.ToString() == "1" ? true : false;
+            htData["ISENABLE"] = htData["ISENABLE"]?.ToString() == "1" ? true : false;
+            htData["FAQDSEQ"] = htData["FAQSEQ"];
+            htData["CREDATE"] = DateTime.Now;
+            htData["CREATEBY"] = sData["_usercode"];
+            htData["UPDDATE"] = htData["CREDATE"];
+            htData["UPDBY"] = htData["CREATEBY"];
+            htData["FAQHID"] = htData["CATEID"];
+
+            string sql = @"INSERT INTO T_D_FAQ_D(TITLE, DESCR, FAQDSEQ, ISTOP, ISENABLE, CREDATE, UPDDATE, CREATEBY, UPDBY, FAQHID) 
+                                        VALUES (@TITLE, @DESCR, @FAQDSEQ, @ISTOP, @ISENABLE, @CREDATE, @UPDDATE, @CREATEBY, @UPDBY, @FAQHID)";
+
+            DBUtil.EXECUTE(sql, htData);
+        }
+
+        private void UpdateFaq(long id, Hashtable sData)
+        {
+            var query = _context.TDFaqD.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                TDFaqD rowTDF = query;
+
+                if (sData["TITLE"] != null)
+                    rowTDF.Title = sData["TITLE"]?.ToString();
+                if (sData["DESCR"] != null)
+                    rowTDF.Descr = HttpUtility.HtmlEncode(sData["DESCR"]?.ToString()); //encode context
+                if (sData["FAQSEQ"] != null)
+                    rowTDF.Faqdseq = sData["FAQSEQ"]?.ToString();
+                if (sData["ISTOP"] != null)
+                    rowTDF.Istop = sData["ISTOP"]?.ToString() == "1" ? true : false;
+                if (sData["ISENABLE"] != null)
+                    rowTDF.Isenable = sData["ISENABLE"]?.ToString() == "1" ? true : false;
+
+                if (sData.Count > 2)//排除cookies
+                {
+                    rowTDF.Upddate = DateTime.Now;
+                    rowTDF.Updby = sData["_usercode"]?.ToString();
+
+                    _context.SaveChanges();
+                }
+            }
+        }
+
+        private void delFaq(TDFaqD rm)
+        {
+            _context.TDFaqD.Remove(rm);
             _context.SaveChanges();
         }
     }

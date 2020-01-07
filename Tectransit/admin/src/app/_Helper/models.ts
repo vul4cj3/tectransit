@@ -183,3 +183,30 @@ export interface AboutInfo {
   isenable: string;
   cateid: string;
 }
+
+export interface FaqCate {
+  cateid: number;
+  title: string;
+  descr: string;
+  faqseq: string;
+  istop: string;
+  credate: string;
+  creby: string;
+  upddate: string;
+  updby: string;
+  isenable: string;
+}
+
+export interface FaqInfo {
+  faqid: number;
+  title: string;
+  descr: string;
+  faqseq: string;
+  istop: string;
+  credate: string;
+  creby: string;
+  upddate: string;
+  updby: string;
+  isenable: string;
+  cateid: string;
+}

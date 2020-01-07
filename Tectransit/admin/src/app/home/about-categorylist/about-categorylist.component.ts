@@ -28,8 +28,6 @@ export class AboutCategorylistComponent implements OnInit {
   chkList: any = [];
   activeList: any = [];
   topList: any = [];
-  pUserid: string;
-  pUsercode: string;
   chkNum = 1;
 
   constructor(

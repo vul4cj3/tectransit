@@ -211,4 +211,33 @@ namespace Tectransit.Datas
         public string UPDBY { set; get; }
         public string CATEID { set; get; }
     }
+
+    public class FaqCate
+    {
+        public long CATEID { set; get; }
+        public string TITLE { set; get; }
+        public string DESCR { set; get; }
+        public string FAQSEQ { set; get; }
+        public string ISTOP { set; get; }
+        public string ISENABLE { set; get; }
+        public string CREDATE { set; get; }
+        public string CREBY { set; get; }
+        public string UPDDATE { set; get; }
+        public string UPDBY { set; get; }
+    }
+
+    public class FaqInfo
+    {
+        public long FAQID { set; get; }
+        public string TITLE { set; get; }
+        public string DESCR { set; get; }
+        public string FAQSEQ { set; get; }
+        public string ISTOP { set; get; }
+        public string ISENABLE { set; get; }
+        public string CREDATE { set; get; }
+        public string CREBY { set; get; }
+        public string UPDDATE { set; get; }
+        public string UPDBY { set; get; }
+        public string CATEID { set; get; }
+    }
 }
