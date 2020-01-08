@@ -116,7 +116,7 @@ namespace Tectransit
             {
                 client.UseSpa(spa =>
                 {
-                    spa.Options.SourcePath = "ClientApp";
+                    spa.Options.SourcePath = "TecTransit";
                     if (env.IsDevelopment())
                     {
                         spa.UseAngularCliServer(npmScript: "start");
