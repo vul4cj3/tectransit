@@ -40,7 +40,7 @@ namespace Tectransit
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/dist";
+                configuration.RootPath = "TecTransit/dist";
             });
 
             services.Configure<ForwardedHeadersOptions>(options =>
@@ -77,7 +77,7 @@ namespace Tectransit
             });
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"ClientApp/src/assets")),
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"TecTransit/src/assets")),
                 RequestPath = new PathString("/res/assets")
             });
 

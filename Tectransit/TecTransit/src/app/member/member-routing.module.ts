@@ -5,10 +5,14 @@ import { AuthGuard } from '../_Helper/auth.guard';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'member',
     component: MemberComponent,
     canActivate: [AuthGuard],
     children: [
+      // {
+      //  path: 'profile',
+      //  component: RoleListComponent,
+      // }
     ],
   },
 ];
