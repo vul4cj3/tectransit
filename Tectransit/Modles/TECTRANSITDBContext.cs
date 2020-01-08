@@ -21,8 +21,11 @@ namespace Tectransit.Modles
         public virtual DbSet<TDFaqD> TDFaqD { get; set; }
         public virtual DbSet<TDFaqH> TDFaqH { get; set; }
         public virtual DbSet<TDNews> TDNews { get; set; }
+        public virtual DbSet<TETransferD> TETransferD { get; set; }
+        public virtual DbSet<TETransferH> TETransferH { get; set; }
+        public virtual DbSet<TETransferNon> TETransferNon { get; set; }
         public virtual DbSet<TNDeclarant> TNDeclarant { get; set; }
-        public virtual DbSet<TNPackage> TNPackage { get; set; }
+        public virtual DbSet<TNShippingD> TNShippingD { get; set; }
         public virtual DbSet<TNShippingH> TNShippingH { get; set; }
         public virtual DbSet<TSAccount> TSAccount { get; set; }
         public virtual DbSet<TSAcdeclarantmap> TSAcdeclarantmap { get; set; }
@@ -322,11 +325,46 @@ namespace Tectransit.Modles
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<TNDeclarant>(entity =>
+            modelBuilder.Entity<TETransferD>(entity =>
             {
-                entity.ToTable("T_N_DECLARANT");
+                entity.ToTable("T_E_TRANSFER_D");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Product)
+                    .HasColumnName("PRODUCT")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Producturl)
+                    .HasColumnName("PRODUCTURL")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Quantity)
+                    .HasColumnName("QUANTITY")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Remark).HasColumnName("REMARK");
+
+                entity.Property(e => e.Transferhid)
+                    .HasColumnName("TRANSFERHID")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UnitPrice)
+                    .HasColumnName("UNIT_PRICE")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<TETransferH>(entity =>
+            {
+                entity.ToTable("T_E_TRANSFER_H");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Accountid).HasColumnName("ACCOUNTID");
 
                 entity.Property(e => e.Createby)
                     .HasColumnName("CREATEBY")
@@ -336,9 +374,49 @@ namespace Tectransit.Modles
                     .HasColumnName("CREDATE")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.Declarantid).HasColumnName("DECLARANTID");
+                entity.Property(e => e.PHeight)
+                    .HasColumnName("P_HEIGHT")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.ShippingidH).HasColumnName("SHIPPINGID_H");
+                entity.Property(e => e.PLength)
+                    .HasColumnName("P_LENGTH")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PValueprice)
+                    .HasColumnName("P_VALUEPRICE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PWeight)
+                    .HasColumnName("P_WEIGHT")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PWidth)
+                    .HasColumnName("P_WIDTH")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Remark).HasColumnName("REMARK");
+
+                entity.Property(e => e.Stationcode)
+                    .HasColumnName("STATIONCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Status).HasColumnName("STATUS");
+
+                entity.Property(e => e.Trasfercompany)
+                    .HasColumnName("TRASFERCOMPANY")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Trasferno)
+                    .HasColumnName("TRASFERNO")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Updby)
                     .HasColumnName("UPDBY")
@@ -349,11 +427,15 @@ namespace Tectransit.Modles
                     .HasColumnType("datetime");
             });
 
-            modelBuilder.Entity<TNPackage>(entity =>
+            modelBuilder.Entity<TETransferNon>(entity =>
             {
-                entity.ToTable("T_N_PACKAGE");
+                entity.ToTable("T_E_TRANSFER_NON");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Accountname)
+                    .HasColumnName("ACCOUNTNAME")
+                    .HasMaxLength(200);
 
                 entity.Property(e => e.Createby)
                     .HasColumnName("CREATEBY")
@@ -363,13 +445,79 @@ namespace Tectransit.Modles
                     .HasColumnName("CREDATE")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.PHeight)
+                    .HasColumnName("P_HEIGHT")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PLength)
+                    .HasColumnName("P_LENGTH")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PValueprice)
+                    .HasColumnName("P_VALUEPRICE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PWeight)
+                    .HasColumnName("P_WEIGHT")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PWidth)
+                    .HasColumnName("P_WIDTH")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Remark).HasColumnName("REMARK");
+
+                entity.Property(e => e.Stationcode)
+                    .HasColumnName("STATIONCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Status).HasColumnName("STATUS");
+
+                entity.Property(e => e.Trasfercompany)
+                    .HasColumnName("TRASFERCOMPANY")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Trasferno)
+                    .HasColumnName("TRASFERNO")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Updby)
+                    .HasColumnName("UPDBY")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Upddate)
+                    .HasColumnName("UPDDATE")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<TNDeclarant>(entity =>
+            {
+                entity.ToTable("T_N_DECLARANT");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Declarantid).HasColumnName("DECLARANTID");
+
+                entity.Property(e => e.ShippingidH).HasColumnName("SHIPPINGID_H");
+            });
+
+            modelBuilder.Entity<TNShippingD>(entity =>
+            {
+                entity.ToTable("T_N_SHIPPING_D");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
                 entity.Property(e => e.Packname)
                     .HasColumnName("PACKNAME")
                     .HasMaxLength(500);
-
-                entity.Property(e => e.Packtype)
-                    .HasColumnName("PACKTYPE")
-                    .HasMaxLength(100);
 
                 entity.Property(e => e.Packurl)
                     .HasColumnName("PACKURL")
@@ -387,14 +535,6 @@ namespace Tectransit.Modles
                     .HasColumnName("UNIT_PRICE")
                     .HasMaxLength(200)
                     .IsUnicode(false);
-
-                entity.Property(e => e.Updby)
-                    .HasColumnName("UPDBY")
-                    .HasMaxLength(300);
-
-                entity.Property(e => e.Upddate)
-                    .HasColumnName("UPDDATE")
-                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<TNShippingH>(entity =>
@@ -404,8 +544,6 @@ namespace Tectransit.Modles
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Accountid).HasColumnName("ACCOUNTID");
-
-                entity.Property(e => e.Combinetype).HasColumnName("COMBINETYPE");
 
                 entity.Property(e => e.Createby)
                     .HasColumnName("CREATEBY")
@@ -419,15 +557,6 @@ namespace Tectransit.Modles
                     .HasColumnName("EXPORTDATE")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.Importdate)
-                    .HasColumnName("IMPORTDATE")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.Oldtrasferno)
-                    .HasColumnName("OLDTRASFERNO")
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.PHeight)
                     .HasColumnName("P_HEIGHT")
                     .HasMaxLength(100)
@@ -437,10 +566,6 @@ namespace Tectransit.Modles
                     .HasColumnName("P_LENGTH")
                     .HasMaxLength(100)
                     .IsUnicode(false);
-
-                entity.Property(e => e.PSource)
-                    .HasColumnName("P_SOURCE")
-                    .HasMaxLength(1000);
 
                 entity.Property(e => e.PTrackingno)
                     .HasColumnName("P_TRACKINGNO")
@@ -482,6 +607,17 @@ namespace Tectransit.Modles
 
                 entity.Property(e => e.Remark3).HasColumnName("REMARK3");
 
+                entity.Property(e => e.Shippingno)
+                    .IsRequired()
+                    .HasColumnName("SHIPPINGNO")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Stationcode)
+                    .HasColumnName("STATIONCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Status).HasColumnName("STATUS");
 
                 entity.Property(e => e.Total)
@@ -500,12 +636,6 @@ namespace Tectransit.Modles
 
                 entity.Property(e => e.Trackingtype)
                     .HasColumnName("TRACKINGTYPE")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Trasferno)
-                    .IsRequired()
-                    .HasColumnName("TRASFERNO")
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
