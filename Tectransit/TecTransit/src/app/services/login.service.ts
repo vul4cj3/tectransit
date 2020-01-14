@@ -5,20 +5,20 @@ import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-  private currentUserSubject: BehaviorSubject<any>;
-  public currentUser: Observable<any>;
+  private currentAcctSubject: BehaviorSubject<any>;
+  public currentAcct: Observable<any>;
   private baseUrl = window.location.origin + '/api/Login/';
 
-  private loginUrl = 'doLogin';
-  private logoutUrl = 'doLogout';
+  private loginUrl = 'doAccLogin';
+  private logoutUrl = 'doAccLogout';
 
   constructor(private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('currentUser')));
-    this.currentUser = this.currentUserSubject.asObservable();
+    this.currentAcctSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('currentAcct')));
+    this.currentAcct = this.currentAcctSubject.asObservable();
   }
 
   public get currentUserValue() {
-    return this.currentUserSubject.value;
+    return this.currentAcctSubject.value;
   }
 
   login(username, password) {
@@ -27,8 +27,8 @@ export class AuthenticationService {
       .pipe(map(user => {
         // store usercode in session storage to keep user logged in between page refreshes
         if (user.status === 'success') {
-          sessionStorage.setItem('currentUser', user.id);
-          this.currentUserSubject.next(user);
+          sessionStorage.setItem('currentAcct', user.id);
+          this.currentAcctSubject.next(user);
         }
         return user;
       }));
@@ -38,7 +38,7 @@ export class AuthenticationService {
     // remove serverside cookies
     this.http.get<any>(this.baseUrl + this.logoutUrl).subscribe();
     // remove user from session storage and set current user to null
-    sessionStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
+    sessionStorage.removeItem('currentAcct');
+    this.currentAcctSubject.next(null);
   }
 }

@@ -26,7 +26,7 @@ namespace Tectransit.Controllers
 
             var res = objuser.Login(htData, true);
             if (res.status?.ToString() == "success")
-                LoginHandler(res.ID?.ToString());
+                LoginHandler(res.ID?.ToString(), "B");
 
             return res;
         }
@@ -41,7 +41,38 @@ namespace Tectransit.Controllers
             return "0";
         }
 
-        private void LoginHandler(string ID)
+        [HttpPost]
+        public dynamic doAccLogin([FromBody] object form)
+        {
+            var jsonData = JObject.FromObject(form);
+            string clientIP = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            Hashtable htData = new Hashtable();
+            htData["USERCODE"] = jsonData.Value<string>("USERCODE");
+            htData["PASSWORD"] = jsonData.Value<string>("PASSWORD");
+            htData["HOSTNAME"] = HttpContext.Request.Host.Host;
+            htData["ClientIP"] = clientIP;
+
+            user objuser = new user();
+
+            var res = objuser.ACLogin(htData, true);
+            if (res.status?.ToString() == "success")
+                LoginHandler(res.ID?.ToString(), "A");
+
+            return res;
+        }
+
+        [HttpGet]
+        public dynamic doAccLogout()
+        {
+            //Delete the cookie  
+            Remove("_acccode");
+            Remove("_accname");
+
+            return "0";
+        }
+
+        private void LoginHandler(string ID, string Type)
         {
             /*string ucode_cookie = Request.Cookies["_usercode"];
             string uname_cookie = Request.Cookies["_username"];
@@ -53,9 +84,18 @@ namespace Tectransit.Controllers
             }
             */
 
-            Set("_usercode", ID, 480);
-            string userName = DBUtil.GetSingleValue1($@"SELECT USERNAME AS COL1 FROM T_S_USER WHERE USERCODE = '{ID}' AND ISENABLE = 'true'");
-            Set("_username", userName, 480);
+            if (Type == "B")
+            {
+                Set("_usercode", ID, 480);
+                string userName = DBUtil.GetSingleValue1($@"SELECT USERNAME AS COL1 FROM T_S_USER WHERE USERCODE = '{ID}' AND ISENABLE = 'true'");
+                Set("_username", userName, 480);
+            }
+            else if (Type == "A")
+            {
+                Set("_acccode", ID, 120);
+                string accName = DBUtil.GetSingleValue1($@"SELECT USERNAME AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{ID}' AND ISENABLE = 'true'");
+                Set("_accname", accName, 120);
+            }
 
         }
         

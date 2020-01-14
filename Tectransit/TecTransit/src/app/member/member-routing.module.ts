@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MemberComponent } from './member.component';
 import { AuthGuard } from '../_Helper/auth.guard';
+import { ProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [
   {
@@ -9,17 +10,17 @@ const routes: Routes = [
     component: MemberComponent,
     canActivate: [AuthGuard],
     children: [
-      // {
-      //  path: 'profile',
-      //  component: RoleListComponent,
-      // }
+      {
+        path: 'profile',
+        component: ProfileComponent,
+      }
     ],
   },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { enableTracing: true })
+    RouterModule.forChild(routes)
   ],
   exports: [RouterModule]
 })

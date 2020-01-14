@@ -1,1 +1,45 @@
-<p>nav-menu works!</p>
+<div class="contain-nav">
+  <div class="w-100">
+    <!--LOGO section-->
+    <div class="nav_col">
+      <div class="app-header__logo">
+        <div class="logo-src"></div>
+      </div>
+    </div>
+    <!--Nav section-->
+    <div class="nav_col">
+      <div class="navlist">
+        <!--單一單元-->
+        <ul class="nav">
+          <li><a routerLink="/home">首頁</a></li>
+          <li>
+            <a href="#">中國集運</a>
+            <ul class="subnav">
+              <li class="subitem"><a routerLink="/jp">上海集運</a></li>
+              <li class="subitem"><a routerLink="/jp">北京集運</a></li>
+              <li class="subitem"><a routerLink="/jp">廣州集運</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#">日本集運</a>
+            <ul class="subnav">
+              <li class="subitem"><a routerLink="/jp">東京集運</a></li>
+              <li class="subitem"><a routerLink="/jp">大阪集運</a></li>
+              <li class="subitem"><a routerLink="/jp">九州集運</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#">韓國集運</a>
+            <ul class="subnav">
+              <li class="subitem"><a routerLink="/jp">首爾集運</a></li>
+              <li class="subitem"><a routerLink="/jp">釜山集運</a></li>
+            </ul>
+          </li>
+          <li><a routerLink="/login">登入</a></li>
+          <li><a routerLink="/register">註冊</a></li>
+          <li><a routerLink="/member/profile">會員管理</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
