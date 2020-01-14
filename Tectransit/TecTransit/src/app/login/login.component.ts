@@ -10,13 +10,14 @@ import { first } from 'rxjs/operators';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
   loginForm: FormGroup;
   loading = false;
   submitted = false;
   returnUrl: string;
   error: string;
   isErr = false;
+
+  public catpchaImg: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -32,14 +33,27 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.resetForm();
+    this.refreshCaptcha();
+    // get return url from route parameters or default to '/'
+    this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/member/profile';
+  }
+
+  resetForm() {
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
       captcha: ['', Validators.required]
     });
+  }
 
-    // get return url from route parameters or default to '/'
-    this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/member/profile';
+  refreshCaptcha() {
+    this.catpchaImg = `/api/Login/GetCaptcha?${Date.now()}`;
+  }
+
+  Clear() {
+    this.resetForm();
+    this.refreshCaptcha();
   }
 
   // convenience getter for easy access to form fields
@@ -54,13 +68,14 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authenticationService.login(this.f.username.value, this.f.password.value)
+    this.authenticationService.login(this.f.username.value, this.f.password.value, this.f.captcha.value)
       .pipe(first())
       .subscribe(
         data => {
           if (data.status === 'success') {
             this.router.navigate([this.returnUrl]);
           } else {
+            this.refreshCaptcha();
             this.isErr = true;
             alert(data.message);
           }

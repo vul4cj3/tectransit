@@ -33,6 +33,7 @@ namespace Tectransit
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddSession();
             //get client IP info
             services.AddHttpContextAccessor();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
@@ -81,6 +82,8 @@ namespace Tectransit
                 RequestPath = new PathString("/res/assets")
             });
 
+            app.UseSession();
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

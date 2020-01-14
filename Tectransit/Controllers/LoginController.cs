@@ -10,6 +10,16 @@ namespace Tectransit.Controllers
     [Route("api/Login/[action]")]
     public class LoginController : Controller
     {
+        private const string _captchaHashKey = "CaptchaHash";
+        public Captchabll captchabll = new Captchabll();
+        
+        private string CaptchaHash
+        {
+            get {return HttpContext.Session.GetString(_captchaHashKey) as string; }
+            set { HttpContext.Session.SetString(_captchaHashKey, value); }
+        }
+
+
         [HttpPost]
         public dynamic doLogin([FromBody] object form)
         {
@@ -46,12 +56,16 @@ namespace Tectransit.Controllers
         {
             var jsonData = JObject.FromObject(form);
             string clientIP = HttpContext.Connection.RemoteIpAddress?.ToString();
-
+            
             Hashtable htData = new Hashtable();
             htData["USERCODE"] = jsonData.Value<string>("USERCODE");
             htData["PASSWORD"] = jsonData.Value<string>("PASSWORD");
+            htData["CAPTCHA"] = jsonData.Value<string>("CODE");
             htData["HOSTNAME"] = HttpContext.Request.Host.Host;
             htData["ClientIP"] = clientIP;
+
+            if (!CheckCode(htData["CAPTCHA"]?.ToString()))
+                return new { status = "error", message = "驗證碼輸入錯誤！" };
 
             user objuser = new user();
 
@@ -70,6 +84,17 @@ namespace Tectransit.Controllers
             Remove("_accname");
 
             return "0";
+        }
+
+        [HttpGet]
+        public ActionResult GetCaptcha()
+        {
+            // 隨機產生四個字元
+            var randomText = captchabll.GenerateRandomText(4);
+            // 加密後存在 Session，也可以不用加密，比對時一致就好。
+            CaptchaHash = captchabll.ComputeMd5Hash(randomText);
+            // 回傳 gif 圖檔
+            return File(captchabll.GenerateCaptchaImage(randomText), "image/gif");
         }
 
         private void LoginHandler(string ID, string Type)
@@ -122,6 +147,14 @@ namespace Tectransit.Controllers
         public void Remove(string key)
         {
             Response.Cookies.Delete(key);
+        }
+
+        private bool CheckCode(string code)
+        {
+            if (CaptchaHash == captchabll.ComputeMd5Hash(code))
+                return true;
+            else
+                return false;
         }
 
     }

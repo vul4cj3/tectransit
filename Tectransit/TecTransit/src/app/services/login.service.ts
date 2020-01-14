@@ -21,8 +21,8 @@ export class AuthenticationService {
     return this.currentAcctSubject.value;
   }
 
-  login(username, password) {
-    const postData = { USERCODE: username, PASSWORD: password };
+  login(username, password, captcha) {
+    const postData = { USERCODE: username, PASSWORD: password, CODE: captcha };
     return this.http.post<any>(this.baseUrl + this.loginUrl, postData)
       .pipe(map(user => {
         // store usercode in session storage to keep user logged in between page refreshes
