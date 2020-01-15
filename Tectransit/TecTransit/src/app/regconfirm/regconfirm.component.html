@@ -1,0 +1,39 @@
+<div class="register">
+  <div class="reg-title">
+    <div class="step">
+      <ul class="steplist">
+        <li>
+          <i></i>
+          <span class="dis">會員種類</span>
+        </li>
+        <li>
+          <i></i>
+          <span class="dis">填寫資料</span>
+        </li>
+        <li>
+          <i></i>
+          <span>驗證信箱</span>
+        </li>
+        <li>
+          <i></i>
+          <span class="dis">註冊完成</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="reg-contain">
+    <div class="regform">
+      <form [formGroup]="regForm">
+      <input type="hidden" id="userid" formControlName="userid">
+        <div class="form-control">
+          <label for="emailcode">信箱認證代碼</label>
+          <input type="text" id="emailcode" maxlength="5" formControlName="emailcode">
+          <p>請輸入認證信內的代碼</p>
+        </div>
+        <div class="form-control">
+          <button type="button" (click)="ConfirmData(regForm.value)">確認送出</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

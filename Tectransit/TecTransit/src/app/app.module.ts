@@ -14,6 +14,10 @@ import { CommonService } from './services/common.service';
 import { FooterComponent } from './footer/footer.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { RegmemComponent } from './regmem/regmem.component';
+import { RegcusComponent } from './regcus/regcus.component';
+import { RegconfirmComponent } from './regconfirm/regconfirm.component';
+import { RegfinalComponent } from './regfinal/regfinal.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +26,11 @@ import { RegisterComponent } from './register/register.component';
     NavMenuComponent,
     FooterComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    RegmemComponent,
+    RegcusComponent,
+    RegconfirmComponent,
+    RegfinalComponent
   ],
   imports: [
     BrowserModule,

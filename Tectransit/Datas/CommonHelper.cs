@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -289,6 +291,81 @@ namespace Tectransit.Datas
             {
                 return BitConverter.ToString(md5.ComputeHash(UTF8Encoding.Default.GetBytes(argInput))).Replace("-", "");
             }
+        }
+
+        public string GetSeqCode(string type)
+        {
+            string num = DBUtil.GetSingleValue1($@"SELECT NEXTCODE AS COL1 FROM T_S_SEQUENCECODE WHERE CODENAME = '{type}'");
+            
+            return num;
+        }
+
+        public void UpdateSeqCode(string type)
+        {
+            string num = DBUtil.GetSingleValue1($@"SELECT NEXTCODE AS COL1 FROM T_S_SEQUENCECODE WHERE CODENAME = '{type}'");
+
+            if (!string.IsNullOrEmpty(num))
+            {
+                long tempCode = Convert.ToInt64(num);
+                tempCode++;
+
+                DBUtil.EXECUTE($@"UPDATE T_S_SEQUENCECODE SET NEXTCODE = '{tempCode}' WHERE CODENAME = '{type}'");
+            }
+
+        }
+
+        public string GetRandomString()
+        {
+            string allowedChars = "ABCDEFGHJKLMNOPQRSTUVWXYZ0123456789!@$?_-";
+            int passwordLength = 5;//密碼長度
+            char[] chars = new char[passwordLength];
+            Random rd = new Random();
+
+            for (int i = 0; i < passwordLength; i++)
+            {
+                //allowedChars -> 這個String ，隨機取得一個字，丟給chars[i]
+                chars[i] = allowedChars[rd.Next(0, allowedChars.Length)];
+            }
+
+            string pwd = new string(chars);
+            return pwd;
+        }
+
+        public void SendMail(string fromUser, string ToUser, string Mailsubject, string Mailbody, string ccUser)
+        {
+            #region  send mail
+            string smtpServer = "mail.t3ex-group.com";
+            int smtpPort = 25;
+            string mailAccount = "tomato";
+            string mailPwd = "1qaz2WSX";
+
+            //建立MailMessage物件
+            System.Net.Mail.MailMessage mms = new System.Net.Mail.MailMessage();
+            //指定一位寄信人MailAddress
+            mms.From = new MailAddress(fromUser);
+            //信件主旨
+            mms.Subject = Mailsubject;
+            //信件內容
+            mms.Body = Mailbody;
+            //信件內容 是否採用Html格式
+            mms.IsBodyHtml = true;
+
+            //加入信件的收件人address
+            mms.To.Add(ToUser);
+            //加入信件的副本address
+            mms.CC.Add(ccUser);
+            //備存
+            //mms.CC.Add(new MailAddress("ebs.sys@t3ex-group.com"));
+
+            using (SmtpClient client = new SmtpClient(smtpServer, smtpPort))//或公司、客戶的smtp_server
+            {
+                if (!string.IsNullOrEmpty(mailAccount) && !string.IsNullOrEmpty(mailPwd))//.config有帳密的話
+                {
+                    client.Credentials = new NetworkCredential(mailAccount, mailPwd);//寄信帳密
+                }
+                client.Send(mms);//寄出一封信
+            }//end using 
+            #endregion
         }
 
     }    

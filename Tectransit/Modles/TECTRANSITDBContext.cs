@@ -39,6 +39,7 @@ namespace Tectransit.Modles
         public virtual DbSet<TSRole> TSRole { get; set; }
         public virtual DbSet<TSRolebuttonmap> TSRolebuttonmap { get; set; }
         public virtual DbSet<TSRolemenumap> TSRolemenumap { get; set; }
+        public virtual DbSet<TSSequencecode> TSSequencecode { get; set; }
         public virtual DbSet<TSUser> TSUser { get; set; }
         public virtual DbSet<TSUserlog> TSUserlog { get; set; }
         public virtual DbSet<TSUserloginlog> TSUserloginlog { get; set; }
@@ -658,6 +659,10 @@ namespace Tectransit.Modles
                     .HasColumnName("ADDR")
                     .HasMaxLength(300);
 
+                entity.Property(e => e.Companyname)
+                    .HasColumnName("COMPANYNAME")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.Createby)
                     .HasColumnName("CREATEBY")
                     .HasMaxLength(300);
@@ -697,6 +702,11 @@ namespace Tectransit.Modles
                 entity.Property(e => e.Phone)
                     .HasColumnName("PHONE")
                     .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Rateid)
+                    .HasColumnName("RATEID")
+                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Taxid)
@@ -1141,6 +1151,52 @@ namespace Tectransit.Modles
                     .HasColumnName("ROLECODE")
                     .HasMaxLength(100)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<TSSequencecode>(entity =>
+            {
+                entity.ToTable("T_S_SEQUENCECODE");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Codedesc)
+                    .HasColumnName("CODEDESC")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Codename)
+                    .HasColumnName("CODENAME")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Createby)
+                    .HasColumnName("CREATEBY")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Credate)
+                    .HasColumnName("CREDATE")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Endcode)
+                    .HasColumnName("ENDCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Nextcode)
+                    .HasColumnName("NEXTCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Startcode)
+                    .HasColumnName("STARTCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Updby)
+                    .HasColumnName("UPDBY")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Upddate)
+                    .HasColumnName("UPDDATE")
+                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<TSUser>(entity =>

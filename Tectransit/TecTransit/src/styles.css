@@ -54,7 +54,7 @@ table {
   margin: 0;
   padding: 0;
   color: #273152;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, '微軟正黑體';
  }
 
 *,::after,::before{
@@ -86,6 +86,7 @@ text-decoration: none;
   left: 0;
   top: 0;
   width: 100%!important;
+  background-color: #fff;
 }
 
 .main-header::after{
@@ -165,7 +166,104 @@ text-decoration: none;
 
 /*========= login settings =========*/
 
+/*========= register-p1 settings =========*/
 
+.reg-title{
+  display: block;
+}
+.steplist{
+  display: flex;
+}
+
+.steplist li{
+  padding: 10px;
+}
+
+.steplist li span{
+  color: #fff;
+  background-color: #007C36;
+  font-size: 14px;
+  padding: 10px;
+}
+
+.steplist li .dis{
+  color: #666666;
+  background-color: #DDDDDD;
+}
+
+.reg-contain{
+  margin-top: 20px;
+  display: flex;
+}
+
+.col{
+  width: 70%;
+  height: 326px;
+  background-color: #f9f9f9;
+  margin-right: 20px;
+  padding:20px;
+}
+
+.col h3{
+  display: block;
+  color: #007C36;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.col span{
+  display: block;
+  color: #777;
+  font-size: 16px;
+  line-height: 24px;
+  margin-bottom: 15px;
+}
+
+.col a{
+  display: inline-block;
+  color: #f9f9f9;
+  background-color: #007C36;
+  padding: 10px;
+}
+
+.col a:hover{
+  background-color: #138844;
+}
+
+/*========= register-p2 settings =========*/
+.regform .form-control{
+  padding: 15px;
+  background-color: #f9f9f9;
+}
+
+.form-control label{
+  display: block;
+  margin-bottom: 10px;
+}
+
+.form-control input{
+  display: block;
+  margin-bottom: 10px;
+  width: 95%;
+  height: 35px;
+}
+
+.form-control input[type="checkbox"]{
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+}
+
+.form-control .chk{
+  display: inline-block;
+}
+
+.form-control p{
+  display: block;
+  font-size: 14px;
+  color:#999;
+}
 
 /*========= different screens settings  ========*/
 @media (min-width: 1200px){

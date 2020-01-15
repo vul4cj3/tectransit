@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { map, throwIfEmpty } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -129,22 +129,14 @@ export class CommonService {
       }));
   }
 
-  getSingleData(id, pageUrl: string) {
+  getData(id, pageUrl: string) {
     return this.http.get<any>(`${pageUrl}/${id}`)
       .pipe(map(data => {
         return data;
       }));
   }
 
-  getInfoListData(cateID, sWhere, pageIndex: number, pageSize: number, pageUrl: string) {
-    const postData = { CID: cateID, srhForm: sWhere, PAGE_INDEX: pageIndex, PAGE_SIZE: pageSize };
-    return this.http.post<any>(pageUrl, postData)
-      .pipe(map(data => {
-        return data;
-      }));
-  }
-
-  editSingleData(form, pageUrl: string) {
+  insertData(form, pageUrl: string) {
     const postData = { formdata: form };
     return this.http.post<any>(pageUrl, postData)
       .pipe(map(data => {
@@ -152,24 +144,8 @@ export class CommonService {
       }));
   }
 
-  editEnableData(arraydata, pageUrl: string) {
-    const postData = { formdata: arraydata };
-    return this.http.post<any>(pageUrl, postData)
-      .pipe(map(data => {
-        return data;
-      }));
-  }
-
-  editPowerData(code: string, arraydata, pageUrl: string) {
-    const postData = { id: code, formdata: arraydata };
-    return this.http.post<any>(pageUrl, postData)
-      .pipe(map(data => {
-        return data;
-      }));
-  }
-
-  editTopData(arraydata, pageUrl: string) {
-    const postData = { formdata: arraydata };
+  editData(form, pageUrl: string) {
+    const postData = { formdata: form };
     return this.http.post<any>(pageUrl, postData)
       .pipe(map(data => {
         return data;

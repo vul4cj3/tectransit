@@ -26,8 +26,8 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthenticationService
   ) {
     // redirect to home if already logged in
-    const currentUser = sessionStorage.getItem('currentUser');
-    if (currentUser) {
+    const currentAcct = sessionStorage.getItem('currentAcct');
+    if (currentAcct) {
       this.router.navigate(['/']);
     }
   }
@@ -73,7 +73,7 @@ export class LoginComponent implements OnInit {
       .subscribe(
         data => {
           if (data.status === 'success') {
-            this.router.navigate([this.returnUrl]);
+            document.location.href = this.returnUrl;
           } else {
             this.refreshCaptcha();
             this.isErr = true;

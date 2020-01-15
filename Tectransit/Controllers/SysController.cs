@@ -597,7 +597,7 @@ namespace Tectransit.Controllers
 
                 }
 
-                return new { status = "99", msg = "保存成功！" };
+                return new { status = "0", msg = "保存成功！" };
 
             }
             catch (Exception ex)
@@ -672,7 +672,7 @@ namespace Tectransit.Controllers
 
                 }
 
-                return new { status = "99", msg = "保存成功！" };
+                return new { status = "0", msg = "保存成功！" };
 
             }
             catch (Exception ex)

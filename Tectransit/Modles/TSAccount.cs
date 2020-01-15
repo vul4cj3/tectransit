@@ -11,6 +11,8 @@ namespace Tectransit.Modles
         public string Userseq { get; set; }
         public string Username { get; set; }
         public string Userdesc { get; set; }
+        public string Companyname { get; set; }
+        public string Rateid { get; set; }
         public string Warehouseno { get; set; }
         public string Email { get; set; }
         public string Taxid { get; set; }

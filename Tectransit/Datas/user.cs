@@ -71,7 +71,7 @@ namespace Tectransit.Datas
 
         public dynamic ACLogin(Hashtable request, bool IsEncode)
         {
-            string sUSERCODE = ConvertString(request["USERCODE"]).ToUpper();
+            string sUSERCODE = ConvertString(request["USERCODE"]);
             string sPASSWORD = ConvertString(request["PASSWORD"]);
 
             //ACC帳號密碼檢查

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from '../services/login.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-nav-menu',
@@ -7,9 +9,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavMenuComponent implements OnInit {
 
-  constructor() { }
+  ismemLogin = false;
+
+  constructor(
+    private authenticationService: AuthenticationService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
+    const currentAcct = sessionStorage.getItem('currentAcct');
+    if (currentAcct) {
+      this.ismemLogin = true;
+    }
+
+  }
+
+  doLogout() {
+    this.authenticationService.logout();
+    // redirect to login page
+    document.location.href = '/';
   }
 
 }
