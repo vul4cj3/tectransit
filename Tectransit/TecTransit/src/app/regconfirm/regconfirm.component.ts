@@ -24,6 +24,10 @@ export class RegconfirmComponent implements OnInit {
 
   ngOnInit() {
     // get parameters id then get data
+    if (this.route.snapshot.paramMap.get('id') === '') {
+      this.router.navigate(['/']);
+    }
+
     this.userID = Number(this.route.snapshot.paramMap.get('id'));
     this.resetForm();
   }

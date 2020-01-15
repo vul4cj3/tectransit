@@ -40,6 +40,7 @@ namespace Tectransit.Modles
         public virtual DbSet<TSRolebuttonmap> TSRolebuttonmap { get; set; }
         public virtual DbSet<TSRolemenumap> TSRolemenumap { get; set; }
         public virtual DbSet<TSSequencecode> TSSequencecode { get; set; }
+        public virtual DbSet<TSStation> TSStation { get; set; }
         public virtual DbSet<TSUser> TSUser { get; set; }
         public virtual DbSet<TSUserlog> TSUserlog { get; set; }
         public virtual DbSet<TSUserloginlog> TSUserloginlog { get; set; }
@@ -1188,6 +1189,68 @@ namespace Tectransit.Modles
                 entity.Property(e => e.Startcode)
                     .HasColumnName("STARTCODE")
                     .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Updby)
+                    .HasColumnName("UPDBY")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Upddate)
+                    .HasColumnName("UPDDATE")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<TSStation>(entity =>
+            {
+                entity.ToTable("T_S_STATION");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Address)
+                    .HasColumnName("ADDRESS")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Countrycode)
+                    .HasColumnName("COUNTRYCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Createby)
+                    .HasColumnName("CREATEBY")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Credate)
+                    .HasColumnName("CREDATE")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Mobile)
+                    .HasColumnName("MOBILE")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Phone)
+                    .HasColumnName("PHONE")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Receiver)
+                    .HasColumnName("RECEIVER")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Remark)
+                    .HasColumnName("REMARK")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Stationcode)
+                    .HasColumnName("STATIONCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Stationname)
+                    .HasColumnName("STATIONNAME")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Stationseq)
+                    .HasColumnName("STATIONSEQ")
+                    .HasMaxLength(10)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Updby)
