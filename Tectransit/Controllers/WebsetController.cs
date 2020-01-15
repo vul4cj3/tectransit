@@ -1592,6 +1592,137 @@ namespace Tectransit.Controllers
         }
         #endregion
 
+        /* --- Station --- */
+        #region 集貨站
+
+        [HttpPost]
+        public dynamic GetTSStationListData([FromBody] object form)
+        {
+            string sWhere = "";
+            var jsonData = JObject.FromObject(form);
+            int pageIndex = jsonData.Value<int>("PAGE_INDEX");
+            int pageSize = jsonData.Value<int>("PAGE_SIZE");
+            JObject temp = jsonData.Value<JObject>("srhForm");
+
+            if (temp.Count > 0)
+            {
+                Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                srhKey.Add("skeyword", "KEYWORD");
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[srhKey[t.Key]] = t.Value?.ToString();
+
+                if (!string.IsNullOrEmpty(htData["KEYWORD"]?.ToString()))
+                {
+                    sWhere += (sWhere == "" ? "WHERE" : " OR") + " STATIONCODE LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
+                    sWhere += (sWhere == "" ? "WHERE" : " OR") + " STATIONNAME LIKE '%" + htData["KEYWORD"]?.ToString() + "%'";
+                }
+                
+            }
+
+            return objWebs.GetStationListData(sWhere, pageIndex, pageSize);
+        }
+
+        [HttpGet("{id}")]
+        public dynamic GetStationData(long id)
+        {
+            return objWebs.GetStationData(id);
+        }
+
+        [HttpPost]
+        public dynamic EditTSStationData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+
+                long id = Convert.ToInt64(arrData.Value<string>("id"));
+                JObject temp = arrData.Value<JObject>("formdata");
+
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[t.Key.ToUpper()] = t.Value?.ToString();
+
+                //get cookies
+                htData["_usercode"] = Request.Cookies["_usercode"];
+                htData["_username"] = Request.Cookies["_username"];
+                
+                return EditStationData(id, htData);
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return err;
+            }
+        }
+
+        [HttpPost]
+        public dynamic DelStationData([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "STATIONID");
+                        dataKey.Add("isenable", "ISENABLE");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+
+                        if (sData["ISENABLE"]?.ToString() == "1")
+                        {
+                            var query = _context.TSStation.Where(q => q.Id == Convert.ToInt64(sData["STATIONID"])).FirstOrDefault();
+                            if (query != null)
+                                delStation(query);
+
+                            logMsg += (logMsg == "" ? "" : ",") + $@"[STATIONID({sData["STATIONID"]})]";
+                        }
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/station", "集貨站管理", 3, logMsg);
+
+                return new { status = "0", msg = "刪除成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "刪除失敗！" };
+            }
+        }
+        #endregion
+
         /* --- private CRUD function --- */
 
         private dynamic EditBanData(long id, Hashtable htData)
@@ -2152,6 +2283,99 @@ namespace Tectransit.Controllers
         private void delFaq(TDFaqD rm)
         {
             _context.TDFaqD.Remove(rm);
+            _context.SaveChanges();
+        }
+
+        private dynamic EditStationData(long id, Hashtable htData)
+        {
+            try
+            {
+
+                if (id == 0)
+                {
+
+                    InsertStation(htData);
+
+                    //add user log
+                    objComm.AddUserControlLog(htData, "station/edit/0", "集貨站管理", 1, htData["STATIONID"]?.ToString());
+                }
+                else
+                {
+                    UpdateStation(id, htData);
+
+                    string updMsg = "";
+                    foreach (DictionaryEntry ht in htData)
+                    {
+                        if (ht.Key.ToString() == "_usercode" || ht.Key.ToString() == "_username") { }
+                        else
+                            updMsg += (updMsg == "" ? "" : ",") + ht.Key + ":" + ht.Value;
+                    }
+
+                    //add user log
+                    objComm.AddUserControlLog(htData, $"station/edit/{id}", "集貨站管理", 2, updMsg);
+                }
+
+                return new { status = "0", msg = "保存成功！" };
+
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message?.ToString();
+                return new { status = "99", msg = "保存失敗！" };
+            }
+        }
+        private void InsertStation(Hashtable sData)
+        {
+            Hashtable htData = sData;
+            htData["CREDATE"] = DateTime.Now;
+            htData["CREATEBY"] = sData["_usercode"];
+            htData["UPDDATE"] = htData["CREDATE"];
+            htData["UPDBY"] = htData["CREATEBY"];
+
+            string sql = @"INSERT INTO T_S_STATION(STATIONCODE, STATIONNAME, COUNTRYCODE, RECEIVER, PHONE, MOBILE, ADDRESS, STATIONSEQ, REMARK, CREDATE, UPDDATE, CREATEBY, UPDBY) 
+                                        VALUES (@STATIONCODE, @STATIONNAME, @COUNTRYCODE, @RECEIVER, @PHONE, @MOBILE, @ADDRESS, @STATIONSEQ, @REMARK, @CREDATE, @UPDDATE, @CREATEBY, @UPDBY)";
+
+            DBUtil.EXECUTE(sql, htData);
+        }
+
+        private void UpdateStation(long id, Hashtable sData)
+        {
+            var query = _context.TSStation.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                TSStation rowTSS = query;
+
+                if (sData["STATIONNAME"] != null)
+                    rowTSS.Stationname = sData["STATIONNAME"]?.ToString();
+                if (sData["COUNTRYCODE"] != null)
+                    rowTSS.Countrycode = sData["COUNTRYCODE"]?.ToString();
+                if (sData["RECEIVER"] != null)
+                    rowTSS.Receiver = sData["RECEIVER"]?.ToString();
+                if (sData["PHONE"] != null)
+                    rowTSS.Phone = sData["PHONE"]?.ToString();
+                if (sData["MOBILE"] != null)
+                    rowTSS.Mobile = sData["MOBILE"]?.ToString();
+                if (sData["ADDRESS"] != null)
+                    rowTSS.Address = sData["ADDRESS"]?.ToString();
+                if (sData["STATIONSEQ"] != null)
+                    rowTSS.Stationseq = sData["STATIONSEQ"]?.ToString();
+                if (sData["REMARK"] != null)
+                    rowTSS.Remark = sData["REMARK"]?.ToString();
+
+                if (sData.Count > 2)//排除cookies
+                {
+                    rowTSS.Upddate = DateTime.Now;
+                    rowTSS.Updby = sData["_usercode"]?.ToString();
+
+                    _context.SaveChanges();
+                }
+            }
+        }
+
+        private void delStation(TSStation rm)
+        {
+            _context.TSStation.Remove(rm);
             _context.SaveChanges();
         }
     }

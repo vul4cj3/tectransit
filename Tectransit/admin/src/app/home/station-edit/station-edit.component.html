@@ -1,0 +1,89 @@
+<!--Top Section-->
+<div>
+  <div>
+    <div class="app-page-title">
+      <div class="page-title-wrapper">
+        <div class="page-title-heading">
+          <div class="page-title-icon"><i class="fas fa-box-open"></i></div>
+          <div>集運站管理 - 編輯</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Info Section-->
+<div class="row">
+  <div class="col-md-12">
+    <div class="main-card mb-3 card">
+      <div class="card-body">
+        <h5 class="card-title"></h5>
+        <form [formGroup]="dataForm" (ngSubmit)="saveData(dataForm.value)">
+          <input type="hidden" id="stationid" formControlName="stationid">
+          <div class="form-group">
+            <label for="stationcode">代碼</label>
+            <input type="text" id="stationcode" class="form-control middle" [ngClass]="{'is-invalid': isErr}"
+              formControlName="stationcode">
+          </div>
+          <div class="form-group">
+            <label for="stationname">集運站名稱</label>
+            <input type="text" id="stationname" class="form-control middle" formControlName="stationname">
+          </div>
+          <div class="form-group">
+            <label for="address">集運站地址</label>
+            <input type="text" id="address" class="form-control large" formControlName="address">
+          </div>
+          <div class="form-group">
+            <label for="countrycode">國家代碼</label>
+            <select id="countrycode" class="mb-2 form-control middle" formControlName="countrycode">
+              <option value="JPN">日本</option>
+              <option value="KOR">韓國</option>
+              <option value="CN">中國</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="receiver">負責人</label>
+            <input type="text" id="receiver" class="form-control middle" formControlName="receiver">
+          </div>
+          <div class="form-group">
+            <label for="phone">電話</label>
+            <input type="text" id="phone" class="form-control middle" formControlName="phone">
+          </div>
+          <div class="form-group">
+            <label for="mobile">手機</label>
+            <input type="text" id="mobile" class="form-control middle" formControlName="mobile">
+          </div>
+          <div class="form-group">
+            <label for="stationseq">排序</label>
+            <input type="text" id="stationseq" class="form-control small" maxlength="3" formControlName="stationseq">
+          </div>
+          <div class="form-group">
+              <label for="remark">備註</label>
+              <input type="text" id="remark" class="form-control large" formControlName="remark">
+            </div>
+          <ng-container *ngIf="dataForm.value.stationid !== 0">
+            <div class="form-group">
+              <label for>建立時間</label>
+              <p>{{dataForm.value.credate}}</p>
+            </div>
+            <div class="form-group">
+              <label for>建立者</label>
+              <p>{{dataForm.value.creby}}</p>
+            </div>
+            <div class="form-group">
+              <label for>更新時間</label>
+              <p>{{dataForm.value.upddate}}</p>
+            </div>
+            <div class="form-group">
+              <label for>更新者</label>
+              <p>{{dataForm.value.updby}}</p>
+            </div>
+          </ng-container>
+          <div class="btn-two">
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" type="submit">保存</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/station">回列表</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

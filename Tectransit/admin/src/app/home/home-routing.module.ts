@@ -27,6 +27,8 @@ import { FaqCategorylistComponent } from './faq-categorylist/faq-categorylist.co
 import { FaqCategoryeditComponent } from './faq-categoryedit/faq-categoryedit.component';
 import { FaqListComponent } from './faq-list/faq-list.component';
 import { FaqEditComponent } from './faq-edit/faq-edit.component';
+import { StationListComponent } from './station-list/station-list.component';
+import { StationEditComponent } from './station-edit/station-edit.component';
 
 const routes: Routes = [
   {
@@ -133,6 +135,14 @@ const routes: Routes = [
       {
         path: 'faq/infoedit/:id/:id2',
         component: FaqEditComponent,
+      },
+      {
+        path: 'station',
+        component: StationListComponent,
+      },
+      {
+        path: 'station/edit/:id',
+        component: StationEditComponent,
       }
     ],
   },

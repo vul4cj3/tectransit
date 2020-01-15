@@ -240,4 +240,22 @@ namespace Tectransit.Datas
         public string UPDBY { set; get; }
         public string CATEID { set; get; }
     }
+
+    public class StationInfo
+    {
+        public long STATIONID { set; get; }
+        public string STATIONCODE { set; get; }
+        public string STATIONNAME { set; get; }
+        public string COUNTRYCODE { set; get; }
+        public string RECEIVER { set; get; }
+        public string PHONE { set; get; }
+        public string MOBILE { set; get; }
+        public string ADDRESS { set; get; }
+        public string STATIONSEQ { set; get; }
+        public string REMARK { set; get; }
+        public string CREDATE { set; get; }
+        public string CREBY { set; get; }
+        public string UPDDATE { set; get; }
+        public string UPDBY { set; get; }
+    }
 }

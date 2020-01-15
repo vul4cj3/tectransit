@@ -468,5 +468,84 @@ namespace Tectransit.Datas
 
             return new { rows = "" };
         }
+
+        public dynamic GetStationListData(string sWhere, int pageIndex, int pageSize)
+        {
+            string sql = $@"SELECT * FROM (
+                                            SELECT ROW_NUMBER() OVER (ORDER BY STATIONSEQ) AS ROW_ID, ID, STATIONCODE, STATIONNAME, COUNTRYCODE, RECEIVER,
+                                                   PHONE, MOBILE, ADDRESS, STATIONSEQ, REMARK,
+                                                   FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
+                                                   CREATEBY AS CREBY, UPDBY
+                                            From T_S_STATION
+                                            {sWhere}
+                            ) AS A";
+            string sql1 = sql + $@" WHERE ROW_ID BETWEEN {((pageIndex - 1) * pageSize + 1).ToString()} AND {(pageIndex * pageSize).ToString()}";
+            DataTable DT = DBUtil.SelectDataTable(sql1);
+            if (DT.Rows.Count > 0)
+            {
+                List<StationInfo> rowList = new List<StationInfo>();
+                for (int i = 0; i < DT.Rows.Count; i++)
+                {
+                    StationInfo m = new StationInfo();
+                    m.STATIONID = Convert.ToInt64(DT.Rows[i]["ID"]);
+                    m.STATIONCODE = DT.Rows[i]["STATIONCODE"]?.ToString();
+                    m.STATIONNAME = DT.Rows[i]["STATIONNAME"]?.ToString();
+                    m.COUNTRYCODE = DT.Rows[i]["COUNTRYCODE"]?.ToString();
+                    m.RECEIVER = DT.Rows[i]["RECEIVER"]?.ToString();
+                    m.PHONE = DT.Rows[i]["PHONE"]?.ToString();
+                    m.MOBILE = DT.Rows[i]["MOBILE"]?.ToString();
+                    m.ADDRESS = DT.Rows[i]["ADDRESS"]?.ToString();
+                    m.STATIONSEQ = DT.Rows[i]["STATIONSEQ"]?.ToString();
+                    m.REMARK = DT.Rows[i]["REMARK"]?.ToString();
+                    m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
+                    m.CREBY = DT.Rows[i]["CREBY"]?.ToString();
+                    m.UPDDATE = DT.Rows[i]["UPDDATE"]?.ToString();
+                    m.UPDBY = DT.Rows[i]["UPDBY"]?.ToString();
+
+                    rowList.Add(m);
+                }
+
+                sql = "SELECT COUNT(*) as COL1 FROM (" + sql + ") AS B ";
+                string totalCt = DBUtil.GetSingleValue1(sql);
+
+                return new { rows = rowList, total = totalCt };
+            }
+
+            return new { rows = "", total = 0 };
+        }
+
+        public dynamic GetStationData(long sID)
+        {
+            string sql = $@"
+                            SELECT ID, STATIONCODE, STATIONNAME,  COUNTRYCODE, RECEIVER, PHONE,
+                                   MOBILE, ADDRESS, STATIONSEQ, REMARK, FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') AS CREDATE,
+                                   FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') AS UPDDATE, CREATEBY AS CREBY, UPDBY
+                            FROM T_S_STATION
+                            WHERE ID = {sID}";
+            DataTable DT = DBUtil.SelectDataTable(sql);
+            if (DT.Rows.Count > 0)
+            {
+                StationInfo m = new StationInfo();
+                m.STATIONID = Convert.ToInt64(DT.Rows[0]["ID"]);
+                m.STATIONSEQ = DT.Rows[0]["STATIONSEQ"]?.ToString();
+                m.STATIONCODE = DT.Rows[0]["STATIONCODE"]?.ToString();
+                m.STATIONNAME = DT.Rows[0]["STATIONNAME"]?.ToString();
+                m.COUNTRYCODE = DT.Rows[0]["COUNTRYCODE"]?.ToString();
+                m.RECEIVER = DT.Rows[0]["RECEIVER"]?.ToString();
+                m.PHONE = DT.Rows[0]["PHONE"]?.ToString();
+                m.MOBILE = DT.Rows[0]["MOBILE"]?.ToString();
+                m.ADDRESS = DT.Rows[0]["ADDRESS"]?.ToString();
+                m.RECEIVER = DT.Rows[0]["RECEIVER"]?.ToString();
+                m.REMARK = DT.Rows[0]["REMARK"]?.ToString();
+                m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
+                m.CREBY = DT.Rows[0]["CREBY"]?.ToString();
+                m.UPDDATE = DT.Rows[0]["UPDDATE"]?.ToString();
+                m.UPDBY = DT.Rows[0]["UPDBY"]?.ToString();
+
+                return new { rows = m };
+            }
+
+            return new { rows = "" };
+        }
     }
 }

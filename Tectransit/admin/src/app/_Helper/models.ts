@@ -210,3 +210,20 @@ export interface FaqInfo {
   isenable: string;
   cateid: string;
 }
+
+export interface StationInfo {
+  stationid: number;
+  stationcode: string;
+  stationname: string;
+  countrycode: string;
+  receiver: string;
+  phone: string;
+  mobile: string;
+  address: string;
+  stationseq: string;
+  remark: string;
+  credate: string;
+  creby: string;
+  upddate: string;
+  updby: string;
+}
