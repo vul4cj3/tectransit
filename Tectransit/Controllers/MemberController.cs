@@ -192,6 +192,68 @@ namespace Tectransit.Controllers
             return objMember.GetACStationData(htData);
         }
 
+
+        //存入快遞單號
+        [HttpPost]
+        public dynamic SaveTansferData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+                JArray rowsData = arrData.Value<JArray>("rows");
+
+                Hashtable htData = new Hashtable();
+
+                htData["STATIONCODE"] = arrData.Value<string>("stationcode");
+                htData["TRASFERNO"] = arrData.Value<string>("trasferno");
+                
+                htData["_acccode"] = Request.Cookies["_acccode"];
+                htData["ACCOUNTID"] = DBUtil.GetSingleValue1($@"SELECT ID AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{htData["_acccode"]}'");
+
+                //新增主單
+                string HID = InsertTransferH(htData);
+
+                //新增細項
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < rowsData.Count; i++)
+                {
+                    JObject temp = (JObject)rowsData[i];
+
+                    Hashtable tempData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("product", "PRODUCT");
+                        dataKey.Add("price", "UNIT_PRICE");
+                        dataKey.Add("quantity", "QUANTITY");
+                        tempData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+
+                    tempData["TRANSFERHID"] = HID;
+
+                    AL.Add(tempData);
+                }
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        InsertTransferD(sData);                        
+                    }
+                }
+                
+                return new { status = "0", msg = "保存成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "保存失敗！" };
+            }
+        }
+
+
         #region 私有function
 
         private void InsertMemCompanyData(Hashtable htData)
@@ -324,6 +386,42 @@ namespace Tectransit.Controllers
 
             objComm.SendMail(F_User, T_User, subject, body, C_User);
         }
+
+        private string InsertTransferH(Hashtable sData)
+        {
+            TETransferH TEH = new TETransferH();
+            TEH.Accountid = Convert.ToInt64(sData["ACCOUNTID"]);
+            TEH.Stationcode = sData["STATIONCODE"].ToString();
+            TEH.Trasferno = sData["TRASFERNO"].ToString();
+            TEH.Status = 0;
+
+            TEH.Credate = DateTime.Now;
+            TEH.Createby = sData["_acccode"].ToString();
+            TEH.Upddate = DateTime.Now;
+            TEH.Updby = sData["_acccode"].ToString();
+
+            _context.TETransferH.Add(TEH);
+            _context.SaveChanges();
+
+            string hid = TEH.Id.ToString();
+
+            return hid;
+            
+        }
+
+        private void InsertTransferD(Hashtable sData)
+        {
+            TETransferD TED = new TETransferD();
+            TED.Product = sData["PRODUCT"].ToString();
+            TED.Quantity = sData["QUANTITY"].ToString();
+            TED.UnitPrice = sData["UNIT_PRICE"].ToString();
+            TED.Transferhid = sData["TRANSFERHID"].ToString();
+
+            _context.TETransferD.Add(TED);
+            _context.SaveChanges();
+            
+        }
+
         #endregion
 
     }

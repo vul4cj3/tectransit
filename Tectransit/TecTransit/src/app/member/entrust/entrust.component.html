@@ -1,1 +1,45 @@
-<p>entrust works!</p>
+<div class="memprofile">
+  <div class="profile-contain">
+    <div class="memheader"><span>委託集貨</span></div>
+    <span class="symbol">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>請選擇集貨站及輸入快遞單號，請確實填寫包裹內物品資料！</p>
+      <br/>
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>新增完成的快遞單號，請至[集運單管理]查看！</p>
+    </span>
+    <div class="regform">
+      <form [formGroup]="dataForm">
+        <div class="form-control">
+          <label>集貨站</label>
+          <select formControlName="stationcode">
+            <option value="{{item.stationcode}}" *ngFor="let item of stationData">{{item.stationname}}</option>
+          </select>
+          <label>快遞單號</label>
+          <input type="text" formControlName="trasferno">
+        </div>
+        <div formArrayName="rows">
+          <div class="form-control three_column" *ngFor="let row of dataForm.get('rows')['controls']; let i = index"
+            [formGroupName]="i">
+            <div class="subcol">
+              <label>商品名稱</label>
+              <input type="text" formControlName="product">
+            </div>
+            <div class="subcol">
+              <label>數量</label>
+              <input type="text" formControlName="quantity">
+            </div>
+            <div class="subcol">
+              <label>單價</label>
+              <input type="text" formControlName="price">
+            </div>
+            <button type="button" class="btn btn-square btn-danger btn-sm waves-effect waves-light"
+              (click)="onDeleteRow(i)">刪除</button>
+          </div>
+        </div>
+        <button type="button" (click)="initGroup()">新增商品</button>
+        <button type="button" (click)="SaveData(dataForm.value)">保存</button>
+      </form>
+    </div>
+  </div>
+</div>

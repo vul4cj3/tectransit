@@ -5,6 +5,8 @@
    License: none (public domain)
 */
 
+@import "../node_modules/@fortawesome/fontawesome-free/css/all.css";
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -276,6 +278,48 @@ text-decoration: none;
 }
 
 /*========= station settings =========*/
+.profile-contain{
+  width: 150%;
+}
+
+.subline{
+  margin-bottom: 15px;
+}
+
+.box{
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+.box label{
+  padding: 5px;
+  color: #fff;
+  background-color: #425080;
+}
+
+.box span{
+  padding: 5px;
+  background-color: rgb(243, 242, 242);
+}
+
+/*========= entrace settings =========*/
+.symbol{
+  font-size: 15px;
+}
+
+.symbol p{
+  display: inline-block;
+}
+
+/*========= shipping settings =========*/
+.sub_menu {
+  margin-top: 10px;
+  display: flex;
+}
+
+.sub_menu div a{
+  padding: 10px;
+}
 
 
 /*========= different screens settings  ========*/
@@ -326,4 +370,5 @@ text-decoration: none;
     max-width: 540px;
   }
 }
+
 
