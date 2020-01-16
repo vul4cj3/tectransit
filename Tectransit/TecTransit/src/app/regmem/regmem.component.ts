@@ -10,10 +10,6 @@ import { Router } from '@angular/router';
 })
 export class RegmemComponent implements OnInit {
   regForm: FormGroup;
-  year = [];
-  month = [];
-  days = [];
-  tyear = (new Date()).getFullYear();
 
   saveUrl = '/api/Member/SaveRegData';
 
@@ -25,7 +21,6 @@ export class RegmemComponent implements OnInit {
 
   ngOnInit() {
     this.resetForm();
-    this.GetBirth();
   }
 
   resetForm() {
@@ -33,30 +28,12 @@ export class RegmemComponent implements OnInit {
       usercode: ['', Validators.required],
       userpassword: ['', Validators.required],
       username: ['', Validators.required],
-      idcode: ['', Validators.required],
-      birth: [''],
+      taxid: ['', Validators.required],
       email: ['', Validators.required],
       address: ['', Validators.required],
-      tel: ['', Validators.required],
+      phone: ['', Validators.required],
       mobile: ['', Validators.required]
     });
-  }
-
-  GetBirth() {
-    let k = 0;
-    for (let i = 1; i < 91; i++) {
-      this.year[k] = this.tyear - i;
-      k++;
-    }
-
-    for (let i = 0; i < 12; i++) {
-      this.month[i] = i + 1;
-    }
-
-    for (let i = 0; i < 31; i++) {
-      this.days[i] = i + 1;
-    }
-
   }
 
   SaveData(form) {
@@ -75,19 +52,6 @@ export class RegmemComponent implements OnInit {
     if (cpw.value !== form.userpassword) {
       return alert('用戶密碼資料不一致！');
     }
-
-    // 生日資料處理
-    const birY = (document.getElementById('b_year')) as HTMLSelectElement;
-    const birM = (document.getElementById('b_mon')) as HTMLSelectElement;
-    const birD = (document.getElementById('b_day')) as HTMLSelectElement;
-
-    if (birM.value === '2' && parseInt(birD.value, 2) > 29) {
-      return alert('生日日期選擇有誤！');
-    } else if ((birM.value === '4' || birM.value === '6' || birM.value === '9' || birM.value === '11') && birD.value === '31') {
-      return alert('生日日期選擇有誤！');
-    }
-
-    form.birth = birY.value + '/' + birM.value + '/' + birD.value;
 
     if (Object.keys(form).length > 0) {
       this.commonservice.insertData(form, this.saveUrl)

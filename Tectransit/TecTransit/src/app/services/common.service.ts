@@ -136,6 +136,13 @@ export class CommonService {
       }));
   }
 
+  getSingleData(pageUrl: string) {
+    return this.http.get<any>(`${pageUrl}`)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
   insertData(form, pageUrl: string) {
     const postData = { formdata: form };
     return this.http.post<any>(pageUrl, postData)
@@ -146,6 +153,14 @@ export class CommonService {
 
   editData(form, pageUrl: string) {
     const postData = { formdata: form };
+    return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  editSingleData(code, form, pageUrl: string) {
+    const postData = { id: code, formdata: form };
     return this.http.post<any>(pageUrl, postData)
       .pipe(map(data => {
         return data;

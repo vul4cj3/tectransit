@@ -265,6 +265,19 @@ text-decoration: none;
   color:#999;
 }
 
+/*========= profile settings =========*/
+.memheader{
+  margin-bottom: 10px;
+  padding: 10px;
+}
+.memheader span{
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/*========= station settings =========*/
+
+
 /*========= different screens settings  ========*/
 @media (min-width: 1200px){
   .main-header{

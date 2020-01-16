@@ -1,0 +1,52 @@
+<div class="memprofile">
+  <div class="profile-contain">
+    <div class="memheader"><span>集運站資料</span></div>
+    <div class="regform">
+      <!-- 會員&入倉代號 start -->
+      <div class="table-box">
+        <div class="line">
+          <div class="subline">
+            <div class="box">
+              <label>入倉代號</label>
+              <span>{{warehouseNo}}</span>
+            </div>
+          </div>
+          <div class="subline">
+            <div class="box">
+              <label>收貨人姓名</label>
+              <span>{{memName}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 會員&入倉代號 end -->
+      <!-- 集貨站資料 start -->
+      <div class="table-box">
+        <div class="line">
+          <div class="subline" *ngFor="let item of stationData let idx=index">
+            <div class="box">
+              <label>站名</label>
+              <span>{{item.stationname}}</span>
+            </div>
+            <div class="box">
+              <label>地址</label>
+              <span>{{item.address}}</span>
+            </div>
+            <div class="box">
+              <label>負責人</label>
+              <span>{{item.receiver}}</span>
+            </div>
+            <div class="box">
+              <label>電話</label>
+              <span>{{item.phone}}</span>
+            </div>
+            <div class="box">
+              <label>手機</label>
+              <span>{{item.mobile}}</span>
+            </div>
+          </div>
+        </div>
+        <!--集貨站資料end-->
+      </div>
+    </div>
+  </div>

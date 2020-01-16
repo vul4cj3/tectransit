@@ -39,7 +39,7 @@ export class RegcusComponent implements OnInit {
       idcode: ['', Validators.required],
       email: ['', Validators.required],
       address: ['', Validators.required],
-      tel: ['', Validators.required],
+      phone: ['', Validators.required],
       mobile: ['', Validators.required]
     });
   }

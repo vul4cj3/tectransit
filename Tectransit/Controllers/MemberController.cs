@@ -23,7 +23,7 @@ namespace Tectransit.Controllers
             _context = context;
         }
 
-        [HttpPost]
+        [HttpGet]
         public dynamic GetMemData()
         {
             Hashtable htData = new Hashtable();
@@ -39,14 +39,21 @@ namespace Tectransit.Controllers
             try
             {
                 var jsonData = JObject.FromObject(form);
+                long id = Convert.ToInt64(jsonData.Value<string>("id"));
                 JObject arrData = jsonData.Value<JObject>("formdata");
 
-                long id = Convert.ToInt64(arrData.Value<string>("id"));
-                JObject temp = arrData.Value<JObject>("formdata");
-
                 Hashtable htData = new Hashtable();
-                foreach (var t in temp)
+                foreach (var t in arrData)
                     htData[t.Key.ToUpper()] = t.Value?.ToString();
+
+
+                //檢查舊密碼是否符合(不符合則不可修改)
+                if (!string.IsNullOrEmpty(htData["USERPASSWORD"]?.ToString()) && !string.IsNullOrEmpty(htData["NEWPW"]?.ToString()))
+                {
+                    string oldPW = DBUtil.GetSingleValue1($@"SELECT USERPASSWORD AS COL1 FROM T_S_ACCOUNT WHERE ID = {id}");
+                    if (objComm.GetMd5Hash(htData["USERPASSWORD"]?.ToString()) != oldPW)
+                        return new { status = "99", msg = "保存失敗，用戶密碼(舊密碼)輸入錯誤！" };
+                }
 
                 //get cookies
                 htData["_acccode"] = Request.Cookies["_acccode"];
@@ -175,6 +182,18 @@ namespace Tectransit.Controllers
             }
         }
 
+        [HttpGet]
+        public dynamic GetStationData()
+        {
+            Hashtable htData = new Hashtable();
+            htData["_acccode"] = Request.Cookies["_acccode"];
+            htData["_accname"] = Request.Cookies["_accname"];
+
+            return objMember.GetACStationData(htData);
+        }
+
+        #region 私有function
+
         private void InsertMemCompanyData(Hashtable htData)
         {
 
@@ -188,8 +207,8 @@ namespace Tectransit.Controllers
             rowTSA.Rateid = htData["RATEID"]?.ToString();
             rowTSA.Warehouseno = "";
             rowTSA.Email = htData["EMAIL"]?.ToString();
-            rowTSA.Taxid = htData["IDCODE"]?.ToString();
-            rowTSA.Phone = htData["TEL"]?.ToString();
+            rowTSA.Taxid = htData["TAXID"]?.ToString();
+            rowTSA.Phone = htData["PHONE"]?.ToString();
             rowTSA.Mobile = htData["MOBILE"]?.ToString();
             rowTSA.Addr = htData["ADDRESS"]?.ToString();
 
@@ -226,8 +245,8 @@ namespace Tectransit.Controllers
             string WCode = objComm.GetSeqCode("WAREHOUSENO");
             rowTSA.Warehouseno = "TECW-" + WCode;
             rowTSA.Email = htData["EMAIL"]?.ToString();
-            rowTSA.Taxid = htData["IDCODE"]?.ToString();
-            rowTSA.Phone = htData["TEL"]?.ToString();
+            rowTSA.Taxid = htData["TAXID"]?.ToString();
+            rowTSA.Phone = htData["PHONE"]?.ToString();
             rowTSA.Mobile = htData["MOBILE"]?.ToString();
             rowTSA.Addr = htData["ADDRESS"]?.ToString();
 
@@ -262,18 +281,18 @@ namespace Tectransit.Controllers
             {
                 TSAccount rowTSA = query;
 
-                if (sData["USERPASSWORD"] != null)
-                    rowTSA.Userpassword = objComm.GetMd5Hash(sData["USERPASSWORD"]?.ToString());
+                if (sData["NEWPW"] != null)
+                    rowTSA.Userpassword = objComm.GetMd5Hash(sData["NEWPW"]?.ToString());
                 if (sData["USERNAME"] != null)
                     rowTSA.Username = sData["USERNAME"]?.ToString();
                 if (sData["USERDESC"] != null)
                     rowTSA.Userdesc = sData["USERDESC"]?.ToString();
                 if (sData["EMAIL"] != null)
                     rowTSA.Email = sData["EMAIL"]?.ToString();
-                if (sData["IDCODE"] != null)
-                    rowTSA.Taxid = sData["IDCODE"]?.ToString();
-                if (sData["TEL"] != null)
-                    rowTSA.Phone = sData["TEL"]?.ToString();
+                if (sData["TAXID"] != null)
+                    rowTSA.Taxid = sData["TAXID"]?.ToString();
+                if (sData["PHONE"] != null)
+                    rowTSA.Phone = sData["PHONE"]?.ToString();
                 if (sData["MOBILE"] != null)
                     rowTSA.Mobile = sData["MOBILE"]?.ToString();
                 if (sData["ADDRESS"] != null)
@@ -305,6 +324,7 @@ namespace Tectransit.Controllers
 
             objComm.SendMail(F_User, T_User, subject, body, C_User);
         }
+        #endregion
 
     }
 }

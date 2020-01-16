@@ -142,7 +142,7 @@ namespace Tectransit.Datas
                 m.IDPHOTO_B = DT.Rows[0]["IDPHOTO_B"]?.ToString();
                 m.PHONE = DT.Rows[0]["PHONE"]?.ToString();
                 m.MOBILE = DT.Rows[0]["MOBILE"]?.ToString();
-                m.ADDR = DT.Rows[0]["ADDR"]?.ToString();
+                m.ADDRESS = DT.Rows[0]["ADDR"]?.ToString();
                 m.LASTLOGINDATE = DT.Rows[0]["LASTLOGINDATE"]?.ToString();
                 m.LOGINCOUNT = DT.Rows[0]["LOGINCOUNT"]?.ToString();
                 m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();

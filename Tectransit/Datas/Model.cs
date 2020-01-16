@@ -111,7 +111,7 @@ namespace Tectransit.Datas
         public string IDPHOTO_B { set; get; }
         public string PHONE { set; get; }
         public string MOBILE { set; get; }
-        public string ADDR { set; get; }
+        public string ADDRESS { set; get; }
         public string LOGINCOUNT { set; get; }
         public string LASTLOGINDATE { set; get; }
         public string CREDATE { set; get; }
@@ -258,4 +258,19 @@ namespace Tectransit.Datas
         public string UPDDATE { set; get; }
         public string UPDBY { set; get; }
     }
+
+    public class MemStationInfo
+    {
+        public long STATIONID { set; get; }
+        public string STATIONCODE { set; get; }
+        public string STATIONNAME { set; get; }
+        public string COUNTRYCODE { set; get; }
+        public string RECEIVER { set; get; }
+        public string PHONE { set; get; }
+        public string MOBILE { set; get; }
+        public string ADDRESS { set; get; }
+        public string USERNAME { set; get; }
+        public string WAREHOUSENO { set; get; }
+    }
+
 }
