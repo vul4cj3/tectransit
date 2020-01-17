@@ -29,6 +29,8 @@ import { FaqListComponent } from './faq-list/faq-list.component';
 import { FaqEditComponent } from './faq-edit/faq-edit.component';
 import { StationListComponent } from './station-list/station-list.component';
 import { StationEditComponent } from './station-edit/station-edit.component';
+import { TransferListComponent } from './transfer-list/transfer-list.component';
+import { TransferEditComponent } from './transfer-edit/transfer-edit.component';
 
 const routes: Routes = [
   {
@@ -143,6 +145,14 @@ const routes: Routes = [
       {
         path: 'station/edit/:id',
         component: StationEditComponent,
+      },
+      {
+        path: 'transfer',
+        component: TransferListComponent,
+      },
+      {
+        path: 'transfer/edit/:id',
+        component: TransferEditComponent,
       }
     ],
   },

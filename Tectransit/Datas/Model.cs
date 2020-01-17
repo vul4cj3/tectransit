@@ -273,4 +273,76 @@ namespace Tectransit.Datas
         public string WAREHOUSENO { set; get; }
     }
 
+    public class TransferHInfo
+    {
+        public long TRANSID { set; get; }
+        public string STATIONCODE { set; get; }
+        public string TRASFERNO { set; get; }
+        public string TRASFERCOMPANY { set; get; }
+        public string PLENGTH { set; get; }
+        public string PWIDTH { set; get; }
+        public string PHEIGHT { set; get; }
+        public string PWEIGHT { set; get; }
+        public string PVALUEPRICE { set; get; }
+        public string STATUS { set; get; }
+        public string REMARK { set; get; }
+        public string CREDATE { set; get; }
+        public string CREBY { set; get; }
+        public string UPDDATE { set; get; }
+        public string UPDBY { set; get; }
+    }
+
+    public class TransferDInfo
+    {
+        public long TRANSID { set; get; }
+        public string PRODUCT { set; get; }
+        public string PRODUCTURL { set; get; }
+        public string UNITPRICE { set; get; }
+        public string QUANTITY { set; get; }
+        public string REMARK { set; get; }
+        public string TRANSHID { set; get; }        
+    }
+
+    public class ShippingHInfo
+    {
+        public long SHIPPINGID { set; get; }
+        public string SHIPPINGNO { set; get; }
+        public string STATIONCODE { set; get; }
+        public string TRACKINGNO { set; get; }
+        public string TRACKINGDESC { set; get; }
+        public string TRACKINGREMARK { set; get; }
+        public string PLENGTH { set; get; }
+        public string PWIDTH { set; get; }
+        public string PHEIGHT { set; get; }
+        public string PWEIGHT { set; get; }
+        public string PTRACKINGNO { set; get; }
+        public string TOTAL { set; get; }
+        public string RECEIVER { set; get; }
+        public string RECEIVER_ADDR { set; get; }
+        public string TRACKINGTYPE { set; get; }
+        public string STATUS { set; get; }
+        public string PAYTYPE { set; get; }
+        public string PAYSTATUS { set; get; }
+        public string REMARK1 { set; get; }
+        public string REMARK2 { set; get; }
+        public string REMARK3 { set; get; }
+        public string PAYDATE { set; get; }
+        public string EXPORTDATE { set; get; }
+        public string CREDATE { set; get; }
+        public string CREBY { set; get; }
+        public string UPDDATE { set; get; }
+        public string UPDBY { set; get; }
+    }
+
+    public class ShippingDInfo
+    {
+        public long SHIPPINGID { set; get; }
+        public string PACKNAME { set; get; }
+        public string PACKURL { set; get; }
+        public string UNITPRICE { set; get; }
+        public string QUANTITY { set; get; }
+        public string REMARK { set; get; }
+        public string SHIPPINGID_H { set; get; }
+    }
+
 }

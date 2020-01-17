@@ -253,6 +253,114 @@ namespace Tectransit.Controllers
             }
         }
 
+        #region 快遞單號(未入庫,已入庫)
+        //取得快遞單號
+        [HttpPost]
+        public dynamic GetACTransferData([FromBody] object form)
+        {
+            try
+            {
+                string sWhere = "";
+                Hashtable htData = new Hashtable();
+                var jsonData = JObject.FromObject(form);
+                int pageIndex = jsonData.Value<int>("PAGE_INDEX");
+                int pageSize = jsonData.Value<int>("PAGE_SIZE");
+                JArray tempArray = jsonData.Value<JArray>("srhForm");
+
+                //get cookies
+                htData["_acccode"] = Request.Cookies["_acccode"];
+                htData["_accname"] = Request.Cookies["_accname"];
+
+                htData["ACCOUNTID"] = DBUtil.GetSingleValue1($@"SELECT ID AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{htData["_acccode"]}'");
+
+                if (tempArray.Count > 0)
+                {
+                    Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                    srhKey.Add("status", "STATUS");
+                    srhKey.Add("stationcode", "STATIONCODE");
+
+                    JObject temp = (JObject)tempArray[0];
+                    foreach (var t in temp)
+                        htData[srhKey[t.Key]] = t.Value?.ToString();
+
+                    if (!string.IsNullOrEmpty(htData["ACCOUNTID"]?.ToString()))
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " ACCOUNTID = " + htData["ACCOUNTID"];
+
+                    if (!string.IsNullOrEmpty(htData["STATUS"]?.ToString()))
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATUS = " + (htData["STATUS"]?.ToString() == "t1" ? 0 : 1);
+
+                    if (!string.IsNullOrEmpty(htData["STATIONCODE"]?.ToString()))
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATIONCODE = '" + htData["STATIONCODE"]?.ToString() + "'";
+                }
+
+                
+                return objMember.GetTransferData(sWhere, pageIndex, pageSize);
+                
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "取得失敗！" };
+            }
+        }
+
+
+        #endregion
+
+        #region 集運單(待出貨,已出貨,已完成)
+        //取得集運單
+        [HttpPost]
+        public dynamic GetACShippingData([FromBody] object form)
+        {
+            try
+            {
+                string sWhere = "";
+                Hashtable htData = new Hashtable();
+                var jsonData = JObject.FromObject(form);
+                int pageIndex = jsonData.Value<int>("PAGE_INDEX");
+                int pageSize = jsonData.Value<int>("PAGE_SIZE");
+                JArray tempArray = jsonData.Value<JArray>("srhForm");
+
+                //get cookies
+                htData["_acccode"] = Request.Cookies["_acccode"];
+                htData["_accname"] = Request.Cookies["_accname"];
+
+                htData["ACCOUNTID"] = DBUtil.GetSingleValue1($@"SELECT ID AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{htData["_acccode"]}'");
+
+                if (tempArray.Count > 0)
+                {
+                    Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                    srhKey.Add("status", "STATUS");
+                    srhKey.Add("stationcode", "STATIONCODE");
+
+                    JObject temp = (JObject)tempArray[0];
+                    foreach (var t in temp)
+                        htData[srhKey[t.Key]] = t.Value?.ToString();
+
+                    if (!string.IsNullOrEmpty(htData["ACCOUNTID"]?.ToString()))
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " ACCOUNTID = " + htData["ACCOUNTID"];
+
+                    if (!string.IsNullOrEmpty(htData["STATUS"]?.ToString()))
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATUS = " + (htData["STATUS"]?.ToString() == "t1" ? 0 : 1);
+
+                    if (!string.IsNullOrEmpty(htData["STATIONCODE"]?.ToString()))
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATIONCODE = '" + htData["STATIONCODE"]?.ToString() + "'";
+                }
+                
+
+                return objMember.GetShippingData(sWhere, pageIndex, pageSize);
+
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "取得失敗！" };
+            }
+        }
+
+
+        #endregion
+
 
         #region 私有function
 

@@ -18,6 +18,8 @@ import { RegmemComponent } from './regmem/regmem.component';
 import { RegcusComponent } from './regcus/regcus.component';
 import { RegconfirmComponent } from './regconfirm/regconfirm.component';
 import { RegfinalComponent } from './regfinal/regfinal.component';
+import { PaginationComponent } from './pagination/pagination.component';
+import { ShippstatusPipe } from './_Helper/shippstatus.pipe';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { RegfinalComponent } from './regfinal/regfinal.component';
     RegmemComponent,
     RegcusComponent,
     RegconfirmComponent,
-    RegfinalComponent
+    RegfinalComponent,
+    PaginationComponent,
+    ShippstatusPipe
   ],
   imports: [
     BrowserModule,

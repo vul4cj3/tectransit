@@ -18,26 +18,32 @@ const routes: Routes = [
       {
         path: 'profile',
         component: ProfileComponent,
+        canActivate: [AuthGuard],
       },
       {
         path: 'station',
         component: StationComponent,
+        canActivate: [AuthGuard],
       },
       {
         path: 'entrust',
         component: EntrustComponent,
+        canActivate: [AuthGuard],
       },
       {
         path: 'entrust/edit/:id',
         component: EntrustEditComponent,
+        canActivate: [AuthGuard],
       },
       {
-        path: 'shipping',
+        path: 'shipping/:type/:id',
         component: ShippingListComponent,
+        canActivate: [AuthGuard],
       },
       {
         path: 'shipping/edit/:id',
         component: ShippingEditComponent,
+        canActivate: [AuthGuard],
       }
     ],
   },

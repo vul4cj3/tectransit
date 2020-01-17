@@ -1,0 +1,24 @@
+.pagelist_btn {
+  border-radius: 3px;
+  float: left;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  color: #2fa4e7;
+  margin-left: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 5px 10px;
+}
+
+.pagelist_btn:hover{
+  background-color: #eee;
+  border-color: #ddd;
+  color: #222;
+}
+
+.pagelist_btn.active, .pagelist_btn.active:hover{
+  background: #4eb2eb;
+  color: #FFF;
+  border-color: #4eb2eb;
+}

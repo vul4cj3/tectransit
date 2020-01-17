@@ -82,6 +82,109 @@ namespace Tectransit.Datas
             return new { rows = "" };
         }
 
+        public dynamic GetTransferData(string sWhere, int pageIndex, int pageSize)
+        {
+            string sql = $@"SELECT * FROM (
+                                            SELECT ROW_NUMBER() OVER (ORDER BY UPDDATE) AS ROW_ID, ID, STATIONCODE, TRASFERNO, TRASFERCOMPANY,
+                                                   P_LENGTH, P_WIDTH, P_HEIGHT, P_WEIGHT, P_VALUEPRICE, REMARK,
+                                                   FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
+                                                   CREATEBY AS CREBY, UPDBY, STATUS
+                                            From T_E_TRANSFER_H
+                                            {sWhere}
+                            ) AS A";
+            string sql1 = sql + $@" WHERE ROW_ID BETWEEN {((pageIndex - 1) * pageSize + 1).ToString()} AND {(pageIndex * pageSize).ToString()}";
+            DataTable DT = DBUtil.SelectDataTable(sql1);
+            if (DT.Rows.Count > 0)
+            {
+                List<TransferHInfo> rowList = new List<TransferHInfo>();
+                for (int i = 0; i < DT.Rows.Count; i++)
+                {
+                    TransferHInfo m = new TransferHInfo();
+                    m.TRANSID = Convert.ToInt64(DT.Rows[i]["ID"]);
+                    m.STATIONCODE = DT.Rows[i]["STATIONCODE"]?.ToString();
+                    m.TRASFERNO = DT.Rows[i]["TRASFERNO"]?.ToString();
+                    m.TRASFERCOMPANY = DT.Rows[i]["TRASFERCOMPANY"]?.ToString();
+                    m.PLENGTH = DT.Rows[i]["P_LENGTH"]?.ToString();
+                    m.PWIDTH = DT.Rows[i]["P_WIDTH"]?.ToString();
+                    m.PHEIGHT = DT.Rows[i]["P_HEIGHT"]?.ToString();
+                    m.PWEIGHT = DT.Rows[i]["P_WEIGHT"]?.ToString();
+                    m.PVALUEPRICE = DT.Rows[i]["P_VALUEPRICE"]?.ToString();
+                    m.STATUS = DT.Rows[i]["STATUS"]?.ToString();
+                    m.REMARK = DT.Rows[i]["REMARK"]?.ToString();
+                    m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
+                    m.CREBY = DT.Rows[i]["CREBY"]?.ToString();
+                    m.UPDDATE = DT.Rows[i]["UPDDATE"]?.ToString();
+                    m.UPDBY = DT.Rows[i]["UPDBY"]?.ToString();
 
+                    rowList.Add(m);
+                }
+
+                sql = "SELECT COUNT(*) as COL1 FROM (" + sql + ") AS B ";
+                string totalCt = DBUtil.GetSingleValue1(sql);
+
+                return new { rows = rowList, total = totalCt };
+            }
+
+            return new { rows = "", total = 0 };
+        }
+
+        public dynamic GetShippingData(string sWhere, int pageIndex, int pageSize)
+        {
+            string sql = $@"SELECT * FROM (
+                                            SELECT ROW_NUMBER() OVER (ORDER BY UPDDATE) AS ROW_ID, ID, STATIONCODE, SHIPPINGNO, TRACKINGNO, TRACKINGDESC, TRACKINGREMARK,
+                                                   P_LENGTH, P_WIDTH, P_HEIGHT, P_WEIGHT, P_TRACKINGNO, TOTAL, RECEIVER, RECEIVER_ADDR, TRACKINGTYPE, STATUS,
+                                                   PAYTYPE, PAYSTATUS, REMARK1, REMARK2, REMARK3, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
+                                                   FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
+                                                   CREATEBY AS CREBY, UPDBY, STATUS
+                                            From T_N_SHIPPING_H
+                                            {sWhere}
+                            ) AS A";
+            string sql1 = sql + $@" WHERE ROW_ID BETWEEN {((pageIndex - 1) * pageSize + 1).ToString()} AND {(pageIndex * pageSize).ToString()}";
+            DataTable DT = DBUtil.SelectDataTable(sql1);
+            if (DT.Rows.Count > 0)
+            {
+                List<ShippingHInfo> rowList = new List<ShippingHInfo>();
+                for (int i = 0; i < DT.Rows.Count; i++)
+                {
+                    ShippingHInfo m = new ShippingHInfo();
+                    m.SHIPPINGID = Convert.ToInt64(DT.Rows[i]["ID"]);
+                    m.SHIPPINGNO = DT.Rows[i]["SHIPPINGNO"]?.ToString();
+                    m.STATIONCODE = DT.Rows[i]["STATIONCODE"]?.ToString();
+                    m.TRACKINGNO = DT.Rows[i]["TRACKINGNO"]?.ToString();
+                    m.TRACKINGDESC = DT.Rows[i]["TRACKINGDESC"]?.ToString();
+                    m.TRACKINGREMARK = DT.Rows[i]["TRACKINGREMARK"]?.ToString();
+                    m.PLENGTH = DT.Rows[i]["P_LENGTH"]?.ToString();
+                    m.PWIDTH = DT.Rows[i]["P_WIDTH"]?.ToString();
+                    m.PHEIGHT = DT.Rows[i]["P_HEIGHT"]?.ToString();
+                    m.PWEIGHT = DT.Rows[i]["P_WEIGHT"]?.ToString();
+                    m.PTRACKINGNO = DT.Rows[i]["P_TRACKINGNO"]?.ToString();
+                    m.TOTAL = DT.Rows[i]["TOTAL"]?.ToString();
+                    m.RECEIVER = DT.Rows[i]["RECEIVER"]?.ToString();
+                    m.RECEIVER_ADDR = DT.Rows[i]["RECEIVER_ADDR"]?.ToString();
+                    m.TRACKINGTYPE = DT.Rows[i]["TRACKINGTYPE"]?.ToString();
+                    m.STATUS = DT.Rows[i]["STATUS"]?.ToString();
+                    m.PAYTYPE = DT.Rows[i]["PAYTYPE"]?.ToString();
+                    m.PAYSTATUS = DT.Rows[i]["PAYSTATUS"]?.ToString();
+                    m.REMARK1 = DT.Rows[i]["REMARK1"]?.ToString();
+                    m.REMARK2 = DT.Rows[i]["REMARK2"]?.ToString();
+                    m.REMARK3 = DT.Rows[i]["REMARK3"]?.ToString();
+                    m.PAYDATE = DT.Rows[i]["PAYDATE"]?.ToString();
+                    m.EXPORTDATE = DT.Rows[i]["EXPORTDATE"]?.ToString();
+                    m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
+                    m.CREBY = DT.Rows[i]["CREBY"]?.ToString();
+                    m.UPDDATE = DT.Rows[i]["UPDDATE"]?.ToString();
+                    m.UPDBY = DT.Rows[i]["UPDBY"]?.ToString();
+
+                    rowList.Add(m);
+                }
+
+                sql = "SELECT COUNT(*) as COL1 FROM (" + sql + ") AS B ";
+                string totalCt = DBUtil.GetSingleValue1(sql);
+
+                return new { rows = rowList, total = totalCt };
+            }
+
+            return new { rows = "", total = 0 };
+        }
     }
 }
