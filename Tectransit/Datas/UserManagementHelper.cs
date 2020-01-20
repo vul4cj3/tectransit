@@ -239,5 +239,97 @@ namespace Tectransit.Datas
             return new { rows = "" };
         }
 
+        public dynamic GetTransferListData(string sWhere, int pageIndex, int pageSize)
+        {
+            string sql = $@"SELECT * FROM (
+                                             SELECT ROW_NUMBER() OVER (ORDER BY A.UPDDATE) AS ROW_ID, A.ID, A.ACCOUNTID, A.STATIONCODE, A.TRASFERNO, A.TRASFERCOMPANY,
+                                                   A.P_LENGTH, A.P_WIDTH, A.P_HEIGHT, A.P_WEIGHT, A.P_VALUEPRICE, A.STATUS, A.REMARK,
+                                                   FORMAT(A.CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(A.UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
+                                                   A.CREATEBY AS CREBY, A.UPDBY, B.USERCODE AS ACCOUNTCODE
+                                            FROM T_E_TRANSFER_H A
+                                            LEFT JOIN T_S_ACCOUNT B ON A.ACCOUNTID = B.ID
+                                            {sWhere}
+                            ) AS A";
+            string sql1 = sql + $@" WHERE ROW_ID BETWEEN {((pageIndex - 1) * pageSize + 1).ToString()} AND {(pageIndex * pageSize).ToString()}";
+            DataTable DT = DBUtil.SelectDataTable(sql1);
+            if (DT.Rows.Count > 0)
+            {
+                List<TransferHListInfo> rowList = new List<TransferHListInfo>();
+                for (int i = 0; i < DT.Rows.Count; i++)
+                {
+                    TransferHListInfo m = new TransferHListInfo();
+                    m.TRANSID = Convert.ToInt64(DT.Rows[i]["ID"]);
+                    m.ACCOUNTID = DT.Rows[i]["ACCOUNTID"]?.ToString();
+                    m.ACCOUNTCODE = DT.Rows[i]["ACCOUNTCODE"]?.ToString();
+                    m.STATIONCODE = DT.Rows[i]["STATIONCODE"]?.ToString();
+                    m.STATIONNAME = DBUtil.GetSingleValue1($@"SELECT STATIONNAME AS COL1 FROM T_S_STATION WHERE STATIONCODE = '{DT.Rows[i]["STATIONCODE"]?.ToString()}'");
+                    m.TRASFERNO = DT.Rows[i]["TRASFERNO"]?.ToString();
+                    m.TRASFERCOMPANY = DT.Rows[i]["TRASFERCOMPANY"]?.ToString();
+                    m.PLENGTH = DT.Rows[i]["P_LENGTH"]?.ToString();
+                    m.PWIDTH = DT.Rows[i]["P_WIDTH"]?.ToString();
+                    m.PHEIGHT = DT.Rows[i]["P_HEIGHT"]?.ToString();
+                    m.PWEIGHT = DT.Rows[i]["P_WEIGHT"]?.ToString();
+                    m.PVALUEPRICE = DT.Rows[i]["P_VALUEPRICE"]?.ToString();
+                    m.STATUS = DT.Rows[i]["STATUS"]?.ToString();
+                    m.REMARK = DT.Rows[i]["REMARK"]?.ToString();
+                    m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
+                    m.CREBY = DT.Rows[i]["CREBY"]?.ToString();
+                    m.UPDDATE = DT.Rows[i]["UPDDATE"]?.ToString();
+                    m.UPDBY = DT.Rows[i]["UPDBY"]?.ToString();
+
+                    rowList.Add(m);
+                }
+
+                sql = "SELECT COUNT(*) as COL1 FROM (" + sql + ") AS B ";
+                string totalCt = DBUtil.GetSingleValue1(sql);
+
+                return new { rows = rowList, total = totalCt };
+            }
+
+            return new { rows = "", total = 0 };
+        }
+
+        public dynamic GetTransferData(long sID)
+        {
+            string sql = $@"
+                           SELECT A.*, B.*, C.USERCODE AS ACCOUNTCODE, D.STATIONNAME FROM T_E_TRANSFER_H A
+                           LEFT JOIN T_E_TRANSFER_D B ON A.ID = B.TRANSFERHID
+                           LEFT JOIN T_S_ACCOUNT C ON A.ACCOUNTID = C.ID
+                           LEFT JOIN T_S_STATION D ON A.STATIONCODE = D.STATIONCODE
+                           WHERE A.ID = {sID}";
+            DataTable DT = DBUtil.SelectDataTable(sql);
+            List<TransferDInfo> sublist = new List<TransferDInfo>();
+            if (DT.Rows.Count > 0)
+            {
+                TransferHListInfo m = new TransferHListInfo();
+                m.TRANSID = Convert.ToInt64(DT.Rows[0]["ID"]);        
+                m.STATIONNAME = DT.Rows[0]["STATIONNAME"]?.ToString();
+                m.ACCOUNTCODE = DT.Rows[0]["ACCOUNTCODE"]?.ToString();
+                m.TRASFERNO = DT.Rows[0]["TRASFERNO"]?.ToString();
+                m.TRASFERCOMPANY = DT.Rows[0]["TRASFERCOMPANY"]?.ToString();                
+                m.PLENGTH = DT.Rows[0]["P_LENGTH"]?.ToString();                
+                m.PWIDTH = DT.Rows[0]["P_WIDTH"]?.ToString();                
+                m.PHEIGHT = DT.Rows[0]["P_HEIGHT"]?.ToString();                
+                m.PWEIGHT = DT.Rows[0]["P_WEIGHT"]?.ToString();                
+                m.STATUS = DT.Rows[0]["STATUS"]?.ToString();                
+                m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
+                m.CREBY = DT.Rows[0]["CREATEBY"]?.ToString();
+                m.UPDDATE = DT.Rows[0]["UPDDATE"]?.ToString();
+                m.UPDBY = DT.Rows[0]["UPDBY"]?.ToString();
+
+
+                for (int i = 0;i < DT.Rows.Count; i++) {
+                    TransferDInfo d = new TransferDInfo();
+                    d.PRODUCT = DT.Rows[i]["PRODUCT"]?.ToString();
+                    d.QUANTITY = DT.Rows[i]["QUANTITY"]?.ToString();
+                    d.UNITPRICE = DT.Rows[i]["UNIT_PRICE"]?.ToString();
+                    sublist.Add(d);
+                }
+                return new { rows = m, subitem = sublist };
+            }
+
+            return new { rows = "", subitem = "" };
+        }
+
     }
 }

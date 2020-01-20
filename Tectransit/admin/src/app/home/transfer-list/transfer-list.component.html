@@ -1,1 +1,165 @@
-<p>transfer-list works!</p>
+<!--Top Section-->
+<div>
+  <div>
+    <div class="app-page-title">
+      <div class="page-title-wrapper">
+        <div class="page-title-heading">
+          <div class="page-title-icon"><i class="pe-7s-file"></i></div>
+          <div>快遞單管理</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Search Section -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="main-card mb-3 card">
+      <form [formGroup]="srhForm">
+        <div class="card-body">
+          <div class="form-inline">
+            <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
+              <label for="sstationcode" class="mr-sm-2">集運站</label>
+              <select id="sstationcode" formControlName="sstationcode">
+                <option value="ALL">全部</option>
+                <option [value]="sitem.stationcode" *ngFor="let sitem of stationData">{{sitem.stationname}}</option>
+              </select>
+            </div>
+            <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
+              <label for="strackno" class="mr-sm-2">快遞單號</label>
+              <input type="text" id="strackno" formControlName="strackno" class="form-control">
+            </div>
+            <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
+              <label for="sacccode" class="mr-sm-2">會員帳號</label>
+              <input type="text" id="sacccode" formControlName="sacccode" class="form-control">
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="searchData()">查詢</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="resetData()">清除查詢</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--TableList Section-->
+<div class="row">
+  <div class="col-md-12">
+    <div class="main-card mb-3 card">
+      <div class="card-header">未入庫列表
+        <div class="btn-actions-pane-right">
+          <div class="btn-group-sm btn-group" role="group">
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doinstore()">已入庫</button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+          <thead>
+            <tr>
+              <th *ngFor="let titleItem of tableTitle let id = index" [ngClass]="{'text-center': id === 0}">
+                {{titleItem}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data let idx = index">
+              <ng-container *ngIf="item.status === '0'">
+                <td class="text-center text-muted">
+                  <label class="chkbox-container">
+                    <input type="checkbox" name="Chk" id="chk{{idx}}"
+                      (click)="SelChange($event.toElement.value, $event.toElement.checked)" value="{{item.transid}}">
+                    <span class="checkmark"></span>
+                  </label>
+                </td>
+                <td>{{item.stationcode}}</td>
+                <td>{{item.stationname}}</td>
+                <td>{{item.trasferno}}</td>
+                <td>{{item.accountcode}}</td>
+                <td>{{item.credate}}</td>
+                <td>{{item.upddate}}</td>
+                <td>{{item.status === '0'?'未入庫':''}}</td>
+                <td>
+                  <a routerLink="/transfer/edit/{{item.transid}}">
+                    <span class="symbol-edit">
+                      <i class="pe-7s-note2"></i>
+                    </span>
+                  </a>
+                </td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--pagination section start-->
+      <div class="d-block text-center card-footer">
+        <app-pagination [currentPage]="this.currentpage" [preApper]="this.commonService.preApper"
+          [nextApper]="this.commonService.nextApper" [pageNum]="this.commonService.pageNum"
+          (pageChanged)="changeData($event)"></app-pagination>
+      </div>
+      <!--pagination section end-->
+    </div>
+  </div>
+</div>
+
+<!--TableList Section-->
+<div class="row">
+  <div class="col-md-12">
+    <div class="main-card mb-3 card">
+      <div class="card-header">已入庫列表
+        <div class="btn-actions-pane-right">
+          <div class="btn-group-sm btn-group" role="group">
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="dostockout()">未入庫</button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+          <thead>
+            <tr>
+              <th *ngFor="let titleItem of tableTitle let id = index" [ngClass]="{'text-center': id === 0}">
+                {{titleItem}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data let idx = index">
+              <ng-container *ngIf="item.status === '1'">
+                <td class="text-center text-muted">
+                  <label class="chkbox-container">
+                    <input type="checkbox" name="Chk" id="instorechk{{idx}}"
+                      (click)="instoreSelChange($event.toElement.value, $event.toElement.checked)"
+                      value="{{item.transid}}">
+                    <span class="checkmark"></span>
+                  </label>
+                </td>
+                <td>{{item.stationcode}}</td>
+                <td>{{item.stationname}}</td>
+                <td>{{item.trasferno}}</td>
+                <td>{{item.accountcode}}</td>
+                <td>{{item.credate}}</td>
+                <td>{{item.upddate}}</td>
+                <td>{{item.status === '1'?'已入庫':''}}</td>
+                <td>
+                  <a routerLink="/transfer/edit/{{item.transid}}">
+                    <span class="symbol-edit">
+                      <i class="pe-7s-note2"></i>
+                    </span>
+                  </a>
+                </td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--pagination section start-->
+      <div class="d-block text-center card-footer">
+        <app-pagination [currentPage]="this.currentpage" [preApper]="this.commonService.preApper"
+          [nextApper]="this.commonService.nextApper" [pageNum]="this.commonService.pageNum"
+          (pageChanged)="changeData($event)"></app-pagination>
+      </div>
+      <!--pagination section end-->
+    </div>
+  </div>
+</div>

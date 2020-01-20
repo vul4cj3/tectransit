@@ -227,3 +227,75 @@ export interface StationInfo {
   upddate: string;
   updby: string;
 }
+
+export interface TransferHInfo {
+  transid: number;
+  accountid: string;
+  accountcode: string;
+  stationcode: string;
+  stationname: string;
+  trasferno: string;
+  trasfercompany: string;
+  plength: string;
+  pwidth: string;
+  pheight: string;
+  pweight: string;
+  pvalueprice: string;
+  status: string;
+  remark: string;
+  credate: string;
+  creby: string;
+  upddate: string;
+  updby: string;
+}
+
+export interface TransferDInfo {
+  transid: number;
+  product: string;
+  producturl: string;
+  unitprice: string;
+  quantity: string;
+  remark: string;
+  transhid: string;
+}
+
+export interface ShippingHInfo {
+  shippingid: number;
+  shippingno: string;
+  stationcode: string;
+  trackingno: string;
+  trackingdesc: string;
+  trackingmark: string;
+  plength: string;
+  pwidth: string;
+  pheight: string;
+  pweight: string;
+  ptrackingno: string;
+  total: string;
+  receiver: string;
+  receiver_addr: string;
+  trackingtype: string;
+  status: string;
+  paytype: string;
+  paystatus: string;
+  remark1: string;
+  remark2: string;
+  remark3: string;
+  paydate: string;
+  exportdate: string;
+  credate: string;
+  creby: string;
+  upddate: string;
+  updby: string;
+}
+
+export interface ShippingDInfo {
+  shippingid: number;
+  packname: string;
+  packurl: string;
+  unitprice: string;
+  quantity: string;
+  remark: string;
+  shippingid_h: string;
+}
+

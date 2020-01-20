@@ -216,6 +216,13 @@ export class CommonService {
       }));
   }
 
+  getData(pageUrl: string) {
+    return this.http.get<any>(pageUrl)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
   getSingleData(id, pageUrl: string) {
     return this.http.get<any>(`${pageUrl}/${id}`)
       .pipe(map(data => {

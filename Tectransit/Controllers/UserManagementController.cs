@@ -386,6 +386,159 @@ namespace Tectransit.Controllers
             return objUsm.GetDeclarantnReceiverData(id, type);
         }
 
+        /* --- Transfer --- */
+        [HttpPost]
+        public dynamic GetTETransferListData([FromBody] object form)
+        {
+            string sWhere = "";
+            var jsonData = JObject.FromObject(form);
+            int pageIndex = jsonData.Value<int>("PAGE_INDEX");
+            int pageSize = jsonData.Value<int>("PAGE_SIZE");
+            JObject temp = jsonData.Value<JObject>("srhForm");
+
+            if (temp.Count > 0)
+            {
+                Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                srhKey.Add("sstationcode", "STATIONCODE");
+                srhKey.Add("strackno", "TRASFERNO");
+                srhKey.Add("sacccode", "ACCOUNTCODE");
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[srhKey[t.Key]] = t.Value?.ToString();
+
+                if (!string.IsNullOrEmpty(htData["STATIONCODE"]?.ToString()))
+                    if (htData["STATIONCODE"]?.ToString() != "ALL")
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " A.STATIONCODE = '" + htData["STATIONCODE"]?.ToString() + "'";
+
+                if (!string.IsNullOrEmpty(htData["TRASFERNO"]?.ToString()))
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " A.TRASFERNO LIKE '%" + htData["TRASFERNO"]?.ToString() + "%'";
+
+                if (!string.IsNullOrEmpty(htData["ACCOUNTCODE"]?.ToString()))
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " B.USERCODE LIKE '%" + htData["ACCOUNTCODE"]?.ToString() + "%'";
+
+            }
+
+            return objUsm.GetTransferListData(sWhere, pageIndex, pageSize);
+        }
+
+        [HttpPost]
+        public dynamic EditTransferStatus_instore([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "TRANSFERID");
+                        dataKey.Add("isenable", "STATUS");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        UpdateTransfer(Convert.ToInt64(sData["TRANSFERID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[TRANSFERID({sData["TRANSFERID"]}):{((sData["STATUS"]?.ToString() == "1") ? "已入庫" : "未入庫")}]";
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/transfer", "快遞單管理-入庫狀態變更", 2, logMsg);
+
+                return new { status = "0", msg = "修改成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+
+        [HttpPost]
+        public dynamic EditTransferStatus_unstore([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "TRANSFERID");
+                        dataKey.Add("isenable", "STATUS");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "0" : "1";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    }
+                    //get cookies
+                    htData["_usercode"] = Request.Cookies["_usercode"];
+                    htData["_username"] = Request.Cookies["_username"];
+
+                    AL.Add(htData);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        UpdateTransfer(Convert.ToInt64(sData["TRANSFERID"]), sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[TRANSFERID({sData["TRANSFERID"]}):{((sData["STATUS"]?.ToString() == "1") ? "已入庫" : "未入庫")}]";
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/transfer", "快遞單管理-入庫狀態變更", 2, logMsg);
+
+                return new { status = "0", msg = "修改成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+
         /* --- Twotable Map --- */
 
         [HttpPost]
@@ -453,7 +606,7 @@ namespace Tectransit.Controllers
 
                 }
 
-                return new { status = "99", msg = "保存成功！" };
+                return new { status = "0", msg = "保存成功！" };
 
             }
             catch (Exception ex)
@@ -528,7 +681,7 @@ namespace Tectransit.Controllers
 
                 }
 
-                return new { status = "99", msg = "保存成功！" };
+                return new { status = "0", msg = "保存成功！" };
 
             }
             catch (Exception ex)
@@ -538,7 +691,42 @@ namespace Tectransit.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public dynamic GetTransferData(long id)
+        {
+            return objUsm.GetTransferData(id);
+        }
+
+        [HttpPost]
+        public dynamic EditTransferData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+
+                long id = Convert.ToInt64(arrData.Value<string>("id"));
+                JObject temp = arrData.Value<JObject>("formdata");
+
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[t.Key.ToUpper()] = t.Value?.ToString();
+
+                //get cookies
+                htData["_usercode"] = Request.Cookies["_usercode"];
+                htData["_username"] = Request.Cookies["_username"];
+
+                return EditTransferData(id, htData);
+            }
+            catch(Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "保存失敗！" };
+            }
+        }
+
         /* --- private CRUD function --- */
+        #region private function
         private dynamic EditRankData(long id, Hashtable htData)
         {
             try
@@ -750,5 +938,74 @@ namespace Tectransit.Controllers
             _context.SaveChanges();
         }
 
+        private dynamic EditTransferData(long id, Hashtable htData)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    //由前台用戶自行新增
+                    //InsertTranser(htData);
+                }
+                else
+                {
+                    UpdateTransfer(id, htData);
+
+                    string updMsg = "";
+                    foreach (DictionaryEntry ht in htData)
+                    {
+                        if (ht.Key.ToString() == "_usercode" || ht.Key.ToString() == "_username") { }
+                        else
+                            updMsg += (updMsg == "" ? "" : ",") + ht.Key + ":" + ht.Value;
+                    }
+                    
+                    objComm.AddUserControlLog(htData, $"transfer/edit/{id}", "快遞單管理-編輯", 2, updMsg);
+                }
+
+                return new { status = "0", msg = "保存成功！" };
+
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message?.ToString();
+                return new { status = "99", msg = "保存失敗！" };
+            }
+        }
+
+        private void UpdateTransfer(long id, Hashtable sData)
+        {
+            var query = _context.TETransferH.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                TETransferH rowTET = query;
+
+                if (sData["TRASFERCOMPANY"] != null)
+                    rowTET.Trasfercompany = sData["TRASFERCOMPANY"]?.ToString();
+                if (sData["PLENGTH"] != null)
+                    rowTET.PLength = sData["PLENGTH"]?.ToString();
+                if (sData["PWIDTH"] != null)
+                    rowTET.PWidth = sData["PWIDTH"]?.ToString();
+                if (sData["PHEIGHT"] != null)
+                    rowTET.PHeight = sData["PHEIGHT"]?.ToString();
+                if (sData["PWEIGHT"] != null)
+                    rowTET.PWeight = sData["PWEIGHT"]?.ToString();
+                if (sData["PVALUEPRICE"] != null)
+                    rowTET.PValueprice = sData["PVALUEPRICE"]?.ToString();
+                if (sData["STATUS"] != null)
+                    rowTET.Status = Convert.ToInt32(sData["STATUS"]);
+                if (sData["REMARK"] != null)
+                    rowTET.Remark = sData["REMARK"]?.ToString();                
+
+                if (sData.Count > 2)//排除cookies
+                {
+                    rowTET.Upddate = DateTime.Now;
+                    rowTET.Updby = sData["_usercode"]?.ToString();
+
+                    _context.SaveChanges();
+                }
+            }
+        }
+        #endregion
     }
 }

@@ -273,6 +273,28 @@ namespace Tectransit.Datas
         public string WAREHOUSENO { set; get; }
     }
 
+    public class TransferHListInfo
+    {
+        public long TRANSID { set; get; }
+        public string ACCOUNTID { set; get; }
+        public string ACCOUNTCODE { set; get; }
+        public string STATIONCODE { set; get; }
+        public string STATIONNAME { set; get; }
+        public string TRASFERNO { set; get; }
+        public string TRASFERCOMPANY { set; get; }
+        public string PLENGTH { set; get; }
+        public string PWIDTH { set; get; }
+        public string PHEIGHT { set; get; }
+        public string PWEIGHT { set; get; }
+        public string PVALUEPRICE { set; get; }
+        public string STATUS { set; get; }
+        public string REMARK { set; get; }
+        public string CREDATE { set; get; }
+        public string CREBY { set; get; }
+        public string UPDDATE { set; get; }
+        public string UPDBY { set; get; }
+    }
+
     public class TransferHInfo
     {
         public long TRANSID { set; get; }

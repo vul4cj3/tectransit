@@ -60,6 +60,12 @@ namespace Tectransit.Controllers
             return objCommon.GetParentMenu(id);
         }
 
+        [HttpGet]
+        public dynamic GetStationData()
+        {
+            return objCommon.GetStationData();
+        }
+
         [HttpPost, DisableRequestSizeLimit]
         public dynamic UploadImgData()
         {

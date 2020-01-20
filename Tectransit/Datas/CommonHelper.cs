@@ -263,6 +263,36 @@ namespace Tectransit.Datas
             return new { status = "99", backList = "", frontList = "" };
         }
 
+        public dynamic GetStationData()
+        {
+            string sql = $@"
+                            SELECT ID, STATIONCODE, STATIONNAME, COUNTRYCODE, RECEIVER, PHONE, MOBILE, ADDRESS
+                            From T_S_STATION";
+            DataTable DT = DBUtil.SelectDataTable(sql);
+            List<MemStationInfo> rowlist = new List<MemStationInfo>();
+            if (DT.Rows.Count > 0)
+            {
+                for (int i = 0; i < DT.Rows.Count; i++)
+                {
+                    MemStationInfo m = new MemStationInfo();
+                    m.STATIONID = Convert.ToInt64(DT.Rows[i]["ID"]);
+                    m.STATIONCODE = DT.Rows[i]["STATIONCODE"]?.ToString();
+                    m.STATIONNAME = DT.Rows[i]["STATIONNAME"]?.ToString();
+                    m.COUNTRYCODE = DT.Rows[i]["COUNTRYCODE"]?.ToString();
+                    m.RECEIVER = DT.Rows[i]["RECEIVER"]?.ToString();
+                    m.PHONE = DT.Rows[i]["PHONE"]?.ToString();
+                    m.MOBILE = DT.Rows[i]["MOBILE"]?.ToString();
+                    m.ADDRESS = DT.Rows[i]["ADDRESS"]?.ToString();
+
+                    rowlist.Add(m);
+                }
+
+                return new { rows = rowlist };
+            }
+
+            return new { rows = "" };
+        }
+
         /// <summary>
         /// POSITION: 頁面URL
         /// TARGET: 頁面名稱

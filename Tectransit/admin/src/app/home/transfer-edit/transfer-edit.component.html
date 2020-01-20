@@ -1,1 +1,117 @@
-<p>transfer-edit works!</p>
+<!--Top Section-->
+<div>
+  <div>
+    <div class="app-page-title">
+      <div class="page-title-wrapper">
+        <div class="page-title-heading">
+          <div class="page-title-icon"><i class="pe-7s-file"></i></div>
+          <div>快遞單管理 - 編輯</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Info Section-->
+<div>
+  <div class="main-card mb-3 card">
+    <div class="card-body">
+      <h5 class="card-title"></h5>
+      <form [formGroup]="dataForm" (ngSubmit)="saveData(dataForm.value)">
+        <input type="hidden" id="transid" formControlName="transid">
+        <div class="form-row">
+          <div class="col-md-4">
+            <div class="position-relative form-group">
+              <label for="trasferno">快遞單號</label>
+              <input type="text" id="trasferno" class="form-control" formControlName="trasferno">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-group">
+              <label for="stationname">所屬集運站</label>
+              <input type="text" id="stationname" class="form-control" formControlName="stationname">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-group">
+              <label for="accountcode">會員帳號</label>
+              <input type="text" id="accountcode" class="form-control" formControlName="accountcode">
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-4">
+            <div class="position-relative form-group">
+              <label for="trasfercompany">快遞公司</label>
+              <input type="text" id="trasfercompany" class="form-control" formControlName="trasfercompany">
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="position-relative form-group">
+              <label for="plength">包裹長</label>
+              <input type="text" id="plength" class="form-control" formControlName="plength">
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="position-relative form-group">
+              <label for="pwidth">包裹寬</label>
+              <input type="text" id="pwidth" class="form-control" formControlName="pwidth">
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="position-relative form-group">
+              <label for="pheight">包裹高</label>
+              <input type="text" id="pheight" class="form-control" formControlName="pheight">
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="position-relative form-group">
+              <label for="pweight">包裹總重</label>
+              <input type="text" id="pweight" class="form-control" formControlName="pweight">
+            </div>
+          </div>
+        </div>
+        <table class="mb-0 table table-hover">
+          <tr>
+            <th>商品名稱</th>
+            <th>數量</th>
+            <th>單價</th>
+          </tr>
+          <tr *ngFor="let item of transferDData">
+            <td>{{item.product}}</td>
+            <td>{{item.quantity}}</td>
+            <td>{{item.unitprice}}</td>
+          </tr>
+        </table>
+        <div class="position-relative form-group">
+          <label for="status">狀態</label>
+          <select id="status" class="mb-2 form-control middle" formControlName="status">
+            <option value="1">已入庫</option>
+            <option value="0">未入庫</option>
+          </select>
+        </div>
+        <ng-container *ngIf="dataForm.value.transid !== 0">
+          <div class="form-group">
+            <label for>建立時間</label>
+            <p>{{dataForm.value.credate}}</p>
+          </div>
+          <div class="form-group">
+            <label for>建立者</label>
+            <p>{{dataForm.value.creby}}</p>
+          </div>
+          <div class="form-group">
+            <label for>更新時間</label>
+            <p>{{dataForm.value.upddate}}</p>
+          </div>
+          <div class="form-group">
+            <label for>更新者</label>
+            <p>{{dataForm.value.updby}}</p>
+          </div>
+        </ng-container>
+        <div class="btn-two">
+          <button class="mb-2 mr-2 btn-hover-shine btn btn-info" type="submit">保存</button>
+          <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/transfer">回列表</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
