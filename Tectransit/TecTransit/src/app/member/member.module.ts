@@ -9,6 +9,7 @@ import { ShippingListComponent } from './shipping-list/shipping-list.component';
 import { ShippingEditComponent } from './shipping-edit/shipping-edit.component';
 import { EntrustEditComponent } from './entrust-edit/entrust-edit.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ShippingCombineComponent } from './shipping-combine/shipping-combine.component';
 
 
 
@@ -20,7 +21,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     EntrustComponent,
     ShippingListComponent,
     ShippingEditComponent,
-    EntrustEditComponent
+    EntrustEditComponent,
+    ShippingCombineComponent
   ],
   imports: [
     CommonModule,

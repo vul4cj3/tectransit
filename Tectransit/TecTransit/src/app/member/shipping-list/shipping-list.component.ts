@@ -19,8 +19,9 @@ export class ShippingListComponent implements OnInit {
   private transferdataUrl = 'GetACTransferData';
   private shippingdataUrl = 'GetACShippingData';
   private catedataUrl = 'GetStationData';
+  private delUrl = 'DelACTransferData';
 
-  tableTitle = ['#', '快遞單號', '狀態', '建單時間', '更新時間', '修改', '刪除'];
+  tableTitle = ['#', '快遞單號', '狀態', '建單時間', '更新時間', '細項'];
   tableTitle2 = ['#', '集運單號', '狀態', '付款狀態', '建單時間', '付款時間', '發貨時間', '瀏覽'];
 
   data: TransferHInfo[];
@@ -164,6 +165,28 @@ export class ShippingListComponent implements OnInit {
       }
     }
 
+  }
+
+  doDelete() {
+    const IsConfirm = confirm('確定要刪除？');
+    if (IsConfirm === true) {
+      if (this.chkList.length > 0) {
+        this.commonService.delData(this.chkList, this.baseUrl + this.delUrl)
+          .subscribe(data => {
+            if (data.status === '0') {
+              alert(data.msg);
+              this.crePagination(this.currentpage, this.baseUrl + this.transferdataUrl);
+              this.chkList = [];
+            } else {
+              alert(data.msg);
+            }
+          },
+            error => {
+              console.log(error);
+            });
+
+      } else { alert('無項目被刪除！'); }
+    } else { }
   }
 
 }

@@ -1,1 +1,56 @@
-<p>shipping-edit works!</p>
+<div class="memprofile">
+  <div class="profile-contain">
+    <div class="memheader">
+      <span>集運單管理</span>
+      <div class="sub_menu">
+        <div><a href="/member/shipping/t1/0" [ngClass]="{'active': this.shippingType === 't1'}">未入庫</a></div>
+        <div><a href="/member/shipping/t2/0" [ngClass]="{'active': this.shippingType === 't2'}">已入庫</a></div>
+        <div><a href="/member/shipping/st1/0" [ngClass]="{'active': this.shippingType === 'st1'}">待出貨</a></div>
+        <div><a href="/member/shipping/st2/0" [ngClass]="{'active': this.shippingType === 'st2'}">已出貨</a></div>
+        <div><a href="/member/shipping/st3/0" [ngClass]="{'active': this.shippingType === 'st3'}">已完成</a></div>
+      </div>
+    </div>
+    <div class="regform">
+      <!-- content start -->
+      <div>
+        <div>
+          <div>
+            <label>快遞單號</label>
+            <span>{{data.trasferno}}</span>
+          </div>
+          <div>
+            <label>所屬集運站</label>
+            <span>{{data.stationname}}</span>
+          </div>
+          <div>
+            <label>快遞公司</label>
+            <span>{{data.trasfercompany}}</span>
+          </div>
+          <div>
+            <label>包裹體積(長寬高)</label>
+            <span
+              *ngIf="data.plength!=='' && data.pwidth!=='' && data.pheight!==''">{{data.plength+'X'+data.pwidth+'X'+data.pheight}}</span>
+          </div>
+          <div>
+            <label>包裹總重量</label>
+            <span>{{data.pweight}}</span>
+          </div>
+        </div>
+        <table>
+          <tr>
+            <th>商品名稱</th>
+            <th>數量</th>
+            <th>單價</th>
+          </tr>
+          <tr *ngFor="let subitem of subdata">
+            <td>{{subitem.product}}</td>
+            <td>{{subitem.quantity}}</td>
+            <td>{{subitem.unitprice}}</td>
+          </tr>
+        </table>
+      </div>
+      <!-- content end -->
+      <a routerLink="/member/shipping/{{this.shippingType}}/{{this.cateID}}">回列表</a>
+    </div>
+  </div>
+</div>

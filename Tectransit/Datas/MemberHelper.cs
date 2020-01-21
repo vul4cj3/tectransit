@@ -186,5 +186,60 @@ namespace Tectransit.Datas
 
             return new { rows = "", total = 0 };
         }
+
+        public dynamic GetACTransferData(long sID)
+        {
+            string sql = $@"
+                           SELECT A.*, B.*, C.USERCODE AS ACCOUNTCODE, D.STATIONNAME FROM T_E_TRANSFER_H A
+                           LEFT JOIN T_E_TRANSFER_D B ON A.ID = B.TRANSFERHID
+                           LEFT JOIN T_S_ACCOUNT C ON A.ACCOUNTID = C.ID
+                           LEFT JOIN T_S_STATION D ON A.STATIONCODE = D.STATIONCODE
+                           WHERE A.ID = {sID}";
+            DataTable DT = DBUtil.SelectDataTable(sql);
+            List<TransferDInfo> sublist = new List<TransferDInfo>();
+            if (DT.Rows.Count > 0)
+            {
+                TransferHListInfo m = new TransferHListInfo();
+                m.TRANSID = Convert.ToInt64(DT.Rows[0]["ID"]);
+                m.STATIONNAME = DT.Rows[0]["STATIONNAME"]?.ToString();
+                m.ACCOUNTCODE = DT.Rows[0]["ACCOUNTCODE"]?.ToString();
+                m.TRASFERNO = DT.Rows[0]["TRASFERNO"]?.ToString();
+                m.TRASFERCOMPANY = DT.Rows[0]["TRASFERCOMPANY"]?.ToString();
+                m.PLENGTH = DT.Rows[0]["P_LENGTH"]?.ToString();
+                m.PWIDTH = DT.Rows[0]["P_WIDTH"]?.ToString();
+                m.PHEIGHT = DT.Rows[0]["P_HEIGHT"]?.ToString();
+                m.PWEIGHT = DT.Rows[0]["P_WEIGHT"]?.ToString();
+                m.STATUS = DT.Rows[0]["STATUS"]?.ToString();
+                m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
+                m.CREBY = DT.Rows[0]["CREATEBY"]?.ToString();
+                m.UPDDATE = DT.Rows[0]["UPDDATE"]?.ToString();
+                m.UPDBY = DT.Rows[0]["UPDBY"]?.ToString();
+
+
+                for (int i = 0; i < DT.Rows.Count; i++)
+                {
+                    TransferDInfo d = new TransferDInfo();
+                    d.PRODUCT = DT.Rows[i]["PRODUCT"]?.ToString();
+                    d.QUANTITY = DT.Rows[i]["QUANTITY"]?.ToString();
+                    d.UNITPRICE = DT.Rows[i]["UNIT_PRICE"]?.ToString();
+                    sublist.Add(d);
+                }
+                return new { rows = m, subitem = sublist };
+            }
+
+            return new { rows = "", subitem = "" };
+        }
+
+        public void DelACTransferData(Hashtable sData)
+        {
+            string sql = $@"DELETE FROM T_E_TRANSFER_D WHERE TRANSFERHID = @TRANSFERID";
+            string sql2 = $@"DELETE FROM T_E_TRANSFER_H WHERE ID = @TRANSFERID";
+            if(sData["ISENABLE"]?.ToString() == "1")
+            {
+                DBUtil.EXECUTE(sql, sData);
+                DBUtil.EXECUTE(sql2, sData);                
+            }            
+        }
+
     }
 }

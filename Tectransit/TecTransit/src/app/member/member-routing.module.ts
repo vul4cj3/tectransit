@@ -8,6 +8,7 @@ import { EntrustComponent } from './entrust/entrust.component';
 import { EntrustEditComponent } from './entrust-edit/entrust-edit.component';
 import { ShippingListComponent } from './shipping-list/shipping-list.component';
 import { ShippingEditComponent } from './shipping-edit/shipping-edit.component';
+import { ShippingCombineComponent } from './shipping-combine/shipping-combine.component';
 
 const routes: Routes = [
   {
@@ -36,13 +37,18 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
+        path: 'shipping/edit/:type/:code/:id',
+        component: ShippingEditComponent,
+        canActivate: [AuthGuard],
+      },
+      {
         path: 'shipping/:type/:id',
         component: ShippingListComponent,
         canActivate: [AuthGuard],
       },
       {
-        path: 'shipping/edit/:id',
-        component: ShippingEditComponent,
+        path: 'shipping/combine',
+        component: ShippingCombineComponent,
         canActivate: [AuthGuard],
       }
     ],

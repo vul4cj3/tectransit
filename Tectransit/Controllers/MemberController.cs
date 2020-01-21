@@ -77,7 +77,7 @@ namespace Tectransit.Controllers
             {
                 var jsonData = JObject.FromObject(form);
                 JObject arrData = jsonData.Value<JObject>("formdata");
-                
+
                 Hashtable htData = new Hashtable();
                 foreach (var t in arrData)
                     htData[t.Key.ToUpper()] = t.Value?.ToString();
@@ -85,7 +85,7 @@ namespace Tectransit.Controllers
                 htData["RANDONCODE"] = objComm.GetRandomString();
 
                 //檢查用戶名是否重複
-                bool IsRepeat = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT USERCODE AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{htData["USERCODE"]}' AND ISENABLE = '1'")) ? false : true;                
+                bool IsRepeat = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT USERCODE AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{htData["USERCODE"]}' AND ISENABLE = '1'")) ? false : true;
                 if (IsRepeat)
                 {
                     return new { status = "99", id = "", msg = "此用戶帳號已有人使用！" }; ;
@@ -149,7 +149,7 @@ namespace Tectransit.Controllers
             {
                 var jsonData = JObject.FromObject(form);
                 JObject arrData = jsonData.Value<JObject>("formdata");
-                
+
                 Hashtable htData = new Hashtable();
                 foreach (var t in arrData)
                     htData[t.Key.ToUpper()] = t.Value?.ToString();
@@ -172,7 +172,7 @@ namespace Tectransit.Controllers
                 {
                     return new { status = "99", msg = "認證失敗！" };
                 }
-                
+
                 return new { status = "0", msg = "認證成功！" };
             }
             catch (Exception ex)
@@ -207,7 +207,7 @@ namespace Tectransit.Controllers
 
                 htData["STATIONCODE"] = arrData.Value<string>("stationcode");
                 htData["TRASFERNO"] = arrData.Value<string>("trasferno");
-                
+
                 htData["_acccode"] = Request.Cookies["_acccode"];
                 htData["ACCOUNTID"] = DBUtil.GetSingleValue1($@"SELECT ID AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{htData["_acccode"]}'");
 
@@ -240,10 +240,10 @@ namespace Tectransit.Controllers
                     for (int i = 0; i < AL.Count; i++)
                     {
                         Hashtable sData = (Hashtable)AL[i];
-                        InsertTransferD(sData);                        
+                        InsertTransferD(sData);
                     }
                 }
-                
+
                 return new { status = "0", msg = "保存成功！" };
             }
             catch (Exception ex)
@@ -293,9 +293,9 @@ namespace Tectransit.Controllers
                         sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATIONCODE = '" + htData["STATIONCODE"]?.ToString() + "'";
                 }
 
-                
+
                 return objMember.GetTransferData(sWhere, pageIndex, pageSize);
-                
+
             }
             catch (Exception ex)
             {
@@ -346,7 +346,7 @@ namespace Tectransit.Controllers
                     if (!string.IsNullOrEmpty(htData["STATIONCODE"]?.ToString()))
                         sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATIONCODE = '" + htData["STATIONCODE"]?.ToString() + "'";
                 }
-                
+
 
                 return objMember.GetShippingData(sWhere, pageIndex, pageSize);
 
@@ -358,7 +358,64 @@ namespace Tectransit.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public dynamic GetACTransferData(long id)
+        {
+            Hashtable htData = new Hashtable();
+            htData["_acccode"] = Request.Cookies["_acccode"];
+            htData["_accname"] = Request.Cookies["_accname"];
 
+            return objMember.GetACTransferData(id);
+        }
+
+        [HttpPost]
+        public dynamic DelACTransferData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                string usercode = jsonData.Value<string>("id");
+                JArray arrData = jsonData.Value<JArray>("formdata");
+                
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "TRANSFERID");
+                        dataKey.Add("isenable", "ISENABLE");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+
+                        htData["_acccode"] = Request.Cookies["_acccode"];
+                        htData["_accname"] = Request.Cookies["_accname"];
+                    }
+
+                    AL.Add(htData);
+                }
+
+                if (AL.Count > 0)
+                {
+                    for (int j = 0; j < AL.Count; j++)
+                    {
+                        Hashtable tempData = (Hashtable)AL[j];
+                        objMember.DelACTransferData(tempData);
+                    }
+                }
+
+                return new { status = "0", msg = "刪除成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "刪除失敗！" };
+            }
+        }
         #endregion
 
 
@@ -529,6 +586,7 @@ namespace Tectransit.Controllers
             _context.SaveChanges();
             
         }
+        
 
         #endregion
 

@@ -35,7 +35,10 @@ export interface MemStationInfo {
 
 export interface TransferHInfo {
   transid: number;
+  accountid: string;
+  accountcode: string;
   stationcode: string;
+  stationname: string;
   trasferno: string;
   trasfercompany: string;
   plength: string;
