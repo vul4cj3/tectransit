@@ -64,6 +64,17 @@ export interface TransferDInfo {
   transhid: string;
 }
 
+export interface TransferDInfoCombine {
+  transid: number;
+  product: string;
+  producturl: string;
+  unitprice: string;
+  quantity: string;
+  remark: string;
+  transhid: string;
+  trasferno: string;
+}
+
 export interface ShippingHInfo {
   shippingid: number;
   shippingno: string;
@@ -102,4 +113,17 @@ export interface ShippingDInfo {
   quantity: string;
   remark: string;
   shippingid_h: string;
+}
+
+export interface DeclarantInfo {
+  id: number;
+  type: string;
+  name: string;
+  taxid: string;
+  phone: string;
+  mobile: string;
+  addr: string;
+  idphoto_f: string;
+  idphoto_b: string;
+  appointment: string;
 }

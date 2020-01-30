@@ -67,6 +67,13 @@ a {
 text-decoration: none;
 }
 
+.thumb-nail{
+  object-fit: contain;
+  padding: 2px;
+  height: 116px;
+  width: 116px;
+}
+
 
 
 /*========= app-component settings  ========*/

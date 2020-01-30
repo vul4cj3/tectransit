@@ -30,7 +30,7 @@
                           <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doDelete()">刪除</button>
                         </ng-container>
                     <ng-container *ngIf="this.shippingType === 't2'">
-                      <button class="mb-2 mr-2 btn-hover-shine btn btn-info">申請集運</button>
+                      <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doCombine()">申請集運</button>
                     </ng-container>
                   </div>
                 </div>
@@ -53,7 +53,7 @@
                           <span class="checkmark"></span>
                         </label>
                       </td>
-                      <td>{{item.trasferno}}</td>
+                      <td><label for="chk{{idx}}">{{item.trasferno}}</label></td>
                       <td>{{item.status}}</td>
                       <td>{{item.credate}}</td>
                       <td>{{item.upddate}}</td>

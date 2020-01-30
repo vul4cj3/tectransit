@@ -1,0 +1,7 @@
+.img-preview-container{
+  position: relative;
+}
+
+.img-preview{
+  display: flex;
+}

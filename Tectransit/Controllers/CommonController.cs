@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -90,6 +91,108 @@ namespace Tectransit.Controllers
                     dbPath = dbPath.Replace(@"admin\src", "").Replace(@"\", @"/");
 
                     return new { status = "0", imgurl = dbPath };
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+                return new { status = "99", imgurl = "" };
+            }
+        }
+
+        [HttpPost]
+        [DisableRequestSizeLimit]
+        public dynamic UploadImgData_F()
+        {
+            try
+            {
+                string usercode = Request.Cookies["_acccode"];
+
+                string type = Request.Form["TYPE"];
+                string tempImg = "";
+                var file = Request.Form.Files;
+                var folderName = Path.Combine(@"tectransit\src\assets\" + type, usercode);
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+                if (file.Count > 0)
+                {
+                    for (int i = 0; i < file.Count; i++)
+                    {
+                        var fileName = ContentDispositionHeaderValue.Parse(file[i].ContentDisposition).FileName.Trim('"');
+                        var fullPath = Path.Combine(pathToSave, fileName);
+                        var dbPath = Path.Combine(folderName, fileName);
+
+                        if (!Directory.Exists(pathToSave))
+                        {
+                            Directory.CreateDirectory(pathToSave);
+                        }
+
+                        using (var stream = new FileStream(fullPath, FileMode.Create))
+                        {
+                            file[i].CopyTo(stream);
+                        }
+
+                        dbPath = dbPath.Replace(@"tectransit\src", "res").Replace(@"\", @"/");
+
+                        tempImg += (tempImg == "" ? "" : ";") + dbPath;
+                    }
+
+                    return new { status = "0", imgurl = tempImg };
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+                return new { status = "99", imgurl = "" };
+            }
+        }
+
+        [HttpPost]
+        [DisableRequestSizeLimit]
+        public dynamic UploadFileData_F()
+        {
+            try
+            {
+                string usercode = Request.Cookies["_acccode"];
+
+                string type = Request.Form["TYPE"];
+                string tempImg = "";
+                var file = Request.Form.Files;
+                var folderName = Path.Combine(@"tectransit\src\assets\" + type, usercode);
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+                if (file.Count > 0)
+                {
+                    for (int i = 0; i < file.Count; i++)
+                    {
+                        var fileName = ContentDispositionHeaderValue.Parse(file[i].ContentDisposition).FileName.Trim('"');
+                        var fullPath = Path.Combine(pathToSave, fileName);
+                        var dbPath = Path.Combine(folderName, fileName);
+
+                        if (!Directory.Exists(pathToSave))
+                        {
+                            Directory.CreateDirectory(pathToSave);
+                        }
+
+                        using (var stream = new FileStream(fullPath, FileMode.Create))
+                        {
+                            file[i].CopyTo(stream);
+                        }
+
+                        dbPath = dbPath.Replace(@"tectransit\src", "res").Replace(@"\", @"/");
+
+                        tempImg += (tempImg == "" ? "" : ";") + dbPath;
+                    }
+
+                    return new { status = "0", fileurl = tempImg };
                 }
                 else
                 {

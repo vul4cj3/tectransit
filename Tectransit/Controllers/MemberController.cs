@@ -54,6 +54,7 @@ namespace Tectransit.Controllers
                     if (objComm.GetMd5Hash(htData["USERPASSWORD"]?.ToString()) != oldPW)
                         return new { status = "99", msg = "保存失敗，用戶密碼(舊密碼)輸入錯誤！" };
                 }
+                
 
                 //get cookies
                 htData["_acccode"] = Request.Cookies["_acccode"];
@@ -304,7 +305,38 @@ namespace Tectransit.Controllers
             }
         }
 
+        //取得要合併的快遞單號資料
+        [HttpPost]
+        public dynamic GetTransferData([FromBody] object form)
+        {
+            try
+            {
+                string sWhere = "";
+                var jsonData = JObject.FromObject(form);
+                string transid = jsonData.Value<string>("id");
+                
+                if (!string.IsNullOrEmpty(transid))
+                {
+                    string[] arrList = transid.Split(';');
+                    if (arrList.Length > 0)
+                    {
+                        
+                        for (int i = 0; i < arrList.Length; i++)
+                        {
+                            sWhere += (sWhere == "" ? "" : ",") + $@"'{arrList[i]}'";
+                        }
+                    }
+                }
 
+                return objMember.GetTransferData_Combine(sWhere);
+
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "取得失敗！" };
+            }
+        }
         #endregion
 
         #region 集運單(待出貨,已出貨,已完成)
@@ -419,6 +451,58 @@ namespace Tectransit.Controllers
         #endregion
 
 
+        #region 申報人管理
+        [HttpGet]
+        public dynamic GetACDeclarantData()
+        {
+            Hashtable htData = new Hashtable();
+            htData["_acccode"] = Request.Cookies["_acccode"];
+            htData["_accname"] = Request.Cookies["_accname"];
+
+            return objMember.GetDeclarantData(htData);
+        }
+
+        [HttpGet("{id}")]
+        public dynamic GetDeclarantData(long id)
+        {
+            Hashtable htData = new Hashtable();
+            htData["DECLARANTID"] = id;
+            htData["_acccode"] = Request.Cookies["_acccode"];
+            htData["_accname"] = Request.Cookies["_accname"];
+
+            return objMember.GetDeclarantData(htData);
+        }
+
+        [HttpPost]
+        public dynamic SaveDeclarantData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+
+                Hashtable htData = new Hashtable();
+                foreach (var t in arrData)
+                    htData[t.Key.ToUpper()] = t.Value?.ToString();
+
+                htData["_acccode"] = Request.Cookies["_acccode"];
+                htData["_accname"] = Request.Cookies["_accname"];
+
+                if (htData["ID"]?.ToString() == "0")
+                    InsertDeclarant(htData, 2);
+                else
+                    UpdateDeclarant(Convert.ToInt64(htData["ID"]), htData);
+                
+                return new { status = "0", msg = "保存成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", id = "0", msg = "保存失敗！" };
+            }
+        }
+        #endregion
+
         #region 私有function
 
         private void InsertMemCompanyData(Hashtable htData)
@@ -508,7 +592,7 @@ namespace Tectransit.Controllers
             {
                 TSAccount rowTSA = query;
 
-                if (sData["NEWPW"] != null)
+                if (!string.IsNullOrEmpty(sData["NEWPW"]?.ToString()))
                     rowTSA.Userpassword = objComm.GetMd5Hash(sData["NEWPW"]?.ToString());
                 if (sData["USERNAME"] != null)
                     rowTSA.Username = sData["USERNAME"]?.ToString();
@@ -586,8 +670,75 @@ namespace Tectransit.Controllers
             _context.SaveChanges();
             
         }
-        
 
+        private void InsertDeclarant(Hashtable htData, int type)
+        {
+
+            TSDeclarant rowTSD = new TSDeclarant();
+
+            rowTSD.Type = type;
+            rowTSD.Name = (htData["NAME"]?.ToString()).Trim();
+            rowTSD.Taxid = htData["TAXID"]?.ToString();
+            rowTSD.Phone = htData["PHONE"]?.ToString();
+            rowTSD.Mobile = htData["MOBILE"]?.ToString();
+            rowTSD.Addr = htData["ADDR"]?.ToString();
+            rowTSD.IdphotoF = htData["IDPHOTO_F"]?.ToString();
+            rowTSD.IdphotoB = htData["IDPHOTO_B"]?.ToString();
+            rowTSD.Appointment = htData["APPOINTMENT"]?.ToString();
+
+            rowTSD.Credate = DateTime.Now;
+            rowTSD.Createby = htData["_acccode"]?.ToString();
+            rowTSD.Upddate = rowTSD.Credate;
+            rowTSD.Updby = htData["_acccode"]?.ToString();
+
+            long decID = rowTSD.Id;
+
+            _context.TSDeclarant.Add(rowTSD);
+            _context.SaveChanges();
+
+            TSAcdeclarantmap rowTSAD = new TSAcdeclarantmap();
+            rowTSAD.Usercode = htData["_acccode"]?.ToString();
+            rowTSAD.Declarantid = decID;
+
+            _context.TSAcdeclarantmap.Add(rowTSAD);
+            _context.SaveChanges();            
+
+        }
+
+        private void UpdateDeclarant(long id, Hashtable sData)
+        {
+            var query = _context.TSDeclarant.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                TSDeclarant rowTSD = query;
+                
+                if (sData["NAME"] != null)
+                    rowTSD.Name = sData["NAME"]?.ToString();
+                if (sData["TAXID"] != null)
+                    rowTSD.Taxid = sData["TAXID"]?.ToString();
+                if (sData["PHONE"] != null)
+                    rowTSD.Phone = sData["PHONE"]?.ToString();
+                if (sData["MOBILE"] != null)
+                    rowTSD.Mobile = sData["MOBILE"]?.ToString();
+                if (sData["ADDR"] != null)
+                    rowTSD.Addr = sData["ADDR"]?.ToString();
+                if (sData["IDPHOTO_F"] != null)
+                    rowTSD.IdphotoF = sData["IDPHOTO_F"]?.ToString();
+                if (sData["IDPHOTO_B"] != null)
+                    rowTSD.IdphotoB = sData["IDPHOTO_B"]?.ToString();
+                if (sData["APPOINTMENT"] != null)
+                    rowTSD.Appointment = sData["APPOINTMENT"]?.ToString();
+
+                if (sData.Count > 2)//排除cookies
+                {
+                    rowTSD.Upddate = DateTime.Now;
+                    rowTSD.Updby = sData["_acccode"]?.ToString();
+
+                    _context.SaveChanges();
+                }
+            }
+        }
         #endregion
 
     }

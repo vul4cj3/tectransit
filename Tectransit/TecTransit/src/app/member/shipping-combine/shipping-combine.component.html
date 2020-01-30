@@ -1,1 +1,61 @@
-<p>shipping-combine works!</p>
+<div class="memprofile">
+  <div class="profile-contain">
+    <div class="memheader"><span>申請集運</span></div>
+    <div class="regform">
+      <form [formGroup]="dataForm">
+          <div class="form-control">
+              <table>
+                <tr>
+                  <th>快遞單號</th>
+                  <th>商品名稱</th>
+                  <th>數量</th>
+                  <th>價值</th>
+                </tr>
+                <tr *ngFor="let item of masterData">
+                  <td>{{item.trasferno}}</td>
+                  <td>{{item.product}}</td>
+                  <td>{{item.quantity}}</td>
+                  <td>{{item.unitprice}}</td>
+                </tr>
+              </table>
+            </div>
+        <div class="form-control">
+          <label for="receiver">收件人</label>
+          <input type="text" id="receiver" formControlName="receiver">
+        </div>
+        <div class="form-control">
+          <label for="receiveraddr">收件地址</label>
+          <input type="text" id="receiveraddr" formControlName="receiveraddr">
+        </div>
+        <div class="form-control">
+          <label for="phone">電話</label>
+          <input type="text" id="phone" formControlName="phone" maxlength="10">
+        </div>
+        <div class="form-control">
+          <label for="mobile">手機</label>
+          <input type="text" id="mobile" formControlName="mobile" maxlength="10">
+        </div>
+        <div>
+          <div class="form-control">
+            <table>
+              <tr>
+                <th>申報人</th>
+              </tr>
+              <tr>
+                <td>
+                  <input type="checkbox" id="chk1"><label for="chk1">test</label>
+                  <input type="checkbox" id="chk2"><label for="chk2">test2</label>
+                </td>
+              </tr>
+            </table>
+            <p>*申報人詳細資料以[申報人管理]所填寫的為主，如資料需要修正請先至[申報人管理]修改</p>
+          </div>
+        </div>
+        <div class="form-control">
+          <button type="button" click="SaveData(dataForm.value)">送出</button>
+          <button type="button" (click)="doCancel()">取消</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

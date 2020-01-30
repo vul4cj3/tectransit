@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, throwIfEmpty } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,8 @@ export class CommonService {
 
   /* Web api action url*/
   private navUrl = 'GetNavMenu_Front';
+  private imgUploadUrl = 'UploadImgData_F';
+  private fileUploadUrl = 'UploadFileData_F';
 
   /* pagination variables*/
   rowTotal = 0; // data count
@@ -136,6 +139,14 @@ export class CommonService {
       }));
   }
 
+  getData2(idlist, pageUrl: string) {
+    const postData = { id: idlist };
+    return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
   getSingleData(pageUrl: string) {
     return this.http.get<any>(`${pageUrl}`)
       .pipe(map(data => {
@@ -175,8 +186,15 @@ export class CommonService {
       }));
   }
 
-  fileUpload(formData, pageUrl: string) {
-    return this.http.post<any>(pageUrl, formData)
+  imageUpload(form) {
+    return this.http.post<any>(this.baseUrl + this.imgUploadUrl, form)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  fileUpload(form) {
+    return this.http.post<any>(this.baseUrl + this.fileUploadUrl, form)
       .pipe(map(data => {
         return data;
       }));

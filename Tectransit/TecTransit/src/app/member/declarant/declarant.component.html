@@ -1,0 +1,74 @@
+<div class="memprofile">
+  <div class="profile-contain">
+    <div class="memheader"><span>申報人管理</span></div>
+    <div class="form-control">
+      <table>
+        <tr>
+          <th>申報人姓名</th>
+          <th>身份證字號/統一編號</th>
+          <th>連絡電話</th>
+          <th>手機</th>
+          <th>地址</th>
+          <th>身分證件照</th>
+          <th>委任書</th>
+          <th>修改</th>
+          <th>刪除</th>
+        </tr>
+        <tr *ngFor="let item of dataList">
+          <td>{{item.name}}</td>
+          <td>{{item.taxid}}</td>
+          <td>{{item.phone}}</td>
+          <td>{{item.mobile}}</td>
+          <td>{{item.idphoto_f}}</td>
+          <td>{{item.appointment}}</td>
+          <td><a click=""><span class="symbol"><i class="fas fa-pen-square"></i></span></a></td>
+          <td><a click=""><span class="symbol"><i class="fas fa-times"></i></span></a></td>
+        </tr>
+      </table>
+    </div>
+    <div class="regform">
+      <form [formGroup]="dataForm">
+        <input type="hidden" id="id" formControlName="id">
+        <div class="form-control">
+          <label for="name">申報人姓名</label>
+          <input type="text" id="name" formControlName="name">
+        </div>
+        <div class="form-control">
+          <label for="taxid">身份證字號/統一編號</label>
+          <input type="text" id="taxid" formControlName="taxid">
+        </div>
+        <div class="form-control">
+          <label for="phone">連絡電話</label>
+          <input type="text" id="phone" formControlName="phone" maxlength="15">
+        </div>
+        <div class="form-control">
+          <label for="mobile">手機</label>
+          <input type="text" id="mobile" formControlName="mobile" maxlength="15">
+        </div>
+        <div class="form-control">
+          <label for="addr">地址</label>
+          <input type="text" id="addr" formControlName="addr">
+        </div>
+        <div class="form-control">
+          <label for="idphoto">身分證件照(正反面)</label>
+          <input type="file" #imgupload accept="image/*" multiple (change)="imgChange($event)">
+          <div class="img-preview-container">
+            <div id="img-preview" class="img-preview">
+            </div>
+          </div>
+          <input type="hidden" id="idphoto_f" formControlName="idphoto_f">
+          <input type="hidden" id="idphoto_b" formControlName="idphoto_b">
+        </div>
+        <div class="form-control">
+          <label for="appointment">委任書</label>
+          <input type="file" #fileupload (change)="fileChange($event)">
+          <input type="hidden" id="appointment" formControlName="appointment">
+        </div>
+        <div class="form-control">
+          <button type="button" (click)="saveData(dataForm.value)">送出</button>
+          <button type="button" (click)="doCancel()">取消</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -3,6 +3,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TransferHInfo, MemStationInfo, ShippingHInfo } from 'src/app/_Helper/models';
 import { ShippstatusPipe } from 'src/app/_Helper/shippstatus.pipe';
+import { IfStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-shipping-list',
@@ -187,6 +188,22 @@ export class ShippingListComponent implements OnInit {
 
       } else { alert('無項目被刪除！'); }
     } else { }
+  }
+
+  doCombine() {
+    let idlist = '';
+    if (this.chkList.length > 0) {
+      sessionStorage.removeItem('transid');
+      for (const item of this.chkList) {
+        if (item.isenable === true) {
+          idlist += (idlist === '' ? '' : ';') + item.id;
+        }
+      }
+      sessionStorage.setItem('transid', idlist);
+      this.router.navigate(['/member/shipping/combine']);
+    } else {
+      alert('請至少選擇一筆！');
+    }
   }
 
 }

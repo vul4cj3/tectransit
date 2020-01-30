@@ -12,10 +12,6 @@ import { AccountInfo } from 'src/app/_Helper/models';
 export class ProfileComponent implements OnInit {
 
   memForm: FormGroup;
-  year = [];
-  month = [];
-  days = [];
-  tyear = (new Date()).getFullYear();
 
   getdataUrl = '/api/Member/GetMemData';
   saveUrl = '/api/Member/EditMemData';
@@ -31,7 +27,6 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.resetForm();
-    this.GetBirth();
     this.getData();
   }
 
@@ -58,23 +53,6 @@ export class ProfileComponent implements OnInit {
       }, error => {
         console.log(error);
       });
-  }
-
-  GetBirth() {
-    let k = 0;
-    for (let i = 1; i < 91; i++) {
-      this.year[k] = this.tyear - i;
-      k++;
-    }
-
-    for (let i = 0; i < 12; i++) {
-      this.month[i] = i + 1;
-    }
-
-    for (let i = 0; i < 31; i++) {
-      this.days[i] = i + 1;
-    }
-
   }
 
   SaveData(form) {

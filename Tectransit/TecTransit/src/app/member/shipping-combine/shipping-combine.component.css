@@ -1,0 +1,12 @@
+table th{
+  background-color: #425080;
+  color: #fff;
+}
+table tr, th, td{
+  padding: 10px;
+  border: 1px solid #425080;
+}
+
+table{
+  margin-bottom: 5px;
+}

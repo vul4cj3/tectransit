@@ -325,6 +325,18 @@ namespace Tectransit.Datas
         public string TRANSHID { set; get; }        
     }
 
+    public class TransferDInfo_Combine
+    {
+        public long TRANSID { set; get; }
+        public string PRODUCT { set; get; }
+        public string PRODUCTURL { set; get; }
+        public string UNITPRICE { set; get; }
+        public string QUANTITY { set; get; }
+        public string REMARK { set; get; }
+        public string TRANSHID { set; get; }
+        public string TRASFERNO { set; get; }
+    }
+
     public class ShippingHInfo
     {
         public long SHIPPINGID { set; get; }

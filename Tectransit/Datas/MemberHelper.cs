@@ -241,5 +241,103 @@ namespace Tectransit.Datas
             }            
         }
 
+        public dynamic GetTransferData_Combine(string sID)
+        {
+            string sql = $@"
+                           SELECT A.TRASFERNO AS TRASFERNO, B.*, C.USERCODE AS ACCOUNTCODE, D.STATIONNAME FROM T_E_TRANSFER_H A
+                           LEFT JOIN T_E_TRANSFER_D B ON A.ID = B.TRANSFERHID
+                           LEFT JOIN T_S_ACCOUNT C ON A.ACCOUNTID = C.ID
+                           LEFT JOIN T_S_STATION D ON A.STATIONCODE = D.STATIONCODE
+                           WHERE A.ID IN ({sID})";
+            DataTable DT = DBUtil.SelectDataTable(sql);
+            List<TransferDInfo_Combine> sublist = new List<TransferDInfo_Combine>();
+            if (DT.Rows.Count > 0)
+            {
+                for (int i = 0; i < DT.Rows.Count; i++)
+                {
+                    TransferDInfo_Combine d = new TransferDInfo_Combine();
+                    d.TRANSID = Convert.ToInt64(DT.Rows[i]["ID"]);
+                    d.PRODUCT = DT.Rows[i]["PRODUCT"]?.ToString();
+                    d.QUANTITY = DT.Rows[i]["QUANTITY"]?.ToString();
+                    d.UNITPRICE = DT.Rows[i]["UNIT_PRICE"]?.ToString();
+                    d.TRANSHID = DT.Rows[i]["TRANSFERHID"]?.ToString();
+                    d.TRASFERNO = DT.Rows[i]["TRASFERNO"]?.ToString();
+                    sublist.Add(d);
+                }
+                return new { rows = sublist };
+            }
+
+            return new { rows = "" };
+        }
+
+        public dynamic GetDeclarantData(Hashtable sData)
+        {
+            string sWhere = "";
+            if (sData["DECLARANTID"] != null)
+            {
+                if (sData["DECLARANTID"]?.ToString() != "0")
+                    sWhere = $@" AND A.ID = {sData["DECLARANTID"]}";
+            }
+
+            string sql = $@"
+                            SELECT A.* FROM T_S_DECLARANT A
+                            LEFT JOIN T_S_ACDECLARANTMAP B ON A.ID = B.DECLARANTID
+                            WHERE A.TYPE = 1 AND B.USERCODE = '{sData["_acccode"]}'
+                            {sWhere}";
+            DataTable DT = DBUtil.SelectDataTable(sql);
+            if (DT.Rows.Count > 0)
+            {
+                if (sData["DECLARANTID"] != null)
+                {
+                    DeclarantInfo m = new DeclarantInfo();
+                    m.ID = Convert.ToInt64(DT.Rows[0]["ID"]);
+                    m.TYPE = Convert.ToInt64(DT.Rows[0]["TYPE"]);
+                    m.NAME = DT.Rows[0]["NAME"]?.ToString();
+                    m.TAXID = DT.Rows[0]["TAXID"]?.ToString();
+                    m.PHONE = DT.Rows[0]["PHONE"]?.ToString();
+                    m.MOBILE = DT.Rows[0]["MOBILE"]?.ToString();
+                    m.ADDR = DT.Rows[0]["ADDR"]?.ToString();
+                    m.IDPHOTO_F = DT.Rows[0]["IDPHOTO_F"]?.ToString();
+                    m.IDPHOTO_B = DT.Rows[0]["IDPHOTO_B"]?.ToString();
+                    m.APPOINTMENT = DT.Rows[0]["APPOINTMENT"]?.ToString();
+                    m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
+                    m.CREBY = DT.Rows[0]["CREBY"]?.ToString();
+                    m.UPDDATE = DT.Rows[0]["UPDDATE"]?.ToString();
+                    m.UPDBY = DT.Rows[0]["UPDBY"]?.ToString();
+
+                    return new { rows = m };
+                }
+                else
+                {
+                    List<DeclarantInfo> m = new List<DeclarantInfo>();
+                    for (int i = 0; i < DT.Rows.Count;i++)
+                    {
+                        DeclarantInfo d = new DeclarantInfo();
+                        d.ID = Convert.ToInt64(DT.Rows[i]["ID"]);
+                        d.TYPE = Convert.ToInt64(DT.Rows[i]["TYPE"]);
+                        d.NAME = DT.Rows[i]["NAME"]?.ToString();
+                        d.TAXID = DT.Rows[0]["TAXID"]?.ToString();
+                        d.PHONE = DT.Rows[0]["PHONE"]?.ToString();
+                        d.MOBILE = DT.Rows[0]["MOBILE"]?.ToString();
+                        d.ADDR = DT.Rows[0]["ADDR"]?.ToString();
+                        d.IDPHOTO_F = DT.Rows[0]["IDPHOTO_F"]?.ToString();
+                        d.IDPHOTO_B = DT.Rows[0]["IDPHOTO_B"]?.ToString();
+                        d.APPOINTMENT = DT.Rows[0]["APPOINTMENT"]?.ToString();
+                        d.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
+                        d.CREBY = DT.Rows[0]["CREBY"]?.ToString();
+                        d.UPDDATE = DT.Rows[0]["UPDDATE"]?.ToString();
+                        d.UPDBY = DT.Rows[0]["UPDBY"]?.ToString();
+
+                        m.Add(d);
+                    }
+
+                    return new { rows = m };
+                }
+                
+            }
+
+            return new { rows = "" };
+        }
+
     }
 }
