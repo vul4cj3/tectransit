@@ -186,6 +186,13 @@ export class CommonService {
       }));
   }
 
+  delSingleData(id, pageUrl: string) {
+    return this.http.get<any>(`${pageUrl}/${id}`)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
   imageUpload(form) {
     return this.http.post<any>(this.baseUrl + this.imgUploadUrl, form)
       .pipe(map(data => {

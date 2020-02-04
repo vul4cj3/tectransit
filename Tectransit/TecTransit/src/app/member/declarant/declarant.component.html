@@ -19,10 +19,11 @@
           <td>{{item.taxid}}</td>
           <td>{{item.phone}}</td>
           <td>{{item.mobile}}</td>
-          <td>{{item.idphoto_f}}</td>
-          <td>{{item.appointment}}</td>
-          <td><a click=""><span class="symbol"><i class="fas fa-pen-square"></i></span></a></td>
-          <td><a click=""><span class="symbol"><i class="fas fa-times"></i></span></a></td>
+          <td>{{item.addr}}</td>
+          <td><a *ngIf="item.idphotO_F !== ''" [href]="item.idphotO_F" target="_block">身分證照1</a><a *ngIf="item.idphotO_B !== ''" [href]="item.idphotO_B" target="_block">身分證照2</a></td>
+          <td><a *ngIf="item.appointment !== ''" [href]="item.appointment" target="_block">下載</a></td>
+          <td><a (click)="editData(item.id)"><span class="symbol"><i class="fas fa-pen-square"></i></span></a></td>
+          <td><a (click)="delData(item.id)"><span class="symbol"><i class="fas fa-times"></i></span></a></td>
         </tr>
       </table>
     </div>
@@ -56,8 +57,8 @@
             <div id="img-preview" class="img-preview">
             </div>
           </div>
-          <input type="hidden" id="idphoto_f" formControlName="idphoto_f">
-          <input type="hidden" id="idphoto_b" formControlName="idphoto_b">
+          <input type="hidden" id="idphotO_F" formControlName="idphotO_F">
+          <input type="hidden" id="idphotO_B" formControlName="idphotO_B">
         </div>
         <div class="form-control">
           <label for="appointment">委任書</label>

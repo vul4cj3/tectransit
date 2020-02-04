@@ -1,26 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
 import { DeclarantInfo } from 'src/app/_Helper/models';
-
-class ImgSnippet {
-  constructor(public src: string, public file: File) { }
-}
 
 @Component({
   selector: 'app-declarant',
   templateUrl: './declarant.component.html',
   styleUrls: ['./declarant.component.css']
 })
+
 export class DeclarantComponent implements OnInit {
 
   dataForm: FormGroup;
 
-  private commUrl = window.location.origin + '/api/CommonHelp/';
-  private FileUploadUrl = 'UploadFileData';
   getdataUrl = '/api/Member/GetACDeclarantData';
   getdata2Url = '/api/Member/GetDeclarantData';
+  deldataUrl = '/api/Member/EditDeclarantData';
   saveUrl = '/api/Member/SaveDeclarantData';
 
   dataList: DeclarantInfo[];
@@ -50,10 +46,13 @@ export class DeclarantComponent implements OnInit {
       phone: [''],
       mobile: [''],
       addr: ['', Validators.required],
-      idphoto_f: [''],
-      idphoto_b: [''],
+      idphotO_F: [''],
+      idphotO_B: [''],
       appointment: ['']
     });
+
+    const div = document.getElementById('img-preview') as HTMLDivElement;
+    div.innerHTML = '';
   }
 
   getData() {
@@ -68,8 +67,29 @@ export class DeclarantComponent implements OnInit {
         });
   }
 
-  editData() {
+  editData(id) {
+    this.commonservice.getData(id, this.getdata2Url)
+      .subscribe(data => {
+        this.dataForm.patchValue(data.rows);
+        console.log(data.rows);
+        console.log(this.dataForm);
+      },
+        error => {
+          console.log(error);
+        });
+  }
 
+  delData(id) {
+    this.commonservice.delSingleData(id, this.deldataUrl)
+      .subscribe(data => {
+        if (data.status === '0') {
+          this.getData();
+          alert(data.msg);
+        }
+      },
+        error => {
+          console.log(error);
+        });
   }
 
   imgChange(e) {
@@ -92,26 +112,6 @@ export class DeclarantComponent implements OnInit {
       });
       reader.readAsDataURL(file);
     }
-
-    // const file: File = imgInput.files[0];
-    // const reader = new FileReader();
-
-    /*
-    reader.addEventListener('load', (event: any) => {
-      this.selectedFile = new ImgSnippet(event.target.result, file);
-      this.commonservice.imageUpload('dec', this.selectedFile.file)
-      .subscribe(data => {
-        if (data.status === '0') {
-          this.dataForm.controls.idphoto_f.setValue(data.imgurl);
-        }
-      },
-        error => {
-          console.log(error);
-        });
-    });*/
-
-    // reader.readAsDataURL(file);
-
   }
 
   fileChange(e) {
@@ -122,49 +122,53 @@ export class DeclarantComponent implements OnInit {
   saveData(form) {
     // 先上傳檔案
     const promise = new Promise((resolve, reject) => {
-      const formdata = new FormData();
-      for (let i = 0; i < this.imgList.length; i++) {
-        formdata.append('fileUpload', this.imgList[i]);
-        if (i === 0) {
-          formdata.append('TYPE', 'dec');
-        }
-      }
-
-      this.commonservice.imageUpload(formdata)
-        .subscribe(data => {
-          if (data.status === '0') {
-            const temp = data.imgurl.split(';');
-            this.dataForm.controls.idphoto_f.setValue(temp[0]);
-            this.dataForm.controls.idphoto_b.setValue(temp[1]);
-
-            resolve('success');
+      if (this.imgList !== undefined) {
+        const formdata = new FormData();
+        for (let i = 0; i < this.imgList.length; i++) {
+          formdata.append('fileUpload', this.imgList[i]);
+          if (i === 0) {
+            formdata.append('TYPE', 'dec');
           }
-        },
-          error => {
-            console.log(error);
-          });
+        }
+
+        this.commonservice.imageUpload(formdata)
+          .subscribe(data => {
+            if (data.status === '0') {
+              const temp = data.imgurl.split(';');
+              this.dataForm.controls.idphotO_F.setValue(temp[0]);
+              this.dataForm.controls.idphotO_B.setValue(temp[1]);
+
+              resolve('success');
+            }
+          },
+            error => {
+              console.log(error);
+            });
+      } else { resolve('success'); }
     });
 
     const promise1 = new Promise((resolve, reject) => {
-      const formdata = new FormData();
-      for (let i = 0; i < this.fileList.length; i++) {
-        formdata.append('fileUpload', this.fileList[i]);
-        if (i === 0) {
-          formdata.append('TYPE', 'dec');
-        }
-      }
-
-      this.commonservice.fileUpload(formdata)
-        .subscribe(data => {
-          if (data.status === '0') {
-            this.dataForm.controls.appointment.setValue(data.fileurl);
-
-            resolve('success');
+      if (this.fileList !== undefined) {
+        const formdata = new FormData();
+        for (let i = 0; i < this.fileList.length; i++) {
+          formdata.append('fileUpload', this.fileList[i]);
+          if (i === 0) {
+            formdata.append('TYPE', 'dec');
           }
-        },
-          error => {
-            console.log(error);
-          });
+        }
+
+        this.commonservice.fileUpload(formdata)
+          .subscribe(data => {
+            if (data.status === '0') {
+              this.dataForm.controls.appointment.setValue(data.fileurl);
+
+              resolve('success');
+            }
+          },
+            error => {
+              console.log(error);
+            });
+      } else { resolve('success'); }
     });
 
     Promise.all([promise, promise1])
@@ -182,6 +186,8 @@ export class DeclarantComponent implements OnInit {
     this.commonservice.editData(this.dataForm.value, this.saveUrl)
       .subscribe(data => {
         if (data.status === '0') {
+          this.resetForm();
+          this.getData();
           alert(data.msg);
         }
       },

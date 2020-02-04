@@ -115,7 +115,7 @@ namespace Tectransit.Controllers
                 string type = Request.Form["TYPE"];
                 string tempImg = "";
                 var file = Request.Form.Files;
-                var folderName = Path.Combine(@"tectransit\src\assets\" + type, usercode);
+                var folderName = Path.Combine(@"tectransit\dist\tectransit\assets\" + type, usercode);
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
                 if (file.Count > 0)
@@ -136,7 +136,7 @@ namespace Tectransit.Controllers
                             file[i].CopyTo(stream);
                         }
 
-                        dbPath = dbPath.Replace(@"tectransit\src", "res").Replace(@"\", @"/");
+                        dbPath = dbPath.Replace(@"tectransit\dist\tectransit", "res").Replace(@"\", @"/");
 
                         tempImg += (tempImg == "" ? "" : ";") + dbPath;
                     }
@@ -166,7 +166,7 @@ namespace Tectransit.Controllers
                 string type = Request.Form["TYPE"];
                 string tempImg = "";
                 var file = Request.Form.Files;
-                var folderName = Path.Combine(@"tectransit\src\assets\" + type, usercode);
+                var folderName = Path.Combine(@"tectransit\dist\tectransit\assets\" + type, usercode);
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
                 if (file.Count > 0)
@@ -187,7 +187,7 @@ namespace Tectransit.Controllers
                             file[i].CopyTo(stream);
                         }
 
-                        dbPath = dbPath.Replace(@"tectransit\src", "res").Replace(@"\", @"/");
+                        dbPath = dbPath.Replace(@"tectransit\dist\tectransit", "res").Replace(@"\", @"/");
 
                         tempImg += (tempImg == "" ? "" : ";") + dbPath;
                     }

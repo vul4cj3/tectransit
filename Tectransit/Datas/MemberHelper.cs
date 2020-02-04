@@ -282,7 +282,7 @@ namespace Tectransit.Datas
             string sql = $@"
                             SELECT A.* FROM T_S_DECLARANT A
                             LEFT JOIN T_S_ACDECLARANTMAP B ON A.ID = B.DECLARANTID
-                            WHERE A.TYPE = 1 AND B.USERCODE = '{sData["_acccode"]}'
+                            WHERE A.TYPE = 2 AND B.USERCODE = '{sData["_acccode"]}'
                             {sWhere}";
             DataTable DT = DBUtil.SelectDataTable(sql);
             if (DT.Rows.Count > 0)
@@ -301,7 +301,7 @@ namespace Tectransit.Datas
                     m.IDPHOTO_B = DT.Rows[0]["IDPHOTO_B"]?.ToString();
                     m.APPOINTMENT = DT.Rows[0]["APPOINTMENT"]?.ToString();
                     m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
-                    m.CREBY = DT.Rows[0]["CREBY"]?.ToString();
+                    m.CREBY = DT.Rows[0]["CREATEBY"]?.ToString();
                     m.UPDDATE = DT.Rows[0]["UPDDATE"]?.ToString();
                     m.UPDBY = DT.Rows[0]["UPDBY"]?.ToString();
 
@@ -316,17 +316,17 @@ namespace Tectransit.Datas
                         d.ID = Convert.ToInt64(DT.Rows[i]["ID"]);
                         d.TYPE = Convert.ToInt64(DT.Rows[i]["TYPE"]);
                         d.NAME = DT.Rows[i]["NAME"]?.ToString();
-                        d.TAXID = DT.Rows[0]["TAXID"]?.ToString();
-                        d.PHONE = DT.Rows[0]["PHONE"]?.ToString();
-                        d.MOBILE = DT.Rows[0]["MOBILE"]?.ToString();
-                        d.ADDR = DT.Rows[0]["ADDR"]?.ToString();
-                        d.IDPHOTO_F = DT.Rows[0]["IDPHOTO_F"]?.ToString();
-                        d.IDPHOTO_B = DT.Rows[0]["IDPHOTO_B"]?.ToString();
-                        d.APPOINTMENT = DT.Rows[0]["APPOINTMENT"]?.ToString();
-                        d.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
-                        d.CREBY = DT.Rows[0]["CREBY"]?.ToString();
-                        d.UPDDATE = DT.Rows[0]["UPDDATE"]?.ToString();
-                        d.UPDBY = DT.Rows[0]["UPDBY"]?.ToString();
+                        d.TAXID = DT.Rows[i]["TAXID"]?.ToString();
+                        d.PHONE = DT.Rows[i]["PHONE"]?.ToString();
+                        d.MOBILE = DT.Rows[i]["MOBILE"]?.ToString();
+                        d.ADDR = DT.Rows[i]["ADDR"]?.ToString();
+                        d.IDPHOTO_F = DT.Rows[i]["IDPHOTO_F"]?.ToString();
+                        d.IDPHOTO_B = DT.Rows[i]["IDPHOTO_B"]?.ToString();
+                        d.APPOINTMENT = DT.Rows[i]["APPOINTMENT"]?.ToString();
+                        d.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
+                        d.CREBY = DT.Rows[i]["CREATEBY"]?.ToString();
+                        d.UPDDATE = DT.Rows[i]["UPDDATE"]?.ToString();
+                        d.UPDBY = DT.Rows[i]["UPDBY"]?.ToString();
 
                         m.Add(d);
                     }

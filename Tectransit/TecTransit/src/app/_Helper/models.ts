@@ -123,7 +123,7 @@ export interface DeclarantInfo {
   phone: string;
   mobile: string;
   addr: string;
-  idphoto_f: string;
-  idphoto_b: string;
+  idphotO_F: string;
+  idphotO_B: string;
   appointment: string;
 }

@@ -501,6 +501,27 @@ namespace Tectransit.Controllers
                 return new { status = "99", id = "0", msg = "保存失敗！" };
             }
         }
+
+        [HttpGet("{id}")]
+        public dynamic EditDeclarantData(long id)
+        {
+            try
+            {
+                Hashtable htData = new Hashtable();
+                htData["DECLARANTID"] = id;
+                htData["_acccode"] = Request.Cookies["_acccode"];
+                htData["_accname"] = Request.Cookies["_accname"];
+
+                DelDeclarant(htData);
+
+                return new { status = "0", msg = "刪除成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "刪除失敗！" };
+            }
+        }
         #endregion
 
         #region 私有function
@@ -690,11 +711,11 @@ namespace Tectransit.Controllers
             rowTSD.Createby = htData["_acccode"]?.ToString();
             rowTSD.Upddate = rowTSD.Credate;
             rowTSD.Updby = htData["_acccode"]?.ToString();
-
-            long decID = rowTSD.Id;
-
+            
             _context.TSDeclarant.Add(rowTSD);
             _context.SaveChanges();
+
+            long decID = rowTSD.Id;
 
             TSAcdeclarantmap rowTSAD = new TSAcdeclarantmap();
             rowTSAD.Usercode = htData["_acccode"]?.ToString();
@@ -737,6 +758,23 @@ namespace Tectransit.Controllers
 
                     _context.SaveChanges();
                 }
+            }
+        }
+
+        private void DelDeclarant(Hashtable sData)
+        {
+            var query = _context.TSDeclarant.Where(q => q.Id == Convert.ToInt64(sData["DECLARANTID"]) && q.Createby == sData["_acccode"].ToString()).FirstOrDefault();
+            if (query != null)
+            {
+                _context.TSDeclarant.Remove(query);
+                _context.SaveChanges();
+            }
+
+            var query_ = _context.TSAcdeclarantmap.Where(q => q.Id == Convert.ToInt64(sData["DECLARANTID"]) && q.Usercode == sData["_acccode"].ToString()).FirstOrDefault();
+            if (query_ != null)
+            {
+                _context.TSAcdeclarantmap.Remove(query_);
+                _context.SaveChanges();
             }
         }
         #endregion
