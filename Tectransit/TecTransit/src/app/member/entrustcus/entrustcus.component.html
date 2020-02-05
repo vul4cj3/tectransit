@@ -1,0 +1,91 @@
+<div class="memprofile">
+  <div class="profile-contain">
+    <div class="memheader"><span>委託集運</span></div>
+    <span class="symbol">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>請選擇集貨站及輸入快遞單號，請確實填寫包裹內物品資料！</p>
+      <br />
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>總件數必須與明細資料的箱號數量相符！</p>
+      <br />
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>送出後，請至[集運單管理]查看！</p>
+    </span>
+    <div>
+      <form [formGroup]="dataForm">
+        <!--master detail-->
+        <label>集運站</label>
+        <select formControlName="stationcode">
+          <option value="{{item.stationcode}}" *ngFor="let item of stationData">{{item.stationname}}</option>
+        </select>
+        <label>快遞單號</label>
+        <input placeholder="tranceno" type="text" formControlName="trasferno">
+        <label>總件數</label>
+        <input placeholder="total" type="text" formControlName="total">
+        <input type="checkbox" id="IsmultReceiver" (click)="chgReciver()">
+        <label for="IsmultReceiver">是否複數收件人</label>
+        <!--box detail start-->
+        <div formArrayName="boxform">
+          <div *ngFor="let box of dataForm.get('boxform')['controls']; let ibox=index">
+            <div formGroupName="{{ibox}}" class="Xs">
+              <label>箱號</label>
+              <input type="text" formControlName="boxno">
+              <ng-container *ngIf="IsmultRec">
+                <label>收件人</label>
+                <input type="text" formControlName="receiver">
+                <label>收件人地址</label>
+                <input type="text" formControlName="receiveraddr">
+              </ng-container>
+              <!--product detail start-->
+              <div><span>商品名稱</span><span>數量</span><span>價值</span></div>
+              <div formArrayName="productform">
+                <div *ngFor="let prd of box.get('productform')['controls']; let iprd=index">
+                  <div formGroupName="{{iprd}}" class="Ys">
+                    <input type="text" formControlName="product">
+                    <input type="text" formControlName="quantity">
+                    <input type="text" formControlName="unitprice">
+                    <input type="button" (click)="removeprd(ibox, iprd)" value="remove product">
+                  </div>
+                </div>
+                <input type="button" (click)="addprd(ibox)" value="Add product">
+              </div>
+              <!--product detail end-->
+            </div>
+            <input type="button" (click)="removebox(ibox)" value="remove box">
+          </div>
+          <input type="button" (click)="addbox()" value="Add box">
+        </div>
+        <!--box detail end-->
+        <!--declarant list start-->
+        <div><span>申報人</span><span>身分證字號(居留證號)</span><span>連絡電話</span><span>手機</span><span>地址</span><span>證件檔案</span><span>委任書</span></div>
+        <div formArrayName="decform">
+          <div *ngFor="let dec of dataForm.get('decform')['controls']; let idec=index">
+            <div formGroupName="{{idec}}" class="Ys">
+              <input type="text" formControlName="name">
+              <input type="text" formControlName="taxid">
+              <input type="text" formControlName="phone">
+              <input type="text" formControlName="mobile">
+              <input type="text" formControlName="addr">
+              <input type="file">
+              <input type="hidden" formControlName="idphotof">
+              <input type="hidden" formControlName="idphotob">
+              <input type="file">
+              <input type="hidden" formControlName="appointment">
+              <input type="button" (click)="removedec(idec)" value="remove declarant">
+            </div>
+          </div>
+          <input type="button" (click)="adddec()" value="Add declarant">
+        </div>
+        <!--declarant list end-->
+        <ng-container *ngIf="!IsmultRec">
+          <label>收件人</label>
+          <input type="text" formControlName="receiver">
+          <label>收件人地址</label>
+          <input type="text" formControlName="receiveraddr">
+        </ng-container>
+        <button type="button" (click)="SaveData(dataForm.value)">送出</button>
+        <button type="button" (click)="resetForm()">取消</button>
+      </form>
+    </div>
+  </div>
+</div>

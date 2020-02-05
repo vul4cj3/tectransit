@@ -10,6 +10,7 @@ import { ShippingListComponent } from './shipping-list/shipping-list.component';
 import { ShippingEditComponent } from './shipping-edit/shipping-edit.component';
 import { ShippingCombineComponent } from './shipping-combine/shipping-combine.component';
 import { DeclarantComponent } from './declarant/declarant.component';
+import { EntrustcusComponent } from './entrustcus/entrustcus.component';
 
 const routes: Routes = [
   {
@@ -35,6 +36,11 @@ const routes: Routes = [
       {
         path: 'entrust/edit/:id',
         component: EntrustEditComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'entrustcus',
+        component: EntrustcusComponent,
         canActivate: [AuthGuard],
       },
       {

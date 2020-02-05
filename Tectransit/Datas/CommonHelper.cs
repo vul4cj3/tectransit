@@ -323,6 +323,35 @@ namespace Tectransit.Datas
             }
         }
 
+        public void InsertSeqCode(Hashtable sData, string type)
+        {
+            if (type == "station") //各集運站追蹤代碼-流水號
+            {
+                Hashtable tempData = new Hashtable();
+                tempData["STARTCODE"] = "10001";
+                tempData["ENDCODE"] = "99999";
+                tempData["NEXTCODE"] = "10001";
+                tempData["CODENAME"] = sData["STATIONCODE"];
+                tempData["CODENAME2"] = sData["STATIONCODE"] +"_CUS";
+                tempData["CODEDESC"] = sData["STATIONNAME"] +"(會員)";
+                tempData["CODEDESC2"] = sData["STATIONNAME"] +"(廠商)";
+                tempData["CREDATE"] = DateTime.Now;
+                tempData["CREATEBY"] = "SYSTEM";
+                tempData["UPDDATE"] = tempData["CREDATE"];
+                tempData["UPDBY"] = tempData["CREATEBY"];
+
+                string sql = $@"INSERT INTO T_S_SEQUENCECODE(STARTCODE, ENDCODE, NEXTCODE, CODENAME, CODEDESC, CREDATE, CREATEBY, UPDDATE, UPDBY)
+                            VALUES (@STARTCODE, @ENDCODE, @NEXTCODE, @CODENAME, @CODEDESC, @CREDATE, @CREATEBY, @UPDDATE, @UPDBY)";
+
+                string sql1 = $@"INSERT INTO T_S_SEQUENCECODE(STARTCODE, ENDCODE, NEXTCODE, CODENAME, CODEDESC, CREDATE, CREATEBY, UPDDATE, UPDBY)
+                            VALUES (@STARTCODE, @ENDCODE, @NEXTCODE, @CODENAME2, @CODEDESC2, @CREDATE, @CREATEBY, @UPDDATE, @UPDBY)";
+
+                DBUtil.EXECUTE(sql, tempData);//會員用
+                DBUtil.EXECUTE(sql1, tempData);//廠商用
+            }
+            else { }
+        }
+
         public string GetSeqCode(string type)
         {
             string num = DBUtil.GetSingleValue1($@"SELECT NEXTCODE AS COL1 FROM T_S_SEQUENCECODE WHERE CODENAME = '{type}'");

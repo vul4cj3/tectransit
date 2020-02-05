@@ -2295,6 +2295,7 @@ namespace Tectransit.Controllers
                 {
 
                     InsertStation(htData);
+                    objComm.InsertSeqCode(htData, "station");
 
                     //add user log
                     objComm.AddUserControlLog(htData, "station/edit/0", "集貨站管理", 1, htData["STATIONID"]?.ToString());
