@@ -45,6 +45,10 @@ namespace Tectransit.Modles
         public virtual DbSet<TSUserlog> TSUserlog { get; set; }
         public virtual DbSet<TSUserloginlog> TSUserloginlog { get; set; }
         public virtual DbSet<TSUserrolemap> TSUserrolemap { get; set; }
+        public virtual DbSet<TVDeclarant> TVDeclarant { get; set; }
+        public virtual DbSet<TVShippingD> TVShippingD { get; set; }
+        public virtual DbSet<TVShippingH> TVShippingH { get; set; }
+        public virtual DbSet<TVShippingM> TVShippingM { get; set; }
 
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //        {
@@ -1399,6 +1403,179 @@ namespace Tectransit.Modles
                     .HasColumnName("USERCODE")
                     .HasMaxLength(100)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<TVDeclarant>(entity =>
+            {
+                entity.ToTable("T_V_DECLARANT");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Addr)
+                    .HasColumnName("ADDR")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Appointment)
+                    .HasColumnName("APPOINTMENT")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IdphotoB)
+                    .HasColumnName("IDPHOTO_B")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IdphotoF)
+                    .HasColumnName("IDPHOTO_F")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Mobile)
+                    .HasColumnName("MOBILE")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("NAME")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Phone)
+                    .HasColumnName("PHONE")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShippingidM).HasColumnName("SHIPPINGID_M");
+
+                entity.Property(e => e.Taxid)
+                    .HasColumnName("TAXID")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<TVShippingD>(entity =>
+            {
+                entity.ToTable("T_V_SHIPPING_D");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Product)
+                    .HasColumnName("PRODUCT")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Producturl)
+                    .HasColumnName("PRODUCTURL")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Quantity)
+                    .HasColumnName("QUANTITY")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Remark).HasColumnName("REMARK");
+
+                entity.Property(e => e.ShippingidH).HasColumnName("SHIPPINGID_H");
+
+                entity.Property(e => e.ShippingidM).HasColumnName("SHIPPINGID_M");
+
+                entity.Property(e => e.Unitprice)
+                    .HasColumnName("UNITPRICE")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<TVShippingH>(entity =>
+            {
+                entity.ToTable("T_V_SHIPPING_H");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Boxno)
+                    .HasColumnName("BOXNO")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Receiceraddr)
+                    .HasColumnName("RECEICERADDR")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Receiver)
+                    .HasColumnName("RECEIVER")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Remark).HasColumnName("REMARK");
+
+                entity.Property(e => e.ShippingidM).HasColumnName("SHIPPINGID_M");
+            });
+
+            modelBuilder.Entity<TVShippingM>(entity =>
+            {
+                entity.ToTable("T_V_SHIPPING_M");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Accountid).HasColumnName("ACCOUNTID");
+
+                entity.Property(e => e.Createby)
+                    .HasColumnName("CREATEBY")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Credate)
+                    .HasColumnName("CREDATE")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Ismultreceiver).HasColumnName("ISMULTRECEIVER");
+
+                entity.Property(e => e.Mawbno)
+                    .HasColumnName("MAWBNO")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Receiceraddr)
+                    .HasColumnName("RECEICERADDR")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Receiver)
+                    .HasColumnName("RECEIVER")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Remark1).HasColumnName("REMARK1");
+
+                entity.Property(e => e.Remark2).HasColumnName("REMARK2");
+
+                entity.Property(e => e.Remark3).HasColumnName("REMARK3");
+
+                entity.Property(e => e.Shippingno)
+                    .HasColumnName("SHIPPINGNO")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Status).HasColumnName("STATUS");
+
+                entity.Property(e => e.Total)
+                    .HasColumnName("TOTAL")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Trackingno)
+                    .HasColumnName("TRACKINGNO")
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Trackingtype).HasColumnName("TRACKINGTYPE");
+
+                entity.Property(e => e.Trasferno)
+                    .HasColumnName("TRASFERNO")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Updby)
+                    .HasColumnName("UPDBY")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Upddate)
+                    .HasColumnName("UPDDATE")
+                    .HasColumnType("datetime");
             });
         }
     }
