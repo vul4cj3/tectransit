@@ -192,7 +192,9 @@ namespace Tectransit.Controllers
 
             return objMember.GetACStationData(htData);
         }
+        
 
+        /*--------------------- 個人會員 ------------------------*/
 
         //存入快遞單號
         [HttpPost]
@@ -775,6 +777,243 @@ namespace Tectransit.Controllers
             {
                 _context.TSAcdeclarantmap.Remove(query_);
                 _context.SaveChanges();
+            }
+        }
+        #endregion
+
+
+        /*--------------------- 廠商會員 ------------------------*/
+        #region 集運單
+        [HttpPost]
+        public dynamic SaveCusShippingData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+
+                //Master data
+                Hashtable mData = new Hashtable();
+                mData["STATIONCODE"] = arrData.Value<string>("stationcode");
+                mData["TRASFERNO"] = arrData.Value<string>("trasferno");
+                mData["TOTAL"] = arrData.Value<string>("total");
+                mData["ISMULTRECEIVER"] = arrData.Value<string>("ismultreceiver");
+
+                if (string.IsNullOrEmpty(mData["ISMULTRECEIVER"]?.ToString())) {
+                    if (arrData.Value<string>("receiver") != null)
+                        mData["RECEIVER"] = arrData.Value<string>("receiver");
+                    if (arrData.Value<string>("receiveraddr") != null)
+                        mData["RECEIVERADDR"] = arrData.Value<string>("receiveraddr");                    
+                }
+
+                mData["_acccode"] = Request.Cookies["_acccode"];
+                mData["ACCOUNTID"] = DBUtil.GetSingleValue1($@"SELECT ID AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{mData["_acccode"]}'");
+
+                //Header(box) data                
+                JArray boxData = arrData.Value<JArray>("boxform");                
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < boxData.Count; i++)
+                {
+                    JObject temp = (JObject)boxData[i];
+                    Hashtable hData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        //Detail(product) data
+                        if (t.Key == "productform")
+                        {
+                            JArray prdData = temp.Value<JArray>("productform");
+                            ArrayList subAL = new ArrayList();
+                            for (int j = 0; j < prdData.Count; j++)
+                            {
+                                JObject temp2 = (JObject)prdData[j];
+                                Hashtable dData = new Hashtable();
+                                foreach (var t2 in temp2)
+                                {
+                                    dData[(t2.Key).ToUpper()] = t2.Value?.ToString();
+                                }
+                                subAL.Add(dData);
+                            }
+                            hData["PRDFORM"] = subAL;
+                            
+                        }
+                        else
+                            hData[(t.Key).ToUpper()] = t.Value?.ToString();
+                        
+                    }
+                    AL.Add(hData);
+                }
+
+                //Declarant data
+                JArray decData = arrData.Value<JArray>("decform");
+                ArrayList decAL = new ArrayList();
+                for (int k = 0; k < decData.Count; k++)
+                {
+                    JObject temp = (JObject)decData[k];
+                    Hashtable deData = new Hashtable();
+                    foreach (var t in temp)
+                        deData[(t.Key).ToUpper()] = t.Value?.ToString();
+
+                    decAL.Add(deData);
+                }
+                
+                //新增主單
+                long MID = InsertCusShippingM(mData);
+
+                //新增各箱細項                
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        sData["SHIPPINGIDM"] = MID;
+                        long HID = InsertCusShippingH(sData);
+
+                        ArrayList subAL = (ArrayList)sData["PRDFORM"];
+                        if (subAL.Count > 0)
+                        {
+                            for (int j = 0; j < subAL.Count; j++)
+                            {
+                                Hashtable tempData = (Hashtable)subAL[j];
+                                tempData["SHIPPINGIDM"] = MID;
+                                tempData["SHIPPINGIDH"] = HID;
+                                InsertCusShippingD(tempData);
+                            }
+                        }
+
+                    }
+                }
+
+                //新增申報人名單
+                if (decAL.Count > 0)
+                {
+                    for (int k = 0; k < decAL.Count; k++)
+                    {
+                        Hashtable tempData = (Hashtable)decAL[k];
+                        tempData["SHIPPINGIDM"] = MID;
+                        InsertTVDeclarant(tempData);
+                    }
+                }
+                
+                return new { status = "0", msg = "保存成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "保存失敗！" };
+            }
+        }
+
+        #endregion
+
+        #region 私有function
+        private long InsertCusShippingM(Hashtable sData)
+        {
+            long ID = 0;
+            try
+            {
+                TVShippingM TVM = new TVShippingM();
+                TVM.Accountid = Convert.ToInt64(sData["ACCOUNTID"]);
+                string autoSeqcode = objComm.GetSeqCode(sData["STATIONCODE"] + "_CUS");
+                TVM.Shippingno = "TECV" + DateTime.Now.ToString("yyyyMMdd") + autoSeqcode;
+                TVM.Trackingno = sData["STATIONCODE"] + "-" + autoSeqcode;
+                TVM.Mawbno = "";
+                TVM.Trasferno = sData["TRASFERNO"]?.ToString();
+                TVM.Total = sData["TOTAL"]?.ToString();
+                TVM.Trackingtype = 0;//尚未使用-0:無
+                TVM.Receiver = sData["RECEIVER"]?.ToString();
+                TVM.Receiceraddr = sData["RECEIVERADDR"]?.ToString();
+                TVM.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
+                TVM.Status = 0;
+                TVM.Credate = DateTime.Now;
+                TVM.Createby = sData["_acccode"]?.ToString();
+                TVM.Upddate = TVM.Credate;
+                TVM.Updby = TVM.Createby;
+                
+                _context.TVShippingM.Add(TVM);
+                _context.SaveChanges();
+
+                ID = TVM.Id;
+
+                //更新流水號
+                objComm.UpdateSeqCode(sData["STATIONCODE"] + "_CUS");
+
+                return ID;
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+                return ID;
+            }
+        }
+
+        private long InsertCusShippingH(Hashtable sData)
+        {
+            long ID = 0;
+            try
+            {
+                TVShippingH TVH = new TVShippingH();
+                TVH.Boxno = sData["BOXNO"]?.ToString();
+                TVH.Receiver = sData["RECEIVER"]?.ToString();
+                TVH.Receiceraddr = sData["RECEIVERADDR"]?.ToString();
+                TVH.ShippingidM = Convert.ToInt64(sData["SHIPPINGIDM"]);
+
+                _context.TVShippingH.Add(TVH);
+                _context.SaveChanges();
+
+                ID = TVH.Id;
+
+                return ID;
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+                return ID;
+            }
+        }
+
+        private void InsertCusShippingD(Hashtable sData)
+        {
+            try
+            {
+                TVShippingD TVD = new TVShippingD();
+                TVD.Product = sData["PRODUCT"]?.ToString();
+                TVD.Quantity = sData["QUANTITY"]?.ToString();
+                TVD.Unitprice = sData["UNITPRICE"]?.ToString();
+                TVD.ShippingidM = Convert.ToInt64(sData["SHIPPINGIDM"]);
+                TVD.ShippingidH = Convert.ToInt64(sData["SHIPPINGIDH"]);
+
+                _context.TVShippingD.Add(TVD);
+                _context.SaveChanges();
+                
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+            }
+        }
+
+        private void InsertTVDeclarant(Hashtable sData)
+        {
+            try
+            {
+                TVDeclarant TVD = new TVDeclarant();
+                TVD.Name = sData["NAME"]?.ToString();
+                TVD.Taxid = sData["TAXID"]?.ToString();
+                TVD.Phone = sData["PHONE"]?.ToString();
+                TVD.Mobile = sData["MOBILE"]?.ToString();
+                TVD.Addr = sData["ADDR"]?.ToString();
+                TVD.IdphotoF = sData["IDPHOTOF"]?.ToString();
+                TVD.IdphotoB = sData["IDPHOTOB"]?.ToString();
+                TVD.Appointment = sData["APPOINTMENT"]?.ToString();
+                TVD.ShippingidM = Convert.ToInt64(sData["SHIPPINGIDM"]);
+
+                _context.TVDeclarant.Add(TVD);
+                _context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
             }
         }
         #endregion

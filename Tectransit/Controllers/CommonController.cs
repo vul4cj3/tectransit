@@ -67,6 +67,22 @@ namespace Tectransit.Controllers
             return objCommon.GetStationData();
         }
 
+        [HttpGet]
+        public dynamic GetMemtype()
+        {
+            Hashtable htData = new Hashtable();
+            htData["_acccode"] = Request.Cookies["_acccode"];
+            htData["_accname"] = Request.Cookies["_accname"];
+
+            string sql = $@"SELECT A.USERCODE AS COL1 FROM T_S_ACCOUNT A
+                            LEFT JOIN T_S_ACRANKMAP B ON A.USERCODE = B.USERCODE 
+                            LEFT JOIN T_S_RANK C ON B.RANKID = C.ID
+                            WHERE C.RANKTYPE = 2 AND A.USERCODE = '{htData["_acccode"]}' AND A.ISENABLE = 'true'";
+            string IsCusMem = string.IsNullOrEmpty(DBUtil.GetSingleValue1(sql)) ? "N" : "Y";
+
+            return new { status = "0", data = IsCusMem };
+        }
+
         [HttpPost, DisableRequestSizeLimit]
         public dynamic UploadImgData()
         {
@@ -113,15 +129,18 @@ namespace Tectransit.Controllers
                 string usercode = Request.Cookies["_acccode"];
 
                 string type = Request.Form["TYPE"];
-                string tempImg = "";
                 var file = Request.Form.Files;
                 var folderName = Path.Combine(@"tectransit\dist\tectransit\assets\" + type, usercode);
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+                ArrayList AL = new ArrayList();
 
                 if (file.Count > 0)
                 {
                     for (int i = 0; i < file.Count; i++)
                     {
+                        Hashtable htData = new Hashtable();
+                        htData["ID"] = Request.Form["idcode"][i];
                         var fileName = ContentDispositionHeaderValue.Parse(file[i].ContentDisposition).FileName.Trim('"');
                         var fullPath = Path.Combine(pathToSave, fileName);
                         var dbPath = Path.Combine(folderName, fileName);
@@ -138,10 +157,64 @@ namespace Tectransit.Controllers
 
                         dbPath = dbPath.Replace(@"tectransit\dist\tectransit", "res").Replace(@"\", @"/");
 
-                        tempImg += (tempImg == "" ? "" : ";") + dbPath;
+                        htData["IMGPATH"] = dbPath;
+                        AL.Add(htData);
+                        
                     }
 
-                    return new { status = "0", imgurl = tempImg };
+                    List<IDImgList> rowlist = new List<IDImgList>();
+                    List<string> chkID = new List<string>();
+                    bool IsAdd = false;
+                    if (AL.Count > 0)
+                    {
+                        for (int j = 0; j < AL.Count; j++)
+                        {
+                            Hashtable sData = (Hashtable)AL[j];
+                            IsAdd = false;
+
+                            //先檢查id是否已新增
+                            foreach (string ck in chkID)
+                            {
+                                if (ck == sData["ID"]?.ToString())
+                                    IsAdd = true;
+                            }
+                            
+                            if (!IsAdd)
+                            {
+                                //是否有相同的id-->Y:合併成一筆
+                                for (int k = j + 1; k < AL.Count; k++)
+                                {
+                                    Hashtable tData = (Hashtable)AL[k];
+                                    if (sData["ID"]?.ToString() == tData["ID"]?.ToString())
+                                    {
+                                        IDImgList row = new IDImgList();
+                                        row.ID = sData["ID"]?.ToString();
+                                        row.IDPHOTOF = sData["IMGPATH"]?.ToString();
+                                        row.IDPHOTOB = tData["IMGPATH"]?.ToString();
+
+                                        rowlist.Add(row);
+                                        chkID.Add(row.ID);
+
+                                        IsAdd = true;
+                                    }
+                                }
+                                
+                                if (!IsAdd)
+                                {
+                                    IDImgList row = new IDImgList();
+                                    row.ID = sData["ID"]?.ToString();
+                                    row.IDPHOTOF = sData["IMGPATH"]?.ToString();
+                                    row.IDPHOTOB = "";
+
+                                    rowlist.Add(row);
+                                    chkID.Add(row.ID);
+                                }
+                            }
+                            
+                        }
+                    }
+                    
+                    return new { status = "0", imgurl = rowlist };
                 }
                 else
                 {
@@ -164,11 +237,11 @@ namespace Tectransit.Controllers
                 string usercode = Request.Cookies["_acccode"];
 
                 string type = Request.Form["TYPE"];
-                string tempImg = "";
                 var file = Request.Form.Files;
                 var folderName = Path.Combine(@"tectransit\dist\tectransit\assets\" + type, usercode);
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
+                List<IDFileList> rowlist = new List<IDFileList>();
                 if (file.Count > 0)
                 {
                     for (int i = 0; i < file.Count; i++)
@@ -188,11 +261,15 @@ namespace Tectransit.Controllers
                         }
 
                         dbPath = dbPath.Replace(@"tectransit\dist\tectransit", "res").Replace(@"\", @"/");
+                        
+                        IDFileList row = new IDFileList();
+                        row.ID = Request.Form["idcode"][i];
+                        row.APPOINTMENT = dbPath;
 
-                        tempImg += (tempImg == "" ? "" : ";") + dbPath;
+                        rowlist.Add(row);
                     }
 
-                    return new { status = "0", fileurl = tempImg };
+                    return new { status = "0", fileurl = rowlist };
                 }
                 else
                 {

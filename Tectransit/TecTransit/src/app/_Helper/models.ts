@@ -127,3 +127,14 @@ export interface DeclarantInfo {
   idphotO_B: string;
   appointment: string;
 }
+
+export interface IDImgList {
+  id: string;
+  idphotof: string;
+  idphotob: string;
+}
+
+export interface IDFileList {
+  id: string;
+  appointment: string;
+}

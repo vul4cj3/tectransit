@@ -36,7 +36,6 @@ export class RegcusComponent implements OnInit {
       username: ['', Validators.required],
       companyname: ['', Validators.required],
       rateid: ['', Validators.required],
-      idcode: ['', Validators.required],
       email: ['', Validators.required],
       address: ['', Validators.required],
       phone: ['', Validators.required],

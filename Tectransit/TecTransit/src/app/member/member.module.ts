@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ShippingCombineComponent } from './shipping-combine/shipping-combine.component';
 import { DeclarantComponent } from './declarant/declarant.component';
 import { EntrustcusComponent } from './entrustcus/entrustcus.component';
+import { ProfilecusComponent } from './profilecus/profilecus.component';
 
 
 
@@ -26,7 +27,8 @@ import { EntrustcusComponent } from './entrustcus/entrustcus.component';
     EntrustEditComponent,
     ShippingCombineComponent,
     DeclarantComponent,
-    EntrustcusComponent
+    EntrustcusComponent,
+    ProfilecusComponent
   ],
   imports: [
     CommonModule,

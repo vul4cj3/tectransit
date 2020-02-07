@@ -379,4 +379,18 @@ namespace Tectransit.Datas
         public string SHIPPINGID_H { set; get; }
     }
 
+    /*----------------- upload ----------------*/
+    public class IDImgList
+    {
+        public string ID { set; get; }
+        public string IDPHOTOF { set; get; }
+        public string IDPHOTOB { set; get; }
+    }
+
+    public class IDFileList
+    {
+        public string ID { set; get; }
+        public string APPOINTMENT { set; get; }
+    }
+
 }

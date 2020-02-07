@@ -14,6 +14,7 @@ export class CommonService {
   private navUrl = 'GetNavMenu_Front';
   private imgUploadUrl = 'UploadImgData_F';
   private fileUploadUrl = 'UploadFileData_F';
+  private chkMemtypeUrl = 'GetMemtype';
 
   /* pagination variables*/
   rowTotal = 0; // data count
@@ -216,6 +217,14 @@ export class CommonService {
       }
     }
     return obj;
+  }
+
+  /* other function */
+  chkMemtype() {
+    return this.http.get<any>(this.baseUrl + this.chkMemtypeUrl)
+      .pipe(map(data => {
+        return data;
+      }));
   }
 
 }

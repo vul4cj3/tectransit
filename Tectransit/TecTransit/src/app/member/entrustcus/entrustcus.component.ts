@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray, FormControl, NgControlStatus } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
+import { IDImgList, IDFileList } from 'src/app/_Helper/models';
 
 @Component({
   selector: 'app-entrustcus',
@@ -17,6 +18,13 @@ export class EntrustcusComponent implements OnInit {
   getStationUrl = '/api/Member/GetStationData';
   saveUrl = '/api/Member/SaveCusShippingData';
 
+  tempList: any = [];
+  imgList: any = [];
+  fileList: any = [];
+
+  idimglist: IDImgList[];
+  idfilelist: IDFileList[];
+
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
@@ -24,8 +32,23 @@ export class EntrustcusComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // 檢查是否為廠商會員,非廠商會員不可進入
+    this.chkMem();
+
     this.resetForm();
     this.getData();
+  }
+
+  chkMem() {
+    this.commonservice.chkMemtype()
+      .subscribe(data => {
+        if (data.data === 'N') {
+          this.router.navigate(['/']);
+        }
+      },
+        error => {
+          console.log(error);
+        });
   }
 
   resetForm() {
@@ -37,8 +60,12 @@ export class EntrustcusComponent implements OnInit {
       stationcode: [''],
       trasferno: ['', Validators.required],
       total: ['', Validators.required],
-      receiver: ['', Validators.required],
-      receiveraddr: ['', Validators.required],
+      idphotof: [''],
+      idphotob: [''],
+      appointment: [''],
+      receiver: [''],
+      receiveraddr: [''],
+      ismultreceiver: [''],
       boxform: this.formBuilder.array([
         this.initBox()
       ]),
@@ -56,8 +83,8 @@ export class EntrustcusComponent implements OnInit {
         productform: this.formBuilder.array([
           this.initProduct()
         ]),
-        receiver: ['', [Validators.required]],
-        receiveraddr: ['', [Validators.required]]
+        receiver: [''],
+        receiveraddr: ['']
       });
     } else {
       return this.formBuilder.group({
@@ -72,9 +99,9 @@ export class EntrustcusComponent implements OnInit {
   initProduct() {
     return this.formBuilder.group({
       //  ---------------------forms fields ------------------------
-      product: ['', [Validators.required]],
-      quantity: ['', [Validators.required, Validators.pattern('[0-9]{9}')]],
-      unitprice: ['', [Validators.required, Validators.pattern('[0-9]{10}')]],
+      product: ['', Validators.required],
+      quantity: ['', Validators.required],
+      unitprice: ['', Validators.required],
       // ---------------------------------------------------------------------
     });
   }
@@ -82,11 +109,11 @@ export class EntrustcusComponent implements OnInit {
   initDec() {
     return this.formBuilder.group({
       //  ---------------------forms fields ------------------------
-      name: ['', [Validators.required]],
-      taxid: ['', [Validators.required]],
+      name: ['', Validators.required],
+      taxid: ['', Validators.required],
       phone: [''],
       mobile: [''],
-      addr: ['', [Validators.required]],
+      addr: [''],
       idphotof: [''],
       idphotob: [''],
       appointment: [''],
@@ -114,12 +141,12 @@ export class EntrustcusComponent implements OnInit {
       const control = this.dataForm.get('boxform') as FormArray;
       for (let i = 0; i < control.length; i++) {
         const temp = control.controls[i] as FormGroup;
-        temp.addControl('receiver', new FormControl('', Validators.required));
-        temp.addControl('receiveraddr', new FormControl('', Validators.required));
+        temp.addControl('receiver', new FormControl(''));
+        temp.addControl('receiveraddr', new FormControl(''));
       }
     } else {
-      this.dataForm.addControl('receiver', new FormControl('', Validators.required));
-      this.dataForm.addControl('receiveraddr', new FormControl('', Validators.required));
+      this.dataForm.addControl('receiver', new FormControl(''));
+      this.dataForm.addControl('receiveraddr', new FormControl(''));
     }
   }
 
@@ -136,6 +163,9 @@ export class EntrustcusComponent implements OnInit {
   removedec(rowIndex) {
     const rows = this.dataForm.controls.decform as FormArray;
     rows.removeAt(rowIndex);
+
+    this.refreshImg(rowIndex);
+    this.refreshFile(rowIndex);
   }
 
   removerec() {
@@ -160,6 +190,70 @@ export class EntrustcusComponent implements OnInit {
     this.addrec();
   }
 
+  //#region upload function
+  imgChange(e, id) {
+    if (e.target.files.length > 2) {
+      return alert('請勿上傳超過兩個檔案！');
+    }
+
+    this.tempList = [];
+    for (const item of this.imgList) {
+      if (item.idcode !== id) {
+        this.tempList.push(item);
+      }
+    }
+    this.imgList = this.tempList;
+
+    const div = document.getElementById('img-preview' + id) as HTMLDivElement;
+    div.innerHTML = '';
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < e.target.files.length; i++) {
+      this.imgList.push({ idcode: id, file: e.target.files[i] });
+
+      const file = e.target.files[i];
+      const reader = new FileReader();
+      reader.addEventListener('load', (event: any) => {
+        div.innerHTML += '<img class=\'thumb-nail\' src=\'' + event.target.result + '\'' + 'title=\'' + file.name + '\'/>';
+      });
+      reader.readAsDataURL(file);
+    }
+  }
+
+  refreshImg(id) {
+    this.tempList = [];
+    for (const item of this.imgList) {
+      if (item.idcode !== id) {
+        this.tempList.push(item);
+      }
+    }
+    this.imgList = this.tempList;
+  }
+
+  fileChange(e, id) {
+    this.tempList = [];
+    for (const item of this.fileList) {
+      if (item.idcode !== id) {
+        this.tempList.push(item);
+      }
+    }
+    this.fileList = this.tempList;
+
+    this.fileList.push({ idcode: id, file: e.target.files[0] });
+
+    console.log(this.fileList);
+  }
+
+  refreshFile(id) {
+    this.tempList = [];
+    for (const item of this.fileList) {
+      if (item.idcode !== id) {
+        this.tempList.push(item);
+      }
+    }
+    this.fileList = this.tempList;
+  }
+  //#endregion
+
   getData() {
     this.commonservice.getSingleData(this.getStationUrl)
       .subscribe(data => {
@@ -169,31 +263,96 @@ export class EntrustcusComponent implements OnInit {
       });
   }
 
-  SaveData(form) {
-
+  saveData(form) {
     if (form.stationcode === '') {
-      return alert('必須選擇集貨站！');
+      return alert('必須選擇集運站！');
     }
 
     if (this.dataForm.invalid) {
-      return alert('欄位不能為空白！');
+      return alert('必填欄位不能為空白！');
     }
 
-
-    if (Object.keys(form).length > 0) {
-      this.commonservice.insertData(form, this.saveUrl)
-        .subscribe(data => {
-          if (data.status === '0') {
-            this.resetForm();
-            alert(data.msg);
-          } else {
-            alert(data.msg);
+    // 先上傳檔案
+    const promise = new Promise((resolve, reject) => {
+      if (this.imgList.length > 0) {
+        const formdata = new FormData();
+        for (let i = 0; i < this.imgList.length; i++) {
+          formdata.append('idcode', this.imgList[i].idcode);
+          formdata.append('fileUpload', this.imgList[i].file);
+          if (i === 0) {
+            formdata.append('TYPE', 'shipping_cus');
           }
+        }
 
-        }, error => {
+        this.commonservice.imageUpload(formdata)
+          .subscribe(data => {
+            if (data.status === '0') {
+              this.idimglist = data.imgurl;
+              if (this.idimglist.length > 0) {
+                for (const item of this.idimglist) {
+                  const control = (this.dataForm.get('decform') as FormArray).at(+item.id) as FormGroup;
+                  control.controls.idphotof.setValue(item.idphotof);
+                  control.controls.idphotob.setValue(item.idphotob);
+                }
+              }
+
+              resolve('success');
+            }
+          },
+            error => {
+              console.log(error);
+            });
+      } else { resolve('success'); }
+    });
+
+    const promise1 = new Promise((resolve, reject) => {
+      if (this.fileList.length > 0) {
+        const formdata2 = new FormData();
+        for (let i = 0; i < this.fileList.length; i++) {
+          formdata2.append('idcode', this.fileList[i].idcode);
+          formdata2.append('fileUpload', this.fileList[i].file);
+          if (i === 0) {
+            formdata2.append('TYPE', 'shipping_cus');
+          }
+        }
+
+        this.commonservice.fileUpload(formdata2)
+          .subscribe(data => {
+            if (data.status === '0') {
+              this.idfilelist = data.fileurl;
+              if (this.idfilelist.length > 0) {
+                for (const item of this.idfilelist) {
+                  const control = (this.dataForm.get('decform') as FormArray).at(+item.id) as FormGroup;
+                  control.controls.appointment.setValue(item.appointment);
+                }
+
+                resolve('success');
+              }
+            }
+          },
+            error => {
+              console.log(error);
+            });
+      } else { resolve('success'); }
+    });
+
+    Promise.all([promise1])
+      .then(() => {
+        this.save();
+      });
+
+  }
+
+  save() {
+    this.commonservice.editData(this.dataForm.value, this.saveUrl)
+      .subscribe(data => {
+        if (data.status === '0') {
+          this.resetForm();
+          alert(data.msg);
+        }
+      },
+        error => {
           console.log(error);
         });
-
-    }
   }
 }
