@@ -99,7 +99,7 @@ namespace Tectransit.Datas
                     m.USERID = Convert.ToInt64(DT.Rows[i]["ID"]);
                     m.USERCODE = DT.Rows[i]["USERCODE"]?.ToString();
                     m.USERNAME = DT.Rows[i]["USERNAME"]?.ToString();
-                    m.USERDESC = DT.Rows[i]["USERDESC"]?.ToString();
+                    m.USERDESC = DT.Rows[i]["USERDESC"]?.ToString();                    
                     m.EMAIL = DT.Rows[i]["EMAIL"]?.ToString();
                     m.LASTLOGINDATE = DT.Rows[i]["LASTLOGINDATE"]?.ToString();
                     m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
@@ -123,7 +123,7 @@ namespace Tectransit.Datas
             string sql = $@"
                             SELECT ID, USERCODE, WAREHOUSENO, USERNAME, USERDESC, USERSEQ, EMAIL, IDPHOTO_F, IDPHOTO_B, PHONE, MOBILE,
                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
-                                   CREATEBY AS CREBY, UPDBY, ISENABLE, LASTLOGINDATE, LOGINCOUNT, ADDR, TAXID
+                                   CREATEBY AS CREBY, UPDBY, ISENABLE, LASTLOGINDATE, LOGINCOUNT, ADDR, TAXID, COMPANYNAME, RATEID
                             From T_S_ACCOUNT
                             WHERE ID = {sID}";
             DataTable DT = DBUtil.SelectDataTable(sql);
@@ -136,6 +136,8 @@ namespace Tectransit.Datas
                 m.USERCODE = DT.Rows[0]["USERCODE"]?.ToString();
                 m.USERNAME = DT.Rows[0]["USERNAME"]?.ToString();
                 m.USERDESC = DT.Rows[0]["USERDESC"]?.ToString();
+                m.COMPANYNAME = DT.Rows[0]["COMPANYNAME"]?.ToString();
+                m.RATEID = DT.Rows[0]["RATEID"]?.ToString();
                 m.EMAIL = DT.Rows[0]["EMAIL"]?.ToString();
                 m.TAXID = DT.Rows[0]["TAXID"]?.ToString();
                 m.IDPHOTO_F = DT.Rows[0]["IDPHOTO_F"]?.ToString();
@@ -162,7 +164,7 @@ namespace Tectransit.Datas
             string sql = $@"SELECT * FROM (
                                             SELECT ROW_NUMBER() OVER (ORDER BY A.USERSEQ) AS ROW_ID, A.ID, A.USERCODE, A.USERNAME, A.USERDESC, A.EMAIL,
                                                    FORMAT(A.CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(A.LASTLOGINDATE, 'yyyy-MM-dd HH:mm:ss') As LASTLOGINDATE,
-                                                   A.LOGINCOUNT, A.ISENABLE
+                                                   A.LOGINCOUNT, A.ISENABLE, A.COMPANYNAME, A.RATEID
                                             From T_S_ACCOUNT A
                                             LEFT JOIN T_S_ACRANKMAP B ON A.USERCODE = B.USERCODE
                                             LEFT JOIN T_S_RANK C ON B.RANKID = C.ID
@@ -180,6 +182,8 @@ namespace Tectransit.Datas
                     m.USERCODE = DT.Rows[i]["USERCODE"]?.ToString();
                     m.USERNAME = DT.Rows[i]["USERNAME"]?.ToString();
                     m.USERDESC = DT.Rows[i]["USERDESC"]?.ToString();
+                    m.COMPANYNAME = DT.Rows[i]["COMPANYNAME"]?.ToString();
+                    m.RATEID = DT.Rows[i]["RATEID"]?.ToString();
                     m.EMAIL = DT.Rows[i]["EMAIL"]?.ToString();
                     m.LASTLOGINDATE = DT.Rows[i]["LASTLOGINDATE"]?.ToString();
                     m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();

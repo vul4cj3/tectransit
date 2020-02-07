@@ -4,6 +4,8 @@ export interface AccountInfo {
   username: string;
   userdesc: string;
   warehouseno: string;
+  companyname: string;
+  rateid: string;
   userseq: string;
   email: string;
   phone: string;

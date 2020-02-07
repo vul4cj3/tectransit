@@ -43,6 +43,12 @@ namespace Tectransit.Controllers
             return objCommon.GetAllRank(id);
         }
 
+        [HttpGet("{id}")]
+        public dynamic GetAllCusRank(string id)
+        {
+            return objCommon.GetAllCusRank(id);
+        }
+
         [HttpGet]
         public dynamic GetAllBacknFrontMenu()
         {

@@ -148,6 +148,35 @@ namespace Tectransit.Datas
 
         }
 
+        //取得前台廠商用戶權限組
+        public dynamic GetAllCusRank(string code)
+        {
+            DataTable dtlist = DBUtil.SelectDataTable($@"SELECT A.ID AS RANKID, A.RANKCODE, A.RANKNAME, A.RANKSEQ FROM T_S_RANK A
+                                                         WHERE A.RANKTYPE = '2'
+                                                         ORDER BY A.RANKSEQ");
+            if (dtlist.Rows.Count > 0)
+            {
+                List<RankAccountInfo> roleList = new List<RankAccountInfo>();
+                for (int i = 0; i < dtlist.Rows.Count; i++)
+                {
+                    RankAccountInfo m = new RankAccountInfo();
+                    m.RANKID = dtlist.Rows[i]["RANKID"]?.ToString();
+                    m.RANKCODE = dtlist.Rows[i]["RANKCODE"]?.ToString();
+                    m.RANKNAME = dtlist.Rows[i]["RANKNAME"]?.ToString();
+                    m.RANKSEQ = dtlist.Rows[i]["RANKSEQ"]?.ToString();
+                    // 0:無權限 1:有權限
+                    m.HASPOWER = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT USERCODE AS COL1 FROM T_S_ACRANKMAP WHERE USERCODE = '{code}' AND RANKID = {m.RANKID}")) ? "0" : "1";
+
+                    roleList.Add(m);
+                }
+
+                return new { status = "0", item = roleList };
+            }
+
+            return new { status = "99", pList = "", item = "" };
+
+        }
+
         //取得前後台選單資料
         public dynamic GetAllBacknFrontMenu()
         {

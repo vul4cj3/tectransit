@@ -18,8 +18,8 @@ export class CompanyListComponent implements OnInit {
   private accrankUrl = 'EditCompanyRankData';
   private decnrecUrl = 'GetDeclarantnReceiverData';
 
-  tableTitle = ['#', '帳號', '姓名', 'Email', '註冊時間',
-    '最後登入時間', '登入次數', '停用', '編輯', '權限設定', '申報人', '收件人'];
+  tableTitle = ['#', '帳號', '公司', '聯繫人', 'Email', '註冊時間',
+    '最後登入時間', '登入次數', '停用', '編輯', '權限設定']; //  '申報人', '收件人'
   data: AccountInfo[];
   rowTotal = 0;
   currentpage = 1;
@@ -151,7 +151,7 @@ export class CompanyListComponent implements OnInit {
   openModal(id: string, code: string) {
     if (id === 'custom-modal-1') {
       this.pUsercode = code;
-      this.commonService.getAllRank(code).subscribe(data => {
+      this.commonService.getAllCusRank(code).subscribe(data => {
         if (data.status === '0') {
           this.RAMapItem = data.item;
         } else {

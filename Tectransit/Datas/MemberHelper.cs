@@ -14,7 +14,7 @@ namespace Tectransit.Datas
             string sql = $@"
                             SELECT ID, USERCODE, WAREHOUSENO, USERNAME, USERDESC, USERSEQ, EMAIL, IDPHOTO_F, IDPHOTO_B, PHONE, MOBILE,
                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
-                                   CREATEBY AS CREBY, UPDBY, ISENABLE, LASTLOGINDATE, LOGINCOUNT, ADDR, TAXID
+                                   CREATEBY AS CREBY, UPDBY, ISENABLE, LASTLOGINDATE, LOGINCOUNT, ADDR, TAXID, COMPANYNAME, RATEID
                             From T_S_ACCOUNT
                             WHERE USERCODE = '{sData["_acccode"]}'";
             DataTable DT = DBUtil.SelectDataTable(sql);
@@ -27,6 +27,8 @@ namespace Tectransit.Datas
                 m.USERCODE = DT.Rows[0]["USERCODE"]?.ToString();
                 m.USERNAME = DT.Rows[0]["USERNAME"]?.ToString();
                 m.USERDESC = DT.Rows[0]["USERDESC"]?.ToString();
+                m.COMPANYNAME = DT.Rows[0]["COMPANYNAME"]?.ToString();
+                m.RATEID = DT.Rows[0]["RATEID"]?.ToString();
                 m.EMAIL = DT.Rows[0]["EMAIL"]?.ToString();
                 m.TAXID = DT.Rows[0]["TAXID"]?.ToString();
                 m.IDPHOTO_F = DT.Rows[0]["IDPHOTO_F"]?.ToString();

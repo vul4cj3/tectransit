@@ -16,6 +16,7 @@ export class CommonService {
   private allmenuUrl = 'GetAllBacknFrontMenu';
   private allroleUrl = 'GetAllRole';
   private allrankUrl = 'GetAllRank';
+  private allcusrankUrl = 'GetAllCusRank';
   private allbannerUrl = 'GetAllBanner';
   private resetPWUrl = 'ResetPassword';
   private pbacknforntUrl = 'GetParentMenu';
@@ -109,6 +110,13 @@ export class CommonService {
 
   getAllRank(code) {
     return this.http.get<any>(`${this.baseUrl + this.allrankUrl}/${code}`)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  getAllCusRank(code) {
+    return this.http.get<any>(`${this.baseUrl + this.allcusrankUrl}/${code}`)
       .pipe(map(data => {
         return data;
       }));

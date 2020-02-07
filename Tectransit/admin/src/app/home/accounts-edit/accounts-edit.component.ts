@@ -42,7 +42,7 @@ export class AccountsEditComponent implements OnInit {
       taxid: '',
       phone: '',
       mobile: '',
-      addr: '',
+      address: '',
       isenable: '1',
       lastlogindate: '',
       logincount: '',

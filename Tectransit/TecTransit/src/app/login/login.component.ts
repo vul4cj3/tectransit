@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '../services/login.service';
 import { first } from 'rxjs/operators';
+import { CommonService } from '../services/common.service';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,8 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private commonservice: CommonService
   ) {
     // redirect to home if already logged in
     const currentAcct = sessionStorage.getItem('currentAcct');
@@ -37,6 +39,18 @@ export class LoginComponent implements OnInit {
     this.refreshCaptcha();
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/member/profile';
+  }
+
+  chkMem() {
+    this.commonservice.chkMemtype()
+      .subscribe(data => {
+        if (data.data === 'Y') {
+          document.location.href = '/member/profilecus';
+        } else { document.location.href = '/member/profile'; }
+      },
+        error => {
+          console.log(error);
+        });
   }
 
   resetForm() {
@@ -73,7 +87,7 @@ export class LoginComponent implements OnInit {
       .subscribe(
         data => {
           if (data.status === 'success') {
-            document.location.href = this.returnUrl;
+            this.chkMem();
           } else {
             this.refreshCaptcha();
             this.isErr = true;

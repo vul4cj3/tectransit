@@ -1,98 +1,100 @@
 <!--Top Section-->
 <div>
-    <div>
-      <div class="app-page-title">
-        <div class="page-title-wrapper">
-          <div class="page-title-heading">
-            <div class="page-title-icon"><i class="far fa-id-card"></i></div>
-            <div>廠商管理</div>
-          </div>
+  <div>
+    <div class="app-page-title">
+      <div class="page-title-wrapper">
+        <div class="page-title-heading">
+          <div class="page-title-icon"><i class="far fa-id-card"></i></div>
+          <div>廠商管理</div>
         </div>
       </div>
     </div>
   </div>
-  <!--Search Section -->
-  <div class="row">
-    <div class="col-md-12">
-      <div class="main-card mb-3 card">
-        <form [formGroup]="srhForm">
-          <div class="card-body">
-            <div class="form-inline">
-              <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
-                <label for="susercode" class="mr-sm-2">帳號</label>
-                <input type="text" id="susercode" formControlName="susercode" class="form-control">
-              </div>
-              <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
-                <label for="susername" class="mr-sm-2">姓名</label>
-                <input type="text" id="susername" formControlName="susername" class="form-control">
-              </div>
-              <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
-                <label for="semail" class="mr-sm-2">Email</label>
-                <input type="text" id="semail" formControlName="semail" class="form-control">
-              </div>
+</div>
+<!--Search Section -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="main-card mb-3 card">
+      <form [formGroup]="srhForm">
+        <div class="card-body">
+          <div class="form-inline">
+            <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
+              <label for="susercode" class="mr-sm-2">帳號</label>
+              <input type="text" id="susercode" formControlName="susercode" class="form-control">
             </div>
-          </div>
-          <div class="card-footer">
-            <div>
-              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="searchData()">查詢</button>
-              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="resetData()">清除查詢</button>
+            <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
+              <label for="susername" class="mr-sm-2">姓名</label>
+              <input type="text" id="susername" formControlName="susername" class="form-control">
             </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <!--TableList Section-->
-  <div class="row">
-    <div class="col-md-12">
-      <div class="main-card mb-3 card">
-        <div class="card-header">廠商列表
-          <div class="btn-actions-pane-right">
-            <div class="btn-group-sm btn-group" role="group">
-              <!--<button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/accounts/edit/0">新增</button>-->
-              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doIsenable()">停用</button>
+            <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
+              <label for="semail" class="mr-sm-2">Email</label>
+              <input type="text" id="semail" formControlName="semail" class="form-control">
             </div>
           </div>
         </div>
-        <div class="table-responsive">
-          <table class="align-middle mb-0 table table-borderless table-striped table-hover">
-            <thead>
-              <tr>
-                <th *ngFor="let titleItem of tableTitle let id = index" [ngClass]="{'text-center': id === 0}">
-                  {{titleItem}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of data let idx = index">
-                <td class="text-center text-muted">{{item.rowid}}</td>
-                <td>{{item.usercode}}</td>
-                <td>{{item.username}}</td>
-                <td>{{item.email}}</td>
-                <td>{{item.credate}}</td>
-                <td>{{item.lastlogindate}}</td>
-                <td>{{item.logincount}}</td>
-                <td class="text-center text-muted">
-                  <label class="chkbox-container">
-                    <input type="checkbox" name="activeChk" id="chk{{idx}}"
-                      (click)="activeSelChange($event.toElement.value, $event.toElement.checked)"
-                      [checked]="item.isenable === '0'" value="{{item.userid}}">
-                    <span class="checkmark"></span>
-                  </label>
-                </td>
-                <td>
-                  <a routerLink="/company/edit/{{item.userid}}">
-                    <span class="symbol-edit">
-                      <i class="pe-7s-note2"></i>
-                    </span>
-                  </a>
-                </td>
-                <td>
-                  <a (click)="openModal('custom-modal-1', item.usercode)">
-                    <span class="symbol-edit middle">
-                      <i class="pe-7s-tools"></i>
-                    </span>
-                  </a>
-                </td>
+        <div class="card-footer">
+          <div>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="searchData()">查詢</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="resetData()">清除查詢</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--TableList Section-->
+<div class="row">
+  <div class="col-md-12">
+    <div class="main-card mb-3 card">
+      <div class="card-header">廠商列表
+        <div class="btn-actions-pane-right">
+          <div class="btn-group-sm btn-group" role="group">
+            <!--<button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/accounts/edit/0">新增</button>-->
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doIsenable()">停用</button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+          <thead>
+            <tr>
+              <th *ngFor="let titleItem of tableTitle let id = index" [ngClass]="{'text-center': id === 0}">
+                {{titleItem}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data let idx = index">
+              <td class="text-center text-muted">{{item.rowid}}</td>
+              <td>{{item.usercode}}</td>
+              <td>{{item.companyname}}</td>
+              <td>{{item.username}}</td>
+              <td>{{item.email}}</td>
+              <td>{{item.credate}}</td>
+              <td>{{item.lastlogindate}}</td>
+              <td>{{item.logincount}}</td>
+              <td class="text-center text-muted">
+                <label class="chkbox-container">
+                  <input type="checkbox" name="activeChk" id="chk{{idx}}"
+                    (click)="activeSelChange($event.toElement.value, $event.toElement.checked)"
+                    [checked]="item.isenable === '0'" value="{{item.userid}}">
+                  <span class="checkmark"></span>
+                </label>
+              </td>
+              <td>
+                <a routerLink="/company/edit/{{item.userid}}">
+                  <span class="symbol-edit">
+                    <i class="pe-7s-note2"></i>
+                  </span>
+                </a>
+              </td>
+              <td>
+                <a (click)="openModal('custom-modal-1', item.usercode)">
+                  <span class="symbol-edit middle">
+                    <i class="pe-7s-tools"></i>
+                  </span>
+                </a>
+              </td>
+              <!--
                 <td>
                   <a (click)="openModal('custom-modal-2', item.usercode)">
                     <span class="symbol-edit middle">
@@ -107,188 +109,189 @@
                     </span>
                   </a>
                 </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!--pagination section start-->
-        <div class="d-block text-center card-footer">
-          <app-pagination [currentPage]="this.currentpage" [preApper]="this.commonService.preApper"
-            [nextApper]="this.commonService.nextApper" [pageNum]="this.commonService.pageNum"
-            (pageChanged)="changeData($event)"></app-pagination>
-        </div>
-        <!--pagination section end-->
+                -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--pagination section start-->
+      <div class="d-block text-center card-footer">
+        <app-pagination [currentPage]="this.currentpage" [preApper]="this.commonService.preApper"
+          [nextApper]="this.commonService.nextApper" [pageNum]="this.commonService.pageNum"
+          (pageChanged)="changeData($event)"></app-pagination>
+      </div>
+      <!--pagination section end-->
+    </div>
+  </div>
+</div>
+
+<!--Popup window section-->
+<app-jw-modal id="custom-modal-1">
+  <div class="modal-header">
+    <button class="close" (click)="closeModal('custom-modal-1')">
+      <span><i class="pe-7s-close-circle"></i>
+      </span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="position-relative form-group">
+      <div>
+        <ng-container>
+          <h5 class="card-title">權限設定</h5>
+          <!--checkbox start-->
+          <div class="custom-checkbox custom-control custom-control-inline"
+            *ngFor="let subitem of RAMapItem let subid = index">
+            <input type="checkbox" id="rank{{subid}}" [checked]="subitem.haspower === '1'" class="custom-control-input"
+              (click)="powerSelChange($event.toElement.value, $event.toElement.checked)" value="{{subitem.rankid}}">
+            <label class="custom-control-label" for="rank{{subid}}">{{subitem.rankname}}</label>
+          </div>
+          <!--checkbox end-->
+        </ng-container>
       </div>
     </div>
   </div>
+  <div class="modal-footer">
+    <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="closeModal('custom-modal-1')">取消</button>
+    <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="savePowerData()">保存</button>
+  </div>
+</app-jw-modal>
 
-  <!--Popup window section-->
-  <app-jw-modal id="custom-modal-1">
-    <div class="modal-header">
-      <button class="close" (click)="closeModal('custom-modal-1')">
-        <span><i class="pe-7s-close-circle"></i>
-        </span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="position-relative form-group">
-        <div>
-          <ng-container>
-            <h5 class="card-title">權限設定</h5>
-            <!--checkbox start-->
-            <div class="custom-checkbox custom-control custom-control-inline"
-              *ngFor="let subitem of RAMapItem let subid = index">
-              <input type="checkbox" id="rank{{subid}}" [checked]="subitem.haspower === '1'" class="custom-control-input"
-                (click)="powerSelChange($event.toElement.value, $event.toElement.checked)" value="{{subitem.rankid}}">
-              <label class="custom-control-label" for="rank{{subid}}">{{subitem.rankname}}</label>
+<!--Declarant popup window-->
+<app-jw-modal id="custom-modal-2">
+  <div class="modal-header">
+    <button class="close" (click)="closeModal('custom-modal-2')">
+      <span><i class="pe-7s-close-circle"></i>
+      </span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="position-relative form-group">
+      <div>
+        <ng-container>
+          <h5 class="card-title">申報人名單</h5>
+          <!--tablelist start-->
+          <div class="main-card mb-3 card">
+            <div class="table-responsive">
+              <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th class="text-center">#</th>
+                    <th>申報人姓名</th>
+                    <th>身分證字號/統一編號</th>
+                    <th>連絡電話</th>
+                    <th>手機號碼</th>
+                    <th>地址</th>
+                    <th>身分證件照</th>
+                    <th>委任書</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of DecList let idx = index">
+                    <td class="text-center text-muted">{{item.rowid}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.taxid}}</td>
+                    <td>{{item.phone}}</td>
+                    <td>{{item.mobile}}</td>
+                    <td>
+                      <a href="{{item.idphoto_f}}">
+                        <span class="symbol-edit">
+                          <i class="fas fa-id-card"></i>
+                        </span>
+                      </a>
+                      <a href="{{item.idphoto_b}}">
+                        <span class="symbol-edit">
+                          <i class="far fa-id-card"></i>
+                        </span>
+                      </a>
+                    </td>
+                    <td>
+                      <a href="{{item.appointment}}">
+                        <span class="symbol-edit">
+                          <i class="pe-7s-note2"></i>
+                        </span>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <!--checkbox end-->
-          </ng-container>
-        </div>
+          </div>
+          <!--tablelist end-->
+        </ng-container>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="closeModal('custom-modal-1')">取消</button>
-      <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="savePowerData()">保存</button>
-    </div>
-  </app-jw-modal>
+  </div>
+  <div class="modal-footer">
+    <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="closeModal('custom-modal-2')">關閉</button>
+  </div>
+</app-jw-modal>
 
-  <!--Declarant popup window-->
-  <app-jw-modal id="custom-modal-2">
-    <div class="modal-header">
-      <button class="close" (click)="closeModal('custom-modal-2')">
-        <span><i class="pe-7s-close-circle"></i>
-        </span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="position-relative form-group">
-        <div>
-          <ng-container>
-            <h5 class="card-title">申報人名單</h5>
-            <!--tablelist start-->
-            <div class="main-card mb-3 card">
-              <div class="table-responsive">
-                <table class="align-middle mb-0 table table-borderless table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th class="text-center">#</th>
-                      <th>申報人姓名</th>
-                      <th>身分證字號/統一編號</th>
-                      <th>連絡電話</th>
-                      <th>手機號碼</th>
-                      <th>地址</th>
-                      <th>身分證件照</th>
-                      <th>委任書</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let item of DecList let idx = index">
-                      <td class="text-center text-muted">{{item.rowid}}</td>
-                      <td>{{item.name}}</td>
-                      <td>{{item.taxid}}</td>
-                      <td>{{item.phone}}</td>
-                      <td>{{item.mobile}}</td>
-                      <td>
-                        <a href="{{item.idphoto_f}}">
-                          <span class="symbol-edit">
-                            <i class="fas fa-id-card"></i>
-                          </span>
-                        </a>
-                        <a href="{{item.idphoto_b}}">
-                          <span class="symbol-edit">
-                            <i class="far fa-id-card"></i>
-                          </span>
-                        </a>
-                      </td>
-                      <td>
-                        <a href="{{item.appointment}}">
-                          <span class="symbol-edit">
-                            <i class="pe-7s-note2"></i>
-                          </span>
-                        </a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+<!--Receiver popup window-->
+<app-jw-modal id="custom-modal-3">
+  <div class="modal-header">
+    <button class="close" (click)="closeModal('custom-modal-3')">
+      <span><i class="pe-7s-close-circle"></i>
+      </span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="position-relative form-group">
+      <div>
+        <ng-container>
+          <h5 class="card-title">收件人名單</h5>
+          <!--tablelist start-->
+          <div class="main-card mb-3 card">
+            <div class="table-responsive">
+              <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th class="text-center">#</th>
+                    <th>收件人姓名</th>
+                    <th>身分證字號/統一編號</th>
+                    <th>連絡電話</th>
+                    <th>手機號碼</th>
+                    <th>地址</th>
+                    <th>身分證件照</th>
+                    <th>委任書</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of DecList let idx = index">
+                    <td class="text-center text-muted">{{item.rowid}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.taxid}}</td>
+                    <td>{{item.phone}}</td>
+                    <td>{{item.mobile}}</td>
+                    <td>
+                      <a href="{{item.idphoto_f}}">
+                        <span class="symbol-edit">
+                          <i class="fas fa-id-card"></i>
+                        </span>
+                      </a>
+                      <a href="{{item.idphoto_b}}">
+                        <span class="symbol-edit">
+                          <i class="far fa-id-card"></i>
+                        </span>
+                      </a>
+                    </td>
+                    <td>
+                      <a href="{{item.appointment}}">
+                        <span class="symbol-edit">
+                          <i class="pe-7s-note2"></i>
+                        </span>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <!--tablelist end-->
-          </ng-container>
-        </div>
+          </div>
+          <!--tablelist end-->
+        </ng-container>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="closeModal('custom-modal-2')">關閉</button>
-    </div>
-  </app-jw-modal>
-
-  <!--Receiver popup window-->
-  <app-jw-modal id="custom-modal-3">
-    <div class="modal-header">
-      <button class="close" (click)="closeModal('custom-modal-3')">
-        <span><i class="pe-7s-close-circle"></i>
-        </span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="position-relative form-group">
-        <div>
-          <ng-container>
-            <h5 class="card-title">收件人名單</h5>
-            <!--tablelist start-->
-            <div class="main-card mb-3 card">
-              <div class="table-responsive">
-                <table class="align-middle mb-0 table table-borderless table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th class="text-center">#</th>
-                      <th>收件人姓名</th>
-                      <th>身分證字號/統一編號</th>
-                      <th>連絡電話</th>
-                      <th>手機號碼</th>
-                      <th>地址</th>
-                      <th>身分證件照</th>
-                      <th>委任書</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let item of DecList let idx = index">
-                      <td class="text-center text-muted">{{item.rowid}}</td>
-                      <td>{{item.name}}</td>
-                      <td>{{item.taxid}}</td>
-                      <td>{{item.phone}}</td>
-                      <td>{{item.mobile}}</td>
-                      <td>
-                        <a href="{{item.idphoto_f}}">
-                          <span class="symbol-edit">
-                            <i class="fas fa-id-card"></i>
-                          </span>
-                        </a>
-                        <a href="{{item.idphoto_b}}">
-                          <span class="symbol-edit">
-                            <i class="far fa-id-card"></i>
-                          </span>
-                        </a>
-                      </td>
-                      <td>
-                        <a href="{{item.appointment}}">
-                          <span class="symbol-edit">
-                            <i class="pe-7s-note2"></i>
-                          </span>
-                        </a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <!--tablelist end-->
-          </ng-container>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="closeModal('custom-modal-3')">關閉</button>
-    </div>
-  </app-jw-modal>
+  </div>
+  <div class="modal-footer">
+    <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="closeModal('custom-modal-3')">關閉</button>
+  </div>
+</app-jw-modal>

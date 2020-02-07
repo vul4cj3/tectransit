@@ -893,6 +893,10 @@ namespace Tectransit.Controllers
                     rowTSA.Username = sData["USERNAME"]?.ToString();
                 if (sData["USERDESC"] != null)
                     rowTSA.Userdesc = sData["USERDESC"]?.ToString();
+                if (sData["COMPANYNAME"] != null)
+                    rowTSA.Companyname = sData["COMPANYNAME"]?.ToString();
+                if (sData["RATEID"] != null)
+                    rowTSA.Rateid = sData["RATEID"]?.ToString();
                 if (sData["EMAIL"] != null)
                     rowTSA.Email = sData["EMAIL"]?.ToString();
                 if (sData["WAREHOUSENO"] != null)

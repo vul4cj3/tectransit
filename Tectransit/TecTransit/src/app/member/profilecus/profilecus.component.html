@@ -1,1 +1,60 @@
-<p>profilecus works!</p>
+<div class="memprofile">
+  <div class="profile-contain">
+    <div class="memheader"><span>會員資料</span></div>
+    <div class="regform">
+      <form [formGroup]="memForm">
+        <input type="hidden" id="userid" formControlName="userid">
+        <div class="form-control">
+          <label for="usercode">用戶帳號</label>
+          <input type="text" id="usercode" disabled="true" formControlName="usercode">
+        </div>
+        <div class="form-control">
+          <label for="userpassword">用戶密碼</label>
+          <input type="password" id="userpassword" formControlName="userpassword">
+          <p>6~16個字，必須英文+數字組合方式的密碼</p>
+        </div>
+        <div class="form-control">
+          <label for="newpw">新密碼</label>
+          <input type="password" id="newpw" formControlName="newpw">
+        </div>
+        <div class="form-control">
+          <label for="confirmpw">確認密碼</label>
+          <input type="password" id="confirmpw">
+        </div>
+        <div class="form-control">
+          <label for="companyname">公司名稱</label>
+          <input type="text" id="companyname" disabled="true" formControlName="companyname">
+        </div>
+        <div class="form-control">
+            <label for="rateid">公司統一編號</label>
+            <input type="text" id="rateid" disabled="true" formControlName="rateid">
+          </div>
+        <div class="form-control">
+          <label for="username">聯繫人</label>
+          <input type="text" id="username" formControlName="username">
+        </div>
+        <div class="form-control">
+          <label for="email">信箱</label>
+          <input type="text" id="email" formControlName="email">
+          <p>為確保您能收到各項服務通知信, 建議使用Gmail的信箱</p>
+        </div>
+        <div class="form-control">
+          <label for="address">公司地址</label>
+          <input type="text" id="address" formControlName="address">
+          <p>請正確填寫, 確保貨品可以正確送達，請輸入全部的地址，如**縣市**鄉鎮區**路等</p>
+        </div>
+        <div class="form-control">
+          <label for="phone">電話</label>
+          <input type="text" id="phone" formControlName="phone" maxlength="10">
+        </div>
+        <div class="form-control">
+          <label for="mobile">手機</label>
+          <input type="text" id="mobile" formControlName="mobile" maxlength="10">
+        </div>
+        <div class="form-control">
+          <button type="button" (click)="SaveData(memForm.value)">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

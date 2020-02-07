@@ -85,6 +85,8 @@ export interface AccountInfo {
   username: string;
   userdesc: string;
   warehouseno: string;
+  companyname: string;
+  rateid: string;
   email: string;
   taxid: string;
   idphoto_f: string;

@@ -24,12 +24,15 @@
             <input type="text" id="usercode" class="form-control middle" formControlName="usercode">
           </div>
           <div class="form-group">
-            <label for="warehouseno">入倉代號</label>
-            <input type="text" id="warehouseno" class="form-control middle" [ngClass]="{'is-invalid': isErr}"
-              formControlName="warehouseno">
+            <label for="companyname">公司名稱</label>
+            <input type="text" id="companyname" class="form-control middle" formControlName="companyname">
           </div>
           <div class="form-group">
-            <label for="username">姓名</label>
+            <label for="rateid">統一編號</label>
+            <input type="text" id="rateid" class="form-control middle" formControlName="rateid">
+          </div>
+          <div class="form-group">
+            <label for="username">聯繫人</label>
             <input type="text" id="username" class="form-control middle" formControlName="username">
           </div>
           <div class="form-group">
@@ -41,15 +44,6 @@
             <input type="text" id="email" class="form-control middle" formControlName="email">
           </div>
           <div class="form-group">
-            <label for="taxid">身分證字號/居留證號</label>
-            <input type="text" id="taxid" class="form-control middle" formControlName="taxid">
-          </div>
-          <div class="form-group">
-            <label for="useridphoto">身分證件照片</label>
-          <img src="{{dataForm.value.idphoto_f}}">
-            <img src="{{dataForm.value.idphoto_b}}">
-          </div>
-          <div class="form-group">
             <label for="phone">連絡電話</label>
             <input type="text" id="phone" class="form-control middle" formControlName="phone">
           </div>
@@ -58,8 +52,8 @@
             <input type="text" id="mobile" class="form-control middle" formControlName="mobile">
           </div>
           <div class="form-group">
-            <label for="addr">地址</label>
-            <input type="text" id="addr" class="form-control large" formControlName="addr">
+            <label for="address">地址</label>
+            <input type="text" id="address" class="form-control large" formControlName="address">
           </div>
           <div class="form-group">
             <label for="isenable">啟用/停用</label>

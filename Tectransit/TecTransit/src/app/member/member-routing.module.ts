@@ -11,6 +11,7 @@ import { ShippingEditComponent } from './shipping-edit/shipping-edit.component';
 import { ShippingCombineComponent } from './shipping-combine/shipping-combine.component';
 import { DeclarantComponent } from './declarant/declarant.component';
 import { EntrustcusComponent } from './entrustcus/entrustcus.component';
+import { ProfilecusComponent } from './profilecus/profilecus.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,11 @@ const routes: Routes = [
       {
         path: 'profile',
         component: ProfileComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'profilecus',
+        component: ProfilecusComponent,
         canActivate: [AuthGuard],
       },
       {

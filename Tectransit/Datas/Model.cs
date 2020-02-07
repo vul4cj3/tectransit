@@ -102,6 +102,8 @@ namespace Tectransit.Datas
         public long USERID { set; get; }
         public string USERSEQ { set; get; }
         public string USERCODE { set; get; }
+        public string COMPANYNAME { set; get; }
+        public string RATEID { set; get; }
         public string USERNAME { set; get; }
         public string USERDESC { set; get; }
         public string WAREHOUSENO { set; get; }
