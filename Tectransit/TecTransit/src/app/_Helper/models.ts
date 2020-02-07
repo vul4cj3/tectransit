@@ -140,3 +140,58 @@ export interface IDFileList {
   id: string;
   appointment: string;
 }
+
+export interface ShippingMCusInfo {
+  id: number;
+  accountid: number;
+  shippingno: string;
+  trckingno: string;
+  mawbno: string;
+  trasferno: string;
+  total: string;
+  trackingtype: number;
+  receiver: string;
+  receiveraddr: string;
+  ismultreceiver: boolean;
+  status: number;
+  remark1: string;
+  remark2: string;
+  remark3: string;
+  credate: string;
+  createby: string;
+  upddate: string;
+  updby: string;
+}
+
+export interface ShippingHCusInfo {
+  id: number;
+  boxno: string;
+  receiver: string;
+  receiveraddr: string;
+  remark: string;
+  shippingid_m: number;
+}
+
+export interface ShippingDCusInfo {
+  id: number;
+  product: string;
+  producturl: string;
+  unitprice: string;
+  quantity: string;
+  remark: string;
+  shippingid_m: number;
+  shippingid_h: number;
+}
+
+export interface DeclarantCusInfo {
+  id: number;
+  name: string;
+  taxid: string;
+  phone: string;
+  mobile: string;
+  addr: string;
+  idphotO_F: string;
+  idphotO_B: string;
+  appointment: string;
+  shippingid_m: number;
+}

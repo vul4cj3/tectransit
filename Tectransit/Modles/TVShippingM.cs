@@ -20,6 +20,8 @@ namespace Tectransit.Modles
         public string Remark1 { get; set; }
         public string Remark2 { get; set; }
         public string Remark3 { get; set; }
+        public DateTime? Paydate { get; set; }
+        public DateTime? Exportdate { get; set; }
         public DateTime? Credate { get; set; }
         public string Createby { get; set; }
         public DateTime? Upddate { get; set; }

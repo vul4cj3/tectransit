@@ -12,6 +12,7 @@ import { ShippingCombineComponent } from './shipping-combine/shipping-combine.co
 import { DeclarantComponent } from './declarant/declarant.component';
 import { EntrustcusComponent } from './entrustcus/entrustcus.component';
 import { ProfilecusComponent } from './profilecus/profilecus.component';
+import { ShippingcusListComponent } from './shippingcus-list/shippingcus-list.component';
 
 const routes: Routes = [
   {
@@ -50,18 +51,23 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: 'shipping/edit/:type/:code/:id',
-        component: ShippingEditComponent,
-        canActivate: [AuthGuard],
-      },
-      {
         path: 'shipping/:type/:id',
         component: ShippingListComponent,
         canActivate: [AuthGuard],
       },
       {
+        path: 'shipping/edit/:type/:code/:id',
+        component: ShippingEditComponent,
+        canActivate: [AuthGuard],
+      },
+      {
         path: 'shipping/combine',
         component: ShippingCombineComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'shippingcus/:type/:id',
+        component: ShippingcusListComponent,
         canActivate: [AuthGuard],
       },
       {

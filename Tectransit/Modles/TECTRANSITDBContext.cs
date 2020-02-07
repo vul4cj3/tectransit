@@ -1524,12 +1524,20 @@ namespace Tectransit.Modles
                     .HasColumnName("CREDATE")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.Exportdate)
+                    .HasColumnName("EXPORTDATE")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.Ismultreceiver).HasColumnName("ISMULTRECEIVER");
 
                 entity.Property(e => e.Mawbno)
                     .HasColumnName("MAWBNO")
                     .HasMaxLength(100)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Paydate)
+                    .HasColumnName("PAYDATE")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.Receiceraddr)
                     .HasColumnName("RECEICERADDR")

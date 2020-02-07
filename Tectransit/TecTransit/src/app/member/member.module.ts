@@ -13,6 +13,7 @@ import { ShippingCombineComponent } from './shipping-combine/shipping-combine.co
 import { DeclarantComponent } from './declarant/declarant.component';
 import { EntrustcusComponent } from './entrustcus/entrustcus.component';
 import { ProfilecusComponent } from './profilecus/profilecus.component';
+import { ShippingcusListComponent } from './shippingcus-list/shippingcus-list.component';
 
 
 
@@ -28,7 +29,8 @@ import { ProfilecusComponent } from './profilecus/profilecus.component';
     ShippingCombineComponent,
     DeclarantComponent,
     EntrustcusComponent,
-    ProfilecusComponent
+    ProfilecusComponent,
+    ShippingcusListComponent
   ],
   imports: [
     CommonModule,

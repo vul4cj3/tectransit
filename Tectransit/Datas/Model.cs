@@ -395,4 +395,66 @@ namespace Tectransit.Datas
         public string APPOINTMENT { set; get; }
     }
 
+    /*----------------- 廠商用 ----------------*/
+    public class ShippingMCusInfo
+    {
+        public long ID { set; get; }
+        public long ACCOUNTID { set; get; }
+        public string SHIPPINGNO { set; get; }
+        public string TRACKINGNO { set; get; }
+        public string MAWBNO { set; get; }
+        public string TRASFERNO { set; get; }        
+        public string TOTAL { set; get; }
+        public string TRACKINGTYPE { set; get; }
+        public string RECEIVER { set; get; }
+        public string RECEIVER_ADDR { set; get; }
+        public bool ISMULTRECEIVER { set; get; }
+        public string STATUS { set; get; }
+        public string REMARK1 { set; get; }
+        public string REMARK2 { set; get; }
+        public string REMARK3 { set; get; }
+        public string PAYDATE { set; get; }
+        public string EXPORTDATE { set; get; }
+        public string CREDATE { set; get; }
+        public string CREBY { set; get; }
+        public string UPDDATE { set; get; }
+        public string UPDBY { set; get; }
+    }
+
+    public class ShippingHCusInfo
+    {
+        public long ID { set; get; }
+        public string BOXNO { set; get; }
+        public string RECEIVER { set; get; }
+        public string RECEIVERADDR { set; get; }
+        public string REMARK { set; get; }
+        public string SHIPPINGID_M { set; get; }
+    }
+
+    public class ShippingDCusInfo
+    {
+        public long ID { set; get; }
+        public string PRODUCT { set; get; }
+        public string PRODUCTURL { set; get; }
+        public string UNITPRICE { set; get; }
+        public string QUANTITY { set; get; }
+        public string REMARK { set; get; }
+        public long SHIPPINGID_M { set; get; }
+        public long SHIPPINGID_H { set; get; }
+    }
+
+    public class DeclarantCusInfo
+    {
+        public long ID { set; get; }
+        public long TYPE { set; get; }
+        public string NAME { set; get; }
+        public string TAXID { set; get; }
+        public string IDPHOTO_F { set; get; }
+        public string IDPHOTO_B { set; get; }
+        public string PHONE { set; get; }
+        public string MOBILE { set; get; }
+        public string ADDR { set; get; }
+        public string APPOINTMENT { set; get; }
+        public long SHIPPINGID_M { set; get; }
+    }
 }
