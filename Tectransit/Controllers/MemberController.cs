@@ -192,10 +192,10 @@ namespace Tectransit.Controllers
 
             return objMember.GetACStationData(htData);
         }
-        
 
         /*--------------------- 個人會員 ------------------------*/
 
+        #region 快遞單號(未入庫,已入庫)
         //存入快遞單號
         [HttpPost]
         public dynamic SaveTansferData([FromBody] object form)
@@ -256,7 +256,6 @@ namespace Tectransit.Controllers
             }
         }
 
-        #region 快遞單號(未入庫,已入庫)
         //取得快遞單號
         [HttpPost]
         public dynamic GetACTransferData([FromBody] object form)
@@ -451,7 +450,6 @@ namespace Tectransit.Controllers
             }
         }
         #endregion
-
 
         #region 申報人管理
         [HttpGet]
@@ -783,7 +781,78 @@ namespace Tectransit.Controllers
 
 
         /*--------------------- 廠商會員 ------------------------*/
+
         #region 集運單
+        //取得集運單
+        [HttpPost]
+        public dynamic GetShippingCusData([FromBody] object form)
+        {
+            try
+            {
+                string sWhere = "";
+                Hashtable htData = new Hashtable();
+                var jsonData = JObject.FromObject(form);
+                int pageIndex = jsonData.Value<int>("PAGE_INDEX");
+                int pageSize = jsonData.Value<int>("PAGE_SIZE");
+                JArray tempArray = jsonData.Value<JArray>("srhForm");
+
+                //get cookies
+                htData["_acccode"] = Request.Cookies["_acccode"];
+                htData["_accname"] = Request.Cookies["_accname"];
+
+                string sql = $@"SELECT A.ID AS COL1 FROM T_S_ACCOUNT A
+                                LEFT JOIN T_S_ACRANKMAP B ON B.USERCODE = A.USERCODE
+                                LEFT JOIN T_S_RANK C ON C.ID = B.RANKID
+                                WHERE A.USERCODE = '{htData["_acccode"]}' AND C.RANKTYPE = '2'";
+
+                htData["ACCOUNTID"] = DBUtil.GetSingleValue1(sql);
+
+                if (tempArray.Count > 0)
+                {
+                    Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                    srhKey.Add("status", "STATUS");
+                    srhKey.Add("stationcode", "STATIONCODE");
+
+                    JObject temp = (JObject)tempArray[0];
+                    foreach (var t in temp)
+                        htData[srhKey[t.Key]] = t.Value?.ToString();
+
+                    if (!string.IsNullOrEmpty(htData["ACCOUNTID"]?.ToString()))
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " ACCOUNTID = " + htData["ACCOUNTID"];
+
+                    if (!string.IsNullOrEmpty(htData["STATUS"]?.ToString()))
+                    {
+                        int status = 0;
+                        if (htData["STATUS"]?.ToString() == "t1")
+                            status = 0;
+                        else if (htData["STATUS"]?.ToString() == "t2")
+                            status = 1;
+                        else if (htData["STATUS"]?.ToString() == "t3")
+                            status = 2;
+                        else if (htData["STATUS"]?.ToString() == "t4")
+                            status = 3;
+                        else if (htData["STATUS"]?.ToString() == "t5")
+                            status = 4;
+                        else { }
+
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATUS = " + status;
+                    }
+                    
+                    if (!string.IsNullOrEmpty(htData["STATIONCODE"]?.ToString()))
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATIONCODE = '" + htData["STATIONCODE"]?.ToString() + "'";
+                }
+
+
+                return objMember.GetShippingCusData(sWhere, pageIndex, pageSize);
+
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "取得失敗！" };
+            }
+        }
+
         [HttpPost]
         public dynamic SaveCusShippingData([FromBody] object form)
         {
@@ -807,7 +876,13 @@ namespace Tectransit.Controllers
                 }
 
                 mData["_acccode"] = Request.Cookies["_acccode"];
-                mData["ACCOUNTID"] = DBUtil.GetSingleValue1($@"SELECT ID AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{mData["_acccode"]}'");
+
+                string sql = $@"SELECT A.ID AS COL1 FROM T_S_ACCOUNT A
+                                LEFT JOIN T_S_ACRANKMAP B ON B.USERCODE = A.USERCODE
+                                LEFT JOIN T_S_RANK C ON C.ID = B.RANKID
+                                WHERE A.USERCODE = '{mData["_acccode"]}' AND C.RANKTYPE = '2'";
+
+                mData["ACCOUNTID"] = DBUtil.GetSingleValue1(sql);
 
                 //Header(box) data                
                 JArray boxData = arrData.Value<JArray>("boxform");                
@@ -914,6 +989,7 @@ namespace Tectransit.Controllers
                 TVShippingM TVM = new TVShippingM();
                 TVM.Accountid = Convert.ToInt64(sData["ACCOUNTID"]);
                 string autoSeqcode = objComm.GetSeqCode(sData["STATIONCODE"] + "_CUS");
+                TVM.Stationcode = sData["STATIONCODE"]?.ToString();
                 TVM.Shippingno = "TECV" + DateTime.Now.ToString("yyyyMMdd") + autoSeqcode;
                 TVM.Trackingno = sData["STATIONCODE"] + "-" + autoSeqcode;
                 TVM.Mawbno = "";
@@ -921,7 +997,7 @@ namespace Tectransit.Controllers
                 TVM.Total = sData["TOTAL"]?.ToString();
                 TVM.Trackingtype = 0;//尚未使用-0:無
                 TVM.Receiver = sData["RECEIVER"]?.ToString();
-                TVM.Receiceraddr = sData["RECEIVERADDR"]?.ToString();
+                TVM.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
                 TVM.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
                 TVM.Status = 0;
                 TVM.Credate = DateTime.Now;

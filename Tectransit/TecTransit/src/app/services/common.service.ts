@@ -15,6 +15,7 @@ export class CommonService {
   private imgUploadUrl = 'UploadImgData_F';
   private fileUploadUrl = 'UploadFileData_F';
   private chkMemtypeUrl = 'GetMemtype';
+  private getStationUrl = 'GetFirstStation';
 
   /* pagination variables*/
   rowTotal = 0; // data count
@@ -222,6 +223,13 @@ export class CommonService {
   /* other function */
   chkMemtype() {
     return this.http.get<any>(this.baseUrl + this.chkMemtypeUrl)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  getStation() {
+    return this.http.get<any>(this.baseUrl + this.getStationUrl)
       .pipe(map(data => {
         return data;
       }));

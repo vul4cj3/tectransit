@@ -74,6 +74,16 @@ namespace Tectransit.Controllers
         }
 
         [HttpGet]
+        public dynamic GetFirstStation()
+        {
+
+            string sql = $@"SELECT TOP 1 STATIONCODE AS COL1 FROM T_S_STATION ORDER BY ID";
+            string stationcode = DBUtil.GetSingleValue1(sql);
+
+            return new { status = "0", data = stationcode };
+        }
+
+        [HttpGet]
         public dynamic GetMemtype()
         {
             Hashtable htData = new Hashtable();

@@ -1539,13 +1539,13 @@ namespace Tectransit.Modles
                     .HasColumnName("PAYDATE")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.Receiceraddr)
-                    .HasColumnName("RECEICERADDR")
-                    .HasMaxLength(300);
-
                 entity.Property(e => e.Receiver)
                     .HasColumnName("RECEIVER")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.Receiveraddr)
+                    .HasColumnName("RECEIVERADDR")
+                    .HasMaxLength(300);
 
                 entity.Property(e => e.Remark1).HasColumnName("REMARK1");
 
@@ -1555,6 +1555,11 @@ namespace Tectransit.Modles
 
                 entity.Property(e => e.Shippingno)
                     .HasColumnName("SHIPPINGNO")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Stationcode)
+                    .HasColumnName("STATIONCODE")
                     .HasMaxLength(100)
                     .IsUnicode(false);
 

@@ -336,7 +336,7 @@ export class EntrustcusComponent implements OnInit {
       } else { resolve('success'); }
     });
 
-    Promise.all([promise1])
+    Promise.all([promise, promise1])
       .then(() => {
         this.save();
       });

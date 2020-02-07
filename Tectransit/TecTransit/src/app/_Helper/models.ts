@@ -144,6 +144,7 @@ export interface IDFileList {
 export interface ShippingMCusInfo {
   id: number;
   accountid: number;
+  stationcode: string;
   shippingno: string;
   trckingno: string;
   mawbno: string;
@@ -157,6 +158,8 @@ export interface ShippingMCusInfo {
   remark1: string;
   remark2: string;
   remark3: string;
+  paydate: string;
+  exportdate: string;
   credate: string;
   createby: string;
   upddate: string;

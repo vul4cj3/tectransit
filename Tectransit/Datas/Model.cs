@@ -400,6 +400,7 @@ namespace Tectransit.Datas
     {
         public long ID { set; get; }
         public long ACCOUNTID { set; get; }
+        public string STATIONCODE { set; get; }
         public string SHIPPINGNO { set; get; }
         public string TRACKINGNO { set; get; }
         public string MAWBNO { set; get; }

@@ -3,6 +3,7 @@ import { MemStationInfo, ShippingMCusInfo } from 'src/app/_Helper/models';
 import { CommonService } from 'src/app/services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ShippstatusPipe } from 'src/app/_Helper/shippstatus.pipe';
+import { resolve } from 'url';
 
 @Component({
   selector: 'app-shippingcus-list',
@@ -46,13 +47,32 @@ export class ShippingcusListComponent implements OnInit {
     this.cateID = this.route.snapshot.paramMap.get('id');
 
     if (this.cateID === '0') {
-      this.cateID = 'S1';
+      // 取得預設第一筆站別
+      const promise = new Promise((resolve, reject) => {
+        this.commonService.getSingleData(this.baseUrl + this.catedataUrl)
+          .subscribe(
+            data => {
+              this.cateData = data.rows;
+              resolve('success');
+            },
+            error => {
+              console.log(error);
+            });
+      });
+
+      Promise.all([promise])
+      .then(() => {
+        this.cateID = this.cateData[0].stationcode;
+
+        this.srhList.push({ status: this.shippingType, stationcode: this.cateID });
+        this.crePagination(this.currentpage, this.baseUrl + this.transferdataUrl);
+      });
+
+    } else {
+      this.getCateData();
+      this.srhList.push({ status: this.shippingType, stationcode: this.cateID });
+      this.crePagination(this.currentpage, this.baseUrl + this.transferdataUrl);
     }
-
-    this.getCateData();
-
-    this.srhList.push({ status: this.shippingType, stationcode: this.cateID });
-    this.crePagination(this.currentpage, this.baseUrl + this.transferdataUrl);
   }
 
   getCateData() {
