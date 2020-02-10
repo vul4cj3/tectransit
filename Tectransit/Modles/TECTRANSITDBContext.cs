@@ -1495,13 +1495,13 @@ namespace Tectransit.Modles
                     .HasColumnName("BOXNO")
                     .HasMaxLength(500);
 
-                entity.Property(e => e.Receiceraddr)
-                    .HasColumnName("RECEICERADDR")
-                    .HasMaxLength(300);
-
                 entity.Property(e => e.Receiver)
                     .HasColumnName("RECEIVER")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.Receiveraddr)
+                    .HasColumnName("RECEIVERADDR")
+                    .HasMaxLength(300);
 
                 entity.Property(e => e.Remark).HasColumnName("REMARK");
 

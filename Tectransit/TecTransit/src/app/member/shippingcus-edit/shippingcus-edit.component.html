@@ -1,0 +1,64 @@
+<div class="memprofile">
+  <div class="profile-contain">
+    <app-shippingcus-header [type]="this.shippingType"></app-shippingcus-header>
+    <div class="regform">
+      <!-- content start -->
+      <div>
+        <!-- master data start-->
+        <div>
+          <div>
+            <label>快遞單號</label>
+            <span></span>
+          </div>
+          <div>
+            <label>所屬集運站</label>
+            <span></span>
+          </div>
+        </div>
+        <!-- master data end-->
+        <!-- header&datail start-->
+        <div>
+          <!-- header data start -->
+          <div>
+            <div>
+              <label>箱號</label>
+              <span></span>
+            </div>
+          </div>
+          <!-- header data end -->
+          <!-- detail data start -->
+          <table>
+            <tr>
+              <th>商品名稱</th>
+              <th>數量</th>
+              <th>價值</th>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </table>
+          <!-- detail data end -->
+        </div>
+        <!-- header&datail end-->
+        <!-- declarant data start -->
+        <table>
+            <tr>
+              <th>申報人姓名</th>
+              <th>數量</th>
+              <th>價值</th>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </table>
+          <!-- declarant data end -->
+      </div>
+      <!-- content end -->
+      <a routerLink="/member/shippingcus/{{this.shippingType}}/{{this.cateID}}">回列表</a>
+    </div>
+  </div>
+</div>

@@ -101,7 +101,7 @@ namespace Tectransit.Datas
                 }
                 cmd = new SqlCommand(strSQL, cn);
                 if (args != null) SetArgs(strSQL, args, cmd);
-                da = new SqlDataAdapter(strSQL, cn);
+                da = new SqlDataAdapter(cmd);
                 da.Fill(data);
             }
             catch (Exception ex)

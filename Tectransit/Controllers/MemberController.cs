@@ -783,7 +783,7 @@ namespace Tectransit.Controllers
         /*--------------------- 廠商會員 ------------------------*/
 
         #region 集運單
-        //取得集運單
+        //取得集運單(多筆)
         [HttpPost]
         public dynamic GetShippingCusData([FromBody] object form)
         {
@@ -845,6 +845,34 @@ namespace Tectransit.Controllers
 
                 return objMember.GetShippingCusData(sWhere, pageIndex, pageSize);
 
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "取得失敗！" };
+            }
+        }
+
+        //取得集運單(單筆)
+        [HttpGet("{id}")]
+        public dynamic GetSingleShippingCusData(long id)
+        {
+            try
+            {
+                Hashtable htData = new Hashtable();
+                htData["SHIPPINGID_M"] = id.ToString();
+                //get cookies
+                htData["_acccode"] = Request.Cookies["_acccode"];
+                htData["_accname"] = Request.Cookies["_accname"];
+
+                string sql = $@"SELECT A.ID AS COL1 FROM T_S_ACCOUNT A
+                                LEFT JOIN T_S_ACRANKMAP B ON B.USERCODE = A.USERCODE
+                                LEFT JOIN T_S_RANK C ON C.ID = B.RANKID
+                                WHERE A.USERCODE = '{htData["_acccode"]}' AND C.RANKTYPE = '2'";
+
+                htData["ACCOUNTID"] = DBUtil.GetSingleValue1(sql);
+                
+                return objMember.GetSingleShippingCusData(htData);
             }
             catch (Exception ex)
             {
@@ -1030,7 +1058,7 @@ namespace Tectransit.Controllers
                 TVShippingH TVH = new TVShippingH();
                 TVH.Boxno = sData["BOXNO"]?.ToString();
                 TVH.Receiver = sData["RECEIVER"]?.ToString();
-                TVH.Receiceraddr = sData["RECEIVERADDR"]?.ToString();
+                TVH.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
                 TVH.ShippingidM = Convert.ToInt64(sData["SHIPPINGIDM"]);
 
                 _context.TVShippingH.Add(TVH);

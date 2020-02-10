@@ -14,6 +14,8 @@ import { DeclarantComponent } from './declarant/declarant.component';
 import { EntrustcusComponent } from './entrustcus/entrustcus.component';
 import { ProfilecusComponent } from './profilecus/profilecus.component';
 import { ShippingcusListComponent } from './shippingcus-list/shippingcus-list.component';
+import { ShippingcusEditComponent } from './shippingcus-edit/shippingcus-edit.component';
+import { ShippingcusHeaderComponent } from './shippingcus-header/shippingcus-header.component';
 
 
 
@@ -30,7 +32,9 @@ import { ShippingcusListComponent } from './shippingcus-list/shippingcus-list.co
     DeclarantComponent,
     EntrustcusComponent,
     ProfilecusComponent,
-    ShippingcusListComponent
+    ShippingcusListComponent,
+    ShippingcusEditComponent,
+    ShippingcusHeaderComponent
   ],
   imports: [
     CommonModule,

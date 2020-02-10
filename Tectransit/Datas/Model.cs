@@ -401,6 +401,7 @@ namespace Tectransit.Datas
         public long ID { set; get; }
         public long ACCOUNTID { set; get; }
         public string STATIONCODE { set; get; }
+        public string STATIONNAME { set; get; }
         public string SHIPPINGNO { set; get; }
         public string TRACKINGNO { set; get; }
         public string MAWBNO { set; get; }
@@ -429,7 +430,7 @@ namespace Tectransit.Datas
         public string RECEIVER { set; get; }
         public string RECEIVERADDR { set; get; }
         public string REMARK { set; get; }
-        public string SHIPPINGID_M { set; get; }
+        public long SHIPPINGID_M { set; get; }
     }
 
     public class ShippingDCusInfo
@@ -450,8 +451,8 @@ namespace Tectransit.Datas
         public long TYPE { set; get; }
         public string NAME { set; get; }
         public string TAXID { set; get; }
-        public string IDPHOTO_F { set; get; }
-        public string IDPHOTO_B { set; get; }
+        public string IDPHOTOF { set; get; }
+        public string IDPHOTOB { set; get; }
         public string PHONE { set; get; }
         public string MOBILE { set; get; }
         public string ADDR { set; get; }

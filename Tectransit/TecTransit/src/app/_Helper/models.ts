@@ -145,8 +145,9 @@ export interface ShippingMCusInfo {
   id: number;
   accountid: number;
   stationcode: string;
+  stationname: string;
   shippingno: string;
-  trckingno: string;
+  trackingno: string;
   mawbno: string;
   trasferno: string;
   total: string;
@@ -193,8 +194,8 @@ export interface DeclarantCusInfo {
   phone: string;
   mobile: string;
   addr: string;
-  idphotO_F: string;
-  idphotO_B: string;
+  idphotof: string;
+  idphotob: string;
   appointment: string;
   shippingid_m: number;
 }

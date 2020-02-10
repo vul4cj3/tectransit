@@ -13,6 +13,7 @@ import { DeclarantComponent } from './declarant/declarant.component';
 import { EntrustcusComponent } from './entrustcus/entrustcus.component';
 import { ProfilecusComponent } from './profilecus/profilecus.component';
 import { ShippingcusListComponent } from './shippingcus-list/shippingcus-list.component';
+import { ShippingcusEditComponent } from './shippingcus-edit/shippingcus-edit.component';
 
 const routes: Routes = [
   {
@@ -68,6 +69,11 @@ const routes: Routes = [
       {
         path: 'shippingcus/:type/:id',
         component: ShippingcusListComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'shippingcus/edit/:type/:code/:id',
+        component: ShippingcusEditComponent,
         canActivate: [AuthGuard],
       },
       {

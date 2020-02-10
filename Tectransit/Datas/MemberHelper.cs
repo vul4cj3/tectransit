@@ -365,6 +365,7 @@ namespace Tectransit.Datas
                     m.SHIPPINGNO = DT.Rows[i]["SHIPPINGNO"]?.ToString();
                     m.STATIONCODE = DT.Rows[i]["STATIONCODE"]?.ToString();
                     m.TRACKINGNO = DT.Rows[i]["TRACKINGNO"]?.ToString();
+                    m.TRASFERNO = DT.Rows[i]["TRASFERNO"]?.ToString();
                     m.TOTAL = DT.Rows[i]["TOTAL"]?.ToString();
                     m.RECEIVER = DT.Rows[i]["RECEIVER"]?.ToString();
                     m.RECEIVER_ADDR = DT.Rows[i]["RECEIVERADDR"]?.ToString();
@@ -386,6 +387,108 @@ namespace Tectransit.Datas
             }
 
             return new { rows = "", total = 0 };
+        }
+
+        public dynamic GetSingleShippingCusData(Hashtable sData)
+        {
+            string sql = $@"SELECT ID, ACCOUNTID, STATIONCODE, SHIPPINGNO, TRACKINGNO, TRASFERNO,
+                                   TOTAL, RECEIVER, RECEIVERADDR, STATUS, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
+                                   FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
+                                   CREATEBY AS CREBY, UPDBY
+                            FROM T_V_SHIPPING_M
+                            WHERE ACCOUNTID = @ACCOUNTID";
+            DataTable DT = DBUtil.SelectDataTable(sql, sData);
+            if (DT.Rows.Count > 0)
+            {
+                ShippingMCusInfo m = new ShippingMCusInfo();
+                m.ID = Convert.ToInt64(DT.Rows[0]["ID"]);
+                m.ACCOUNTID = Convert.ToInt64(DT.Rows[0]["ACCOUNTID"]);
+                m.SHIPPINGNO = DT.Rows[0]["SHIPPINGNO"]?.ToString();
+                m.STATIONCODE = DT.Rows[0]["STATIONCODE"]?.ToString();
+                m.STATIONNAME = DBUtil.GetSingleValue1($@"SELECT STATIONNAME AS COL1 FROM T_S_STATION WHERE STATIONCODE = '{DT.Rows[0]["STATIONCODE"]?.ToString()}'");
+                m.TRACKINGNO = DT.Rows[0]["TRACKINGNO"]?.ToString();
+                m.TRASFERNO = DT.Rows[0]["TRASFERNO"]?.ToString();
+                m.TOTAL = DT.Rows[0]["TOTAL"]?.ToString();
+                m.RECEIVER = DT.Rows[0]["RECEIVER"]?.ToString();
+                m.RECEIVER_ADDR = DT.Rows[0]["RECEIVERADDR"]?.ToString();
+                m.STATUS = DT.Rows[0]["STATUS"]?.ToString();
+                m.PAYDATE = DT.Rows[0]["PAYDATE"]?.ToString();
+                m.EXPORTDATE = DT.Rows[0]["EXPORTDATE"]?.ToString();
+                m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
+                m.CREBY = DT.Rows[0]["CREBY"]?.ToString();
+                m.UPDDATE = DT.Rows[0]["UPDDATE"]?.ToString();
+                m.UPDBY = DT.Rows[0]["UPDBY"]?.ToString();
+
+
+                sql = $@"SELECT A.SHIPPINGID_M AS MID, A.ID AS HID, B.ID AS DID, A.BOXNO, A.RECEIVER,
+                                A.RECEIVERADDR, B.PRODUCT, B.UNITPRICE, B.QUANTITY
+                         FROM T_V_SHIPPING_H A
+                         LEFT JOIN T_V_SHIPPING_D B ON A.ID = B.SHIPPINGID_H
+                         WHERE A.SHIPPINGID_M = @SHIPPINGID_M";
+
+                DataTable DT_Sub = DBUtil.SelectDataTable(sql, sData);
+                List<ShippingHCusInfo> h = new List<ShippingHCusInfo>();
+                List<ShippingDCusInfo> d = new List<ShippingDCusInfo>();
+                long oldHID = 0;
+                if (DT_Sub.Rows.Count > 0)
+                {
+                    for (int j = 0; j < DT_Sub.Rows.Count; j++)
+                    {
+                        //新增shipping_H
+                        if (Convert.ToInt64(DT_Sub.Rows[j]["HID"]) != oldHID)
+                        {
+                            ShippingHCusInfo rows = new ShippingHCusInfo();
+                            rows.BOXNO = DT_Sub.Rows[j]["BOXNO"]?.ToString();
+                            rows.RECEIVER = DT_Sub.Rows[j]["RECEIVER"]?.ToString();
+                            rows.RECEIVERADDR = DT_Sub.Rows[j]["RECEIVERADDR"]?.ToString();
+                            rows.SHIPPINGID_M = Convert.ToInt64(DT_Sub.Rows[j]["MID"]);
+
+                            h.Add(rows);
+                        }
+
+                        //新增shipping_D
+                        ShippingDCusInfo row = new ShippingDCusInfo();
+                        row.PRODUCT = DT_Sub.Rows[j]["PRODUCT"]?.ToString();
+                        row.UNITPRICE = DT_Sub.Rows[j]["UNITPRICE"]?.ToString();
+                        row.QUANTITY = DT_Sub.Rows[j]["QUANTITY"]?.ToString();
+                        row.SHIPPINGID_M = Convert.ToInt64(DT_Sub.Rows[j]["MID"]);
+                        row.SHIPPINGID_H = Convert.ToInt64(DT_Sub.Rows[j]["HID"]);
+                        d.Add(row);
+
+                        oldHID = Convert.ToInt64(DT_Sub.Rows[j]["HID"]);
+                    }
+                }
+
+                sql = $@"SELECT NAME, TAXID, PHONE, MOBILE, ADDR, IDPHOTO_F AS IDPHOTOF,
+                                IDPHOTO_B AS IDPHOTOB, APPOINTMENT, SHIPPINGID_M AS MID
+                         FROM T_V_DECLARANT
+                         WHERE SHIPPINGID_M = @SHIPPINGID_M";
+
+                DataTable DT_Dec = DBUtil.SelectDataTable(sql, sData);
+                List<DeclarantCusInfo> Dec = new List<DeclarantCusInfo>();
+                if (DT_Dec.Rows.Count > 0)
+                {
+                    for (int k = 0; k < DT_Dec.Rows.Count; k++)
+                    {
+                        DeclarantCusInfo row_d = new DeclarantCusInfo();
+                        row_d.NAME = DT_Dec.Rows[k]["NAME"]?.ToString();
+                        row_d.TAXID = DT_Dec.Rows[k]["TAXID"]?.ToString();
+                        row_d.PHONE = DT_Dec.Rows[k]["PHONE"]?.ToString();
+                        row_d.MOBILE = DT_Dec.Rows[k]["MOBILE"]?.ToString();
+                        row_d.ADDR = DT_Dec.Rows[k]["ADDR"]?.ToString();
+                        row_d.IDPHOTOF = DT_Dec.Rows[k]["IDPHOTOF"]?.ToString();
+                        row_d.IDPHOTOB = DT_Dec.Rows[k]["IDPHOTOB"]?.ToString();
+                        row_d.APPOINTMENT = DT_Dec.Rows[k]["APPOINTMENT"]?.ToString();
+                        row_d.SHIPPINGID_M = Convert.ToInt64(DT_Dec.Rows[k]["MID"]);
+
+                        Dec.Add(row_d);
+                    }
+                }
+
+                return new { status = "0", rowM = m, rowH = h, rowD = d, rowDec = Dec };
+            }
+
+            return new { status = "0", rowM = "", rowH = "", rowD = "", rowDEC = "" };
         }
 
     }

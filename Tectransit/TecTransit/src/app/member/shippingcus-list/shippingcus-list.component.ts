@@ -3,7 +3,6 @@ import { MemStationInfo, ShippingMCusInfo } from 'src/app/_Helper/models';
 import { CommonService } from 'src/app/services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ShippstatusPipe } from 'src/app/_Helper/shippstatus.pipe';
-import { resolve } from 'url';
 
 @Component({
   selector: 'app-shippingcus-list',
