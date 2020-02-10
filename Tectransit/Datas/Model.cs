@@ -410,7 +410,7 @@ namespace Tectransit.Datas
         public string TRACKINGTYPE { set; get; }
         public string RECEIVER { set; get; }
         public string RECEIVER_ADDR { set; get; }
-        public bool ISMULTRECEIVER { set; get; }
+        public string ISMULTRECEIVER { set; get; }
         public string STATUS { set; get; }
         public string REMARK1 { set; get; }
         public string REMARK2 { set; get; }

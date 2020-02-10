@@ -172,6 +172,14 @@ export class CommonService {
       }));
   }
 
+  editNDelData(form, del, pageUrl: string) {
+    const postData = { formdata: form, dellist: del };
+    return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
   editSingleData(code, form, pageUrl: string) {
     const postData = { id: code, formdata: form };
     return this.http.post<any>(pageUrl, postData)

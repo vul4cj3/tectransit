@@ -154,7 +154,7 @@ export interface ShippingMCusInfo {
   trackingtype: number;
   receiver: string;
   receiveraddr: string;
-  ismultreceiver: boolean;
+  ismultreceiver: string;
   status: number;
   remark1: string;
   remark2: string;
@@ -173,7 +173,7 @@ export interface ShippingHCusInfo {
   receiver: string;
   receiveraddr: string;
   remark: string;
-  shippingid_m: number;
+  shippingiD_M: number;
 }
 
 export interface ShippingDCusInfo {
@@ -183,8 +183,8 @@ export interface ShippingDCusInfo {
   unitprice: string;
   quantity: string;
   remark: string;
-  shippingid_m: number;
-  shippingid_h: number;
+  shippingiD_M: number;
+  shippingiD_H: number;
 }
 
 export interface DeclarantCusInfo {
@@ -197,5 +197,5 @@ export interface DeclarantCusInfo {
   idphotof: string;
   idphotob: string;
   appointment: string;
-  shippingid_m: number;
+  shippingiD_M: number;
 }

@@ -1,28 +1,56 @@
 <div class="memprofile">
   <div class="profile-contain">
-    <app-shippingcus-header [type]="this.shippingType"></app-shippingcus-header>
+    <app-shippingcus-header></app-shippingcus-header>
     <div class="regform">
       <!-- content start -->
       <div>
         <!-- master data start-->
-        <div>
+        <div *ngIf="masterData !== undefined">
+          <div>
+            <label>集運單編號</label>
+            <span>{{masterData.shippingno}}</span>
+          </div>
+          <div>
+            <label>追蹤號碼</label>
+            <span>{{masterData.trackingno}}</span>
+          </div>
           <div>
             <label>快遞單號</label>
-            <span></span>
+            <span>{{masterData.trasferno}}</span>
           </div>
           <div>
             <label>所屬集運站</label>
-            <span></span>
+            <span>{{masterData.stationname}}</span>
+          </div>
+          <div>
+            <label>總件數</label>
+            <span>{{masterData.total}}</span>
+          </div>
+          <div *ngIf="masterData.ismultreceiver !== 'Y'">
+            <label>收件人</label>
+            <span>{{masterData.receiver}}</span>
+          </div>
+          <div *ngIf="masterData.ismultreceiver !== 'Y'">
+            <label>收件人地址</label>
+            <span>{{masterData.receiveraddr}}</span>
           </div>
         </div>
         <!-- master data end-->
         <!-- header&datail start-->
-        <div>
+        <div *ngFor="let item of headerData">
           <!-- header data start -->
           <div>
             <div>
               <label>箱號</label>
-              <span></span>
+              <span>{{item.boxno}}</span>
+            </div>
+            <div *ngIf="masterData.ismultreceiver === 'Y'">
+              <label>收件人</label>
+              <span>{{item.receiver}}</span>
+            </div>
+            <div *ngIf="masterData.ismultreceiver === 'Y'">
+              <label>收件人地址</label>
+              <span>{{item.receiveraddr}}</span>
             </div>
           </div>
           <!-- header data end -->
@@ -33,29 +61,83 @@
               <th>數量</th>
               <th>價值</th>
             </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
+            <tr *ngFor="let subitem of detailData">
+              <ng-container *ngIf="subitem.shippingiD_H === item.id">
+                <td>{{subitem.product}}</td>
+                <td>{{subitem.quantity}}</td>
+                <td>{{subitem.unitprice}}</td>
+              </ng-container>
             </tr>
           </table>
           <!-- detail data end -->
         </div>
         <!-- header&datail end-->
         <!-- declarant data start -->
-        <table>
-            <tr>
-              <th>申報人姓名</th>
-              <th>數量</th>
-              <th>價值</th>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-          </table>
-          <!-- declarant data end -->
+        <form [formGroup]="dataForm">
+          <div>
+            <ng-container *ngIf="!isModify;else modifyDec">
+              <button (click)="chgDec('m')">修改</button>
+            </ng-container>
+            <ng-template #modifyDec>
+              <button (click)="saveData(this.dataForm.value)">保存</button>
+              <button (click)="chgDec('c')">取消</button>
+            </ng-template>
+          </div>
+          <ng-container *ngIf="!isModify;else modifydecform">
+            <table>
+              <tr>
+                <th>申報人姓名</th>
+                <th>身分證字號</th>
+                <th>連絡電話</th>
+                <th>手機</th>
+                <th>地址</th>
+                <th>身分證檔案</th>
+                <th>委任書</th>
+              </tr>
+              <tr *ngFor="let decitem of declarData">
+                <td>{{decitem.name}}</td>
+                <td>{{decitem.taxid}}</td>
+                <td>{{decitem.phone}}</td>
+                <td>{{decitem.mobile}}</td>
+                <td>{{decitem.addr}}</td>
+                <td>
+                  <a *ngIf="decitem.idphotof !== ''" [href]="decitem.idphotof" target="_blank">身分證照1</a>
+                  <a *ngIf="decitem.idphotob !== ''" [href]="decitem.idphotob" target="_blank">身分證照2</a>
+                </td>
+                <td>
+                  <a *ngIf="decitem.appointment !== ''" [href]="decitem.appointment" target="_blank">瀏覽</a>
+                </td>
+              </tr>
+            </table>
+          </ng-container>
+          <ng-template #modifydecform>
+            <input type="hidden" formControlName="shippingidm">
+            <div formArrayName="decform">
+              <div *ngFor="let dec of dataForm.get('decform')['controls']; let idec=index">
+                <div formGroupName="{{idec}}" class="Ys">
+                  <input type="hidden" formControlName="id">
+                  <input type="text" formControlName="name">
+                  <input type="text" formControlName="taxid">
+                  <input type="text" formControlName="phone">
+                  <input type="text" formControlName="mobile">
+                  <input type="text" formControlName="addr">
+                  <input type="file" #imgupload accept="image/*" multiple (change)="imgChange($event, idec)">
+                  <div class="img-preview-container">
+                    <div id="img-preview{{idec}}" class="img-preview">
+                    </div>
+                  </div>
+                  <input type="hidden" formControlName="idphotof">
+                  <input type="hidden" formControlName="idphotob">
+                  <input type="file" #filesupload (change)="fileChange($event, idec)">
+                  <input type="hidden" formControlName="appointment">
+                  <input type="button" (click)="removedec(idec)" value="remove declarant">
+                </div>
+              </div>
+              <input type="button" (click)="adddec()" value="Add declarant">
+            </div>
+          </ng-template>
+        </form>
+        <!-- declarant data end -->
       </div>
       <!-- content end -->
       <a routerLink="/member/shippingcus/{{this.shippingType}}/{{this.cateID}}">回列表</a>

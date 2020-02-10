@@ -860,7 +860,7 @@ namespace Tectransit.Controllers
             try
             {
                 Hashtable htData = new Hashtable();
-                htData["SHIPPINGID_M"] = id.ToString();
+                htData["SHIPPINGIDM"] = id.ToString();
                 //get cookies
                 htData["_acccode"] = Request.Cookies["_acccode"];
                 htData["_accname"] = Request.Cookies["_accname"];
@@ -881,6 +881,7 @@ namespace Tectransit.Controllers
             }
         }
 
+        //委託集運
         [HttpPost]
         public dynamic SaveCusShippingData([FromBody] object form)
         {
@@ -1005,7 +1006,72 @@ namespace Tectransit.Controllers
                 return new { status = "99", msg = "保存失敗！" };
             }
         }
+        
+        //集運單申報人編輯
+        [HttpPost]
+        public dynamic SaveCusShippingDecData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+                JArray delArrData = jsonData.Value<JArray>("dellist");
 
+                //Master data
+                Hashtable mData = new Hashtable();
+                mData["SHIPPINGIDM"] = arrData.Value<string>("shippingidm");
+                
+                //Declarant data
+                JArray decData = arrData.Value<JArray>("decform");
+                ArrayList decAL = new ArrayList();
+                for (int k = 0; k < decData.Count; k++)
+                {
+                    JObject temp = (JObject)decData[k];
+                    Hashtable deData = new Hashtable();
+                    foreach (var t in temp)
+                        deData[(t.Key).ToUpper()] = t.Value?.ToString();
+
+                    decAL.Add(deData);
+                }
+
+                ArrayList decDelAL = new ArrayList();
+                for (int j = 0; j < delArrData.Count; j++)
+                {
+                    JValue temp = (JValue)delArrData[j];
+
+                    decDelAL.Add(Convert.ToInt64(temp));
+                }
+
+                if (decAL.Count > 0)
+                {
+                    for (int k = 0; k < decAL.Count; k++)
+                    {
+                        Hashtable tempData = (Hashtable)decAL[k];
+                        if (Convert.ToInt64(tempData["ID"]) == 0)
+                        {
+                            tempData["SHIPPINGIDM"] = mData["SHIPPINGIDM"];
+                            InsertTVDeclarant(tempData);//新增申報人
+                        }
+                        else
+                            UpdateTVDeclarant(Convert.ToInt64(tempData["ID"]), tempData);//更新申報人
+                    }
+                }
+
+                //刪除申報人
+                if (decDelAL.Count > 0)
+                {
+                    for (int i = 0; i < decDelAL.Count; i++)
+                        DeleteTVDeclarant(Convert.ToInt64(decDelAL[i]));
+                }
+
+                return new { status = "0", msg = "保存成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "保存失敗！" };
+            }
+        }
         #endregion
 
         #region 私有function
@@ -1118,6 +1184,47 @@ namespace Tectransit.Controllers
             catch (Exception ex)
             {
                 string errMsg = ex.Message.ToString();
+            }
+        }
+
+        private void UpdateTVDeclarant(long id, Hashtable sData)
+        {
+            var query = _context.TVDeclarant.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                TVDeclarant rowTVD = query;
+
+                if (sData["NAME"] != null)
+                    rowTVD.Name = sData["NAME"]?.ToString();
+                if (sData["TAXID"] != null)
+                    rowTVD.Taxid = sData["TAXID"]?.ToString();
+                if (sData["PHONE"] != null)
+                    rowTVD.Phone = sData["PHONE"]?.ToString();
+                if (sData["MOBILE"] != null)
+                    rowTVD.Mobile = sData["MOBILE"]?.ToString();
+                if (sData["ADDR"] != null)
+                    rowTVD.Addr = sData["ADDR"]?.ToString();
+                if (sData["IDPHOTOF"] != null)
+                    rowTVD.IdphotoF = sData["IDPHOTOF"]?.ToString();
+                if (sData["IDPHOTOB"] != null)
+                    rowTVD.IdphotoB = sData["IDPHOTOB"]?.ToString();
+                if (sData["APPOINTMENT"] != null)
+                    rowTVD.Appointment = sData["APPOINTMENT"]?.ToString();
+
+                _context.SaveChanges();
+
+            }
+        }
+
+        private void DeleteTVDeclarant(long id)
+        {
+            var query = _context.TVDeclarant.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                _context.TVDeclarant.Remove(query);
+                _context.SaveChanges();
             }
         }
         #endregion

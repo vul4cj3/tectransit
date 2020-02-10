@@ -239,8 +239,6 @@ export class EntrustcusComponent implements OnInit {
     this.fileList = this.tempList;
 
     this.fileList.push({ idcode: id, file: e.target.files[0] });
-
-    console.log(this.fileList);
   }
 
   refreshFile(id) {
