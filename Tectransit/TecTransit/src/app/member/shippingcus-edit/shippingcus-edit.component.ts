@@ -22,6 +22,7 @@ export class ShippingcusEditComponent implements OnInit {
   cateID;
   dataID;
 
+  isExist = false;
   isModify = false;
   masterData: ShippingMCusInfo;
   headerData: ShippingHCusInfo[];
@@ -46,6 +47,9 @@ export class ShippingcusEditComponent implements OnInit {
     this.shippingType = this.route.snapshot.paramMap.get('type');
     this.cateID = this.route.snapshot.paramMap.get('code');
     this.dataID = this.route.snapshot.paramMap.get('id');
+
+    // declarant data can modify or not
+    this.isExist = (this.shippingType === 't1' || this.shippingType === 't2' ? true : false);
 
     this.resetForm();
     this.getData();

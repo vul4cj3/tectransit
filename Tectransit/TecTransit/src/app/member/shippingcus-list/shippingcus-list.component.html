@@ -33,12 +33,13 @@
                 <tbody>
                   <tr *ngFor="let item of data let idx = index">
                     <td class="text-center text-muted">
-                      <label class="chkbox-container">
-                        <input type="checkbox" name="Chk" id="chk{{idx}}"
-                          (click)="SelChange($event.toElement.value, $event.toElement.checked)"
-                          value="{{item.id}}">
-                        <span class="checkmark"></span>
-                      </label>
+                      <ng-container *ngIf="this.shippingType === 't1'">
+                        <label class="chkbox-container">
+                          <input type="checkbox" name="Chk" id="chk{{idx}}"
+                            (click)="SelChange($event.toElement.value, $event.toElement.checked)" value="{{item.id}}">
+                          <span class="checkmark"></span>
+                        </label>
+                      </ng-container>
                     </td>
                     <td><label for="chk{{idx}}">{{item.trasferno}}</label></td>
                     <td>{{item.trackingno}}</td>

@@ -1072,6 +1072,51 @@ namespace Tectransit.Controllers
                 return new { status = "99", msg = "保存失敗！" };
             }
         }
+
+        //移除集運單(未入庫)
+        public dynamic DelShippingCusData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList DelAL = new ArrayList();
+                for (int j = 0; j < arrData.Count; j++)
+                {
+                    JValue temp = (JValue)arrData[j];
+
+                    DelAL.Add(Convert.ToInt64(temp));
+                }
+
+                if (DelAL.Count > 0)
+                {
+                    for (int i = 0; i < DelAL.Count; i++)
+                    {
+                        Hashtable tempData = new Hashtable();
+                        tempData["SHIPPINGIDM"] = Convert.ToInt64(DelAL[i]);
+
+                        //delete Declarant data
+                        DeleteTVData_All("T_V_DECLARANT", tempData);
+
+                        //delete shipping_H & shipping_D data
+                        DeleteTVData_All("T_V_SHIPPING_D", tempData);
+                        DeleteTVData_All("T_V_SHIPPING_H", tempData);
+
+                        //delete shipping_M data
+                        DeleteTVData_All("T_V_SHIPPING_M", tempData);
+                    }
+                }
+
+                return new { status = "0", msg = "刪除成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "刪除失敗！" };
+            }
+        }
+
         #endregion
 
         #region 私有function
@@ -1217,6 +1262,7 @@ namespace Tectransit.Controllers
             }
         }
 
+        //刪除申報人資料(單筆)
         private void DeleteTVDeclarant(long id)
         {
             var query = _context.TVDeclarant.Where(q => q.Id == id).FirstOrDefault();
@@ -1227,6 +1273,19 @@ namespace Tectransit.Controllers
                 _context.SaveChanges();
             }
         }
+
+        //刪除主單(Master)/箱號(Header)/細項(Detail)/申報人資料(該集運單下所有)
+        private void DeleteTVData_All(string table, Hashtable sData)
+        {
+            string sql = "";
+            if (table == "T_V_SHIPPING_M")
+                sql = $@"DELETE FROM {table} WHERE ID = @SHIPPINGIDM";
+            else
+                sql = $@"DELETE FROM {table} WHERE SHIPPINGID_M = @SHIPPINGIDM";
+
+            DBUtil.EXECUTE(sql, sData);
+        }
+
         #endregion
 
     }

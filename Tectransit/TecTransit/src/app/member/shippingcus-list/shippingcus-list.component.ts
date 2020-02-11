@@ -30,9 +30,9 @@ export class ShippingcusListComponent implements OnInit {
   cateData: MemStationInfo;
   cateID;
   shippingType;
+  tempList: any = [];
   chkList: any = [];
   srhList: any = [];
-  chkNum = 1;
 
   constructor(
     public commonService: CommonService,
@@ -60,12 +60,12 @@ export class ShippingcusListComponent implements OnInit {
       });
 
       Promise.all([promise])
-      .then(() => {
-        this.cateID = this.cateData[0].stationcode;
+        .then(() => {
+          this.cateID = this.cateData[0].stationcode;
 
-        this.srhList.push({ status: this.shippingType, stationcode: this.cateID });
-        this.crePagination(this.currentpage, this.baseUrl + this.transferdataUrl);
-      });
+          this.srhList.push({ status: this.shippingType, stationcode: this.cateID });
+          this.crePagination(this.currentpage, this.baseUrl + this.transferdataUrl);
+        });
 
     } else {
       this.getCateData();
@@ -146,20 +146,17 @@ export class ShippingcusListComponent implements OnInit {
   }
 
   SelChange(val, Ischk) {
-    this.chkNum = 0;
+    this.tempList = [];
     this.chkList.map((item) => {
-      if (item.id === val) {
-        item.isenable = Ischk;
-        this.chkNum++;
+      if (item !== val) {
+        this.tempList.push(item);
       }
     });
 
-    if (this.chkList.length === 0) {
-      this.chkList.push({ id: val, isenable: Ischk });
-    } else {
-      if (this.chkNum === 0) {
-        this.chkList.push({ id: val, isenable: Ischk });
-      }
+    this.chkList = this.tempList;
+
+    if (Ischk) {
+      this.chkList.push(val);
     }
 
   }

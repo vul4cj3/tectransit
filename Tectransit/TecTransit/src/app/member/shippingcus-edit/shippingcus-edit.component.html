@@ -74,7 +74,7 @@
         <!-- header&datail end-->
         <!-- declarant data start -->
         <form [formGroup]="dataForm">
-          <div>
+          <div *ngIf="isExist">
             <ng-container *ngIf="!isModify;else modifyDec">
               <button (click)="chgDec('m')">修改</button>
             </ng-container>

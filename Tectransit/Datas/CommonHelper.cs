@@ -419,6 +419,21 @@ namespace Tectransit.Datas
             return pwd;
         }
 
+        public string GetRandomNumber(int length)
+        {
+            string ranlist = "0123456789";
+            char[] chars = new char[length];
+            Random rd = new Random();
+            for (int i = 0; i < length; i++)
+            {
+                chars[i] = ranlist[rd.Next(0, ranlist.Length)];
+            }
+
+            string num = new string(chars);
+
+            return num;
+        }
+
         public void SendMail(string fromUser, string ToUser, string Mailsubject, string Mailbody, string ccUser)
         {
             #region  send mail

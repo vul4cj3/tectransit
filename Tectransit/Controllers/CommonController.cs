@@ -157,7 +157,7 @@ namespace Tectransit.Controllers
                     {
                         Hashtable htData = new Hashtable();
                         htData["ID"] = Request.Form["idcode"][i];
-                        var fileName = ContentDispositionHeaderValue.Parse(file[i].ContentDisposition).FileName.Trim('"');
+                        var fileName = DateTime.Now.ToString("yyyyMMddHHmmssffff") + objCommon.GetRandomNumber(5) + "." + ContentDispositionHeaderValue.Parse(file[i].ContentDisposition).FileName.Trim('"').Split('.')[1];
                         var fullPath = Path.Combine(pathToSave, fileName);
                         var dbPath = Path.Combine(folderName, fileName);
 
@@ -262,7 +262,7 @@ namespace Tectransit.Controllers
                 {
                     for (int i = 0; i < file.Count; i++)
                     {
-                        var fileName = ContentDispositionHeaderValue.Parse(file[i].ContentDisposition).FileName.Trim('"');
+                        var fileName = DateTime.Now.ToString("yyyyMMddHHmmssffff") + objCommon.GetRandomNumber(5) + "." + ContentDispositionHeaderValue.Parse(file[i].ContentDisposition).FileName.Trim('"').Split('.')[1];
                         var fullPath = Path.Combine(pathToSave, fileName);
                         var dbPath = Path.Combine(folderName, fileName);
 
