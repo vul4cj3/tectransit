@@ -41,6 +41,8 @@ import { StationListComponent } from './station-list/station-list.component';
 import { StationEditComponent } from './station-edit/station-edit.component';
 import { TransferListComponent } from './transfer-list/transfer-list.component';
 import { TransferEditComponent } from './transfer-edit/transfer-edit.component';
+import { ShippingcusListComponent } from './shippingcus-list/shippingcus-list.component';
+import { ShippingcusEditComponent } from './shippingcus-edit/shippingcus-edit.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +79,9 @@ import { TransferEditComponent } from './transfer-edit/transfer-edit.component';
     StationListComponent,
     StationEditComponent,
     TransferListComponent,
-    TransferEditComponent
+    TransferEditComponent,
+    ShippingcusListComponent,
+    ShippingcusEditComponent
   ],
   imports: [
     CommonModule,
