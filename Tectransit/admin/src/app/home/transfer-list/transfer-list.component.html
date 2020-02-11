@@ -20,7 +20,7 @@
           <div class="form-inline">
             <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
               <label for="sstationcode" class="mr-sm-2">集運站</label>
-              <select id="sstationcode" formControlName="sstationcode">
+              <select id="sstationcode" class="mb-2 mr-2 dropdown-toggle btn btn-outline-secondary" formControlName="sstationcode">
                 <option value="ALL">全部</option>
                 <option [value]="sitem.stationcode" *ngFor="let sitem of stationData">{{sitem.stationname}}</option>
               </select>
