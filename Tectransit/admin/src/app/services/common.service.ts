@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +16,13 @@ export class CommonService {
   private allnavUrl = 'GetAllMenu';
   private allmenuUrl = 'GetAllBacknFrontMenu';
   private allroleUrl = 'GetAllRole';
+  private allrole2Url = 'GetAllRole_C';
   private allrankUrl = 'GetAllRank';
   private allcusrankUrl = 'GetAllCusRank';
   private allbannerUrl = 'GetAllBanner';
   private resetPWUrl = 'ResetPassword';
   private pbacknforntUrl = 'GetParentMenu';
+  private chkIsSuperUrl = 'GetIsSuper';
 
   /* ckeditor config settings*/
   public editorConfig = {
@@ -101,8 +104,8 @@ export class CommonService {
       }));
   }
 
-  getAllRole(code) {
-    return this.http.get<any>(`${this.baseUrl + this.allroleUrl}/${code}`)
+  getAllRole(code, isSuper) {
+    return this.http.get<any>(`${(isSuper === true ? this.baseUrl + this.allroleUrl : this.baseUrl + this.allrole2Url)}/${code}`)
       .pipe(map(data => {
         return data;
       }));
@@ -302,6 +305,14 @@ export class CommonService {
       }
     }
     return obj;
+  }
+
+  /* other function */
+  chkIsSuper() {
+    return this.http.get<boolean>(`${this.sysUrl + this.chkIsSuperUrl}/`)
+      .pipe(map(data => {
+        return data;
+      }));
   }
 
 }

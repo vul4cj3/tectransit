@@ -32,6 +32,8 @@ export class UserListComponent implements OnInit {
   pUsercode: string;
   chkNum = 1;
 
+  isSuper = false; // 系統管理者才可瀏覽&編輯
+
   constructor(
     private formBuilder: FormBuilder,
     public commonService: CommonService,
@@ -55,6 +57,11 @@ export class UserListComponent implements OnInit {
       susercode: '',
       susername: ''
     });
+
+    this.commonService.chkIsSuper()
+      .subscribe((data) => {
+        this.isSuper = data;
+      });
   }
 
   crePagination(newPage: number) {
@@ -147,7 +154,7 @@ export class UserListComponent implements OnInit {
   /* Popup window function */
   openModal(id: string, code: string) {
     this.pUsercode = code;
-    this.commonService.getAllRole(code).subscribe(data => {
+    this.commonService.getAllRole(code, this.isSuper).subscribe(data => {
       if (data.status === '0') {
         this.RUMapItem = data.item;
       } else {

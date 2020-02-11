@@ -3,7 +3,6 @@ import { CommonService } from 'src/app/services/common.service';
 import { RoleInfo, MenuInfo } from 'src/app/_Helper/models';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ModalService } from 'src/app/services/modal.service';
-import { $ } from 'protractor';
 
 @Component({
   selector: 'app-role-list',
@@ -14,6 +13,7 @@ export class RoleListComponent implements OnInit {
   /* Web api url*/
   private baseUrl = window.location.origin + '/api/SysHelp/';
   private dataUrl = 'GetTSRoleListData';
+  private data2Url = 'GetTSRoleListData_C';
   private enableUrl = 'EditTSRoleEnableData';
   private rolemenuUrl = 'EditRoleMenuData';
 
@@ -24,6 +24,7 @@ export class RoleListComponent implements OnInit {
   currentpage = 1;
   pageSize = 10;
   srhForm: FormGroup;
+  pageUrl: string;
 
   menuItem: MenuInfo[];
   menuSubItem: MenuInfo[];
@@ -32,6 +33,8 @@ export class RoleListComponent implements OnInit {
   pRolecode: string;
   chkNum = 1;
 
+  isSuper = false; // 系統管理者才可瀏覽&編輯
+
   constructor(
     private formBuilder: FormBuilder,
     public commonService: CommonService,
@@ -39,13 +42,14 @@ export class RoleListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
     this.resetData();
-    this.crePagination(this.currentpage);
+
   }
 
   searchData() {
     this.currentpage = 1;
-    this.crePagination(this.currentpage);
+    this.getData();
   }
 
   resetData() {
@@ -54,10 +58,24 @@ export class RoleListComponent implements OnInit {
       srolecode: '',
       srolename: ''
     });
+
+    this.commonService.chkIsSuper()
+      .subscribe((data) => {
+        this.isSuper = data;
+        this.getData();
+      });
   }
 
-  crePagination(newPage: number) {
-    this.commonService.getListData(this.srhForm.value, newPage, this.pageSize, this.baseUrl + this.dataUrl)
+  getData() {
+    if (this.isSuper) {
+      this.crePagination(this.currentpage, this.baseUrl + this.dataUrl);
+    } else {
+      this.crePagination(this.currentpage, this.baseUrl + this.data2Url);
+    }
+  }
+
+  crePagination(newPage: number, pageUrl: string) {
+    this.commonService.getListData(this.srhForm.value, newPage, this.pageSize, pageUrl)
       .subscribe(
         data => {
           if (data.total > 0) {
@@ -80,8 +98,15 @@ export class RoleListComponent implements OnInit {
   }
 
   changeData(newPage: number) {
+
+    if (this.isSuper) {
+      this.pageUrl = this.baseUrl + this.dataUrl;
+    } else {
+      this.pageUrl = this.baseUrl + this.data2Url;
+    }
+
     if (newPage !== this.currentpage) {
-      this.commonService.getListData(this.srhForm.value, newPage, this.pageSize, this.baseUrl + this.dataUrl)
+      this.commonService.getListData(this.srhForm.value, newPage, this.pageSize, this.pageUrl)
         .subscribe(
           data => {
             if (data.total > 0) {
@@ -110,7 +135,7 @@ export class RoleListComponent implements OnInit {
         .subscribe(data => {
           if (data.status === '0') {
             alert(data.msg);
-            this.crePagination(this.currentpage);
+            this.getData();
             this.activeList = [];
           } else {
             alert(data.msg);

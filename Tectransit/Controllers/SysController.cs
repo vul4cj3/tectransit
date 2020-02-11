@@ -23,6 +23,22 @@ namespace Tectransit.Controllers
         }
 
         /* --- ROLE --- */
+        [HttpGet]
+        public bool GetIsSuper()
+        {
+            Hashtable htData = new Hashtable();
+            htData["_usercode"] = Request.Cookies["_usercode"];
+            htData["_username"] = Request.Cookies["_username"];
+
+            string sql = $@"SELECT C.ROLECODE AS COL1 FROM T_S_USER A
+                            LEFT JOIN T_S_USERROLEMAP B ON A.USERCODE = B.USERCODE 
+                            LEFT JOIN T_S_ROLE C ON B.ROLECODE = C.ROLECODE
+                            WHERE A.USERCODE = '{htData["_usercode"]}' AND A.ISENABLE = 'true' AND C.ROLECODE = 'SUPER'";
+            bool IsSuper = string.IsNullOrEmpty(DBUtil.GetSingleValue1(sql)) ? false : true;
+
+            return IsSuper;
+        }
+
         [HttpPost]
         public dynamic GetTSRoleListData([FromBody] object form)
         {
@@ -46,6 +62,37 @@ namespace Tectransit.Controllers
 
                 if (!string.IsNullOrEmpty(htData["ROLENAME"]?.ToString()))
                     sWhere += (sWhere == "" ? "WHERE" : " AND") + " ROLENAME LIKE '%" + htData["ROLENAME"]?.ToString() + "%'";
+
+            }
+
+            return objSys.GetRoleListData(sWhere, pageIndex, pageSize);
+        }
+
+        [HttpPost]
+        public dynamic GetTSRoleListData_C([FromBody] object form)
+        {
+            string sWhere = "";
+            var jsonData = JObject.FromObject(form);
+            int pageIndex = jsonData.Value<int>("PAGE_INDEX");
+            int pageSize = jsonData.Value<int>("PAGE_SIZE");
+            JObject temp = jsonData.Value<JObject>("srhForm");
+
+            if (temp.Count > 0)
+            {
+                Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                srhKey.Add("srolecode", "ROLECODE");
+                srhKey.Add("srolename", "ROLENAME");
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                    htData[srhKey[t.Key]] = t.Value?.ToString();
+
+                if (!string.IsNullOrEmpty(htData["ROLECODE"]?.ToString()))
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " ROLECODE LIKE '%" + htData["ROLECODE"]?.ToString() + "%'";
+
+                if (!string.IsNullOrEmpty(htData["ROLENAME"]?.ToString()))
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " ROLENAME LIKE '%" + htData["ROLENAME"]?.ToString() + "%'";
+
+                sWhere += (sWhere == "" ? "WHERE" : " AND") + " ID > 3";
 
             }
 

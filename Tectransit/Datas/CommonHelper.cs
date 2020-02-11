@@ -92,9 +92,10 @@ namespace Tectransit.Datas
         }
 
         //取得所有權限組資料
-        public dynamic GetAllRole(string code)
+        public dynamic GetAllRole(string code, string sWhere = "")
         {
             DataTable dtlist = DBUtil.SelectDataTable($@"SELECT A.ID AS ROLEID, A.ROLECODE, A.ROLENAME, A.ROLESEQ FROM T_S_ROLE A
+                                                         {sWhere}
                                                          ORDER BY A.ROLESEQ");
             if (dtlist.Rows.Count > 0)
             {

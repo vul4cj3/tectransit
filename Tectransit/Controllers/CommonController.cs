@@ -38,6 +38,13 @@ namespace Tectransit.Controllers
         }
 
         [HttpGet("{id}")]
+        public dynamic GetAllRole_C(string id)
+        {
+            string sWhere = "WHERE A.ID > 3";
+            return objCommon.GetAllRole(id, sWhere);
+        }
+
+        [HttpGet("{id}")]
         public dynamic GetAllRank(string id)
         {
             return objCommon.GetAllRank(id);
