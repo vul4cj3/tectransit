@@ -265,6 +265,14 @@ export class CommonService {
       }));
   }
 
+  editStatusData(type, arraydata, pageUrl: string) {
+    const postData = { status: type, formdata: arraydata };
+    return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
   editPowerData(code: string, arraydata, pageUrl: string) {
     const postData = { id: code, formdata: arraydata };
     return this.http.post<any>(pageUrl, postData)

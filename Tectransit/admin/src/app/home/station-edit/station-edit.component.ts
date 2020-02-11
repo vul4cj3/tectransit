@@ -61,6 +61,7 @@ export class StationEditComponent implements OnInit {
     this.commonService.getSingleData(id, this.baseUrl + this.userUrl)
       .subscribe(data => {
         this.dataForm.patchValue(data.rows);
+        this.dataForm.controls.stationcode.disable();
         this.stationData = data.rows;
       },
         error => {

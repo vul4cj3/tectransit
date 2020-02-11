@@ -2294,6 +2294,11 @@ namespace Tectransit.Controllers
                 if (id == 0)
                 {
 
+                    //檢查stationcode是否重複
+                    bool isRepeat = (string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT STATIONCODE AS COL1 FROM T_S_STATION WHERE STATIONCODE = '{htData["STATIONCODE"]}'")) ? false : true);
+                    if (isRepeat)
+                        return new { status = "99", msg = "已有相同代碼存在！" };
+                    
                     InsertStation(htData);
                     objComm.InsertSeqCode(htData, "station");
 

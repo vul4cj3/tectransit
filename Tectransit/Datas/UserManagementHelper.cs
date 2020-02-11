@@ -335,5 +335,45 @@ namespace Tectransit.Datas
             return new { rows = "", subitem = "" };
         }
 
+        public dynamic GetTVShippingMListData(string sWhere, int pageIndex, int pageSize)
+        {
+            string sql = $@"SELECT * FROM (
+                                            SELECT ROW_NUMBER() OVER (ORDER BY UPDDATE) AS ROW_ID, ID, ACCOUNTID, STATIONCODE, SHIPPINGNO, TRACKINGNO, TRASFERNO, STATUS,
+                                                   FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE
+                                            From T_V_SHIPPING_M
+                                            {sWhere}) AS A";
+            string sql1 = sql + $@" WHERE ROW_ID BETWEEN {((pageIndex - 1) * pageSize + 1).ToString()} AND {(pageIndex * pageSize).ToString()}";
+            DataTable DT = DBUtil.SelectDataTable(sql1);
+            if (DT.Rows.Count > 0)
+            {
+                List<ShippingMCusInfo> rowList = new List<ShippingMCusInfo>();
+                for (int i = 0; i < DT.Rows.Count; i++)
+                {
+                    ShippingMCusInfo m = new ShippingMCusInfo();
+                    m.ID = Convert.ToInt64(DT.Rows[i]["ID"]);
+                    m.ACCOUNTID = Convert.ToInt64(DT.Rows[i]["ACCOUNTID"]);
+                    m.ACCOUNTCODE = DBUtil.GetSingleValue1($@"SELECT USERCODE AS COL1 FROM T_S_ACCOUNT WHERE ID = {DT.Rows[i]["ACCOUNTID"]}");
+                    m.COMPANYNAME = DBUtil.GetSingleValue1($@"SELECT COMPANYNAME AS COL1 FROM T_S_ACCOUNT WHERE ID = {DT.Rows[i]["ACCOUNTID"]}");
+                    m.STATIONCODE = DT.Rows[i]["STATIONCODE"]?.ToString();
+                    m.STATIONNAME = DBUtil.GetSingleValue1($@"SELECT STATIONNAME AS COL1 FROM T_S_STATION WHERE STATIONCODE = '{DT.Rows[i]["STATIONCODE"]}'");
+                    m.SHIPPINGNO = DT.Rows[i]["SHIPPINGNO"]?.ToString();
+                    m.TRACKINGNO = DT.Rows[i]["TRACKINGNO"]?.ToString();
+                    m.TRASFERNO = DT.Rows[i]["TRASFERNO"]?.ToString();
+                    m.STATUS = DT.Rows[i]["STATUS"]?.ToString();
+                    m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
+                    m.UPDDATE = DT.Rows[i]["UPDDATE"]?.ToString();
+
+                    rowList.Add(m);
+                }
+
+                sql = "SELECT COUNT(*) as COL1 FROM (" + sql + ") AS B ";
+                string totalCt = DBUtil.GetSingleValue1(sql);
+
+                return new { rows = rowList, total = totalCt };
+            }
+
+            return new { rows = "", total = 0 };
+        }
+
     }
 }

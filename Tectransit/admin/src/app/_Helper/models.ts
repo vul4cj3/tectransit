@@ -301,3 +301,65 @@ export interface ShippingDInfo {
   shippingid_h: string;
 }
 
+export interface ShippingMCusInfo {
+  id: number;
+  accountid: number;
+  accountcode: string;
+  companyname: string;
+  stationcode: string;
+  stationname: string;
+  shippingno: string;
+  trackingno: string;
+  mawbno: string;
+  trasferno: string;
+  total: string;
+  trackingtype: number;
+  receiver: string;
+  receiveraddr: string;
+  ismultreceiver: string;
+  status: string;
+  remark1: string;
+  remark2: string;
+  remark3: string;
+  paydate: string;
+  exportdate: string;
+  credate: string;
+  createby: string;
+  upddate: string;
+  updby: string;
+}
+
+export interface ShippingHCusInfo {
+  id: number;
+  boxno: string;
+  receiver: string;
+  receiveraddr: string;
+  remark: string;
+  shippingiD_M: number;
+}
+
+export interface ShippingDCusInfo {
+  id: number;
+  product: string;
+  producturl: string;
+  unitprice: string;
+  quantity: string;
+  remark: string;
+  shippingiD_M: number;
+  shippingiD_H: number;
+}
+
+export interface DeclarantCusInfo {
+  id: number;
+  name: string;
+  taxid: string;
+  phone: string;
+  mobile: string;
+  addr: string;
+  idphotof: string;
+  idphotob: string;
+  appointment: string;
+  shippingiD_M: number;
+}
+
+

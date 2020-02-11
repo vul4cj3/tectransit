@@ -23,7 +23,7 @@ namespace Tectransit.Controllers
             _context = context;
         }
 
-        /* --- Rank --- */
+        #region /* --- Rank --- */
         [HttpPost]
         public dynamic GetTSRankListData([FromBody] object form)
         {
@@ -152,8 +152,9 @@ namespace Tectransit.Controllers
                 return err;
             }
         }
+        #endregion
 
-        /* --- Account --- */
+        #region /* --- Account --- */
         [HttpPost]
         public dynamic GetTSAccountListData([FromBody] object form)
         {
@@ -283,7 +284,9 @@ namespace Tectransit.Controllers
             return objUsm.GetAccountData(id);
         }
 
-        /* --- Company ---*/
+        #endregion
+
+        #region /* --- Company ---*/
         [HttpPost]
         public dynamic GetTSCompanyListData([FromBody] object form)
         {
@@ -378,8 +381,9 @@ namespace Tectransit.Controllers
                 return new { status = "99", msg = "修改失敗！" };
             }
         }
+        #endregion
 
-        /* --- Declarant and Receiver --- */
+        #region /* --- Declarant and Receiver --- */
         [HttpGet("{type}/{id}")]
         public dynamic GetDeclarantnReceiverData(long type, string id)
         {
@@ -539,7 +543,115 @@ namespace Tectransit.Controllers
             }
         }
 
-        /* --- Twotable Map --- */
+        #endregion
+
+        #region /* --- ShippingCus Data --- */
+        [HttpPost]
+        public dynamic GetTVShippingMListData([FromBody] object form)
+        {
+            string sWhere = "";
+            var jsonData = JObject.FromObject(form);
+            int pageIndex = jsonData.Value<int>("PAGE_INDEX");
+            int pageSize = jsonData.Value<int>("PAGE_SIZE");
+
+            JObject temp = jsonData.Value<JObject>("srhForm");
+
+            if (temp.Count > 0)
+            {
+                Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                srhKey.Add("sstationcode", "STATIONCODE");
+                srhKey.Add("sshippingno", "SHIPPINGNO");
+                srhKey.Add("strackingno", "TRACKINGNO");
+                srhKey.Add("strasferno", "TRASFERNO");
+                srhKey.Add("sacccode", "ACCOUNTCODE");
+                srhKey.Add("sstatus", "STATUS");
+                Hashtable htData = new Hashtable();
+                foreach (var t in temp)
+                {
+
+                    htData[srhKey[t.Key]] = t.Value?.ToString();
+                }
+
+                if (!string.IsNullOrEmpty(htData["STATIONCODE"]?.ToString()))
+                    if (htData["STATIONCODE"]?.ToString() != "ALL")
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATIONCODE LIKE '%" + htData["STATIONCODE"]?.ToString() + "%'";
+
+                if (!string.IsNullOrEmpty(htData["SHIPPINGNO"]?.ToString()))
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " SHIPPINGNO LIKE '%" + htData["SHIPPINGNO"]?.ToString() + "%'";
+
+                if (!string.IsNullOrEmpty(htData["TRACKINGNO"]?.ToString()))
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " TRACKINGNO LIKE '%" + htData["TRACKINGNO"]?.ToString() + "%'";
+
+                if (!string.IsNullOrEmpty(htData["TRASFERNO"]?.ToString()))
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " TRASFERNO LIKE '%" + htData["TRASFERNO"]?.ToString() + "%'";
+
+                if (!string.IsNullOrEmpty(htData["ACCOUNTCODE"]?.ToString()))
+                {
+                    string sql = $@"SELECT A.ID AS COL1 FROM T_S_ACCOUNT A
+                                    LEFT JOIN T_S_ACRANKMAP B ON A.USERCODE = B.USERCODE
+                                    LEFT JOIN T_S_RANK C ON C.ID = B.RANKID
+                                    WHERE C.RANKTYPE = 2 AND A.USERCODE = '{htData["ACCOUNTCODE"]?.ToString()}'";
+
+                    string acid = DBUtil.GetSingleValue1(sql);
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " ACCOUNTID = " + acid;
+                }
+
+                sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATUS = " + htData["STATUS"]?.ToString();
+
+            }
+
+            return objUsm.GetTVShippingMListData(sWhere, pageIndex, pageSize);
+        }
+
+        [HttpPost]
+        public dynamic EditTVShippingMStatus([FromBody] object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+                string status = jsonData.Value<string>("status");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JValue temp = (JValue)arrData[i];
+                    
+                    AL.Add(temp);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = new Hashtable();
+                        sData["SHIPPINGIDM"] = AL[i].ToString();
+                        sData["STATUS"] = status;
+                        UpdateShippingMStatus(sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[SHIPPINGIDM({sData["SHIPPINGIDM"]}):STATUS - {sData["STATUS"]?.ToString()}]";
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/shippingcus", "廠商集運單管理-狀態變更", 2, logMsg);
+
+                return new { status = "0", msg = "修改成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+        #endregion
+
+        #region /* --- Twotable Map --- */
 
         [HttpPost]
         public dynamic EditAccountRankData([FromBody] object form)
@@ -724,9 +836,9 @@ namespace Tectransit.Controllers
                 return new { status = "99", msg = "保存失敗！" };
             }
         }
+        #endregion
 
-        /* --- private CRUD function --- */
-        #region private function
+        #region /* --- private CRUD function --- */
         private dynamic EditRankData(long id, Hashtable htData)
         {
             try
@@ -1008,6 +1120,16 @@ namespace Tectransit.Controllers
 
                     _context.SaveChanges();
                 }
+            }
+        }
+
+        private void UpdateShippingMStatus(Hashtable sData)
+        {
+            var query = _context.TVShippingM.Where(q => q.Id == Convert.ToInt64(sData["SHIPPINGIDM"])).FirstOrDefault();
+            if (query != null)
+            {
+                query.Status = Convert.ToInt32(sData["STATUS"]);
+                _context.SaveChanges();
             }
         }
         #endregion
