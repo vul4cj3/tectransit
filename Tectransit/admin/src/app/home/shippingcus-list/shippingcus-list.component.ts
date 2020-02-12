@@ -18,7 +18,7 @@ export class ShippingcusListComponent implements OnInit {
   private baseUrl = window.location.origin + '/api/UserHelp/';
   private dataUrl = 'GetTVShippingMListData';
   private statusUrl = 'EditTVShippingMStatus';
-  private delUrl = 'DelTETransferData';
+  private delUrl = 'DelTVShippingMData';
   private stationUrl = '/api/CommonHelp/GetStationData';
 
   tableTitle = ['#', '集運站', '集運單號', '追蹤號碼', '快遞單號', '廠商', '會員帳號', '建單時間',
@@ -60,7 +60,7 @@ export class ShippingcusListComponent implements OnInit {
       strackingno: '',
       strasferno: '',
       sacccode: '',
-      sstatus: '0'
+      sstatus: this.status
     });
   }
 
@@ -171,7 +171,7 @@ export class ShippingcusListComponent implements OnInit {
   }
 
   doDelete() {
-    const IsConfirm = confirm('確定要刪除？');
+    const IsConfirm = confirm('確定要刪除(連同集運單下所有細項資料一併刪除)？');
     if (IsConfirm === true) {
       if (this.chkList.length > 0) {
         this.commonService.delData(this.chkList, this.baseUrl + this.delUrl)
@@ -195,8 +195,8 @@ export class ShippingcusListComponent implements OnInit {
   SelChange(val, Ischk) {
     this.tempList = [];
     this.chkList.map((item) => {
-      if (item.id !== val) {
-        this.tempList.push(item.id);
+      if (item !== val) {
+        this.tempList.push(item);
       }
     });
 
@@ -205,7 +205,6 @@ export class ShippingcusListComponent implements OnInit {
     if (Ischk) {
       this.chkList.push(val);
     }
-
   }
 
 }

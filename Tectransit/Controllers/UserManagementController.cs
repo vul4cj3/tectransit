@@ -585,16 +585,17 @@ namespace Tectransit.Controllers
                 if (!string.IsNullOrEmpty(htData["TRASFERNO"]?.ToString()))
                     sWhere += (sWhere == "" ? "WHERE" : " AND") + " TRASFERNO LIKE '%" + htData["TRASFERNO"]?.ToString() + "%'";
 
-                if (!string.IsNullOrEmpty(htData["ACCOUNTCODE"]?.ToString()))
-                {
-                    string sql = $@"SELECT A.ID AS COL1 FROM T_S_ACCOUNT A
-                                    LEFT JOIN T_S_ACRANKMAP B ON A.USERCODE = B.USERCODE
-                                    LEFT JOIN T_S_RANK C ON C.ID = B.RANKID
-                                    WHERE C.RANKTYPE = 2 AND A.USERCODE = '{htData["ACCOUNTCODE"]?.ToString()}'";
+                //if (!string.IsNullOrEmpty(htData["ACCOUNTCODE"]?.ToString()))
+                //{
+                //    string sql = $@"SELECT A.ID AS COL1 FROM T_S_ACCOUNT A
+                //                    LEFT JOIN T_S_ACRANKMAP B ON A.USERCODE = B.USERCODE
+                //                    LEFT JOIN T_S_RANK C ON C.ID = B.RANKID
+                //                    WHERE C.RANKTYPE = 2 AND A.USERCODE = '{htData["ACCOUNTCODE"]?.ToString()}'";
 
-                    string acid = DBUtil.GetSingleValue1(sql);
-                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " ACCOUNTID = " + acid;
-                }
+                //    string acid = DBUtil.GetSingleValue1(sql);
+                //    if (!string.IsNullOrEmpty(acid))
+                //        sWhere += (sWhere == "" ? "WHERE" : " AND") + " ACCOUNTID = " + acid;
+                //}
 
                 sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATUS = " + htData["STATUS"]?.ToString();
 
@@ -647,6 +648,62 @@ namespace Tectransit.Controllers
             {
                 string err = ex.Message.ToString();
                 return new { status = "99", msg = "修改失敗！" };
+            }
+        }
+
+        public dynamic DelTVShippingMData([FromBody]object form)
+        {
+            try
+            {
+                string logMsg = "";
+                var jsonData = JObject.FromObject(form);
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JValue temp = (JValue)arrData[i];
+
+                    AL.Add(temp);
+                }
+
+
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = new Hashtable();
+                        sData["SHIPPINGIDM"] = AL[i].ToString();
+                        sData["TRASFERNO"] = DBUtil.GetSingleValue1($@"SELECT TRASFERNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {sData["SHIPPINGIDM"]}");
+                        sData["ACCOUNTID"] = DBUtil.GetSingleValue1($@"SELECT ACCOUNTID AS COL1 FROM T_V_SHIPPING_M WHERE ID = {sData["SHIPPINGIDM"]}");
+                        sData["COMPANYNAME"] = DBUtil.GetSingleValue1($@"SELECT COMPANYNAME AS COL1 FROM T_S_ACCOUNT WHERE ID = {sData["ACCOUNTID"]}");
+
+                        //delete Declarant data
+                        DeleteTVData_All("T_V_DECLARANT", sData);
+
+                        //delete shipping_H & shipping_D data
+                        DeleteTVData_All("T_V_SHIPPING_D", sData);
+                        DeleteTVData_All("T_V_SHIPPING_H", sData);
+
+                        //delete shipping_M data
+                        DeleteTVData_All("T_V_SHIPPING_M", sData);
+
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[SHIPPINGIDM({sData["SHIPPINGIDM"]})=COMPANYNAME:{sData["COMPANYNAME"]?.ToString()}/TRASFERNO: {sData["TRASFERNO"]?.ToString()}]";
+                    }
+                }
+
+                //add user operation log
+                Hashtable logData = new Hashtable();
+                logData["_usercode"] = Request.Cookies["_usercode"];
+                logData["_username"] = Request.Cookies["_username"];
+                objComm.AddUserControlLog(logData, "/shippingcus", "廠商集運單管理-刪除", 3, logMsg);
+
+                return new { status = "0", msg = "刪除成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "刪除失敗！" };
             }
         }
         #endregion
@@ -1131,6 +1188,18 @@ namespace Tectransit.Controllers
                 query.Status = Convert.ToInt32(sData["STATUS"]);
                 _context.SaveChanges();
             }
+        }
+
+        //刪除主單(Master)/箱號(Header)/細項(Detail)/申報人資料(該集運單下所有)
+        private void DeleteTVData_All(string table, Hashtable sData)
+        {
+            string sql = "";
+            if (table == "T_V_SHIPPING_M")
+                sql = $@"DELETE FROM {table} WHERE ID = @SHIPPINGIDM";
+            else
+                sql = $@"DELETE FROM {table} WHERE SHIPPINGID_M = @SHIPPINGIDM";
+
+            DBUtil.EXECUTE(sql, sData);
         }
         #endregion
     }

@@ -27,9 +27,9 @@
               </select>
             </div>
             <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
-                <label for="strackno" class="mr-sm-2">集運單號</label>
-                <input type="text" id="sshippingno" formControlName="sshippingno" class="form-control">
-              </div>
+              <label for="strackno" class="mr-sm-2">集運單號</label>
+              <input type="text" id="sshippingno" formControlName="sshippingno" class="form-control">
+            </div>
             <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
               <label for="strackno" class="mr-sm-2">追蹤號碼</label>
               <input type="text" id="strackingno" formControlName="strackingno" class="form-control">
@@ -38,10 +38,12 @@
               <label for="strackno" class="mr-sm-2">快遞單號</label>
               <input type="text" id="strasferno" formControlName="strasferno" class="form-control">
             </div>
+            <!--
             <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
               <label for="sacccode" class="mr-sm-2">會員帳號</label>
               <input type="text" id="sacccode" formControlName="sacccode" class="form-control">
             </div>
+            -->
           </div>
         </div>
         <div class="card-footer">
@@ -61,32 +63,32 @@
       <div class="card-header-tab card-header">列表
         <ul class="nav">
           <li class="nav-item">
-            <a id="tab1" class="nav-link" [class.active]="status === 0"
-              (click)="tabSwitch($event.toElement.id)">未入庫</a>
+            <a id="tab1" class="nav-link" [class.active]="status === 0" (click)="tabSwitch($event.toElement.id)">未入庫</a>
           </li>
           <li class="nav-item">
-            <a id="tab2" class="nav-link" [class.active]="status === 1"
-              (click)="tabSwitch($event.toElement.id)">已入庫</a>
+            <a id="tab2" class="nav-link" [class.active]="status === 1" (click)="tabSwitch($event.toElement.id)">已入庫</a>
           </li>
           <li class="nav-item">
-            <a id="tab3" class="nav-link" [class.active]="status === 2"
-              (click)="tabSwitch($event.toElement.id)">待出貨</a>
+            <a id="tab3" class="nav-link" [class.active]="status === 2" (click)="tabSwitch($event.toElement.id)">待出貨</a>
           </li>
           <li class="nav-item">
-            <a id="tab4" class="nav-link" [class.active]="status === 3"
-              (click)="tabSwitch($event.toElement.id)">已出貨</a>
+            <a id="tab4" class="nav-link" [class.active]="status === 3" (click)="tabSwitch($event.toElement.id)">已出貨</a>
           </li>
           <li class="nav-item">
-            <a id="tab5" class="nav-link" [class.active]="status === 4"
-              (click)="tabSwitch($event.toElement.id)">已完成</a>
+            <a id="tab5" class="nav-link" [class.active]="status === 4" (click)="tabSwitch($event.toElement.id)">已完成</a>
           </li>
         </ul>
         <div class="btn-actions-pane-right">
           <div class="btn-group-sm btn-group" role="group">
-            <button *ngIf="status === 0" class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="chgStatus(1)">已入庫</button>
-            <button *ngIf="status === 1" class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="chgStatus(2)">待出貨</button>
-            <button *ngIf="status === 2" class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="chgStatus(3)">已出貨</button>
-            <button *ngIf="status === 3" class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="chgStatus(4)">已完成</button>
+            <button *ngIf="status === 0" class="mb-2 mr-2 btn-hover-shine btn btn-info"
+              (click)="chgStatus(1)">已入庫</button>
+            <button *ngIf="status === 1" class="mb-2 mr-2 btn-hover-shine btn btn-info"
+              (click)="chgStatus(2)">待出貨</button>
+            <button *ngIf="status === 2" class="mb-2 mr-2 btn-hover-shine btn btn-info"
+              (click)="chgStatus(3)">已出貨</button>
+            <button *ngIf="status === 3" class="mb-2 mr-2 btn-hover-shine btn btn-info"
+              (click)="chgStatus(4)">已完成</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doDelete()">刪除</button>
           </div>
         </div>
       </div>

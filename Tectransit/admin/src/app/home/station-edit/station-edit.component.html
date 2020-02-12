@@ -21,7 +21,7 @@
           <input type="hidden" id="stationid" formControlName="stationid">
           <div class="form-group">
             <label for="stationcode">代碼</label>
-            <input type="text" id="stationcode" class="form-control middle" style="text-transform:uppercase" [ngClass]="{'is-invalid': isErr}"
+            <input type="text" id="stationcode" class="form-control middle" style="text-transform:uppercase" maxlength="5" [ngClass]="{'is-invalid': isErr}"
               formControlName="stationcode">
           </div>
           <div class="form-group">
