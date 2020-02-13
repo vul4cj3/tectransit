@@ -20,7 +20,7 @@ export class ShippingcusListComponent implements OnInit {
   private catedataUrl = 'GetStationData';
   private delUrl = 'DelShippingCusData';
 
-  tableTitle = ['#', '集運單號', '追蹤號碼', '狀態', '建單時間', '發貨時間', '細項'];
+  tableTitle = ['#', '集運單號', '追蹤號碼', '快遞單號', '狀態', '建單時間', '發貨時間', '細項'];
 
   data: ShippingMCusInfo[];
   rowTotal = 0;
