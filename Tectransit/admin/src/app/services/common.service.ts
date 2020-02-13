@@ -257,6 +257,13 @@ export class CommonService {
       }));
   }
 
+  editShippingData(form, pageUrl: string) {
+    return this.http.post<any>(pageUrl, form)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
   editEnableData(arraydata, pageUrl: string) {
     const postData = { formdata: arraydata };
     return this.http.post<any>(pageUrl, postData)

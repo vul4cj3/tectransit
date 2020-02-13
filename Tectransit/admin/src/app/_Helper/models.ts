@@ -324,7 +324,7 @@ export interface ShippingMCusInfo {
   paydate: string;
   exportdate: string;
   credate: string;
-  createby: string;
+  creby: string;
   upddate: string;
   updby: string;
 }

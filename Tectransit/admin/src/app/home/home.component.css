@@ -87,6 +87,54 @@ body.jw-modal-open {
   padding-left: 15%;
 }
 
+.header-row{
+  display: flex;
+  margin-right: 25px;
+  padding-top: 20px;
+}
+
+.header-row span{
+  margin-right: 10px;
+  padding-top: 1px;
+  font-weight: bold;
+  font-size: 0.88rem;
+  color: #212529;
+}
+
+.header-row p{
+  font-weight: normal;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.7);
+}
+
+.position-relative.form-inline span{
+  margin-right: 10px;
+  padding-top: 1px;
+  font-weight: bold;
+  font-size: 0.88rem;
+  color: #212529;
+}
+
+.position-relative.form-inline p{
+  font-weight: normal;
+  padding-top: 15px;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.7);
+}
+
+.position-relative.form-inline label{
+  margin-right: 10px;
+  padding-top: 1px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #212529;
+}
+
+.box-close{
+  position: absolute;
+  right: 25px;
+}
+
+.text-requied {
+  color: #ff0844 !important; }
 
 .border-primary {
   border-color: #033C73; }
@@ -241,6 +289,12 @@ body.jw-modal-open {
 
 .symbol-edit {
   font-size: 25px;
+
+}
+
+.symbol-icon {
+  font-size: 25px;
+  padding: 5px;
 
 }
 
@@ -2046,7 +2100,7 @@ textarea.form-control {
   border-radius: 0.25rem; }
 
 .btn-two {
-padding-left:2px;
+  padding-left: 2px;
 }
 
 .was-validated .form-control:valid, .form-control.is-valid {
@@ -9030,6 +9084,10 @@ button,
   align-items: center;
   align-content: center; }
 
+.center-elem2 {
+  margin: auto;
+}
+
 .flex2 {
   flex: 2; }
 
@@ -9180,8 +9238,8 @@ button,
   background: transparent !important; }
 
 .copyright {
-  position: absolute;
-  padding-left: 23%;
+  display: block;
+  margin: auto;
 }
 
 /*!
@@ -9362,6 +9420,10 @@ body {
 
 .form-control.large {
   width: 50%;
+}
+
+.form-control.largepx {
+  width: 500px;
 }
 
 .dropdown-toggle::after {

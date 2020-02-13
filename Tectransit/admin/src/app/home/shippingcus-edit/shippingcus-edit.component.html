@@ -1,1 +1,373 @@
-<p>shippingcus-edit works!</p>
+<!--Top Section-->
+<div>
+  <div>
+    <div class="app-page-title">
+      <div class="page-title-wrapper">
+        <div class="page-title-heading">
+          <div class="page-title-icon"><i class="pe-7s-file"></i></div>
+          <div>廠商集運單管理 - 編輯</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Info Section-->
+<div>
+  <div class="main-card mb-3 card">
+    <div class="card-body">
+      <h5 class="card-title"></h5>
+      <form [formGroup]="dataForm">
+        <input type="hidden" id="id" formControlName="id">
+        <div class="form-row" *ngIf="masterData !== undefined">
+          <div class="col-md-4">
+            <div class="position-relative form-inline">
+              <span>集運單號</span>
+              <p>{{masterData.shippingno}}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline">
+              <span>追蹤號碼</span>
+              <p>{{masterData.trackingno}}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline">
+              <span>快遞單號</span>
+              <p>{{masterData.trasferno}}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline">
+              <span>所屬集運站</span>
+              <p>{{masterData.stationname}}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline">
+              <span>廠商</span>
+              <p>{{masterData.companyname}}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline">
+              <span>會員帳號</span>
+              <p>{{masterData.accountcode}}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline" *ngIf="!isModify">
+              <span>總件數</span>
+              <p>{{masterData.total}}</p>
+            </div>
+            <div class="position-relative form-inline" *ngIf="isModify">
+              <label class="text-requied" for="total">總件數</label>
+              <input type="text" id="total" class="form-control" formControlName="total">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline" *ngIf="masterData.status === '4'">
+              <span>MAWB</span>
+              <p>{{masterData.mawbno}}</p>
+            </div>
+            <div class="position-relative form-inline" *ngIf="masterData.status !== '4'">
+              <label for="mawbno">MAWB</label>
+              <input type="text" id="mawbno" class="form-control" formControlName="mawbno">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline">
+              <label for="status">狀態</label>
+              <select id="status" class="form-control" formControlName="status">
+                <option value="0" *ngIf="cusStatus === '0'">未入庫</option>
+                <option value="1" *ngIf="cusStatus === '0' || cusStatus === '1'">已入庫</option>
+                <option value="2" *ngIf="cusStatus === '1' || cusStatus === '2'">待出貨</option>
+                <option value="3" *ngIf="cusStatus === '2' || cusStatus === '3'">已出貨</option>
+                <option value="4" *ngIf="cusStatus === '3' || cusStatus === '4'">已完成</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline" *ngIf="!isModify">
+              <label for="ismultreceiver">複數收件人</label>
+              <img *ngIf="ismult"
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAAUklEQVQ4jWNgGMqAmxLNDgwMDPfJNcSGgYHhJQMDg9Pg0kzILw5QzQ64NN9jYGCwJ0czsvNeYHEeSX5GN4SsALOHaiphIMLZxLqELEBRMqUvAAD0oxNAULourAAAAABJRU5ErkJggg==">
+            </div>
+            <div class="position-relative form-inline" *ngIf="isModify">
+              <label for="ismultreceiver">複數收件人</label>
+              <input type="checkbox" id="ismultreceiver" [checked]="ismult" (click)="chgRec($event.toElement.checked)">
+            </div>
+            <input type="hidden" formControlName="ismultreceiver">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-4">
+            <div class="position-relative form-inline" *ngIf="!ismult">
+              <label for="receiver">收件人</label>
+              <input type="text" id="receiver" class="form-control" formControlName="receiver">
+            </div>
+          </div>
+          <div class="position-relative form-inline" *ngIf="!ismult">
+            <label for="receiveraddr">收件人地址</label>
+            <input type="text" id="receiveraddr" class="form-control" style="width:500px"
+              formControlName="receiveraddr">
+          </div>
+        </div>
+        <!-- shipping header&detail start -->
+        <div class="card-header" *ngIf="masterData !== undefined">
+          <div class="btn-actions-pane-right" *ngIf="masterData.status !== '4'">
+            <div class="btn-group-sm btn-group" role="group">
+              <button *ngIf="!isModify" class="mb-2 mr-2 btn-transition btn btn-outline-info"
+                (click)="chgDetail('m')">修改細項</button>
+              <button *ngIf="isModify" class="mb-2 mr-2 btn-transition btn btn-outline-info"
+                (click)="chgDetail('c')">取消</button>
+            </div>
+          </div>
+        </div>
+        <ng-container *ngIf="!isModify; else modifyboxform">
+          <div class="main-card mb-3 card">
+            <div *ngFor="let item of headerData">
+              <div class="card-header">
+                <div class="header-row">
+                  <span>箱號</span>
+                  <p>{{item.boxno}}</p>
+                </div>
+                <div class="header-row" *ngIf="ismult">
+                  <span>收件人</span>
+                  <p>{{item.receiver}}</p>
+                </div>
+                <div class="header-row" *ngIf="ismult">
+                  <span>收件人地址</span>
+                  <p>{{item.receiveraddr}}</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <table class="mb-0 table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>商品名稱</th>
+                      <th>數量</th>
+                      <th>單價</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let subitem of detailData">
+                      <tr *ngIf="subitem.shippingiD_H === item.id">
+                        <td>{{subitem.product}}</td>
+                        <td>{{subitem.quantity}}</td>
+                        <td>{{subitem.unitprice}}</td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #modifyboxform>
+          <div class="main-card mb-3 card" formArrayName="boxform">
+            <ng-container *ngFor="let box of dataForm.get('boxform')['controls']; let ibox=index">
+              <div formGroupName="{{ibox}}">
+                <div class="card-header">
+                  <input type="hidden" class="form-control" formControlName="id">
+                  <div class="col-md-4">
+                    <div class="position-relative form-inline">
+                      <label class="text-requied" for="boxno{{ibox}}">箱號</label>
+                      <input type="text" id="boxno{{ibox}}" class="form-control" formControlName="boxno">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="position-relative form-inline" *ngIf="ismult">
+                      <label for="receiver{{ibox}}">收件人</label>
+                      <input type="text" id="receiver{{ibox}}" class="form-control" formControlName="receiver">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="position-relative form-inline" *ngIf="ismult">
+                      <label for="receiveraddr{{ibox}}">收件人地址</label>
+                      <input type="text" id="receiveraddr{{ibox}}" class="form-control" formControlName="receiveraddr">
+                    </div>
+                  </div>
+                  <a class="box-close" (click)="removebox(ibox)">
+                    <span class="symbol-icon">
+                      <i class="pe-7s-close-circle"></i>
+                    </span>
+                  </a>
+                </div>
+                <div class="card-body">
+                  <table class="mb-0 table table-bordered">
+                    <thead>
+                      <tr>
+                        <th class="text-requied">商品名稱</th>
+                        <th class="text-requied">數量</th>
+                        <th class="text-requied">單價</th>
+                        <th>刪除</th>
+                      </tr>
+                    </thead>
+                    <tbody formArrayName="productform">
+                      <ng-container *ngFor="let prd of box.get('productform')['controls']; let iprd=index">
+                        <tr formGroupName="{{iprd}}">
+                          <input type="hidden" formControlName="id">
+                          <td>
+                            <input type="text" class="form-control" formControlName="product">
+                          </td>
+                          <td><input type="text" class="form-control" formControlName="quantity"></td>
+                          <td><input type="text" class="form-control" formControlName="unitprice"></td>
+                          <td>
+                            <a (click)="removeprd(ibox, iprd)">
+                              <span class="symbol-icon">
+                                <i class="pe-7s-close"></i>
+                              </span>
+                            </a>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                  <a (click)="addprd(ibox)">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 172 172"
+                      style=" fill:#000000;">
+                      <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt"
+                        stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                        font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                        style="mix-blend-mode: normal">
+                        <path d="M0,172v-172h172v172z" fill="none"></path>
+                        <g fill="#666666">
+                          <path
+                            d="M78.83333,21.5v57.33333h-57.33333v14.33333h57.33333v57.33333h14.33333v-57.33333h57.33333v-14.33333h-57.33333v-57.33333z">
+                          </path>
+                        </g>
+                      </g>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          <a (click)="addbox()">
+            <span class="symbol-icon">
+              <i class="pe-7s-plus"></i>
+            </span>
+          </a>
+        </ng-template>
+        <!-- shipping header&detail end -->
+        <!-- shipping declarant start -->
+        <div class="card-header">
+          <div class="header-row">
+            <span>報關申報人資料</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <ng-container *ngIf="!isModify; else modifydecform">
+            <table class="mb-0 table table-striped">
+              <thead>
+                <tr>
+                  <th>申報人</th>
+                  <th>身份證字號</th>
+                  <th>連絡電話</th>
+                  <th>手機</th>
+                  <th>地址</th>
+                  <th>身分證檔案</th>
+                  <th>委任書</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let decitem of declarData">
+                  <td>{{decitem.name}}</td>
+                  <td>{{decitem.taxid}}</td>
+                  <td>{{decitem.phone}}</td>
+                  <td>{{decitem.mobile}}</td>
+                  <td>{{decitem.addr}}</td>
+                  <td>
+                    <a *ngIf="decitem.idphotof !== ''" [href]="'/' + decitem.idphotof" target="_blank">
+                      <span class="symbol-icon">
+                        <i class="pe-7s-photo"></i>
+                      </span>
+                    </a>
+                    <a *ngIf="decitem.idphotob !== ''" [href]="'/' + decitem.idphotob" target="_blank">
+                      <span class="symbol-icon">
+                        <i class="pe-7s-photo"></i>
+                      </span>
+                    </a>
+                  </td>
+                  <td>
+                    <a *ngIf="decitem.appointment !== ''" [href]="'/' + decitem.appointment" target="_blank">
+                      <span class="symbol-icon">
+                        <i class="pe-7s-cloud-download"></i>
+                      </span>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </ng-container>
+          <ng-template #modifydecform>
+            <table class="mb-0 table table-striped">
+              <thead>
+                <tr>
+                  <th class="text-requied">申報人</th>
+                  <th class="text-requied">身份證字號</th>
+                  <th>連絡電話</th>
+                  <th>手機</th>
+                  <th>地址</th>
+                  <th>刪除</th>
+                </tr>
+              </thead>
+              <tbody formArrayName="decform">
+                <tr *ngFor="let dec of dataForm.get('decform')['controls']; let idec=index" formGroupName="{{idec}}">
+                  <input type="hidden" formControlName="id">
+                  <td><input type="text" class="form-control" formControlName="name"></td>
+                  <td><input type="text" class="form-control" formControlName="taxid"></td>
+                  <td><input type="text" class="form-control" formControlName="phone"></td>
+                  <td><input type="text" class="form-control" formControlName="mobile"></td>
+                  <td style="width:500px"><input type="text" class="form-control largepx" formControlName="addr"></td>
+                  <input type="hidden" formControlName="idphotof">
+                  <input type="hidden" formControlName="idphotob">
+                  <input type="hidden" formControlName="appointment">
+                  <td>
+                    <a (click)="removedec(idec)">
+                      <span class="symbol-icon">
+                        <i class="pe-7s-close"></i>
+                      </span>
+                    </a>
+                  </td>
+                </tr>
+                <a (click)="adddec()">
+                  <span class="symbol-icon">
+                    <i class="pe-7s-plus"></i>
+                  </span>
+                </a>
+              </tbody>
+            </table>
+          </ng-template>
+        </div>
+        <hr>
+        <!-- shipping declarant end -->
+        <div class="form-inline" *ngIf="dataForm.controls.id.value !== 0">
+          <div class="header-row">
+            <span>建立時間</span>
+            <p>{{masterData.credate}}</p>
+          </div>
+          <div class="header-row">
+            <span>建立者</span>
+            <p>{{masterData.creby}}</p>
+          </div>
+          <div class="header-row">
+            <span>更新時間</span>
+            <p>{{masterData.upddate}}</p>
+          </div>
+          <div class="header-row">
+            <span>更新者</span>
+            <p>{{masterData.updby}}</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="btn-two center-elem2" *ngIf="masterData !== undefined">
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" *ngIf="masterData.status !== '4'" (click)="saveData(dataForm.value)">保存</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/shippingcus">回列表</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

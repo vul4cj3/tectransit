@@ -53,6 +53,11 @@ export class ShippingcusListComponent implements OnInit {
   }
 
   resetData() {
+    if (sessionStorage.getItem('cusstatus') === null) {
+      sessionStorage.removeItem('cusstatus');
+      sessionStorage.setItem('cusstatus', this.status.toString());
+    } else { this.status = parseInt(sessionStorage.getItem('cusstatus'), 0); }
+
     // built form controls and default form value
     this.srhForm = this.formBuilder.group({
       sstationcode: 'ALL',
@@ -60,8 +65,9 @@ export class ShippingcusListComponent implements OnInit {
       strackingno: '',
       strasferno: '',
       sacccode: '',
-      sstatus: this.status
+      sstatus: parseInt(sessionStorage.getItem('cusstatus'), 0)
     });
+
   }
 
   getStation() {
@@ -147,6 +153,8 @@ export class ShippingcusListComponent implements OnInit {
       this.status = 4;
       this.srhForm.controls.sstatus.setValue('4');
     } else { }
+
+    sessionStorage.setItem('cusstatus', this.status.toString());
 
     this.crePagination(this.currentpage);
   }

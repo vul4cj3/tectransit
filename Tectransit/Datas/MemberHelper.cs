@@ -368,7 +368,7 @@ namespace Tectransit.Datas
                     m.TRASFERNO = DT.Rows[i]["TRASFERNO"]?.ToString();
                     m.TOTAL = DT.Rows[i]["TOTAL"]?.ToString();
                     m.RECEIVER = DT.Rows[i]["RECEIVER"]?.ToString();
-                    m.RECEIVER_ADDR = DT.Rows[i]["RECEIVERADDR"]?.ToString();
+                    m.RECEIVERADDR = DT.Rows[i]["RECEIVERADDR"]?.ToString();
                     m.STATUS = DT.Rows[i]["STATUS"]?.ToString();
                     m.PAYDATE = DT.Rows[i]["PAYDATE"]?.ToString();
                     m.EXPORTDATE = DT.Rows[i]["EXPORTDATE"]?.ToString();
@@ -411,7 +411,7 @@ namespace Tectransit.Datas
                 m.TOTAL = DT.Rows[0]["TOTAL"]?.ToString();
                 m.ISMULTRECEIVER = Convert.ToBoolean(DT.Rows[0]["ISMULTRECEIVER"]) == true ? "Y" : "N";
                 m.RECEIVER = DT.Rows[0]["RECEIVER"]?.ToString();
-                m.RECEIVER_ADDR = DT.Rows[0]["RECEIVERADDR"]?.ToString();
+                m.RECEIVERADDR = DT.Rows[0]["RECEIVERADDR"]?.ToString();
                 m.STATUS = DT.Rows[0]["STATUS"]?.ToString();
                 m.PAYDATE = DT.Rows[0]["PAYDATE"]?.ToString();
                 m.EXPORTDATE = DT.Rows[0]["EXPORTDATE"]?.ToString();

@@ -895,9 +895,9 @@ namespace Tectransit.Controllers
                 mData["STATIONCODE"] = arrData.Value<string>("stationcode");
                 mData["TRASFERNO"] = arrData.Value<string>("trasferno");
                 mData["TOTAL"] = arrData.Value<string>("total");
-                mData["ISMULTRECEIVER"] = arrData.Value<string>("ismultreceiver");
+                mData["ISMULTRECEIVER"] = arrData.Value<string>("ismultreceiver").ToLower() == "true" ? "Y" : "N";
 
-                if (string.IsNullOrEmpty(mData["ISMULTRECEIVER"]?.ToString())) {
+                if (mData["ISMULTRECEIVER"]?.ToString() == "N") {
                     if (arrData.Value<string>("receiver") != null)
                         mData["RECEIVER"] = arrData.Value<string>("receiver");
                     if (arrData.Value<string>("receiveraddr") != null)

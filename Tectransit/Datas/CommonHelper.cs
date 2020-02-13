@@ -403,6 +403,12 @@ namespace Tectransit.Datas
 
         }
 
+        public void DeleteSingleTableData(string table, string column, string value)
+        {
+            string sql = $@"DELETE FROM {table} WHERE {column} = {value}";
+            DBUtil.EXECUTE(sql);
+        }
+
         public string GetRandomString()
         {
             string allowedChars = "ABCDEFGHJKLMNOPQRSTUVWXYZ0123456789!@$?_-";
