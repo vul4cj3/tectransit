@@ -7,6 +7,7 @@ import { RegmemComponent } from './regmem/regmem.component';
 import { RegcusComponent } from './regcus/regcus.component';
 import { RegconfirmComponent } from './regconfirm/regconfirm.component';
 import { RegfinalComponent } from './regfinal/regfinal.component';
+import { ForgetpwComponent } from './forgetpw/forgetpw.component';
 
 
 const routes: Routes = [
@@ -20,6 +21,7 @@ const routes: Routes = [
   {path: 'regconfirm/:id', component: RegconfirmComponent},
   {path: 'regfinal', component: RegfinalComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'forgetpw', component: ForgetpwComponent},
 
   // firsttime and otherwise redirect to HomeComponent
   {path: '**', component: HomeComponent}

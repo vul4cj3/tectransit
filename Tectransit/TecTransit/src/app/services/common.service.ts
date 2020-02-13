@@ -16,6 +16,7 @@ export class CommonService {
   private fileUploadUrl = 'UploadFileData_F';
   private chkMemtypeUrl = 'GetMemtype';
   private getStationUrl = 'GetFirstStation';
+  private getnewpwUrl = 'GetNewPassword';
 
   /* pagination variables*/
   rowTotal = 0; // data count
@@ -229,6 +230,14 @@ export class CommonService {
   }
 
   /* other function */
+  GetNewPw(form) {
+    const postData = { formdata: form };
+    return this.http.post<any>(this.baseUrl + this.getnewpwUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
   chkMemtype() {
     return this.http.get<any>(this.baseUrl + this.chkMemtypeUrl)
       .pipe(map(data => {

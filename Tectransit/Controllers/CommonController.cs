@@ -106,6 +106,56 @@ namespace Tectransit.Controllers
             return new { status = "0", data = IsCusMem };
         }
 
+        [HttpPost]
+        public dynamic GetNewPassword([FromBody]object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+                Hashtable htData = new Hashtable();
+                foreach (var t in arrData)
+                    htData[t.Key.ToUpper()] = t.Value?.ToString().Replace("'", "").Replace("=", "");
+
+                string sql = $@"SELECT USERCODE AS COL1 
+                            FROM T_S_ACCOUNT 
+                            WHERE (TAXID = '{htData["IDCODE"]}' OR RATEID = '{htData["IDCODE"]}') AND EMAIL = '{htData["EMAIL"]}' AND ISENABLE = 'true'";
+
+                string IsCusMem = DBUtil.GetSingleValue1(sql);
+
+                //更新密碼
+                string newPW = objCommon.GetRandomStringNumber(10);
+                string MD5PW = objCommon.GetMd5Hash(newPW);
+                sql = $@"UPDATE T_S_ACCOUNT SET USERPASSWORD = '{MD5PW}' WHERE USERCODE = '{IsCusMem}'";
+                DBUtil.EXECUTE(sql);
+
+                if (!string.IsNullOrEmpty(IsCusMem))
+                {
+                    string F_User = "TEC Website System<ebs.sys@t3ex-group.com>";
+                    string T_User = htData["EMAIL"]?.ToString();
+                    string subject = "TEC轉運平台 - 重設會員密碼";
+                    string body = "";
+
+                    body += $"<p>帳號：{IsCusMem}</p><br/>";
+                    body += $"<p>新密碼：{newPW}</p><br/>";
+                    body += "<p>請使用新密碼至會員管理頁面自行修改密碼，謝謝</p>";
+
+                    string C_User = "siawu@t3ex-group.com";
+
+                    objCommon.SendMail(F_User, T_User, subject, body, C_User);
+
+                    return new { status = "0", msg = "已寄出信件！" };
+                }
+
+                return new { status = "99", msg = "會員不存在！" };
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+                return new { status = "99", msg = "送出失敗！" };
+            }
+        }
+
         [HttpPost, DisableRequestSizeLimit]
         public dynamic UploadImgData()
         {
