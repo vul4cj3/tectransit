@@ -20,6 +20,7 @@ import { RegconfirmComponent } from './regconfirm/regconfirm.component';
 import { RegfinalComponent } from './regfinal/regfinal.component';
 import { PaginationComponent } from './pagination/pagination.component';
 import { ShippstatusPipe } from './_Helper/shippstatus.pipe';
+import { ForgetpwComponent } from './forgetpw/forgetpw.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { ShippstatusPipe } from './_Helper/shippstatus.pipe';
     RegconfirmComponent,
     RegfinalComponent,
     PaginationComponent,
-    ShippstatusPipe
+    ShippstatusPipe,
+    ForgetpwComponent
   ],
   imports: [
     BrowserModule,
