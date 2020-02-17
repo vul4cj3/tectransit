@@ -1,30 +1,33 @@
-<div class="container-login">
-    <div class="login-div">
-      <form class="text-center border border-light p-5" [formGroup]="dataForm">
-
-        <p class="h4 fcom-s">忘記密碼</p>
-        <p>請輸入註冊時的身分證字號或公司統一編號與Email，系統將發送密碼到您的信箱！</p>
-
-        <!-- Account -->
-        <div class="wrap-login">
-          <label for="idcode">身分證字號或統一編號</label>
-          <input type="text" id="idcode" class="form-control mb-4 space_" (keyup.enter)="onSubmit()"
-            [ngClass]="{'is-invalid': isErr}" formControlName="idcode">
+<div class="div-contain">
+  <div class="dataform">
+    <form class="form-contain" [formGroup]="dataForm">
+      <div class="header-title">
+        <span class="mem-icon"><i class="far fa-question-circle"></i>忘記密碼</span>
+      </div>
+      <!-- Account -->
+      <div class="form-control">
+        <div class="title"><label for="idcode">身分證字號或統一編號</label></div>
+        <div class="contant">
+          <input type="text" id="idcode" (keyup.enter)="onSubmit()" [ngClass]="{'is-invalid': isErr}"
+            formControlName="idcode">
+          <span class="outline"></span>
         </div>
-
-        <!-- Password -->
-        <div class="wrap-login">
-            <label for="email">E-Mail</label>
-          <input type="text" id="email" class="form-control mb-4 space_" (keyup.enter)="onSubmit()"
-            [ngClass]="{'is-invalid': isErr}" formControlName="email">
+      </div>
+      <!-- Password -->
+      <div class="form-control">
+        <div class="title"><label for="email">E-Mail</label></div>
+        <div class="contant">
+          <input type="text" id="email" (keyup.enter)="onSubmit()" [ngClass]="{'is-invalid': isErr}"
+            formControlName="email">
+          <span class="outline"></span>
         </div>
-
-        <!-- Sign in button -->
-        <button mdbBtn color="info" block="true" class="my-4" type="button" (click)="onSubmit(this.dataForm.value)">送出</button>
-        <button mdbBtn color="info" block="true" class="my-4" type="button" (click)="Clear()">清除</button>
-
-
-      </form>
-    </div>
-
+      </div>
+      <p>請輸入註冊時的身分證字號或公司統一編號與Email，系統將發送密碼到您的信箱！</p>
+      <!-- Sign in button -->
+      <div class="btn-two">
+        <a (click)="onSubmit(this.dataForm.value)">送出</a>
+        <a (click)="Clear()">清除</a>
+      </div>
+    </form>
   </div>
+</div>

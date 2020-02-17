@@ -18,6 +18,9 @@ export class RegcusComponent implements OnInit {
 
   saveUrl = '/api/Member/SaveRegCompanyData';
 
+  isShow = false;
+  isShow2 = false;
+
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
@@ -26,7 +29,6 @@ export class RegcusComponent implements OnInit {
 
   ngOnInit() {
     this.resetForm();
-    this.GetBirth();
   }
 
   resetForm() {
@@ -43,21 +45,23 @@ export class RegcusComponent implements OnInit {
     });
   }
 
-  GetBirth() {
-    let k = 0;
-    for (let i = 1; i < 91; i++) {
-      this.year[k] = this.tyear - i;
-      k++;
+  showPW(id) {
+    const controls = document.getElementById(id) as HTMLInputElement;
+    if (controls.type === 'password') {
+      if (id === 'userpassword') {
+        this.isShow = true;
+      } else {
+        this.isShow2 = true;
+      }
+      controls.type = 'text';
+    } else {
+      if (id === 'userpassword') {
+        this.isShow = false;
+      } else {
+        this.isShow2 = false;
+      }
+      controls.type = 'password';
     }
-
-    for (let i = 0; i < 12; i++) {
-      this.month[i] = i + 1;
-    }
-
-    for (let i = 0; i < 31; i++) {
-      this.days[i] = i + 1;
-    }
-
   }
 
   SaveData(form) {

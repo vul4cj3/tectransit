@@ -13,6 +13,9 @@ export class RegmemComponent implements OnInit {
 
   saveUrl = '/api/Member/SaveRegData';
 
+  isShow = false;
+  isShow2 = false;
+
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
@@ -34,6 +37,25 @@ export class RegmemComponent implements OnInit {
       phone: ['', Validators.required],
       mobile: ['', Validators.required]
     });
+  }
+
+  showPW(id) {
+    const controls = document.getElementById(id) as HTMLInputElement;
+    if (controls.type === 'password') {
+      if (id === 'userpassword') {
+        this.isShow = true;
+      } else {
+        this.isShow2 = true;
+      }
+      controls.type = 'text';
+    } else {
+      if (id === 'userpassword') {
+        this.isShow = false;
+      } else {
+        this.isShow2 = false;
+      }
+      controls.type = 'password';
+    }
   }
 
   SaveData(form) {

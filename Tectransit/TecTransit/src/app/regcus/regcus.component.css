@@ -87,6 +87,12 @@ p {
   background-color: rgb(38, 136, 98);
 }
 
+.mem-icon {
+  position: absolute;
+  right: -25px;
+  cursor: pointer;
+}
+
 
 
 

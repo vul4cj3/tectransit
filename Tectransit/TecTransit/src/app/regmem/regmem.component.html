@@ -51,6 +51,14 @@
           <div class="content">
             <input type="password" id="userpassword" formControlName="userpassword">
             <span class="outline"></span>
+            <span class="mem-icon" (click)="showPW('userpassword')">
+              <ng-container *ngIf="!isShow; else vision">
+                <i class="fas fa-eye-slash"></i>
+              </ng-container>
+              <ng-template #vision>
+                <i class="fas fa-eye"></i>
+              </ng-template>
+            </span>
           </div>
         </div>
         <p>6~16個字，必須英文+數字組合方式的密碼</p>
@@ -61,6 +69,14 @@
           <div class="content">
             <input type="password" id="confirmpw">
             <span class="outline"></span>
+            <span class="mem-icon" (click)="showPW('confirmpw')">
+              <ng-container *ngIf="!isShow2; else vision">
+                <i class="fas fa-eye-slash"></i>
+              </ng-container>
+              <ng-template #vision>
+                <i class="fas fa-eye"></i>
+              </ng-template>
+            </span>
           </div>
         </div>
         <div class="form-control">

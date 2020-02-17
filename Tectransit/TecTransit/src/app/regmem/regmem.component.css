@@ -90,3 +90,9 @@ p {
 .warn{
   color: #e21919;
 }
+
+.mem-icon {
+  position: absolute;
+  right: -25px;
+  cursor: pointer;
+}
