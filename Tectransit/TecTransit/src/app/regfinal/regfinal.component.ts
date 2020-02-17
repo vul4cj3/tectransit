@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-regfinal',
   templateUrl: './regfinal.component.html',
-  styleUrls: ['./regfinal.component.css']
+  styleUrls: ['../register/register.component.css', './regfinal.component.css']
 })
 export class RegfinalComponent implements OnInit {
 

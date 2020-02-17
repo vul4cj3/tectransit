@@ -1,61 +1,126 @@
-<div class="contain-nav">
-  <div class="w-100">
-    <!--LOGO section-->
-    <div class="nav_col">
-      <div class="app-header__logo">
-        <div class="logo-src"></div>
-      </div>
-    </div>
-    <!--Nav section-->
-    <div class="nav_col">
-      <div class="navlist">
-        <!--單一單元-->
-        <ul class="nav">
-          <li><a routerLink="/home">首頁</a></li>
-          <li>
-            <a href="#">中國集運</a>
-            <ul class="subnav">
-              <li class="subitem"><a routerLink="/jp">上海集運</a></li>
-              <li class="subitem"><a routerLink="/jp">北京集運</a></li>
-              <li class="subitem"><a routerLink="/jp">廣州集運</a></li>
-            </ul>
-          </li>
-          <li>
-            <a href="#">日本集運</a>
-            <ul class="subnav">
-              <li class="subitem"><a routerLink="/jp">東京集運</a></li>
-              <li class="subitem"><a routerLink="/jp">大阪集運</a></li>
-              <li class="subitem"><a routerLink="/jp">九州集運</a></li>
-            </ul>
-          </li>
-          <li>
-            <a href="#">韓國集運</a>
-            <ul class="subnav">
-              <li class="subitem"><a routerLink="/jp">首爾集運</a></li>
-              <li class="subitem"><a routerLink="/jp">釜山集運</a></li>
-            </ul>
-          </li>
-          <ng-container *ngIf="!ismemLogin;else memProfile">
-            <li><a routerLink="/login">登入</a></li>
-            <li><a routerLink="/register">註冊</a></li>
+<!--LOGO section-->
+<h1 class="logo">
+  <a href="/home"></a>
+</h1>
+<!--Nav section-->
+<div class="navlist">
+  <nav>
+    <ul>
+      <li *ngFor="let item of data">
+        <a [routerLink]="item.menuurl" (mouseover)="chgSubnav($event)">{{item.menuname}}</a>
+        <ul class="subnav">
+          <ng-container *ngFor="let subitem of subdata">
+            <li class="subitem" *ngIf="subitem.parentcode===item.menucode"><a
+                [routerLink]="subitem.menuurl">{{subitem.menuname}}</a></li>
           </ng-container>
-          <ng-template #memProfile>
-            <ng-container *ngIf="!ismemcus;else memcusProfile">
-              <li><a routerLink="/member/profile">會員管理</a></li>
-              <li><a routerLink="/member/declarant">申報人管理</a></li>
-              <li><a routerLink="/member/station">集運站</a></li>
-              <li><a routerLink="/member/entrust">委託集運</a></li>
-              <li><a routerLink="/member/shipping/t1/0">集運單管理</a></li>
-            </ng-container>
-            <ng-template #memcusProfile>
-              <li><a routerLink="/member/profilecus">會員管理</a></li>
-              <li><a routerLink="/member/entrustcus">委託集運</a></li>
-              <li><a routerLink="/member/shippingcus/t1/0">集運單管理</a></li>
-            </ng-template>
-            <li><a href="#" (click)="doLogout()">登出</a></li>
-          </ng-template>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</div>
+<!-- member start -->
+<ng-container *ngIf="!ismemLogin;else memProfile">
+  <div class="loginNav">
+    <a class="non" routerLink="/register">註冊</a>
+    <a routerLink="/login">登入</a>
+  </div>
+</ng-container>
+<ng-template #memProfile>
+  <ng-container *ngIf="!ismemcus;else memcusProfile">
+    <div class="memNav">
+      <a class="btn-entrust" routerLink="/member/entrust">委託集運</a>
+      <div class="btn-profile" (mouseover)="chgProfilelist($event)">
+        <img class="rounded-circle" src="/res/assets/util/no-image.jpg">
+        <img class="icon-arrow"
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA0CAYAAADFeBvrAAAABmJLR0QA/wD/AP+gvaeTAAAEMUlEQVRoge2YTYgbZRjHf08qheImOewEzExy3WTFHiRZpboXL1WwLQpWxIvWpUhtXT+q+FFRQakWRdy6a12xC7aeelKxiB+H4sEqnbQFbXeiBxcymShMDp3Ui7B5PexmN91N0jebRDzM75R555n3+f8m7zsZAiEhISEhISEhISH/E6TVYOrm3O3UZVoJN0bqvFgq2l/+18Fakc7kdynhCHCViDrgXi78vLZmnZCZyd8ZEb4GostDiwo1UXYKnw44b0fSo/mHlOIkcMPy0N/ADtexzzTXbWo+aCEDEBFkV3zYKgVV7+IgQ7cjlc09DHKCVRmAzcDumGH+GPjeQmNwRcjK3rYtIuobrpVpIAg7Y4ZVCXzv/KCCtyKVHdsLzLHm5i+zGXggaqTO1PyyCxBpnBHqc8BQh7kjoGbTmdy+fgbuxFIvNUtTzhYMIfXjjYPmwoRGD1EiM6lMbnKjIXVJZXKTSmSGNg+ua0OtZl/9hkRe1ewliEyls7mD3cfUI53NHURkCg0ZABF5rfF5ZV0GvncubiSvgmzXayvb44lkPfArP3SZtyOpTP55RN7RrRfFKyXHfq9xfM1GC/zK2biRrIHcrTndXbFha0tQ9b7XDdCJ1GjuBZAjuvUKDrlF+3Dz2LonR+BXzkYTZiCgJyWM90Mqlc2/DvKmbr1CXi479ltrx1s9Cqn53k/RhHlF4B6t2YXxmJEcCvzKd7qBmrFGx94Q0N3DgHqp7NhvtzrTUgiWpYaTf4nIvWhtTrkjbpjxwPe+1Q8G6WzuMHBIs1wp4dmyU3i3XUFbIYBatWJHDfNPAU0ptsUN86bA905r1EpqNPc+yHMatQAKJc+UHXuqU1FHIYCa7xVihlUBdqAnlY8ZSTPwK6cB1aZGUtn8URDd3zOFUk+7Rfvo9QqvKwQQdC0luVjCTAe+9xXrpcTK5KZFZL9O76Xr1VNusfCBTrGWEKxIeegvv1tjhjkS3DLyBQsL9aWh3Zus7JbjIrJXs60CJl2nMK2bU1sIIPC987FE0gPRXX5bo7V/MrWtI5+zMCbp7B9zII9otlMiPOk69kw3GbVeLdZiZfOPCxzTvV5EnQJQSh7UbKEU7Cs79my32TYkBJAazU+g+JjOb8IbQYnIgdL8uQ83cnFXS66ZwPcuxIdNF2EnPdyYNfQkAz0IAQTVvkopUWp/ybGP9TJJT0LQkLJKPUoppdQTbrHwUa95ehYCCKrexbhh/g7cR/d7qi7IhFu0P+lHlr4IAQS+92s8Yf5Gd1KLCjXhOnbf/lHqmxA0pCxdqUUlPFZ2Cif6maGvQgCB713SkFqSmbf7KgMDEIIlqeiwVRThftZLLSphT3nePjmI3gMRAqhVvUvR4aQjIs1Siyh5tOzYnw2q78CEAGrVyuV4IvkLyDiKKxJRe1zHPjXIniEhISEhISEh7fkXHlxt63zeJ9cAAAAASUVORK5CYII=">
+      </div>
+      <div class="profilelist">
+        <ul>
+          <li>
+            <a routerLink="/member/profile">
+              <span class="profile-icon">
+                <i class="fas fa-user-alt"></i>
+                會員管理
+              </span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/member/declarant">
+              <span class="profile-icon">
+                <i class="fas fa-universal-access"></i>
+                申報人管理
+              </span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/member/station">
+              <span class="profile-icon">
+                <i class="fas fa-truck"></i>
+                集運站
+              </span></a>
+          </li>
+          <li>
+            <a routerLink="/member/shipping/t1/0">
+              <span class="profile-icon">
+                <i class="far fa-file-alt"></i>
+                集運單管理
+              </span></a>
+          </li>
+          <li class="logout">
+            <a href="#" (click)="doLogout()">
+              <span class="profile-icon">
+                <i class="fas fa-sign-out-alt"></i>
+                登出
+              </span>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
-  </div>
-</div>
+  </ng-container>
+  <ng-template #memcusProfile>
+    <div class="memNav">
+      <a class="btn-entrust" routerLink="/member/entrustcus">委託集運</a>
+      <div class="btn-profile" (mouseover)="chgProfilelist($event)">
+        <img class="rounded-circle" src="/res/assets/util/no-image.jpg">
+        <img class="icon-arrow"
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA0CAYAAADFeBvrAAAABmJLR0QA/wD/AP+gvaeTAAAEMUlEQVRoge2YTYgbZRjHf08qheImOewEzExy3WTFHiRZpboXL1WwLQpWxIvWpUhtXT+q+FFRQakWRdy6a12xC7aeelKxiB+H4sEqnbQFbXeiBxcymShMDp3Ui7B5PexmN91N0jebRDzM75R555n3+f8m7zsZAiEhISEhISEhISH/E6TVYOrm3O3UZVoJN0bqvFgq2l/+18Fakc7kdynhCHCViDrgXi78vLZmnZCZyd8ZEb4GostDiwo1UXYKnw44b0fSo/mHlOIkcMPy0N/ADtexzzTXbWo+aCEDEBFkV3zYKgVV7+IgQ7cjlc09DHKCVRmAzcDumGH+GPjeQmNwRcjK3rYtIuobrpVpIAg7Y4ZVCXzv/KCCtyKVHdsLzLHm5i+zGXggaqTO1PyyCxBpnBHqc8BQh7kjoGbTmdy+fgbuxFIvNUtTzhYMIfXjjYPmwoRGD1EiM6lMbnKjIXVJZXKTSmSGNg+ua0OtZl/9hkRe1ewliEyls7mD3cfUI53NHURkCg0ZABF5rfF5ZV0GvncubiSvgmzXayvb44lkPfArP3SZtyOpTP55RN7RrRfFKyXHfq9xfM1GC/zK2biRrIHcrTndXbFha0tQ9b7XDdCJ1GjuBZAjuvUKDrlF+3Dz2LonR+BXzkYTZiCgJyWM90Mqlc2/DvKmbr1CXi479ltrx1s9Cqn53k/RhHlF4B6t2YXxmJEcCvzKd7qBmrFGx94Q0N3DgHqp7NhvtzrTUgiWpYaTf4nIvWhtTrkjbpjxwPe+1Q8G6WzuMHBIs1wp4dmyU3i3XUFbIYBatWJHDfNPAU0ptsUN86bA905r1EpqNPc+yHMatQAKJc+UHXuqU1FHIYCa7xVihlUBdqAnlY8ZSTPwK6cB1aZGUtn8URDd3zOFUk+7Rfvo9QqvKwQQdC0luVjCTAe+9xXrpcTK5KZFZL9O76Xr1VNusfCBTrGWEKxIeegvv1tjhjkS3DLyBQsL9aWh3Zus7JbjIrJXs60CJl2nMK2bU1sIIPC987FE0gPRXX5bo7V/MrWtI5+zMCbp7B9zII9otlMiPOk69kw3GbVeLdZiZfOPCxzTvV5EnQJQSh7UbKEU7Cs79my32TYkBJAazU+g+JjOb8IbQYnIgdL8uQ83cnFXS66ZwPcuxIdNF2EnPdyYNfQkAz0IAQTVvkopUWp/ybGP9TJJT0LQkLJKPUoppdQTbrHwUa95ehYCCKrexbhh/g7cR/d7qi7IhFu0P+lHlr4IAQS+92s8Yf5Gd1KLCjXhOnbf/lHqmxA0pCxdqUUlPFZ2Cif6maGvQgCB713SkFqSmbf7KgMDEIIlqeiwVRThftZLLSphT3nePjmI3gMRAqhVvUvR4aQjIs1Siyh5tOzYnw2q78CEAGrVyuV4IvkLyDiKKxJRe1zHPjXIniEhISEhISEh7fkXHlxt63zeJ9cAAAAASUVORK5CYII=">
+      </div>
+      <div class="profilelist">
+        <ul>
+          <li>
+            <a routerLink="/member/profilecus">
+              <span class="profile-icon">
+                <i class="fas fa-user-alt"></i>
+                會員管理
+              </span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/member/station">
+              <span class="profile-icon">
+                <i class="fas fa-truck"></i>
+                集運站
+              </span></a>
+          </li>
+          <li>
+            <a routerLink="/member/shippingcus/t1/0">
+              <span class="profile-icon">
+                <i class="far fa-file-alt"></i>
+                集運單管理
+              </span></a>
+          </li>
+          <li class="logout">
+            <a href="#" (click)="doLogout()">
+              <span class="profile-icon">
+                <i class="fas fa-sign-out-alt"></i>
+                登出
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>
+<!-- member end -->

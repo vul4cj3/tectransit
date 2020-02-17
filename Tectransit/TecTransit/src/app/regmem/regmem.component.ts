@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-regmem',
   templateUrl: './regmem.component.html',
-  styleUrls: ['./regmem.component.css']
+  styleUrls: ['../register/register.component.css', './regmem.component.css']
 })
 export class RegmemComponent implements OnInit {
   regForm: FormGroup;
@@ -45,7 +45,7 @@ export class RegmemComponent implements OnInit {
 
     // stop here if form is invalid
     if (this.regForm.invalid) {
-      return alert('必填欄位不能為空白！');
+      return alert('欄位不能為空白！');
     }
 
     const cpw = (document.getElementById('confirmpw')) as HTMLInputElement;

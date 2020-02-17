@@ -29,6 +29,16 @@ namespace Tectransit.Datas
         public string HASPOWER { set; get; }
     }
 
+    public class MenuInfo_F
+    {
+        public long MENUID { set; get; }
+        public string MENUCODE { set; get; }
+        public string PARENTCODE { set; get; }
+        public string MENUURL { set; get; }
+        public string MENUNAME { set; get; }
+        public int MENUSEQ { set; get; }
+    }
+
     public class RoleInfo
     {
         public long ROWID { set; get; }

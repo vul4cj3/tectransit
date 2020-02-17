@@ -3,20 +3,32 @@
     <div class="step">
       <ul class="steplist">
         <li>
-          <i></i>
-          <span class="dis">會員種類</span>
+          <span class="member-icon">
+            <i class="fas fa-user-friends"></i>
+            選擇會員
+          </span>
+          <div class="prograss"></div>
         </li>
         <li>
-          <i></i>
-          <span>填寫資料</span>
+          <span class="member-icon">
+            <i class="fas fa-pen-square"></i>
+            填寫資料
+          </span>
+          <div class="prograss"></div>
         </li>
-        <li>
-          <i></i>
-          <span class="dis">驗證信箱</span>
+        <li class="dis">
+          <span class="member-icon">
+            <i class="fas fa-envelope"></i>
+            驗證信箱
+          </span>
+          <div class="prograss"></div>
         </li>
-        <li>
-          <i></i>
-          <span class="dis">註冊完成</span>
+        <li class="dis">
+          <span class="member-icon">
+            <i class="fas fa-check-circle"></i>
+            註冊完成
+          </span>
+          <div class="prograss"></div>
         </li>
       </ul>
     </div>
@@ -25,51 +37,83 @@
     <div class="regform">
       <form [formGroup]="regForm">
         <div class="form-control">
-          <label for="usercode">用戶帳號</label>
-          <input type="text" id="usercode" formControlName="usercode">
-          <p>英文+數字組合，註冊成功後無法修改</p>
+          <div class="title"><label for="usercode">用戶帳號</label></div>
+          <div class="content">
+            <input type="text" id="usercode" formControlName="usercode">
+            <span class="outline"></span>
+          </div>
+        </div>
+        <p>英文+數字組合，註冊成功後無法修改</p>
+        <div class="form-control">
+          <div class="title">
+            <label for="userpassword">用戶密碼</label>
+          </div>
+          <div class="content">
+            <input type="password" id="userpassword" formControlName="userpassword">
+            <span class="outline"></span>
+          </div>
+        </div>
+        <p>6~16個字，必須英文+數字組合方式的密碼</p>
+        <div class="form-control">
+          <div class="title">
+            <label for="confirmpw">確認密碼</label>
+          </div>
+          <div class="content">
+            <input type="password" id="confirmpw">
+            <span class="outline"></span>
+          </div>
         </div>
         <div class="form-control">
-          <label for="userpassword">用戶密碼</label>
-          <input type="password" id="userpassword" formControlName="userpassword">
-          <p>6~16個字，必須英文+數字組合方式的密碼</p>
+          <div class="title"><label for="username">姓名</label></div>
+          <div class="content">
+            <input type="text" id="username" formControlName="username">
+            <span class="outline"></span>
+          </div>
         </div>
         <div class="form-control">
-          <label for="confirmpw">確認密碼</label>
-          <input type="password" id="confirmpw">
+          <div class="title"><label for="taxid">身分證字號</label></div>
+          <div class="content">
+            <input type="text" id="taxid" formControlName="taxid" maxlength="15">
+            <span class="outline"></span>
+          </div>
+        </div>
+        <p class="warn">若為非本國籍，請填居留證號</p>
+        <p>請正確填寫, 以便利未來進口報關作業的申請流程</p>
+        <div class="form-control">
+          <div class="title"><label for="email">信箱</label></div>
+          <div class="content">
+            <input type="text" id="email" formControlName="email">
+            <span class="outline"></span>
+          </div>
+        </div>
+        <p>為確保您能收到各項服務通知信, 建議使用Gmail的信箱</p>
+        <div class="form-control">
+          <div class="title"><label for="address">地址</label></div>
+          <div class="content large">
+            <input type="text" id="address" formControlName="address">
+            <span class="outline"></span>
+          </div>
+        </div>
+        <p>請正確填寫, 確保貨品可以正確送達，請輸入全部的地址，如**縣市**鄉鎮區**路等</p>
+        <div class="form-control">
+          <div class="title"><label for="phone">電話</label></div>
+          <div class="content">
+            <input type="text" id="phone" formControlName="phone" maxlength="10">
+            <span class="outline"></span>
+          </div>
         </div>
         <div class="form-control">
-          <label for="username">姓名</label>
-          <input type="text" id="username" formControlName="username">
+          <div class="title"><label for="mobile">手機</label></div>
+          <div class="content">
+            <input type="text" id="mobile" formControlName="mobile" maxlength="10">
+            <span class="outline"></span>
+          </div>
         </div>
-        <div class="form-control">
-          <label for="taxid">身分證字號(居留證)</label>
-          <input type="text" id="taxid" formControlName="taxid" maxlength="15">
-          <p>請正確填寫, 以便利未來進口報關作業的申請流程</p>
-        </div>
-        <div class="form-control">
-          <label for="email">信箱</label>
-          <input type="text" id="email" formControlName="email">
-          <p>為確保您能收到各項服務通知信, 建議使用Gmail的信箱</p>
-        </div>
-        <div class="form-control">
-          <label for="address">地址</label>
-          <input type="text" id="address" formControlName="address">
-          <p>請正確填寫, 確保貨品可以正確送達，請輸入全部的地址，如**縣市**鄉鎮區**路等</p>
-        </div>
-        <div class="form-control">
-          <label for="phone">電話</label>
-          <input type="text" id="phone" formControlName="phone" maxlength="10">
-        </div>
-        <div class="form-control">
-          <label for="mobile">手機</label>
-          <input type="text" id="mobile" formControlName="mobile" maxlength="10">
-        </div>
-        <div class="form-control">
+        <div class="form-control-center">
           <input type="checkbox" id="chkAgree"><label class="chk" for="chkAgree">我已閱讀並同意《<a href="">會員條款</a>》</label>
         </div>
-        <div class="form-control">
-          <button type="button" (click)="SaveData(regForm.value)">確認送出</button>
+        <div class="form-control-center">
+          <a class="send" (click)="SaveData(regForm.value)">確認送出</a>
         </div>
       </form>
     </div>

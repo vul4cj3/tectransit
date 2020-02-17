@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MenuInfo } from '../_Helper/models';
+import { CommonService } from '../services/common.service';
 
 @Component({
   selector: 'app-footer',
@@ -7,9 +9,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FooterComponent implements OnInit {
 
-  constructor() { }
+  sitmapData: MenuInfo[];
+
+  constructor(private commonservice: CommonService) { }
 
   ngOnInit() {
+    this.getSiteMap();
+  }
+
+  getSiteMap() {
+    this.commonservice.getMenu()
+      .subscribe(data => {
+        this.sitmapData = data.pList;
+      }, error => {
+        console.log(error);
+      });
   }
 
 }

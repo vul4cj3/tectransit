@@ -1,9 +1,15 @@
 <footer>
-  <div class="container">
-    <div class="top-footer"></div>
+  <div class="footer-container">
+    <div class="top-footer">
+      <div class="logo">
+        <a href="/home"></a>
+      </div>
+      <div class="sitemap">
+        <a *ngFor="let item of sitmapData" [routerLink]="item.menuurl">{{item.menuname}}</a>
+      </div>
+    </div>
     <div class="bottom-footer">
-      <div class="copyright">&copy; Copyright 2020. All rights reserved.</div>
-      <div class="policy"></div>
+      <div class="copyright">&copy; Copyright 2020. All rights reserved T3ex TEC.</div>
     </div>
   </div>
 </footer>

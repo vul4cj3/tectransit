@@ -1,0 +1,92 @@
+.reg-contain .regform {
+  display: inline-block;
+  width: 600px;
+  height: 100%;
+  background-color: #fff;
+  padding: 10px;
+  margin-top: 10px;
+  margin-right: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 1.875rem 0 rgba(0,0,0,.1);
+  text-align: justify;
+}
+
+.form-control {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.form-control .title{
+  width: 120px;
+  padding: 5px;
+  font-weight: 600;
+}
+
+.form-control .content{
+  position: relative;
+  width: 200px;
+}
+
+.form-control .content.large{
+  width: 450px;
+}
+
+.form-control .content input {
+  width: 100%;
+  outline: 0;
+  border: 0;
+  padding: 5px 0;
+  border-bottom: 1px solid #aaa;
+}
+
+.form-control .content input ~ .outline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #27ad8a;
+}
+
+.form-control .content input:focus ~ .outline {
+  width: 100%;
+  transition: 0.5s;
+}
+
+p {
+  font-size: 12px;
+  color: rgb(177, 171, 171);
+  margin: 5px;
+}
+
+.form-control-center{
+  text-align: center;
+  margin: 40px;
+}
+
+.form-control-center input[type="checkbox"] {
+  margin-top:3px;
+  font-weight: 600;
+}
+
+.form-control-center label {
+  margin-left:2px;
+  font-weight: 600;
+}
+
+.form-control-center .send{
+  padding: 5px 10px;
+  background-color: rgb(45, 175, 125);
+  border-radius: 2px;
+  color: #fff;
+  cursor: pointer;
+  transition: all .4s 0s ease;
+}
+
+.form-control-center .send:hover{
+  background-color: rgb(38, 136, 98);
+}
+
+.warn{
+  color: #e21919;
+}

@@ -1,3 +1,12 @@
+export interface MenuInfo {
+  menuid: number;
+  menucode: string;
+  parentcode: string;
+  menuname: string;
+  menuurl: string;
+  menuseq: number;
+}
+
 export interface AccountInfo {
   userid: number;
   usercode: string;

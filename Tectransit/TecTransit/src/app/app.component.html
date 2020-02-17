@@ -1,13 +1,26 @@
 <div class="main-content">
-  <header class="main-header single-transition">
+  <header [class._scrollbox]="isScroll">
     <nav class="navbar">
       <app-nav-menu></app-nav-menu>
     </nav>
   </header>
-  <main class="container">
+  <main class="container" (mouseover)="clearnav()">
     <router-outlet></router-outlet>
   </main>
-  <div class="footer-section">
-    <app-footer></app-footer>
-  </div>
+  <app-footer></app-footer>
+  <button class="btn-gotop" *ngIf="isScroll" (click)="gotoTop()">
+    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15" height="15" viewBox="0 0 172 172"
+      style=" fill:#fff;">
+      <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter"
+        stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none"
+        font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+        <path d="M0,172v-172h172v172z" fill="none"></path>
+        <g fill="#fff">
+          <path
+            d="M145.19667,92.794l-51.24167,-34.15633c-4.816,-3.21067 -11.08683,-3.21067 -15.90283,0l-51.24167,34.15633c-3.31817,2.2145 -5.3105,5.94117 -5.3105,9.92583v0c0,9.5245 10.61383,15.2005 18.54017,9.91867l45.95983,-30.6375l45.95983,30.64467c7.92633,5.28183 18.54017,-0.40133 18.54017,-9.92583v0c0,-3.99183 -1.99233,-7.71133 -5.30333,-9.92583z">
+          </path>
+        </g>
+      </g>
+    </svg>
+  </button>
 </div>

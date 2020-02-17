@@ -3,34 +3,78 @@
     <div class="step">
       <ul class="steplist">
         <li>
-          <i></i>
-          <span>會員種類</span>
+          <span class="member-icon">
+            <i class="fas fa-user-friends"></i>
+            選擇會員
+          </span>
+          <div class="prograss"></div>
         </li>
-        <li>
-          <i></i>
-          <span class="dis">填寫資料</span>
+        <li class="dis">
+          <span class="member-icon">
+            <i class="fas fa-pen-square"></i>
+            填寫資料
+          </span>
+          <div class="prograss"></div>
         </li>
-        <li>
-          <i></i>
-          <span class="dis">驗證信箱</span>
+        <li class="dis">
+          <span class="member-icon">
+            <i class="fas fa-envelope"></i>
+            驗證信箱
+          </span>
+          <div class="prograss"></div>
         </li>
-        <li>
-          <i></i>
-          <span class="dis">註冊完成</span>
+        <li class="dis">
+          <span class="member-icon">
+            <i class="fas fa-check-circle"></i>
+            註冊完成
+          </span>
+          <div class="prograss"></div>
         </li>
       </ul>
     </div>
   </div>
   <div class="reg-contain">
     <div class="col">
-      <h3>個人會員</h3>
-      <span>若您不是公司行號、非營利事業組織, 請立即申請成為[個人會員]，並享更多會員專屬優惠 !</span>
-      <a routerLink="/regmem">加入個人會員</a>
+      <span class="memtype-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="26" height="26" viewBox="0 0 172 172"
+          style=" fill:#000000;">
+          <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt"
+            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none"
+            font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+            <path d="M0,172v-172h172v172z" fill="none"></path>
+            <g fill="#273152">
+              <path
+                d="M69.46154,1.03365c-19.94952,0 -35.97115,13.69592 -35.97115,39.89904c0,17.10697 6.82212,34.54988 17.15865,45.27404c4.03125,10.72416 -3.23017,14.72957 -4.75481,15.29808c-20.87981,7.64904 -45.27404,21.55169 -45.27404,35.35096v5.16827c0,18.8125 35.81611,23.15385 69.04808,23.15385c7.28726,0 14.60036,-0.3101 21.70673,-0.82692c-8.73437,-9.2512 -14.05769,-21.62921 -14.05769,-35.35096c0,-11.83533 4.03125,-22.71454 10.75,-31.42308c-1.00781,-2.32572 -1.39543,-5.99519 0.41346,-11.57692c10.28486,-10.75 16.95192,-28.03786 16.95192,-45.06731c0,-26.20312 -16.02163,-39.89904 -35.97115,-39.89904zM129,87.24038c-23.05048,0 -41.75962,18.68329 -41.75962,41.75962c0,23.07632 18.68329,41.75962 41.75962,41.75962c23.07632,0 41.75962,-18.68329 41.75962,-41.75962c0,-23.07632 -18.70913,-41.75962 -41.75962,-41.75962zM123.21154,105.84615h11.57692v17.15865h17.15865v11.99038h-17.15865v17.15865h-11.57692v-17.15865h-17.36538v-11.99038h17.36538z">
+              </path>
+            </g>
+          </g>
+        </svg>
+        個人會員
+      </span>
+      <span>
+        <p>若您不是公司行號、非營利事業組織</p>
+        <p>請立即申請成為[個人會員]</p>
+        <p>並享更多會員專屬優惠 !</p>
+      </span>
+      <a routerLink="/regmem">
+        <div class="btn-join">
+          加入個人會員
+        </div>
+      </a>
     </div>
     <div class="col">
-      <h3>廠商</h3>
-      <span>凡公司行號、營利事業組織皆可申請成為[商業會員]，並享有商業用途之報關服務!</span>
-      <a routerLink="/regcus">加入廠商</a>
+      <span class="memtype-icon"><img
+          src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDI5NyAyOTciIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDI5NyAyOTciIHdpZHRoPSI1MTJweCIgaGVpZ2h0PSI1MTJweCI+CiAgPGc+CiAgICA8cGF0aCBkPSJNMTQ4LjUxLDExNy4yMTZjMzIuMzE3LDAsNTguNjA4LTI2LjI5MSw1OC42MDgtNTguNjA4UzE4MC44MjcsMCwxNDguNTEsMGMtMzIuMzE3LDAtNTguNjA4LDI2LjI5MS01OC42MDgsNTguNjA4ICAgUzExNi4xOTMsMTE3LjIxNiwxNDguNTEsMTE3LjIxNnoiIGZpbGw9IiMwMDAwMDAiLz4KICAgIDxwYXRoIGQ9Im0yMjcuMTU0LDE0NS42MThjLTAuMDI1LTAuMDA4LTAuMDczLTAuMDI2LTAuMDk4LTAuMDMyLTcuNjMxLTEuODY0LTMwLjk5OS01LjEzMy0zMC45OTktNS4xMzMtMi42MzgtMC44MTItNS40NTcsMC41ODUtNi40MDYsMy4xODhsLTM1LjE3NCw5Ni41MDljLTIuMDI5LDUuNTY3LTkuOTAzLDUuNTY3LTExLjkzMiwwbC0zNS4xNzQtOTYuNTA5Yy0wLjc2Ni0yLjEwMi0yLjc1LTMuNDItNC44NzYtMy40Mi0wLjUwNCwwLTI0LjUzMSwzLjM2OS0zMi41Myw1LjM1OC0yMS44NTgsNS40MzUtMzUuNjQ1LDI2LjkyOS0zNS42NDUsNDkuMzI5djgwLjMwMmMwLDEyLjAzNCA5Ljc1NiwyMS43OSAyMS43OSwyMS43OWgxODQuNzgyYzEyLjAzNCwwIDIxLjc5LTkuNzU2IDIxLjc5LTIxLjc5di04MC41NjljLTAuMDAxLTIyLjMwMy0xNC4zMjgtNDIuMDk2LTM1LjUyOC00OS4wMjN6IiBmaWxsPSIjMDAwMDAwIi8+CiAgICA8cGF0aCBkPSJtMTYxLjc3NSwxMzguNjEzYy0xLjQwNC0xLjUzLTMuNDU2LTIuMjk5LTUuNTMyLTIuMjk5aC0xNS40ODVjLTIuMDc2LDAtNC4xMjksMC43Ny01LjUzMiwyLjI5OS0yLjE3MywyLjM2OC0yLjQ4OSw1Ljc4OS0wLjk0Niw4LjQ2Mmw4LjI3OCwxMi40NzktMy44NzUsMzIuNjkgNy42MzEsMjAuM2MwLjc0NCwyLjA0MiAzLjYzMSwyLjA0MiA0LjM3NSwwbDcuNjMxLTIwLjMtMy44NzUtMzIuNjkgOC4yNzgtMTIuNDc5YzEuNTQxLTIuNjczIDEuMjI1LTYuMDk0LTAuOTQ4LTguNDYyeiIgZmlsbD0iIzAwMDAwMCIvPgogIDwvZz4KPC9zdmc+Cg==" />廠商</span>
+      <span>
+        <p>凡公司行號、營利事業組織</p>
+        <p>皆可申請成為[商業會員]</p>
+        <p>並享有商業用途之報關服務 !</p>
+      </span>
+      <a routerLink="/regcus">
+        <div class="btn-join">
+          加入商業會員
+        </div>
+      </a>
     </div>
   </div>
 </div>

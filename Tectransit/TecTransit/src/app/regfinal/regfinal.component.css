@@ -1,0 +1,22 @@
+.reg-contain .regform {
+  display: inline-block;
+  width: 500px;
+  height: 100%;
+  background-color: #fff;
+  padding: 10px;
+  margin-top: 10px;
+  margin-right: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 1.875rem 0 rgba(0,0,0,.1);
+  text-align: justify;
+}
+
+p {
+  text-align: center;
+  margin: 20px;
+}
+
+a {
+  color: #218b6f;
+  font-weight: 600;
+}

@@ -25,6 +25,12 @@ namespace Tectransit.Controllers
             return objCommon.GetMenu(USERCODE);
         }
 
+        [HttpGet]
+        public dynamic GetNavMenu_Front()
+        {
+            return objCommon.GetMenu_Fornt();
+        }
+
         [HttpGet("{id}")]
         public dynamic GetAllMenu(string id)
         {

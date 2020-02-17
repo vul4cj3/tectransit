@@ -6,7 +6,7 @@ import { CommonService } from '../services/common.service';
 @Component({
   selector: 'app-regcus',
   templateUrl: './regcus.component.html',
-  styleUrls: ['./regcus.component.css']
+  styleUrls: ['../register/register.component.css', './regcus.component.css']
 })
 export class RegcusComponent implements OnInit {
 
@@ -69,7 +69,7 @@ export class RegcusComponent implements OnInit {
 
     // stop here if form is invalid
     if (this.regForm.invalid) {
-      return alert('必填欄位不能為空白！');
+      return alert('欄位不能為空白！');
     }
 
     const cpw = (document.getElementById('confirmpw')) as HTMLInputElement;

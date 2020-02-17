@@ -6,12 +6,14 @@ import { CommonService } from '../services/common.service';
 @Component({
   selector: 'app-regconfirm',
   templateUrl: './regconfirm.component.html',
-  styleUrls: ['./regconfirm.component.css']
+  styleUrls: ['../register/register.component.css', './regconfirm.component.css']
 })
 export class RegconfirmComponent implements OnInit {
 
   regForm: FormGroup;
   userID: number;
+
+  isActive = false;
 
   confirmUrl = '/api/Member/ConfirmEmailCode';
 
@@ -39,10 +41,16 @@ export class RegconfirmComponent implements OnInit {
     });
   }
 
+  enableSend(e) {
+    if (e.target.value.length > 0) {
+      this.isActive = true;
+    } else { this.isActive = false; }
+  }
+
   ConfirmData(form) {
     // stop here if form is invalid
     if (this.regForm.invalid) {
-      return '必填欄位不能為空白！';
+      return '';
     }
 
     if (Object.keys(form).length > 0) {

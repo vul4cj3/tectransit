@@ -103,8 +103,8 @@
                   <tbody>
                     <tr *ngFor="let fitem of Frontdata let idx = index">
                       <td class="text-center text-muted">
-                        <span *ngIf="fitem.parentcode === '0'">></span>
-                        {{fitem.menuname}}
+                        <span *ngIf="fitem.parentcode === '0'">&#x25B8;</span>
+                      <b>{{fitem.menuname}}</b>
                       </td>
                       <td>{{fitem.menucode}}</td>
                       <td>{{fitem.menuurl}}</td>

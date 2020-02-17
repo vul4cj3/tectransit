@@ -323,6 +323,40 @@ namespace Tectransit.Datas
             return new { rows = "" };
         }
 
+        //取得前台選單
+        public dynamic GetMenu_Fornt()
+        {
+            DataTable dtMenulist = DBUtil.SelectDataTable($@"SELECT ID AS MENUID, MENUCODE, PARENTCODE, MENUURL, MENUSEQ, MENUNAME
+                                                             FROM T_S_MENU
+                                                             WHERE ISBACK = 'false' AND ISVISIBLE = 'true' AND ISENABLE = 'true'
+                                                             ORDER BY MENUSEQ");
+            if (dtMenulist.Rows.Count > 0)
+            {
+                List<MenuInfo_F> pmenuList = new List<MenuInfo_F>();
+                List<MenuInfo_F> dmenuList = new List<MenuInfo_F>();
+                for (int i = 0; i < dtMenulist.Rows.Count; i++)
+                {
+                    MenuInfo_F m = new MenuInfo_F();
+                    m.MENUID = Convert.ToInt64(dtMenulist.Rows[i]["MENUID"]);
+                    m.MENUCODE = dtMenulist.Rows[i]["MENUCODE"]?.ToString();
+                    m.PARENTCODE = dtMenulist.Rows[i]["PARENTCODE"]?.ToString();
+                    m.MENUURL = dtMenulist.Rows[i]["MENUURL"]?.ToString();
+                    m.MENUNAME = dtMenulist.Rows[i]["MENUNAME"]?.ToString();
+                    m.MENUSEQ = Convert.ToInt32(dtMenulist.Rows[i]["MENUSEQ"]);
+
+                    if (m.PARENTCODE == "0")
+                        pmenuList.Add(m);
+                    else
+                        dmenuList.Add(m);
+                }
+
+                return new { status = "0", pList = pmenuList, item = dmenuList };
+            }
+
+            return new { status = "99", pList = "", item = "" };
+
+        }
+
         /// <summary>
         /// POSITION: 頁面URL
         /// TARGET: 頁面名稱

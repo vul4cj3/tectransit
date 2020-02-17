@@ -40,10 +40,9 @@ export class CommonService {
 
   }
 
-  /* --- Get sidebar data --- */
-  getMenu(usercode) {
-    const postData = { USERCODE: usercode };
-    return this.http.post<any>(this.baseUrl + this.navUrl, postData)
+  /* --- Get topmenu data --- */
+  getMenu() {
+    return this.http.get<any>(this.baseUrl + this.navUrl)
       .pipe(map(data => {
         return data;
       }));
