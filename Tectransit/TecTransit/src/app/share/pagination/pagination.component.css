@@ -4,7 +4,6 @@
   text-decoration: none;
   background-color: #fff;
   border: 1px solid #ddd;
-  color: #2fa4e7;
   margin-left: 3px;
   cursor: pointer;
   font-size: 12px;
@@ -14,11 +13,11 @@
 .pagelist_btn:hover{
   background-color: #eee;
   border-color: #ddd;
-  color: #222;
+  color: #3f4e81;
 }
 
-.pagelist_btn.active, .pagelist_btn.active:hover{
-  background: #4eb2eb;
+.pagelist_btn.isactive, .pagelist_btn.isactive:hover{
+  background: #3f4e81;
   color: #FFF;
-  border-color: #4eb2eb;
+  border-color: #3f4e81;
 }

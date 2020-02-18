@@ -1,50 +1,98 @@
-<div class="memprofile">
-  <div class="profile-contain">
-    <div class="memheader"><span>集運站資料</span></div>
-    <div class="regform">
-      <!-- 會員&入倉代號 start -->
-      <div class="table-box">
-        <div class="line">
-          <div class="subline">
-            <div class="box">
+<div class="station">
+  <div class="station-contain">
+    <div class="stationform">
+      <div class="header">
+        <span class="mem-icon">
+          <i class="fas fa-truck"></i>
+          集運站
+        </span>
+      </div>
+      <div class="station-container">
+        <!-- 會員&入倉代號 start -->
+        <div class="form-control">
+          <div class="col">
+            <div class="title">
+              <span class="col-icon">
+                <i class="fa fa-credit-card"></i>
+              </span>
               <label>入倉代號</label>
+            </div>
+            <div class="contant">
               <span>{{warehouseNo}}</span>
             </div>
-            <div class="box">
-              <label>收貨人姓名</label>
+          </div>
+          <div class="col">
+            <div class="title">
+              <span class="col-icon">
+                <i class="fa fa-male"></i>
+              </span>
+              <label>收貨人</label>
+            </div>
+            <div class="contant">
               <span>{{memName}}</span>
             </div>
           </div>
         </div>
-      </div>
-      <!-- 會員&入倉代號 end -->
-      <!-- 集貨站資料 start -->
-      <div class="table-box">
-        <div class="line">
-          <div class="subline" *ngFor="let item of stationData let idx=index">
-            <div class="box">
+        <!-- 會員&入倉代號 end -->
+        <!-- 集貨站資料 start -->
+        <div class="form-control" *ngFor="let item of stationData let idx=index">
+          <div class="col">
+            <div class="title">
+              <span class="col-icon">
+                <i class="fa fa-home"></i>
+              </span>
               <label>站名</label>
+            </div>
+            <div class="contant">
               <span>{{item.stationname}}</span>
             </div>
-            <div class="box">
+          </div>
+          <div class="col">
+            <div class="title">
+              <span class="col-icon">
+                <i class="fa fa-road"></i>
+              </span>
               <label>地址</label>
-              <span>{{item.address}}</span>
             </div>
-            <div class="box">
+            <div class="contant">
+            <span>{{item.address}}</span>
+            </div>
+          </div>
+          <div class="col">
+            <div class="title">
+              <span class="col-icon">
+                <i class="fa fa-male"></i>
+              </span>
               <label>負責人</label>
+            </div>
+            <div class="contant">
               <span>{{item.receiver}}</span>
             </div>
-            <div class="box">
+          </div>
+          <div class="col">
+            <div class="title">
+              <span class="col-icon">
+                <i class="fas fa-phone-alt"></i>
+              </span>
               <label>電話</label>
+            </div>
+            <div class="contant">
               <span>{{item.phone}}</span>
             </div>
-            <div class="box">
+          </div>
+          <div class="col">
+            <div class="title">
+              <span class="col-icon">
+                <i class="fa fa-mobile"></i>
+              </span>
               <label>手機</label>
+            </div>
+            <div class="contant">
               <span>{{item.mobile}}</span>
             </div>
           </div>
+          <!--集貨站資料end-->
         </div>
-        <!--集貨站資料end-->
       </div>
     </div>
   </div>

@@ -15,6 +15,7 @@ import { ProfilecusComponent } from './profilecus/profilecus.component';
 import { ShippingcusListComponent } from './shippingcus-list/shippingcus-list.component';
 import { ShippingcusEditComponent } from './shippingcus-edit/shippingcus-edit.component';
 import { ShippingcusHeaderComponent } from './shippingcus-header/shippingcus-header.component';
+import { ShareModule } from '../share/share.module';
 
 
 
@@ -38,7 +39,8 @@ import { ShippingcusHeaderComponent } from './shippingcus-header/shippingcus-hea
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MmeberRoutingModule
+    MmeberRoutingModule,
+    ShareModule
   ],
   providers: [],
   exports: [MemberComponent],

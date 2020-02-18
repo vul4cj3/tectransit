@@ -1,0 +1,95 @@
+.shipping .shipping-contain {
+  width: 850px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 1.875rem 0 rgba(0, 0, 0, .1);
+  margin: 0 auto;
+}
+
+.shippingform {
+  position: relative;
+  width: 100%;
+}
+
+.main-card {
+  margin-top: 70px;
+}
+
+.main-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgb(221, 220, 220);
+}
+
+.card-header .sel {
+  padding-left: 10px;
+}
+
+.card-header .sel span {
+  font-size: 14px;
+  padding-right: 10px;
+}
+
+.card-header .sel select {
+  width: 150px;
+  height: 20px;
+  border: 0;
+  outline: 0;
+  border-bottom: 1px dashed #aaa;
+}
+
+.btn-right {
+  padding-right: 10px;
+}
+
+.btn-right a {
+  font-size: 14px;
+  padding: 5px 10px;
+  background-color: #3f4e81;
+  color: #eee;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: .5s;
+}
+
+.btn-right a:hover {
+  background-color: #273152;
+}
+
+.card-contain {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.shipping-table {
+  width: 100%;
+}
+
+.shipping-table thead tr th {
+  width: 10%;
+  font-size: 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgb(221, 220, 220);
+}
+
+.shipping-table tbody tr td {
+  font-size: 14px;
+  padding: 10px;
+  border-bottom: 1px solid rgb(221, 220, 220);
+  text-align: center;
+}
+
+.shipping-table tbody tr td label{
+  cursor: pointer;
+}
+
+.shipping-table tbody tr:nth-child(even){
+  background-color: rgb(248, 247, 247);
+}
+
+.card-footer {
+  padding-bottom: 50px;
+  padding-left: 350px;
+}
+

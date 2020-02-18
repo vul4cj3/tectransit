@@ -5,7 +5,7 @@
       class="fas fa-angle-left"></i></a>
   <ng-container *ngIf="this.pageNum.length > 0">
     <span *ngFor="let item of this.pageNum">
-      <a class="pagelist_btn" [ngClass]="{'active': item === this.currentPage}" (click)=pageEdit(item)>{{item}}</a>
+      <a class="pagelist_btn" [class.isactive]="item === this.currentPage" (click)=pageEdit(item)>{{item}}</a>
     </span>
   </ng-container>
   <a class="pagelist_btn next" *ngIf="this.nextApper" (click)=pageEdit(this.currentPage+1)><i

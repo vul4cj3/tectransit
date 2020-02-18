@@ -166,6 +166,7 @@ nav li > a:hover {
 .profile-icon{
   font-size: 14px;
   color: rgb(109, 126, 145);
+  letter-spacing: 1px;
 }
 
 .profilelist {

@@ -1,72 +1,69 @@
-<div class="memprofile">
-  <div class="profile-contain">
-    <app-shippingcus-header [type]="this.shippingType"></app-shippingcus-header>
-    <div class="regform">
+<div class="shipping">
+  <div class="shipping-contain">
+    <div class="shippingform">
+      <app-shippingcus-header [type]="this.shippingType"></app-shippingcus-header>
       <!-- content start -->
-      <div class="row">
-        <div class="col-md-12">
-          <div class="main-card mb-3 card">
-            <div class="card-header">集運站：
-              <select id="cateSel" class="mb-2 form-control middle" (change)="cateChange($event.target.value)">
-                <ng-container *ngFor="let cateitem of cateData">
-                  <option value="{{cateitem.stationcode}}" [selected]="cateitem.stationcode === this.cateID">
-                    {{cateitem.stationname}}
-                  </option>
-                </ng-container>
-              </select>
-              <div class="btn-actions-pane-right">
-                <div class="btn-group-sm btn-group" role="group">
-                  <ng-container *ngIf="this.shippingType === 't1'">
-                    <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doDelete()">刪除</button>
-                  </ng-container>
-                </div>
-              </div>
-            </div>
-            <div class="table-responsive">
-              <table class="align-middle mb-0 table table-borderless table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th *ngFor="let titleItem of tableTitle let id = index" [ngClass]="{'text-center': id === 0}">
-                      {{titleItem}}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let item of data let idx = index">
-                    <td class="text-center text-muted">
-                      <ng-container *ngIf="this.shippingType === 't1'">
-                        <label class="chkbox-container">
-                          <input type="checkbox" name="Chk" id="chk{{idx}}"
-                            (click)="SelChange($event.toElement.value, $event.toElement.checked)" value="{{item.id}}">
-                          <span class="checkmark"></span>
-                        </label>
-                      </ng-container>
-                    </td>
-                    <td><label for="chk{{idx}}">{{item.shippingno}}</label></td>
-                    <td>{{item.trackingno}}</td>
-                    <td>{{item.trasferno}}</td>
-                    <td>{{item.status}}</td>
-                    <td>{{item.credate}}</td>
-                    <td>{{item.exportdate}}</td>
-                    <td>
-                      <a routerLink="/member/shippingcus/edit/{{this.shippingType}}/{{this.cateID}}/{{item.id}}">
-                        <span class="symbol">
-                          <i class="fas fa-file-alt"></i>
-                        </span>
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <!--pagination section start-->
-            <div class="d-block text-center card-footer">
-              <app-pagination [currentPage]="this.currentpage" [preApper]="this.commonService.preApper"
-                [nextApper]="this.commonService.nextApper" [pageNum]="this.commonService.pageNum"
-                (pageChanged)="changeData($event)"></app-pagination>
-            </div>
-            <!--pagination section end-->
+      <div class="main-card">
+        <div class="card-header">
+          <div class="sel">
+            <span>集運站 <i class="fas fa-truck"></i></span>
+            <select id="cateSel" (change)="cateChange($event.target.value)">
+              <ng-container *ngFor="let cateitem of cateData">
+                <option value="{{cateitem.stationcode}}" [selected]="cateitem.stationcode === this.cateID">
+                  {{cateitem.stationname}}
+                </option>
+              </ng-container>
+            </select>
+          </div>
+          <div class="btn-right">
+            <ng-container *ngIf="this.shippingType === 't1'">
+              <a (click)="doDelete()">刪除</a>
+            </ng-container>
           </div>
         </div>
+        <div class="card-contain">
+          <table class="shipping-table">
+            <thead>
+              <tr>
+                <th *ngFor="let titleItem of tableTitle let id = index" [ngClass]="{'text-center': id === 0}">
+                  {{titleItem}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of data let idx = index">
+                <td style="width: 5%;" class="text-center text-muted">
+                  <ng-container *ngIf="this.shippingType === 't1'">
+                    <label class="chkbox-container">
+                      <input type="checkbox" name="Chk" id="chk{{idx}}"
+                        (click)="SelChange($event.toElement.value, $event.toElement.checked)" value="{{item.id}}">
+                      <span class="checkmark"></span>
+                    </label>
+                  </ng-container>
+                </td>
+                <td style="width: 15%;"><label for="chk{{idx}}">{{item.shippingno}}</label></td>
+                <td style="width: 15%;">{{item.trackingno}}</td>
+                <td style="width: 10%;">{{item.trasferno}}</td>
+                <td style="width: 10%;">{{item.status}}</td>
+                <td style="width: 20%;">{{item.credate}}</td>
+                <td style="width: 20%;">{{item.exportdate}}</td>
+                <td style="width: 5%;">
+                  <a routerLink="/member/shippingcus/edit/{{this.shippingType}}/{{this.cateID}}/{{item.id}}">
+                    <span class="mem-icon">
+                      <i class="fas fa-clipboard-list"></i>
+                    </span>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--pagination section start-->
+        <div class="card-footer">
+          <app-pagination [currentPage]="this.currentpage" [preApper]="this.commonService.preApper"
+            [nextApper]="this.commonService.nextApper" [pageNum]="this.commonService.pageNum"
+            (pageChanged)="changeData($event)"></app-pagination>
+        </div>
+        <!--pagination section end-->
       </div>
       <!-- content end -->
     </div>

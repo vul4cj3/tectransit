@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { CommonService } from '../services/common.service';
+import { CommonService } from '../../services/common.service';
 
 @Component({
   selector: 'app-pagination',

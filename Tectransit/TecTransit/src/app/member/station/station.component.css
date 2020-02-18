@@ -1,0 +1,92 @@
+.station .station-contain {
+  width: 600px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 1.875rem 0 rgba(0, 0, 0, .1);
+  margin: 0 auto;
+}
+
+.stationform {
+  position: relative;
+  width: 100%;
+}
+
+.header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding-top: 30px;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .7;
+  background: url('/res/assets/util/memban2.jpg');
+  background-size: 1100px 650px;
+  background-position: -400px -300px;
+  background-repeat: no-repeat;
+  padding-top: 30px;
+  padding-bottom: 40px;
+  border-radius: 8px 8px 0px 0px;
+  z-index: -1;
+}
+
+.mem-icon {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  border-bottom: 1px dashed #202842;
+  color: #202842;
+}
+
+.mem-icon i {
+  color: #202842;
+}
+
+.station-container {
+  padding-top: 23px;
+  padding-bottom: 10px;
+}
+
+.form-control {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+  border-top: 1px dashed rgb(221, 220, 220);
+  padding-top: 10px;
+  padding-left: 10px;
+}
+
+.col {
+  width: 600px;
+  margin-bottom: 10px;
+}
+
+.col .title{
+  display: inline-block;
+  width: 100px;
+}
+
+.col .contant{
+  display: inline-block;
+}
+
+.col label {
+  padding: 5px;
+  font-weight: 600;
+}
+
+.col-icon {
+  font-size: 14px;
+}
+
+.col-icon i{
+  width: 15px;
+  color: rgb(206, 202, 202);
+  text-align: center;
+}
