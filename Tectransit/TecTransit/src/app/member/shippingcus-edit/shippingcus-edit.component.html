@@ -1,146 +1,203 @@
-<div class="memprofile">
-  <div class="profile-contain">
-    <app-shippingcus-header></app-shippingcus-header>
-    <div class="regform">
-      <!-- content start -->
-      <div>
-        <!-- master data start-->
-        <div *ngIf="masterData !== undefined">
-          <div>
-            <label>集運單編號</label>
-            <span>{{masterData.shippingno}}</span>
-          </div>
-          <div>
-            <label>追蹤號碼</label>
-            <span>{{masterData.trackingno}}</span>
-          </div>
-          <div>
-            <label>快遞單號</label>
-            <span>{{masterData.trasferno}}</span>
-          </div>
-          <div>
-            <label>所屬集運站</label>
-            <span>{{masterData.stationname}}</span>
-          </div>
-          <div>
-            <label>總件數</label>
-            <span>{{masterData.total}}</span>
-          </div>
-          <div *ngIf="masterData.ismultreceiver !== 'Y'">
-            <label>收件人</label>
-            <span>{{masterData.receiver}}</span>
-          </div>
-          <div *ngIf="masterData.ismultreceiver !== 'Y'">
-            <label>收件人地址</label>
-            <span>{{masterData.receiveraddr}}</span>
-          </div>
-        </div>
-        <!-- master data end-->
-        <!-- header&datail start-->
-        <div *ngFor="let item of headerData">
-          <!-- header data start -->
-          <div>
-            <div>
-              <label>箱號</label>
-              <span>{{item.boxno}}</span>
+<div class="shipping">
+  <div class="shipping-contain">
+    <div class="shippingform">
+      <app-shippingcus-header [type]="this.shippingType"></app-shippingcus-header>
+      <div class="main-card">
+        <!-- content start -->
+        <div class="card-contain">
+          <!-- master data start-->
+          <div class="master-section" *ngIf="masterData !== undefined">
+            <div class="form-control">
+              <label>集運單編號</label>
+              <span>{{masterData.shippingno}}</span>
             </div>
-            <div *ngIf="masterData.ismultreceiver === 'Y'">
+            <div class="form-control">
+              <label>追蹤號碼</label>
+              <span>{{masterData.trackingno}}</span>
+            </div>
+            <div class="form-control">
+              <label>快遞單號</label>
+              <span>{{masterData.trasferno}}</span>
+            </div>
+            <div class="form-control">
+              <label>所屬集運站</label>
+              <span>{{masterData.stationname}}</span>
+            </div>
+            <div class="form-control">
+              <label>總件數</label>
+              <span>{{masterData.total}}</span>
+            </div>
+            <div class="form-control" *ngIf="masterData.ismultreceiver !== 'Y'">
               <label>收件人</label>
-              <span>{{item.receiver}}</span>
+              <span>{{masterData.receiver}}</span>
             </div>
-            <div *ngIf="masterData.ismultreceiver === 'Y'">
+            <div class="form-control" *ngIf="masterData.ismultreceiver !== 'Y'">
               <label>收件人地址</label>
-              <span>{{item.receiveraddr}}</span>
+              <span>{{masterData.receiveraddr}}</span>
             </div>
           </div>
-          <!-- header data end -->
-          <!-- detail data start -->
-          <table>
-            <tr>
-              <th>商品名稱</th>
-              <th>數量</th>
-              <th>價值</th>
-            </tr>
-            <tr *ngFor="let subitem of detailData">
-              <ng-container *ngIf="subitem.shippingiD_H === item.id">
-                <td>{{subitem.product}}</td>
-                <td>{{subitem.quantity}}</td>
-                <td>{{subitem.unitprice}}</td>
-              </ng-container>
-            </tr>
-          </table>
-          <!-- detail data end -->
-        </div>
-        <!-- header&datail end-->
-        <!-- declarant data start -->
-        <form [formGroup]="dataForm">
-          <div *ngIf="isExist">
-            <ng-container *ngIf="!isModify;else modifyDec">
-              <button (click)="chgDec('m')">修改</button>
-            </ng-container>
-            <ng-template #modifyDec>
-              <button (click)="saveData(this.dataForm.value)">保存</button>
-              <button (click)="chgDec('c')">取消</button>
-            </ng-template>
-          </div>
-          <ng-container *ngIf="!isModify;else modifydecform">
-            <table>
-              <tr>
-                <th>申報人姓名</th>
-                <th>身分證字號</th>
-                <th>連絡電話</th>
-                <th>手機</th>
-                <th>地址</th>
-                <th>身分證檔案</th>
-                <th>委任書</th>
-              </tr>
-              <tr *ngFor="let decitem of declarData">
-                <td>{{decitem.name}}</td>
-                <td>{{decitem.taxid}}</td>
-                <td>{{decitem.phone}}</td>
-                <td>{{decitem.mobile}}</td>
-                <td>{{decitem.addr}}</td>
-                <td>
-                  <a *ngIf="decitem.idphotof !== ''" [href]="decitem.idphotof" target="_blank">身分證照1</a>
-                  <a *ngIf="decitem.idphotob !== ''" [href]="decitem.idphotob" target="_blank">身分證照2</a>
-                </td>
-                <td>
-                  <a *ngIf="decitem.appointment !== ''" [href]="decitem.appointment" target="_blank">瀏覽</a>
-                </td>
-              </tr>
-            </table>
-          </ng-container>
-          <ng-template #modifydecform>
-            <input type="hidden" formControlName="shippingidm">
-            <div formArrayName="decform">
-              <div *ngFor="let dec of dataForm.get('decform')['controls']; let idec=index">
-                <div formGroupName="{{idec}}" class="Ys">
-                  <input type="hidden" formControlName="id">
-                  <input type="text" formControlName="name">
-                  <input type="text" formControlName="taxid">
-                  <input type="text" formControlName="phone">
-                  <input type="text" formControlName="mobile">
-                  <input type="text" formControlName="addr">
-                  <input type="file" #imgupload accept="image/*" multiple (change)="imgChange($event, idec)">
-                  <div class="img-preview-container">
-                    <div id="img-preview{{idec}}" class="img-preview">
-                    </div>
-                  </div>
-                  <input type="hidden" formControlName="idphotof">
-                  <input type="hidden" formControlName="idphotob">
-                  <input type="file" #filesupload (change)="fileChange($event, idec)">
-                  <input type="hidden" formControlName="appointment">
-                  <input type="button" (click)="removedec(idec)" value="remove declarant">
-                </div>
+          <!-- master data end-->
+          <!-- header&datail start-->
+          <div class="box-section" *ngFor="let item of headerData">
+            <!-- header data start -->
+            <div class="boxheader">
+              <div class="form-control">
+                <label>箱號</label>
+                <span>{{item.boxno}}</span>
               </div>
-              <input type="button" (click)="adddec()" value="Add declarant">
+              <div class="form-control" *ngIf="masterData.ismultreceiver === 'Y'">
+                <label>收件人</label>
+                <span>{{item.receiver}}</span>
+              </div>
+              <div class="form-control" *ngIf="masterData.ismultreceiver === 'Y'">
+                <label>收件人地址</label>
+                <span>{{item.receiveraddr}}</span>
+              </div>
             </div>
-          </ng-template>
-        </form>
-        <!-- declarant data end -->
+            <!-- header data end -->
+            <!-- detail data start -->
+            <table class="boxdetail">
+              <thead>
+                <tr>
+                  <th>商品名稱</th>
+                  <th>數量</th>
+                  <th>價值</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let subitem of detailData">
+                  <ng-container *ngIf="subitem.shippingiD_H === item.id">
+                    <td>{{subitem.product}}</td>
+                    <td>{{subitem.quantity}}</td>
+                    <td>{{subitem.unitprice}}</td>
+                  </ng-container>
+                </tr>
+              </tbody>
+            </table>
+            <!-- detail data end -->
+          </div>
+          <!-- header&datail end-->
+          <!-- declarant data start -->
+          <form class="declarform" [formGroup]="dataForm">
+            <div class="btn-modify" *ngIf="isExist">
+              <ng-container *ngIf="!isModify;else modifyDec">
+                <a (click)="chgDec('m')" title="修改申報人">
+                  <img width="21px" height="21px" alt="修改申報人"
+                    src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDkxIDkxIiBoZWlnaHQ9IjkxcHgiIGlkPSJMYXllcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCA5MSA5MSIgd2lkdGg9IjkxcHgiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxnPjxnPjxwYXRoIGQ9Ik0yNC4wMTgsNDkuNDE1TDQyLjE0OSw2Ny41NGwzOC4xMTktMzguMTIyTDYyLjE0NSwxMS4yOTJMMjQuMDE4LDQ5LjQxNXogTTY2LjQ0NCwyNS4xMTggICAgYzEuMjU5LDEuMjYyLDEuMjU5LDMuMzA2LDAsNC41NjZMNDQuMzY5LDUxLjc1M2MtMC42MjksMC42MzMtMS40NTUsMC45NDYtMi4yNzgsMC45NDZjLTAuODMxLDAtMS42NTUtMC4zMTMtMi4yODQtMC45NDYgICAgYy0xLjI2MS0xLjI2Mi0xLjI2MS0zLjMwNSwwLTQuNTY1bDIyLjA3Mi0yMi4wN0M2My4xMzgsMjMuODU3LDY1LjE4MywyMy44NTcsNjYuNDQ0LDI1LjExOHoiIGZpbGw9IiM2RUM0QTciLz48cG9seWdvbiBmaWxsPSIjNjVCNzk0IiBwb2ludHM9IjE1LjcyLDc1LjU3OCAzNS44NjMsNzAuMzkzIDIxLjExMSw1NS42NDEgICAiLz48cGF0aCBkPSJNODcuNjIxLDEyLjUzM2wtOC41OTMtOC41OTZjLTIuNTQ4LTIuNTQ2LTYuOTkyLTIuNTQzLTkuNTMsMEw2Ni43MDYsNi43M2wxOC4xMjksMTguMTI0bDIuNzg2LTIuNzg4ICAgIEM5MC4yNDQsMTkuNDM2LDkwLjI0NCwxNS4xNTksODcuNjIxLDEyLjUzM3oiIGZpbGw9IiM2NUI3OTQiLz48L2c+PHBhdGggZD0iTTc5LjU4NSw4OS41NTRIMy40NjFjLTEuODMzLDAtMy4zMTgtMS40ODYtMy4zMTgtMy4zMTlWNS41MTJjMC0xLjgzMywxLjQ4NC0zLjMxOCwzLjMxOC0zLjMxOGg1MS4xMTMgICBjMS44MzUsMCwzLjMxNywxLjQ4NSwzLjMxNywzLjMxOGMwLDEuODMyLTEuNDgyLDMuMzE4LTMuMzE3LDMuMzE4SDYuNzc5djc0LjA4Nmg3Mi44MDZjMi41OTIsMCw0LjcwMS0yLjEwOCw0LjcwMS00LjcwMVYzNi41ODggICBjMC0xLjgzMywxLjQ4NC0zLjMxOCwzLjMxNy0zLjMxOGMxLjgzMiwwLDMuMzE4LDEuNDg1LDMuMzE4LDMuMzE4djQxLjYyN0M5MC45MjIsODQuNDY3LDg1LjgzNiw4OS41NTQsNzkuNTg1LDg5LjU1NHoiIGZpbGw9IiM2NDdGOTQiLz48L2c+PC9zdmc+">
+                </a>
+              </ng-container>
+              <ng-template #modifyDec>
+                <a (click)="saveData(this.dataForm.value)" title="保存">
+                  <img width="26px" height="26px" src="/res/assets/util/save-icon.svg" alt="保存">
+                </a>
+                <a (click)="chgDec('c')" title="取消">
+                  <img class="close" width="16px" height="16px" src="/res/assets/util/close-icon.svg" alt="取消">
+                </a>
+              </ng-template>
+            </div>
+            <ng-container *ngIf="!isModify;else modifydecform">
+              <table class="declarant-table">
+                <thead>
+                  <tr>
+                    <th>申報人姓名</th>
+                    <th>身分證字號</th>
+                    <th>連絡電話</th>
+                    <th>手機</th>
+                    <th>地址</th>
+                    <th>身分證檔案</th>
+                    <th>委任書</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let decitem of declarData">
+                    <td>{{decitem.name}}</td>
+                    <td>{{decitem.taxid}}</td>
+                    <td>{{decitem.phone}}</td>
+                    <td>{{decitem.mobile}}</td>
+                    <td>{{decitem.addr}}</td>
+                    <td>
+                      <a *ngIf="decitem.idphotof !== ''" [href]="decitem.idphotof" target="_blank" title="身分證檔案1">
+                        <img width="24px" height="24px" src="/res/assets/util/img-icon.svg" alt="身分證檔案1">
+                      </a>
+                      <a *ngIf="decitem.idphotob !== ''" [href]="decitem.idphotob" target="_blank" title="身分證檔案2">
+                        <img width="24px" height="24px" src="/res/assets/util/img-icon.svg" alt="身分證檔案2">
+                      </a>
+                    </td>
+                    <td>
+                      <a *ngIf="decitem.appointment !== ''" [href]="decitem.appointment" target="_blank" title="委任書">
+                        <img width="24px" height="24px" src="/res/assets/util/file-icon.svg" alt="委任書">
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </ng-container>
+            <ng-template #modifydecform>
+              <input type="hidden" formControlName="shippingidm">
+              <table class="declarant-table" formArrayName="decform">
+                <thead>
+                  <tr>
+                    <th style="width: 5%;">申報人</th>
+                    <th style="width: 10%">身分證字號</th>
+                    <th style="width: 10%">連絡電話</th>
+                    <th style="width: 5%;">手機</th>
+                    <th style="width: 5%;">地址</th>
+                    <th style="width: 5%;">身分證檔案</th>
+                    <th style="width: 5%;">委任書</th>
+                    <th style="width: 5%;">刪除</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let dec of dataForm.get('decform')['controls']; let idec=index">
+                    <tr formGroupName="{{idec}}" class="Ys">
+                      <input type="hidden" formControlName="id">
+                      <td><input type="text" formControlName="name"></td>
+                      <td><input type="text" formControlName="taxid"></td>
+                      <td><input type="text" formControlName="phone"></td>
+                      <td><input type="text" formControlName="mobile"></td>
+                      <td><input type="text" formControlName="addr"></td>
+                      <td>
+                        <label for="imgupload{{idec}}" class="custom-file-upload">
+                          <img width="16px" height="16px" src="/res/assets/util/upload-icon.svg">
+                          <span>上傳</span>
+                        </label>
+                        <input type="file" id="imgupload{{idec}}" #imgupload accept="image/*" class="custom-file"
+                          multiple (change)="imgChange($event, idec)">
+                        <div class="img-preview-container">
+                          <div id="img-preview{{idec}}" class="img-preview">
+                          </div>
+                        </div>
+                        <input type="hidden" formControlName="idphotof">
+                        <input type="hidden" formControlName="idphotob">
+                      </td>
+                      <td>
+                        <label for="filesupload{{idec}}" class="custom-file-upload">
+                          <img width="16px" height="16px" src="/res/assets/util/upload-icon.svg">
+                          <span>上傳</span>
+                        </label>
+                        <input type="file" id="filesupload{{idec}}" #filesupload class="custom-file"
+                          (change)="fileChange($event, idec)">
+                        <div id="file-preview-container{{idec}}"></div>
+                        <input type="hidden" formControlName="appointment">
+                      </td>
+                      <td><a (click)="removedec(idec)"><span class="mem-icon"><i class="fas fa-times"></i></span></a>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+                <div class="declarant-btn">
+                  <a (click)="adddec()"><span class="mem-icon"><i class="fas fa-plus-circle"></i></span></a>
+                </div>
+              </table>
+            </ng-template>
+          </form>
+          <!-- declarant data end -->
+        </div>
+        <!-- content end -->
+        <div class="btn">
+          <a routerLink="/member/shippingcus/{{this.shippingType}}/{{this.cateID}}">回列表</a>
+        </div>
       </div>
-      <!-- content end -->
-      <a routerLink="/member/shippingcus/{{this.shippingType}}/{{this.cateID}}">回列表</a>
     </div>
   </div>
 </div>

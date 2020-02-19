@@ -1,0 +1,195 @@
+a {
+  cursor: pointer;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  display: inline-block;
+  background-color: #3a4979;
+  border-radius: 3px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: .4s;
+}
+
+.custom-file-upload:hover{
+  background-color: #2a3558;
+}
+
+.custom-file-upload span {
+  font-size: 12px;
+  color: #fff;
+}
+
+.shipping .shipping-contain {
+  width: 850px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 1.875rem 0 rgba(0, 0, 0, .1);
+  margin: 0 auto;
+}
+
+.shippingform {
+  position: relative;
+  width: 100%;
+}
+
+.main-card {
+  margin-top: 70px;
+}
+
+.main-card .card-contain {
+  padding: 10px;
+}
+
+.master-section {
+  position: relative;
+  width: 100%;
+}
+
+.master-section .form-control {
+  display: inline-block;
+  width: 250px;
+  margin-bottom: 10px;
+}
+
+.master-section .form-control label {
+  margin-right: 5px;
+  font-weight: 600;
+}
+
+.master-section .form-control span {
+  border-bottom: 1px dashed #273152;
+}
+
+.box-section {
+  margin: 20px 50px 50px 50px;
+  padding: 10px;
+  box-shadow: 0 0 .5rem 0 rgba(0, 0, 0, .1);
+}
+
+.box-section .boxheader {
+  position: relative;
+  width: 100%;
+}
+
+.box-section .boxheader .form-control {
+  display: inline-block;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.boxheader .form-control label {
+  margin-right: 5px;
+  font-weight: bolder;
+}
+
+.boxheader .form-control span {
+  border-bottom: 1px dashed #273152;
+}
+
+.boxdetail {
+  width: 100%;
+  text-align: center;
+  border-top: 1px solid rgb(221, 220, 220);
+}
+
+.boxdetail thead tr th {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid rgb(221, 220, 220);
+}
+
+.boxdetail tbody tr td {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.box-section .boxdetail tbody tr:nth-child(odd) {
+  background-color: rgb(248, 247, 247);
+}
+
+.declarform {
+  position: relative;
+  width: 100%;
+}
+
+.declarant-table {
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
+  border-top: 2px solid rgb(221, 220, 220);
+}
+
+.declarant-table thead tr th {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid rgb(221, 220, 220);
+}
+
+.declarant-table tbody tr td {
+  width: 100px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgb(221, 220, 220);
+  overflow-wrap: break-word;
+}
+
+.declarant-table tbody tr:nth-child(even) {
+  background-color: rgb(248, 247, 247);
+}
+
+.declarant-table tbody tr td input {
+  border-radius: 2px;
+  outline: 0;
+  width: 100px;
+  height: 30px;
+}
+
+.declarant-table tbody tr td input[type="text"] {
+  border: 1px solid rgb(228, 225, 225);
+}
+
+.btn-modify {
+  position: absolute;
+  right: 0;
+  top: -25px;
+}
+
+.btn-modify a {
+  margin-right: 5px;
+}
+
+.btn-modify a img.close {
+  margin-bottom: 4px;
+}
+
+.btn-modify a img {
+  background-color: transparent;
+}
+
+.declarant-btn {
+  text-align: left;
+  padding-top: 10px;
+}
+
+.btn {
+  text-align: center;
+  margin-top: 30px;
+  padding-bottom: 30px;
+}
+
+.btn a {
+  padding: 5px 10px;
+  background-color: #3a4979;
+  color: #fff;
+  border-radius: 2px;
+  transition: .4s;
+}
+
+.btn a:hover{
+  background-color: #2a3558;
+}

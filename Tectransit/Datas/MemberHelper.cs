@@ -345,7 +345,7 @@ namespace Tectransit.Datas
         public dynamic GetShippingCusData(string sWhere, int pageIndex, int pageSize)
         {
             string sql = $@"SELECT * FROM (
-                                            SELECT ROW_NUMBER() OVER (ORDER BY UPDDATE) AS ROW_ID, ID, ACCOUNTID, STATIONCODE, SHIPPINGNO, TRACKINGNO, TRASFERNO,
+                                            SELECT ROW_NUMBER() OVER (ORDER BY CREDATE DESC) AS ROW_ID, ID, ACCOUNTID, STATIONCODE, SHIPPINGNO, TRACKINGNO, TRASFERNO,
                                                    TOTAL, RECEIVER, RECEIVERADDR, STATUS, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
                                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
                                                    CREATEBY AS CREBY, UPDBY

@@ -49,7 +49,7 @@ export class ShippingcusEditComponent implements OnInit {
     this.dataID = this.route.snapshot.paramMap.get('id');
 
     // declarant data can modify or not
-    this.isExist = (this.shippingType === 't1' || this.shippingType === 't2' ? true : false);
+    this.isExist = (this.shippingType === 't5' ? false : true);
 
     this.resetForm();
     this.getData();
@@ -195,6 +195,9 @@ export class ShippingcusEditComponent implements OnInit {
       }
     }
     this.fileList = this.tempList;
+
+    const div = document.getElementById('file-preview-container' + id) as HTMLDivElement;
+    div.innerHTML = '<span>' + e.target.files[0].name + '</span>';
 
     this.fileList.push({ idcode: id, file: e.target.files[0] });
   }

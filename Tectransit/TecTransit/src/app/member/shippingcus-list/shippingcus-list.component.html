@@ -54,6 +54,8 @@
                   </a>
                 </td>
               </tr>
+              <!-- 資料筆數=0顯示 -->
+              <tr *ngIf="data === null"><td colspan="8"><span class="warn">尚無資料</span></td></tr>
             </tbody>
           </table>
         </div>

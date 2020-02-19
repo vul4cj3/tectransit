@@ -80,11 +80,11 @@
   text-align: center;
 }
 
-.shipping-table tbody tr td label{
+.shipping-table tbody tr td label {
   cursor: pointer;
 }
 
-.shipping-table tbody tr:nth-child(even){
+.shipping-table tbody tr:nth-child(even) {
   background-color: rgb(248, 247, 247);
 }
 
@@ -93,3 +93,8 @@
   padding-left: 350px;
 }
 
+.warn {
+  font-weight: 600;
+  color: #cf3b3b;
+  letter-spacing: 2px;
+}
