@@ -238,6 +238,9 @@ export class EntrustcusComponent implements OnInit {
     }
     this.fileList = this.tempList;
 
+    const div = document.getElementById('file-preview-container' + id) as HTMLDivElement;
+    div.innerHTML = '<span>' + e.target.files[0].name + '</span>';
+
     this.fileList.push({ idcode: id, file: e.target.files[0] });
   }
 

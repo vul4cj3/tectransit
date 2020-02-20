@@ -1,43 +1,108 @@
-<div class="memprofile">
-  <div class="profile-contain">
-    <div class="memheader"><span>委託集運</span></div>
-    <span class="symbol">
-      <i class="fas fa-exclamation-triangle"></i>
-      <p>請選擇集貨站及輸入快遞單號，請確實填寫包裹內物品資料！</p>
-      <br />
-      <i class="fas fa-exclamation-triangle"></i>
-      <p>總件數必須與明細資料的箱號數量相符！</p>
-      <br />
-      <i class="fas fa-exclamation-triangle"></i>
-      <p>送出後，請至[集運單管理]查看！</p>
-    </span>
-    <div>
-      <form [formGroup]="dataForm">
+<div class="entrust">
+  <div class="warn-section">
+    <div class="inner-border">
+      <div class="warn-item">
+        <div class="warn-icon"></div>
+        <p>請選擇集運站及輸入快遞單號，請確實填寫包裹內物品資料！</p>
+      </div>
+      <div class="warn-item">
+        <div class="warn-icon"></div>
+        <p>總件數必須與明細資料的箱號數量相符！</p>
+      </div>
+      <div class="warn-item">
+        <div class="warn-icon"></div>
+        <p><i class="required">紅字</i>標題為必填欄位！</p>
+      </div>
+      <div class="warn-item">
+        <div class="warn-icon"></div>
+        <p>送出後，請至<i>集運單管理</i>查看！</p>
+      </div>
+    </div>
+  </div>
+  <div class="entrust-contain">
+    <div class="entrustheader">
+      <span class="mem-icon">委託集運<i class="fas fa-pen-fancy"></i></span>
+    </div>
+    <div class="main-card">
+      <form class="cardform" [formGroup]="dataForm">
         <!--master detail-->
-        <label>集運站(必填)</label>
-        <select formControlName="stationcode">
-          <option value="{{item.stationcode}}" *ngFor="let item of stationData">{{item.stationname}}</option>
-        </select>
-        <label>快遞單號(必填)</label>
-        <input placeholder="tranceno" type="text" formControlName="trasferno">
-        <label>總件數(必填)</label>
-        <input placeholder="total" type="text" formControlName="total">
-        <input type="checkbox" id="IsmultReceiver" (click)="chgReciver()" value="Y" formControlName="ismultreceiver">
-        <label for="IsmultReceiver">是否複數收件人</label>
+        <div class="master-section">
+          <div class="form-control">
+            <label for="stationcode" class="required">集運站</label>
+            <select formControlName="stationcode">
+              <option value="{{item.stationcode}}" *ngFor="let item of stationData">{{item.stationname}}</option>
+            </select>
+          </div>
+          <div class="form-control">
+            <label for="trasferno" class="required">快遞單號</label>
+            <input type="text" formControlName="trasferno">
+          </div>
+          <div class="form-control">
+            <label for="total" class="required">總件數</label>
+            <input type="text" formControlName="total">
+          </div>
+          <div class="form-control">
+            <label for="IsmultReceiver">複數收件人</label>
+            <input type="checkbox" id="IsmultReceiver" (click)="chgReciver()" value="Y"
+              formControlName="ismultreceiver">
+          </div>
+          <ng-container *ngIf="!IsmultRec">
+            <div class="form-control">
+              <label for="receiver" class="required">收件人</label>
+              <input type="text" formControlName="receiver">
+            </div>
+            <div class="form-control large">
+              <label for="receiveraddr" class="required">收件人地址</label>
+              <input type="text" formControlName="receiveraddr">
+            </div>
+          </ng-container>
+        </div>
         <!--box detail start-->
-        <div formArrayName="boxform">
-          <div *ngFor="let box of dataForm.get('boxform')['controls']; let ibox=index">
-            <div formGroupName="{{ibox}}" class="Xs">
-              <label>箱號(必填)</label>
-              <input type="text" formControlName="boxno">
+        <div class="box-section" formArrayName="boxform">
+          <div class="box-item" *ngFor="let box of dataForm.get('boxform')['controls']; let ibox=index">
+            <div formGroupName="{{ibox}}" class="box-sub">
+              <div class="form-control">
+                <label class="required">箱號</label>
+                <input type="text" formControlName="boxno">
+              </div>
               <ng-container *ngIf="IsmultRec">
-                <label>收件人</label>
-                <input type="text" formControlName="receiver">
-                <label>收件人地址</label>
-                <input type="text" formControlName="receiveraddr">
+                <div class="form-control">
+                  <label class="required">收件人</label>
+                  <input type="text" formControlName="receiver">
+                </div>
+                <div class="form-control large">
+                  <label class="required">收件人地址</label>
+                  <input type="text" formControlName="receiveraddr">
+                </div>
               </ng-container>
               <!--product detail start-->
-              <div><span>商品名稱(必填)</span><span>數量(必填)</span><span>價值(必填)</span></div>
+              <table class="product-table" formArrayName="productform">
+                <thead>
+                  <tr>
+                    <th class="required">商品名稱</th>
+                    <th class="required">數量</th>
+                    <th class="required">價值</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let prd of box.get('productform')['controls']; let iprd=index">
+                    <tr formGroupName="{{iprd}}" class="prd-sub">
+                      <td><input type="text" formControlName="product"></td>
+                      <td><input type="text" formControlName="quantity"></td>
+                      <td><input type="text" formControlName="unitprice"></td>
+                      <td><a (click)="removeprd(ibox, iprd)">
+                          <span class="modify-icon"><i class="fas fa-times"></i></span>
+                        </a>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+              <div class="btn-add">
+                <a (click)="addprd(ibox)" title="新增商品"><span class="modify-icon"><i class="fas fa-plus"></i></span></a>
+              </div>
+              <!--
               <div formArrayName="productform">
                 <div *ngFor="let prd of box.get('productform')['controls']; let iprd=index">
                   <div formGroupName="{{iprd}}" class="Ys">
@@ -49,14 +114,74 @@
                 </div>
                 <input type="button" (click)="addprd(ibox)" value="Add product">
               </div>
+              -->
               <!--product detail end-->
+              <div class="btn-removebox">
+                <a (click)="removebox(ibox)" title="刪除箱號"><span class="modify-icon"><i
+                      class="fas fa-times-circle"></i></span></a>
+              </div>
             </div>
-            <input type="button" (click)="removebox(ibox)" value="remove box">
+
           </div>
-          <input type="button" (click)="addbox()" value="Add box">
+          <div class="btn-addbox">
+            <a (click)="addbox()" title="新增箱號"><span class="modify-icon"><i class="fas fa-plus-circle"></i></span></a>
+          </div>
         </div>
         <!--box detail end-->
         <!--declarant list start-->
+        <table class="declarant-table" formArrayName="decform">
+          <thead>
+            <tr>
+              <th class="required">申報人</th>
+              <th class="required">身分證字號</th>
+              <th>連絡電話</th>
+              <th>手機</th>
+              <th>地址</th>
+              <th>證件檔案</th>
+              <th>委任書</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let dec of dataForm.get('decform')['controls']; let idec=index">
+              <tr formGroupName="{{idec}}" class="Ys">
+                <td><input type="text" formControlName="name"></td>
+                <td><input type="text" formControlName="taxid"></td>
+                <td><input type="text" formControlName="phone"></td>
+                <td><input type="text" formControlName="mobile"></td>
+                <td class="large"><input type="text" formControlName="addr"></td>
+                <td>
+                  <label for="imgupload{{idec}}" class="custom-file-upload">
+                    <img width="16px" height="16px" src="/res/assets/util/upload-icon.svg">
+                    <span>上傳</span>
+                  </label>
+                  <input type="file" id="imgupload{{idec}}" #imgupload accept="image/*" multiple
+                    (change)="imgChange($event, idec)">
+                  <div class="img-preview-container">
+                    <div id="img-preview{{idec}}" class="img-preview">
+                    </div>
+                  </div>
+                  <input type="hidden" formControlName="idphotof">
+                  <input type="hidden" formControlName="idphotob">
+                </td>
+                <td>
+                  <label for="filesupload{{idec}}" class="custom-file-upload">
+                    <img width="16px" height="16px" src="/res/assets/util/upload-icon.svg">
+                    <span>上傳</span>
+                  </label>
+                  <input type="file" id="filesupload{{idec}}" #filesupload (change)="fileChange($event, idec)">
+                  <div id="file-preview-container{{idec}}" class="file-preview"></div>
+                  <input type="hidden" formControlName="appointment">
+                </td>
+                <td><a (click)="removedec(idec)"><span class="modify-icon"><i class="fas fa-times"></i></span></a></td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+        <div class="btn-adddec">
+          <a (click)="adddec()"><span class="modify-icon"><i class="fas fa-plus"></i></span></a>
+        </div>
+        <!--
         <div>
           <span>申報人(必填)</span><span>身分證字號(居留證號)(必填)</span><span>連絡電話</span><span>手機</span><span>地址</span><span>證件檔案</span><span>委任書</span>
         </div>
@@ -82,15 +207,12 @@
           </div>
           <input type="button" (click)="adddec()" value="Add declarant">
         </div>
+      -->
         <!--declarant list end-->
-        <ng-container *ngIf="!IsmultRec">
-          <label>收件人</label>
-          <input type="text" formControlName="receiver">
-          <label>收件人地址</label>
-          <input type="text" formControlName="receiveraddr">
-        </ng-container>
-        <button type="button" (click)="saveData(dataForm.value)">送出</button>
-        <button type="button" (click)="resetForm()">取消</button>
+        <div class="btn-two">
+          <a (click)="saveData(dataForm.value)">送出</a>
+          <a (click)="resetForm()">取消</a>
+        </div>
       </form>
     </div>
   </div>
