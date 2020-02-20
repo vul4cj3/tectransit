@@ -102,19 +102,6 @@
               <div class="btn-add">
                 <a (click)="addprd(ibox)" title="新增商品"><span class="modify-icon"><i class="fas fa-plus"></i></span></a>
               </div>
-              <!--
-              <div formArrayName="productform">
-                <div *ngFor="let prd of box.get('productform')['controls']; let iprd=index">
-                  <div formGroupName="{{iprd}}" class="Ys">
-                    <input type="text" formControlName="product">
-                    <input type="text" formControlName="quantity">
-                    <input type="text" formControlName="unitprice">
-                    <input type="button" (click)="removeprd(ibox, iprd)" value="remove product">
-                  </div>
-                </div>
-                <input type="button" (click)="addprd(ibox)" value="Add product">
-              </div>
-              -->
               <!--product detail end-->
               <div class="btn-removebox">
                 <a (click)="removebox(ibox)" title="刪除箱號"><span class="modify-icon"><i
@@ -181,33 +168,6 @@
         <div class="btn-adddec">
           <a (click)="adddec()"><span class="modify-icon"><i class="fas fa-plus"></i></span></a>
         </div>
-        <!--
-        <div>
-          <span>申報人(必填)</span><span>身分證字號(居留證號)(必填)</span><span>連絡電話</span><span>手機</span><span>地址</span><span>證件檔案</span><span>委任書</span>
-        </div>
-        <div formArrayName="decform">
-          <div *ngFor="let dec of dataForm.get('decform')['controls']; let idec=index">
-            <div formGroupName="{{idec}}" class="Ys">
-              <input type="text" formControlName="name">
-              <input type="text" formControlName="taxid">
-              <input type="text" formControlName="phone">
-              <input type="text" formControlName="mobile">
-              <input type="text" formControlName="addr">
-              <input type="file" #imgupload accept="image/*" multiple (change)="imgChange($event, idec)">
-              <div class="img-preview-container">
-                <div id="img-preview{{idec}}" class="img-preview">
-                </div>
-              </div>
-              <input type="hidden" formControlName="idphotof">
-              <input type="hidden" formControlName="idphotob">
-              <input type="file" #filesupload (change)="fileChange($event, idec)">
-              <input type="hidden" formControlName="appointment">
-              <input type="button" (click)="removedec(idec)" value="remove declarant">
-            </div>
-          </div>
-          <input type="button" (click)="adddec()" value="Add declarant">
-        </div>
-      -->
         <!--declarant list end-->
         <div class="btn-two">
           <a (click)="saveData(dataForm.value)">送出</a>
