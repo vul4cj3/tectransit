@@ -219,6 +219,7 @@ input[type="file"] {
 }
 
 .product-table thead tr th {
+  width: 100px;
   text-align: center;
   padding-bottom: 10px;
 }
