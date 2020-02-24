@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
@@ -116,7 +117,7 @@ namespace Tectransit.Datas
                 return new { status = "0", item = roleList };
             }
 
-            return new { status = "99", pList = "", item = "" };
+            return new { status = "99", item = "" };
 
         }
 
@@ -145,7 +146,7 @@ namespace Tectransit.Datas
                 return new { status = "0", item = roleList };
             }
 
-            return new { status = "99", pList = "", item = "" };
+            return new { status = "99", item = "" };
 
         }
 
@@ -174,7 +175,7 @@ namespace Tectransit.Datas
                 return new { status = "0", item = roleList };
             }
 
-            return new { status = "99", pList = "", item = "" };
+            return new { status = "99", item = "" };
 
         }
 
@@ -285,6 +286,40 @@ namespace Tectransit.Datas
 
                     bList.Add(m);
                     
+                }
+
+                return new { status = "0", dataList = bList };
+            }
+
+            return new { status = "99", backList = "", frontList = "" };
+        }
+
+        //前台banner
+        public dynamic GetBanner()
+        {
+            DataTable dtlist = DBUtil.SelectDataTable($@"SELECT ID, TITLE, DESCR, IMGURL, URL, 
+	                                                            BANSEQ, UPSDATE, UPEDATE, ISTOP
+                                                         FROM T_D_BANNER
+                                                         WHERE ISENABLE = 'true'
+                                                         ORDER BY BANSEQ");
+            if (dtlist.Rows.Count > 0)
+            {
+                List<BannerInfo> bList = new List<BannerInfo>();
+                for (int i = 0; i < dtlist.Rows.Count; i++)
+                {
+                    BannerInfo m = new BannerInfo();
+                    m.BANID = Convert.ToInt64(dtlist.Rows[i]["ID"]);
+                    m.TITLE = dtlist.Rows[i]["TITLE"]?.ToString();
+                    m.DESCR = dtlist.Rows[i]["DESCR"]?.ToString();
+                    m.IMGURL = dtlist.Rows[i]["IMGURL"]?.ToString();
+                    m.URL = dtlist.Rows[i]["URL"]?.ToString();
+                    m.BANSEQ = dtlist.Rows[i]["BANSEQ"]?.ToString();
+                    m.UPSDATE = dtlist.Rows[i]["UPSDATE"]?.ToString();
+                    m.UPEDATE = dtlist.Rows[i]["UPEDATE"]?.ToString();
+                    m.ISTOP = Convert.ToBoolean(dtlist.Rows[i]["ISTOP"]) == true ? "1" : "0";
+
+                    bList.Add(m);
+
                 }
 
                 return new { status = "0", dataList = bList };
@@ -441,6 +476,15 @@ namespace Tectransit.Datas
         {
             string sql = $@"DELETE FROM {table} WHERE {column} = {value}";
             DBUtil.EXECUTE(sql);
+        }
+
+        //刪除後台實體檔案
+        public void DeleteFileB(string file)
+        {
+            var filepath = Path.Combine(Directory.GetCurrentDirectory(), "admin/dist/admin" + file);
+            if (File.Exists(filepath))
+                File.Delete(filepath);
+            
         }
 
         public string GetRandomString()

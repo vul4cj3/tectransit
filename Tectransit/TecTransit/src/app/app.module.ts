@@ -21,6 +21,8 @@ import { RegfinalComponent } from './regfinal/regfinal.component';
 import { ShippstatusPipe } from './_Helper/shippstatus.pipe';
 import { ForgetpwComponent } from './forgetpw/forgetpw.component';
 import { ShareModule } from './share/share.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BannerComponent } from './banner/banner.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { ShareModule } from './share/share.module';
     RegconfirmComponent,
     RegfinalComponent,
     ShippstatusPipe,
-    ForgetpwComponent
+    ForgetpwComponent,
+    BannerComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +46,8 @@ import { ShareModule } from './share/share.module';
     HttpClientModule,
     MemberModule,
     AppRoutingModule,
-    ShareModule
+    ShareModule,
+    NgbModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [AuthenticationService, AuthGuard, CommonService],

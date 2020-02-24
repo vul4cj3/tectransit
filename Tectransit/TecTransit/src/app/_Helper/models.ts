@@ -208,3 +208,26 @@ export interface DeclarantCusInfo {
   appointment: string;
   shippingiD_M: number;
 }
+
+export interface BannerInfo {
+  id: number;
+  title: string;
+  descr: string;
+  imgurl: string;
+  upsdate: string;
+  upedate: string;
+  istop: string;
+  banseq: string;
+}
+
+export interface NewsInfo {
+  newsid: number;
+  title: string;
+  descr: string;
+  upsdate: string;
+  upedate: string;
+  istop: string;
+  newsseq: string;
+  credate: string;
+  upddate: string;
+}

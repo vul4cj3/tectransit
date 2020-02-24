@@ -97,6 +97,10 @@ nav li > a:hover {
   background-color: #fff;
 }
 
+.subnav.active{
+  margin-top: 1px;
+}
+
 .memNav{
   position: absolute;
   top: 0px;
@@ -138,7 +142,7 @@ nav li > a:hover {
 
 .profilelist{
   position: absolute;
-  top: 80px;
+  top: 75px;
   right: 0;
   background-color: #fff;
   border-radius: 5px;

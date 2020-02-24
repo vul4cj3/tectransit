@@ -34,7 +34,8 @@ export class BannerListComponent implements OnInit {
   chkNum = 1;
   modalid: string;
 
-  fileData: File = null;
+  tempList: any = [];
+  imgList: any = [];
   previewUrl: any = null;
   fileUploadProgress: string = null;
   uploadedFilePath: string = null;
@@ -224,6 +225,35 @@ export class BannerListComponent implements OnInit {
       return alert('代碼不能為空！');
     }
 
+    // 先上傳檔案
+    const promise = new Promise((resolve, reject) => {
+      if (this.imgList.length > 0) {
+        const formdata = new FormData();
+        formdata.append('fileUpload', this.imgList[0].file);
+        formdata.append('TYPE', 'ban');
+
+        this.commonService.fileUpload(formdata, this.commUrl + this.banUploadUrl)
+          .subscribe(data => {
+            if (data.status === '0') {
+              this.dataForm.controls.imgurl.setValue(data.imgurl);
+
+              resolve('success');
+            }
+          },
+            error => {
+              console.log(error);
+            });
+      } else { resolve('success'); }
+    });
+
+    Promise.all([promise])
+      .then(() => {
+        this.save(this.dataForm.value);
+      });
+
+  }
+
+  save(form) {
     if (form.banid !== 0) {
       this.dataChange = this.commonService.formChanges(form, this.BanData);
     } else { this.dataChange = form; }
@@ -247,28 +277,28 @@ export class BannerListComponent implements OnInit {
     } else { alert('頁面無數據被修改！'); }
   }
 
-  fileChange(files) {
-    if (files.length === 0) {
-      return;
-    }
+  fileChange(e) {
 
-    const fileToUpload = files[0] as File;
-    const formData = new FormData();
-    formData.append('TYPE', 'ban');
-    formData.append('file', fileToUpload, fileToUpload.name);
+    this.imgList = [];
 
-    this.commonService.fileUpload(formData, this.commUrl + this.banUploadUrl)
-      .subscribe(data => {
-        if (data.status === '0') {
-          this.dataForm.controls.imgurl.setValue(data.imgurl);
-        }
-      },
-        error => {
-          console.log(error);
-        });
+    const div = document.getElementById('img-preview') as HTMLDivElement;
+    div.innerHTML = '';
+
+    this.imgList.push({ file: e.target.files[0] });
+
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.addEventListener('load', (event: any) => {
+      div.innerHTML += '<img class=\'thumb-nail\' src=\'' + event.target.result + '\'' + 'title=\'' + file.name + '\'/>';
+    });
+    reader.readAsDataURL(file);
+
   }
 
   resetForm() {
+    const div = document.getElementById('img-preview') as HTMLDivElement;
+    div.innerHTML = '';
+
     this.dataForm = this.formBuilder.group({
       banid: 0,
       title: ['', Validators.required],

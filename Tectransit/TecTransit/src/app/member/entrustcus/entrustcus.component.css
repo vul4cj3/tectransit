@@ -25,7 +25,8 @@ input[type="file"] {
 }
 
 .entrust .warn-section {
-  width: 100%;
+  width: 960px;
+  margin: 0 auto;
   background-color: #FFF9E1;
   text-align: left;
   padding: 10px;
@@ -75,7 +76,8 @@ input[type="file"] {
 }
 
 .entrust-contain {
-  width: 100%;
+  width: 960px;
+  margin: 0 auto;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 0 1.875rem 0 rgba(0, 0, 0, .1);

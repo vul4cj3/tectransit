@@ -1,4 +1,4 @@
-import { Component, Inject, HostListener } from '@angular/core';
+import { Component, Inject, HostListener, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
 @Component({
@@ -6,12 +6,16 @@ import { DOCUMENT } from '@angular/common';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   isScroll = false;
 
-  constructor(@Inject(DOCUMENT) private document: Document, ) {
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+  ) {
+  }
 
+  ngOnInit() {
   }
 
   @HostListener('window:scroll', [])
@@ -25,8 +29,8 @@ export class AppComponent {
 
   clearnav() {
     // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < document.getElementsByClassName('active').length; i++) {
-      const item = document.getElementsByClassName('active')[i];
+    for (let i = 0; i < document.getElementsByClassName('subnav').length; i++) {
+      const item = document.getElementsByClassName('subnav')[i];
       item.classList.remove('active');
     }
 

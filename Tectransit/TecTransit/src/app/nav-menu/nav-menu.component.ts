@@ -67,9 +67,15 @@ export class NavMenuComponent implements OnInit {
 
   chgSubnav(e) {
     // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < document.getElementsByClassName('active').length; i++) {
-      const item = document.getElementsByClassName('active')[i];
+    for (let i = 0; i < document.getElementsByClassName('subnav').length; i++) {
+      const item = document.getElementsByClassName('subnav')[i];
       item.classList.remove('active');
+    }
+
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < document.getElementsByClassName('open').length; i++) {
+      const item = document.getElementsByClassName('open')[i];
+      item.classList.remove('open');
     }
 
     const control = e.target.nextSibling as HTMLElement;

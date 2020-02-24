@@ -117,11 +117,11 @@
               <div class="position-relative row form-group">
                 <label class="col-sm-2 col-form-label" for="imgurl">圖片上傳</label>
                 <div class="col-sm-10">
-                  <input type="file" #file accept=".png,.jpg,.jpeg,.gif" (change)="fileChange(file.files)">
-                  <ng-container *ngIf="dataForm.value.imgurl !== ''">
-                    <img [src]="dataForm.value.imgurl">
-                  </ng-container>
+                  <input type="file" #file accept="image/*" (change)="fileChange($event)">
+                  <div id="img-preview">
+                  </div>
                 </div>
+                <input type="hidden" id="imgurl" formControlName="imgurl">
               </div>
               <div class="position-relative row form-group">
                 <label class="col-sm-2 col-form-label" for="url">Url</label>

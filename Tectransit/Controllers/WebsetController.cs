@@ -222,7 +222,12 @@ namespace Tectransit.Controllers
                         {
                             var query = _context.TDBanner.Where(q => q.Id == Convert.ToInt64(sData["BANNERID"])).FirstOrDefault();
                             if (query != null)
+                            {
+                                //刪除實體檔案
+                                objComm.DeleteFileB(query.Imgurl);
+                                //刪除資料
                                 delBan(query);
+                            }
 
                             logMsg += (logMsg == "" ? "" : ",") + $@"[BANNERID({sData["BANNERID"]})]";
                         }
