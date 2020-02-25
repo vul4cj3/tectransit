@@ -8,12 +8,15 @@ import { RegcusComponent } from './regcus/regcus.component';
 import { RegconfirmComponent } from './regconfirm/regconfirm.component';
 import { RegfinalComponent } from './regfinal/regfinal.component';
 import { ForgetpwComponent } from './forgetpw/forgetpw.component';
+import { NewsListComponent } from './news-list/news-list.component';
+import { NewsDetailComponent } from './news-detail/news-detail.component';
 
 
 const routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'about', component: HomeComponent},
-  {path: 'news', component: HomeComponent},
+  {path: 'news', component: NewsListComponent},
+  {path: 'news/detail/:id', component: NewsDetailComponent},
   {path: 'contact', component: HomeComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'regmem', component: RegmemComponent},

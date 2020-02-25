@@ -23,6 +23,8 @@ import { ForgetpwComponent } from './forgetpw/forgetpw.component';
 import { ShareModule } from './share/share.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BannerComponent } from './banner/banner.component';
+import { NewsListComponent } from './news-list/news-list.component';
+import { NewsDetailComponent } from './news-detail/news-detail.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { BannerComponent } from './banner/banner.component';
     RegfinalComponent,
     ShippstatusPipe,
     ForgetpwComponent,
-    BannerComponent
+    BannerComponent,
+    NewsListComponent,
+    NewsDetailComponent
   ],
   imports: [
     BrowserModule,
