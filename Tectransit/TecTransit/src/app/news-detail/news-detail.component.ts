@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonService } from '../services/common.service';
+import { NewsInfo } from '../_Helper/models';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-news-detail',
@@ -7,9 +10,35 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NewsDetailComponent implements OnInit {
 
-  constructor() { }
+  /* web api url */
+  dataUrl = '/api/FrontHelp/GetNews';
+
+  id;
+  data: NewsInfo = null;
+
+  constructor(
+    private commonservice: CommonService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
 
   ngOnInit() {
+    this.id = this.route.snapshot.paramMap.get('id');
+    this.getData(this.id);
+  }
+
+  getData(id) {
+    this.commonservice.getData(id, this.dataUrl)
+      .subscribe(result => {
+        if (result.rows === '') {
+          this.router.navigate(['/news']);
+        } else {
+          this.data = result.rows;
+          console.log(this.data);
+        }
+      }, error => {
+        console.log(error);
+      });
   }
 
 }

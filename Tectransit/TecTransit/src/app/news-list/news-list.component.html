@@ -1,1 +1,26 @@
-<p>news-list works!</p>
+<div class="news-container">
+  <div class="news-header">
+    <div class="icon"></div>
+    <span class="title">最新消息</span>
+    <div class="line"></div>
+  </div>
+  <div class="news-contain">
+    <!-- news list -->
+    <div class="card-list">
+      <div class="row" *ngFor="let item of data">
+        <div class="date">
+          <span class="year">{{item.upddate.split('-')[0]}}</span>
+          <span class="datetime">{{item.upddate.split('-')[1]}}.{{item.upddate.split('-')[2]}}</span>
+        </div>
+        <a routerLink="/news/detail/{{item.newsid}}">{{item.title}}</a>
+      </div>
+    </div>
+    <!--pagination section start-->
+    <div class="card-footer">
+      <app-pagination [currentPage]="this.currentpage" [preApper]="this.commonservice.preApper"
+        [nextApper]="this.commonservice.nextApper" [pageNum]="this.commonservice.pageNum"
+        (pageChanged)="changeData($event)"></app-pagination>
+    </div>
+    <!--pagination section end-->
+  </div>
+</div>

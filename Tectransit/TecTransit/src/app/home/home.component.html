@@ -8,9 +8,9 @@
       <span class="title">最新消息</span>
       <div class="line"></div>
     </div>
-    <div class="news-contain" *ngFor="let item of newsData let i = index">
-      <ng-container *ngIf="i < 6">
-        <div class="row">
+    <div class="news-contain">
+      <ng-container *ngFor="let item of newsData let i = index">
+        <div class="row" *ngIf="i < 6">
           <div class="date">
             <span class="year">{{item.upddate.split('-')[0]}}</span>
             <span class="datetime">{{item.upddate.split('-')[1]}}.{{item.upddate.split('-')[2]}}</span>
