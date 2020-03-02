@@ -1,0 +1,155 @@
+a {
+  cursor: pointer;
+}
+
+.required {
+  color: #c24040;
+}
+
+.contact-container {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 20%;
+  padding-right: 20%;
+}
+
+.contact-header {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.contact-header .icon {
+  display: inline-block;
+  width: 45px;
+  height: 45px;
+  background: url('/res/assets/util/contactus-icon.svg');
+  background-size: contain;
+}
+
+.contact-header .title {
+  display: inline-block;
+  font-size: 20px;
+  font-family: 'Noto Sans TC';
+  line-height: 1rem;
+}
+
+.contact-header .line {
+  position: absolute;
+  top: 35px;
+  left: 140px;
+  width: 80%;
+  height: 1px;
+  border-bottom: 1px solid #aaa;
+}
+
+.contact-contain {
+  width: 750px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 1.875rem 0 rgba(0, 0, 0, .1);
+  margin-top: 20px;
+}
+
+.contact-contain .card {
+  margin: 20px;
+  padding-top: 10px;
+}
+
+.card-row {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.card-row .title {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.card-row .title label {
+  font-size: 16px;
+  font-weight: 600;
+  margin-right: 5px;
+}
+
+.card-row .title p {
+  font-size: 12px;
+  font-weight: 500;
+  padding-top: 5px;
+}
+
+.card-row .content {
+  position: relative;
+  width: 200px;
+  display: inline-block;
+}
+
+.card-row .content-large {
+  position: relative;
+  width: 550px;
+}
+
+.card-row .content input {
+  width: 100%;
+  outline: 0;
+  border: 0;
+  padding: 5px 0;
+  border-bottom: 1px solid #aaa;
+}
+
+.card-row .content-large textarea {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  border-bottom: 1px solid #aaa;
+}
+
+.card-row .content input~.outline, .card-row .content-large textarea~.outline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #27ad8a;
+}
+
+.card-row .content input:focus~.outline, .card-row .content-large textarea:focus~.outline {
+  width: 100%;
+  transition: 0.5s;
+}
+
+.captcha-img {
+  display: inline-block;
+}
+
+.symbol-captcha {
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.warn-section p {
+  font-size: 12px;
+  color: rgb(177, 171, 171);
+  margin: 5px;
+}
+
+.btn-two {
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.btn-two a {
+  padding: 5px 10px;
+  border: 1px solid cadetblue;
+  color: cadetblue;
+  border-radius: 3px;
+  margin-right: 10px;
+  transition: .4s;
+}
+
+.btn-two a:hover {
+  color: #fff;
+  background-color: cadetblue;
+}

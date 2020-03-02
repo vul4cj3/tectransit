@@ -571,6 +571,58 @@ namespace Tectransit.Datas
             #endregion
         }
 
+        //寄給客服信箱
+        public void SendMasterMail(string fromUser, string ToUser, string Mailsubject, string Mailbody, string ccUser)
+        {
+            #region  send mail
+            string smtpServer = "mail.t3ex-group.com";
+            int smtpPort = 25;
+            string mailAccount = "tomato";
+            string mailPwd = "1qaz2WSX";
+
+            //建立MailMessage物件
+            System.Net.Mail.MailMessage mms = new System.Net.Mail.MailMessage();
+            //指定一位寄信人MailAddress
+            mms.From = new MailAddress(fromUser);
+            //信件主旨
+            mms.Subject = Mailsubject;
+            //信件內容
+            mms.Body = Mailbody;
+            //信件內容 是否採用Html格式
+            mms.IsBodyHtml = true;
+
+            //加入信件的收件人address
+            if (!string.IsNullOrEmpty(ToUser))
+            {
+                string[] ToList = ToUser.Split(';');
+                for(int i = 0; i < ToList.Length; i++)
+                {
+                    mms.To.Add(ToList[i]);
+                }
+            }            
+            //加入信件的副本address
+            if (!string.IsNullOrEmpty(ccUser))
+            {
+                string[] CcList = ccUser.Split(';');
+                for (int i = 0; i < CcList.Length; i++)
+                {
+                    mms.CC.Add(CcList[i]);
+                }
+            }
+            //備存
+            //mms.CC.Add(new MailAddress("ebs.sys@t3ex-group.com"));
+
+            using (SmtpClient client = new SmtpClient(smtpServer, smtpPort))//或公司、客戶的smtp_server
+            {
+                if (!string.IsNullOrEmpty(mailAccount) && !string.IsNullOrEmpty(mailPwd))//.config有帳密的話
+                {
+                    client.Credentials = new NetworkCredential(mailAccount, mailPwd);//寄信帳密
+                }
+                client.Send(mms);//寄出一封信
+            }//end using 
+            #endregion
+        }
+
     }    
     
 }

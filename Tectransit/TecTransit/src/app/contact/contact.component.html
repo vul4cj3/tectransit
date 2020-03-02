@@ -1,1 +1,82 @@
-<p>contact works!</p>
+<div class="contact-container">
+  <div class="contact-header">
+    <div class="icon"></div>
+    <span class="title">聯絡我們</span>
+    <div class="line"></div>
+  </div>
+  <form class="form-contain" [formGroup]="dataForm">
+    <div class="contact-contain">
+      <div class="card">
+        <div class="card-row">
+          <div class="title">
+            <label for="name"><i class="required">*</i>姓名</label>
+            <p>Name</p>
+          </div>
+          <div class="content">
+            <input type="text" id="name" formControlName="name">
+            <div class="outline"></div>
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="title">
+            <label for="phone">聯絡電話</label>
+            <p>Contact number</p>
+          </div>
+          <div class="content">
+            <input type="text" id="phone" formControlName="phone">
+            <div class="outline"></div>
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="title">
+            <label for="email"><i class="required">*</i>電子信箱</label>
+            <p>E-mail</p>
+          </div>
+          <div class="content">
+            <input type="text" id="email" formControlName="email">
+            <div class="outline"></div>
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="title">
+            <label for="message"><i class="required">*</i>內容</label>
+            <p>Message</p>
+          </div>
+          <div class="content-large">
+            <textarea rows="10" id="message" formControlName="message"></textarea>
+            <div class="outline"></div>
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="title">
+            <label for="captcha"><i class="required">*</i>驗證碼</label>
+            <p>Captcha</p>
+          </div>
+          <div class="content">
+            <input type="text" id="captcha" formControlName="captcha">
+            <div class="outline"></div>
+          </div>
+          <div class="captcha-img">
+            <img [src]="catpchaImg" />
+            <a (click)="refreshCaptcha()">
+              <span class="symbol-captcha">
+                <i class="fas fa-sync"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+        <div class="warn-section">
+          <p>(<i class="required">*</i>)為必填欄位</p>
+          <p>按下送出視同(已閱讀並同意)接受個資保護聲明。感謝您提供的提問與意見，我們將盡速為您解答，如有其他疑問可撥打客服專線。</p>
+          <p>Thank you for your questions and comments, we will answer your questions as soon as possible. If there’s
+            any
+            other urgent request, please contact us via our customer service hotline: +886 .</p>
+        </div>
+      </div>
+      <div class="btn-two">
+        <a (click)="onSubmit(dataForm.value)">送出</a>
+        <a (click)="Clear()">取消</a>
+      </div>
+    </div>
+  </form>
+</div>

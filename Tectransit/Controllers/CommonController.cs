@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using Tectransit.Datas;
 
 namespace Tectransit.Controllers
@@ -14,7 +16,41 @@ namespace Tectransit.Controllers
     [Route("api/CommonHelp/[action]")]
     public class CommonController : Controller
     {
+        public IConfiguration _configuration { get; }
+
         CommonHelper objCommon = new CommonHelper();
+        private const string _captchaHashKey = "CaptchaHash";
+        public Captchabll captchabll = new Captchabll();
+
+        public CommonController(IConfiguration Configuration)
+        {
+            _configuration = Configuration;
+        }
+
+        private string CaptchaHash
+        {
+            get { return HttpContext.Session.GetString(_captchaHashKey) as string; }
+            set { HttpContext.Session.SetString(_captchaHashKey, value); }
+        }
+
+        public bool CheckCode(string code)
+        {
+            if (CaptchaHash == captchabll.ComputeMd5Hash(code))
+                return true;
+            else
+                return false;
+        }
+
+        [HttpGet]
+        public ActionResult GetCaptcha()
+        {
+            // 隨機產生四個字元
+            var randomText = captchabll.GenerateRandomText(4);
+            // 加密後存在 Session，也可以不用加密，比對時一致就好。
+            CaptchaHash = captchabll.ComputeMd5Hash(randomText);
+            // 回傳 gif 圖檔
+            return File(captchabll.GenerateCaptchaImage(randomText), "image/gif");
+        }
 
         [HttpPost]
         public dynamic GetNavMenu([FromBody] object form)
@@ -167,6 +203,49 @@ namespace Tectransit.Controllers
             {
                 string errMsg = ex.Message.ToString();
                 return new { status = "99", msg = "送出失敗！" };
+            }
+        }
+
+        [HttpPost]
+        public dynamic EditContact([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+                Hashtable htData = new Hashtable();
+                foreach (var t in arrData)
+                    htData[t.Key.ToUpper()] = t.Value?.ToString().Replace("'", "").Replace("=", "");
+
+                if (!CheckCode(htData["CAPTCHA"]?.ToString()))
+                    return new { status = "99", msg = "驗證碼輸入錯誤！" };
+
+                string F_User = "TEC Website System<ebs.sys@t3ex-group.com>";
+                string T_User = _configuration.GetSection("WebsitSetting")["csMail"];
+                string subject = $"TEC轉運平台 - 聯絡我們({htData["NAME"]}/{htData["EMAIL"]})";
+                string body = "";
+
+                //移除html
+                string regex = @"(<.+?>|&nbsp;)";
+                htData["MESSAGE"] = Regex.Replace(htData["MESSAGE"]?.ToString(), regex, "");
+
+                body += $"<p>姓名：{htData["NAME"]}</p>";
+                body += $"<p>連絡電話：{htData["PHONE"]}</p>";
+                body += $"<p>電子信箱：{htData["EMAIL"]}</p>";
+                body += $"<p>內容：</p>";
+                body += $"<p>{htData["MESSAGE"]}</p><br/>";
+                body += "<p style='color:#ff0000'>[此為系統自動寄送信件，請勿直接回覆，謝謝！]</p>";
+
+                string C_User = "";
+
+                objCommon.SendMasterMail(F_User, T_User, subject, body, C_User);
+
+                return new { status = "0", msg = "送出成功！" };
+            }
+            catch (Exception ex)
+            {
+                string errMsg= ex.Message.ToString();
+                return new { status = "99", msg = "送出失敗！請洽客服人員，謝謝。" };
             }
         }
 
@@ -375,6 +454,7 @@ namespace Tectransit.Controllers
                 return new { status = "99", imgurl = "" };
             }
         }
+
     }
 
 }
