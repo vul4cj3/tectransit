@@ -1,12 +1,13 @@
 <div class="news-container">
   <ng-container *ngIf="data !== null">
     <div class="news-header">
-      <span class="date">{{data.upddate}}</span>
+      <span class="date">{{data.credate}}</span>
       <span class="title">{{data.title}}</span>
     </div>
     <div class="news-contain">
       <div class="descr" [innerHTML]="data.descr"></div>
     </div>
   </ng-container>
+  <div class="upddate" *ngIf="data !== null"><span class="date">更新日期：{{data.upddate}}</span></div>
   <div class="btn"><a routerLink="/news">回列表</a></div>
 </div>

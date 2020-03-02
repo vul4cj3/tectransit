@@ -10,14 +10,16 @@ import { RegfinalComponent } from './regfinal/regfinal.component';
 import { ForgetpwComponent } from './forgetpw/forgetpw.component';
 import { NewsListComponent } from './news-list/news-list.component';
 import { NewsDetailComponent } from './news-detail/news-detail.component';
+import { FaqComponent } from './faq/faq.component';
+import { ContactComponent } from './contact/contact.component';
 
 
 const routes: Routes = [
   {path: 'home', component: HomeComponent},
-  {path: 'about', component: HomeComponent},
   {path: 'news', component: NewsListComponent},
   {path: 'news/detail/:id', component: NewsDetailComponent},
-  {path: 'contact', component: HomeComponent},
+  {path: 'faq', component: FaqComponent},
+  {path: 'contact', component: ContactComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'regmem', component: RegmemComponent},
   {path: 'regcus', component: RegcusComponent},

@@ -8,7 +8,7 @@
 
 .news-header {
   position: relative;
-  margin: 10px;
+  margin-bottom: 10px;
 }
 
 .news-header .icon {
@@ -22,8 +22,8 @@
 
 .news-header .title {
   display: inline-block;
-  font-size: 23px;
-  font-weight: 500;
+  font-size: 20px;
+  font-family: 'Noto Sans TC';
   line-height: 1rem;
 }
 

@@ -1,10 +1,10 @@
 <div class="banner-section">
-    <ngb-carousel interval="3000" [showNavigationArrows]="false" [pauseOnHover]="false">
-      <!-- 建議尺寸 1920x400-->
-      <ng-template ngbSlide *ngFor="let item of data">
-        <div>
-          <img [src]="item.imgurl" [alt]="item.title">
-        </div>
-      </ng-template>
-    </ngb-carousel>
-  </div>
+  <ngb-carousel interval="3000" [showNavigationArrows]="false" [pauseOnHover]="false">
+    <!-- 建議尺寸 1920x400-->
+    <ng-template ngbSlide *ngFor="let item of data">
+      <div>
+        <img [src]="item.imgurl" [alt]="item.title">
+      </div>
+    </ng-template>
+  </ngb-carousel>
+</div>

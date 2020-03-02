@@ -12,8 +12,8 @@
       <ng-container *ngFor="let item of newsData let i = index">
         <div class="row" *ngIf="i < 6">
           <div class="date">
-            <span class="year">{{item.upddate.split('-')[0]}}</span>
-            <span class="datetime">{{item.upddate.split('-')[1]}}.{{item.upddate.split('-')[2]}}</span>
+            <span class="year">{{item.credate.split('-')[0]}}</span>
+            <span class="datetime">{{item.credate.split('-')[1]}}.{{item.credate.split('-')[2]}}</span>
           </div>
           <a routerLink="/news/detail/{{item.newsid}}">{{item.title}}</a>
         </div>

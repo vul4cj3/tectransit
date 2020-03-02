@@ -109,5 +109,59 @@ namespace Tectransit.Datas
 
             return new { rows = "" };
         }
+
+        public dynamic GetFaqCate()
+        {
+            string sql = $@"SELECT ID, TITLE, DESCR, CREDATE, UPDDATE
+                            FROM T_D_FAQ_H
+                            WHERE ISENABLE = 'true'
+                            ORDER BY ISTOP, FAQHSEQ";
+            DataTable DT = DBUtil.SelectDataTable(sql);
+            if (DT.Rows.Count > 0)
+            {
+                List<FaqCate> rowlist = new List<FaqCate>();
+                for (int i = 0; i < DT.Rows.Count; i++)
+                {
+                    FaqCate m = new FaqCate();
+                    m.CATEID = Convert.ToInt64(DT.Rows[i]["ID"]);
+                    m.TITLE = DT.Rows[i]["TITLE"]?.ToString();
+                    m.DESCR = HttpUtility.HtmlDecode(DT.Rows[i]["DESCR"]?.ToString());
+                    m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
+                    m.UPDDATE = DT.Rows[i]["UPDDATE"]?.ToString();
+
+                    rowlist.Add(m);
+                }
+                return new { rows = rowlist };
+            }
+
+            return new { rows = "" };
+        }
+
+        public dynamic GetFaqData(long id)
+        {
+            string sql = $@"SELECT ID, TITLE, DESCR, CREDATE, UPDDATE
+                            FROM T_D_FAQ_D
+                            WHERE ISENABLE = 'true' AND FAQHID = {id}
+                            ORDER BY ISTOP, FAQDSEQ";
+            DataTable DT = DBUtil.SelectDataTable(sql);
+            if (DT.Rows.Count > 0)
+            {
+                List<FaqInfo> rowlist = new List<FaqInfo>();
+                for (int i = 0; i < DT.Rows.Count; i++)
+                {
+                    FaqInfo m = new FaqInfo();
+                    m.FAQID = Convert.ToInt64(DT.Rows[i]["ID"]);
+                    m.TITLE = DT.Rows[i]["TITLE"]?.ToString();
+                    m.DESCR = HttpUtility.HtmlDecode(DT.Rows[i]["DESCR"]?.ToString());
+                    m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
+                    m.UPDDATE = DT.Rows[i]["UPDDATE"]?.ToString();
+
+                    rowlist.Add(m);
+                }
+                return new { rows = rowlist };
+            }
+
+            return new { rows = "" };
+        }
     }
 }

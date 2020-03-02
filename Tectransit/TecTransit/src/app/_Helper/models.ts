@@ -231,3 +231,18 @@ export interface NewsInfo {
   credate: string;
   upddate: string;
 }
+
+export interface FaqCate {
+  cateid: number;
+  title: string;
+  descr: string;
+  istop: string;
+}
+
+export interface FaqInfo {
+  faqid: number;
+  title: string;
+  descr: string;
+  credate: string;
+  upddate: string;
+}

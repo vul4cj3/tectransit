@@ -47,5 +47,17 @@ namespace Tectransit.Controllers
         {
             return objFront.GetNews(id);
         }
+
+        [HttpGet]
+        public dynamic GetFaqCate()
+        {
+            return objFront.GetFaqCate();
+        }
+
+        [HttpGet("{id}")]
+        public dynamic GetFaqData(long id)
+        {
+            return objFront.GetFaqData(id);
+        }
     }
 }

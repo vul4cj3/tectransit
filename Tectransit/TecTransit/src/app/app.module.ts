@@ -25,6 +25,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BannerComponent } from './banner/banner.component';
 import { NewsListComponent } from './news-list/news-list.component';
 import { NewsDetailComponent } from './news-detail/news-detail.component';
+import { FaqComponent } from './faq/faq.component';
+import { ContactComponent } from './contact/contact.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,9 @@ import { NewsDetailComponent } from './news-detail/news-detail.component';
     ForgetpwComponent,
     BannerComponent,
     NewsListComponent,
-    NewsDetailComponent
+    NewsDetailComponent,
+    FaqComponent,
+    ContactComponent
   ],
   imports: [
     BrowserModule,
