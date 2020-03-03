@@ -34,7 +34,7 @@
           <div class="col-md-4">
             <div class="position-relative form-inline">
               <span>快遞單號</span>
-              <p>{{masterData.trasferno}}</p>
+              <p>{{masterData.transferno}}</p>
             </div>
           </div>
           <div class="col-md-4">
@@ -73,6 +73,26 @@
             <div class="position-relative form-inline" *ngIf="masterData.status !== '4'">
               <label for="mawbno">MAWB</label>
               <input type="text" id="mawbno" class="form-control" formControlName="mawbno">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline" *ngIf="masterData.status === '4'">
+              <span>清關條碼</span>
+              <p>{{masterData.clearanceno}}</p>
+            </div>
+            <div class="position-relative form-inline" *ngIf="masterData.status !== '4'">
+              <label for="clearanceno">清關條碼</label>
+              <input type="text" id="clearanceno" class="form-control" formControlName="clearanceno">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline" *ngIf="masterData.status === '4'">
+              <span>HAWB</span>
+              <p>{{masterData.hawbno}}</p>
+            </div>
+            <div class="position-relative form-inline" *ngIf="masterData.status !== '4'">
+              <label for="hawbno">HAWB</label>
+              <input type="text" id="hawbno" class="form-control" formControlName="hawbno">
             </div>
           </div>
           <div class="col-md-4">

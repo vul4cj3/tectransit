@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
-import { TransferDInfoCombine } from 'src/app/_Helper/models';
+import { ShippingMInfo } from 'src/app/_Helper/models';
 
 @Component({
   selector: 'app-shipping-combine',
@@ -16,7 +16,7 @@ export class ShippingCombineComponent implements OnInit {
   getdataUrl = '/api/Member/GetTransferData';
   saveUrl = '/api/Member/SaveShippingData';
 
-  masterData: TransferDInfoCombine[];
+  masterData: ShippingMInfo[];
   dataChange;
   idList;
 

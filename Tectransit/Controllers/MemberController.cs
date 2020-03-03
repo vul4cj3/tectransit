@@ -204,46 +204,113 @@ namespace Tectransit.Controllers
             {
                 var jsonData = JObject.FromObject(form);
                 JObject arrData = jsonData.Value<JObject>("formdata");
-                JArray rowsData = arrData.Value<JArray>("rows");
 
-                Hashtable htData = new Hashtable();
+                //Master data
+                Hashtable mData = new Hashtable();
+                mData["STATIONCODE"] = arrData.Value<string>("stationcode");
+                mData["TRANSFERNO"] = arrData.Value<string>("transferno");
+                mData["TOTAL"] = arrData.Value<string>("total");
+                mData["ISMULTRECEIVER"] = arrData.Value<string>("ismultreceiver").ToLower() == "true" ? "Y" : "N";
 
-                htData["STATIONCODE"] = arrData.Value<string>("stationcode");
-                htData["TRASFERNO"] = arrData.Value<string>("trasferno");
-
-                htData["_acccode"] = Request.Cookies["_acccode"];
-                htData["ACCOUNTID"] = DBUtil.GetSingleValue1($@"SELECT ID AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{htData["_acccode"]}'");
-
-                //新增主單
-                string HID = InsertTransferH(htData);
-
-                //新增細項
-                ArrayList AL = new ArrayList();
-                for (int i = 0; i < rowsData.Count; i++)
+                if (mData["ISMULTRECEIVER"]?.ToString() == "N")
                 {
-                    JObject temp = (JObject)rowsData[i];
-
-                    Hashtable tempData = new Hashtable();
-                    foreach (var t in temp)
-                    {
-                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
-                        dataKey.Add("product", "PRODUCT");
-                        dataKey.Add("price", "UNIT_PRICE");
-                        dataKey.Add("quantity", "QUANTITY");
-                        tempData[dataKey[t.Key]] = t.Value?.ToString();
-                    }
-
-                    tempData["TRANSFERHID"] = HID;
-
-                    AL.Add(tempData);
+                    if (arrData.Value<string>("receiver") != null)
+                        mData["RECEIVER"] = arrData.Value<string>("receiver");
+                    if (arrData.Value<string>("receiveraddr") != null)
+                        mData["RECEIVERADDR"] = arrData.Value<string>("receiveraddr");
                 }
 
+                mData["_acccode"] = Request.Cookies["_acccode"];
+
+                string sql = $@"SELECT A.ID AS COL1 FROM T_S_ACCOUNT A
+                                LEFT JOIN T_S_ACRANKMAP B ON B.USERCODE = A.USERCODE
+                                LEFT JOIN T_S_RANK C ON C.ID = B.RANKID
+                                WHERE A.USERCODE = '{mData["_acccode"]}' AND C.RANKTYPE = '1'";
+
+                mData["ACCOUNTID"] = DBUtil.GetSingleValue1(sql);
+
+                //Header(box) data                
+                JArray boxData = arrData.Value<JArray>("boxform");
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < boxData.Count; i++)
+                {
+                    JObject temp = (JObject)boxData[i];
+                    Hashtable hData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        //Detail(product) data
+                        if (t.Key == "productform")
+                        {
+                            JArray prdData = temp.Value<JArray>("productform");
+                            ArrayList subAL = new ArrayList();
+                            for (int j = 0; j < prdData.Count; j++)
+                            {
+                                JObject temp2 = (JObject)prdData[j];
+                                Hashtable dData = new Hashtable();
+                                foreach (var t2 in temp2)
+                                {
+                                    dData[(t2.Key).ToUpper()] = t2.Value?.ToString();
+                                }
+                                subAL.Add(dData);
+                            }
+                            hData["PRDFORM"] = subAL;
+
+                        }
+                        else
+                            hData[(t.Key).ToUpper()] = t.Value?.ToString();
+
+                    }
+                    AL.Add(hData);
+                }
+
+                //Declarant data
+                JArray decData = arrData.Value<JArray>("decform");
+                ArrayList decAL = new ArrayList();
+                for (int k = 0; k < decData.Count; k++)
+                {
+                    JObject temp = (JObject)decData[k];
+                    Hashtable deData = new Hashtable();
+                    foreach (var t in temp)
+                        deData[(t.Key).ToUpper()] = t.Value?.ToString();
+
+                    decAL.Add(deData);
+                }
+
+                //新增主單
+                long MID = InsertTransferM(mData);
+
+                //新增各箱細項                
                 if (AL.Count > 0)
                 {
                     for (int i = 0; i < AL.Count; i++)
                     {
                         Hashtable sData = (Hashtable)AL[i];
-                        InsertTransferD(sData);
+                        sData["TRANSFERIDM"] = MID;
+                        long HID = InsertTransferH(sData);
+
+                        ArrayList subAL = (ArrayList)sData["PRDFORM"];
+                        if (subAL.Count > 0)
+                        {
+                            for (int j = 0; j < subAL.Count; j++)
+                            {
+                                Hashtable tempData = (Hashtable)subAL[j];
+                                tempData["TRANSFERIDM"] = MID;
+                                tempData["TRANSFERIDH"] = HID;
+                                InsertTransferD(tempData);
+                            }
+                        }
+
+                    }
+                }
+
+                //新增申報人名單
+                if (decAL.Count > 0)
+                {
+                    for (int k = 0; k < decAL.Count; k++)
+                    {
+                        Hashtable tempData = (Hashtable)decAL[k];
+                        tempData["TRANSFERIDM"] = MID;
+                        InsertTEDeclarant(tempData);
                     }
                 }
 
@@ -329,8 +396,8 @@ namespace Tectransit.Controllers
                     }
                 }
 
-                return objMember.GetTransferData_Combine(sWhere);
-
+                //return objMember.GetTransferData_Combine(sWhere);
+                return "";
             }
             catch (Exception ex)
             {
@@ -374,7 +441,7 @@ namespace Tectransit.Controllers
                         sWhere += (sWhere == "" ? "WHERE" : " AND") + " ACCOUNTID = " + htData["ACCOUNTID"];
 
                     if (!string.IsNullOrEmpty(htData["STATUS"]?.ToString()))
-                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATUS = " + (htData["STATUS"]?.ToString() == "t1" ? 0 : 1);
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATUS = " + (htData["STATUS"]?.ToString() == "t3" ? 2 : (htData["STATUS"]?.ToString() == "t4" ? 3 : 4));
 
                     if (!string.IsNullOrEmpty(htData["STATIONCODE"]?.ToString()))
                         sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATIONCODE = '" + htData["STATIONCODE"]?.ToString() + "'";
@@ -394,11 +461,55 @@ namespace Tectransit.Controllers
         [HttpGet("{id}")]
         public dynamic GetACTransferData(long id)
         {
-            Hashtable htData = new Hashtable();
-            htData["_acccode"] = Request.Cookies["_acccode"];
-            htData["_accname"] = Request.Cookies["_accname"];
+            try
+            {
+                Hashtable htData = new Hashtable();
+                htData["TRANSFERIDM"] = id.ToString();
+                //get cookies
+                htData["_acccode"] = Request.Cookies["_acccode"];
+                htData["_accname"] = Request.Cookies["_accname"];
 
-            return objMember.GetACTransferData(id);
+                string sql = $@"SELECT A.ID AS COL1 FROM T_S_ACCOUNT A
+                                LEFT JOIN T_S_ACRANKMAP B ON B.USERCODE = A.USERCODE
+                                LEFT JOIN T_S_RANK C ON C.ID = B.RANKID
+                                WHERE A.USERCODE = '{htData["_acccode"]}' AND C.RANKTYPE = '1'";
+
+                htData["ACCOUNTID"] = DBUtil.GetSingleValue1(sql);
+
+                return objMember.GetSingleACTransferData(htData);
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "取得失敗！" };
+            }
+        }
+
+        [HttpGet("{id}")]
+        public dynamic GetACShippingData(long id)
+        {
+            try
+            {
+                Hashtable htData = new Hashtable();
+                htData["SHIPPINGIDM"] = id.ToString();
+                //get cookies
+                htData["_acccode"] = Request.Cookies["_acccode"];
+                htData["_accname"] = Request.Cookies["_accname"];
+
+                string sql = $@"SELECT A.ID AS COL1 FROM T_S_ACCOUNT A
+                                LEFT JOIN T_S_ACRANKMAP B ON B.USERCODE = A.USERCODE
+                                LEFT JOIN T_S_RANK C ON C.ID = B.RANKID
+                                WHERE A.USERCODE = '{htData["_acccode"]}' AND C.RANKTYPE = '1'";
+
+                htData["ACCOUNTID"] = DBUtil.GetSingleValue1(sql);
+
+                return objMember.GetSingleACShippingData(htData);
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "取得失敗！" };
+            }
         }
 
         [HttpPost]
@@ -407,37 +518,40 @@ namespace Tectransit.Controllers
             try
             {
                 var jsonData = JObject.FromObject(form);
-                string usercode = jsonData.Value<string>("id");
                 JArray arrData = jsonData.Value<JArray>("formdata");
-                
-                ArrayList AL = new ArrayList();
-                for (int i = 0; i < arrData.Count; i++)
+
+                ArrayList DelAL = new ArrayList();
+                for (int j = 0; j < arrData.Count; j++)
                 {
-                    JObject temp = (JObject)arrData[i];
-                    Hashtable htData = new Hashtable();
-                    foreach (var t in temp)
-                    {
-                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
-                        dataKey.Add("id", "TRANSFERID");
-                        dataKey.Add("isenable", "ISENABLE");
-                        if (t.Key == "isenable")
-                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
-                        else
-                            htData[dataKey[t.Key]] = t.Value?.ToString();
+                    JValue temp = (JValue)arrData[j];
 
-                        htData["_acccode"] = Request.Cookies["_acccode"];
-                        htData["_accname"] = Request.Cookies["_accname"];
-                    }
-
-                    AL.Add(htData);
+                    DelAL.Add(Convert.ToInt64(temp));
                 }
 
-                if (AL.Count > 0)
+                if (DelAL.Count > 0)
                 {
-                    for (int j = 0; j < AL.Count; j++)
+                    for (int i = 0; i < DelAL.Count; i++)
                     {
-                        Hashtable tempData = (Hashtable)AL[j];
-                        objMember.DelACTransferData(tempData);
+                        Hashtable tempData = new Hashtable();
+                        tempData["TRANSFERIDM"] = Convert.ToInt64(DelAL[i]);
+
+                        //檢查是否有此單可刪除(避免前後台訂單狀態不同步)
+                        bool IsExist = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT ACCOUNTID AS COL1 FROM T_E_TRANSFER_M WHERE ID = {tempData["TRANSFERIDM"]} AND STATUS = 0")) ? false : true;
+
+                        if (IsExist)
+                        {
+                            //delete Declarant data
+                            DeleteTEData_All("T_E_DECLARANT", tempData);
+
+                            //delete transfer_H & transfer_D data
+                            DeleteTEData_All("T_E_TRANSFER_D", tempData);
+                            DeleteTEData_All("T_E_TRANSFER_H", tempData);
+
+                            //delete transfer_M data
+                            DeleteTEData_All("T_E_TRANSFER_M", tempData);
+                        }
+                        else
+                            return new { status = "99", msg = "刪除失敗！" };
                     }
                 }
 
@@ -447,6 +561,138 @@ namespace Tectransit.Controllers
             {
                 string err = ex.Message.ToString();
                 return new { status = "99", msg = "刪除失敗！" };
+            }
+        }
+
+        //快遞單申報人編輯
+        [HttpPost]
+        public dynamic SaveTransferDecData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+                JArray delArrData = jsonData.Value<JArray>("dellist");
+
+                //Master data
+                Hashtable mData = new Hashtable();
+                mData["TRANSFERIDM"] = arrData.Value<string>("idm");
+
+                //Declarant data
+                JArray decData = arrData.Value<JArray>("decform");
+                ArrayList decAL = new ArrayList();
+                for (int k = 0; k < decData.Count; k++)
+                {
+                    JObject temp = (JObject)decData[k];
+                    Hashtable deData = new Hashtable();
+                    foreach (var t in temp)
+                        deData[(t.Key).ToUpper()] = t.Value?.ToString();
+
+                    decAL.Add(deData);
+                }
+
+                ArrayList decDelAL = new ArrayList();
+                for (int j = 0; j < delArrData.Count; j++)
+                {
+                    JValue temp = (JValue)delArrData[j];
+
+                    decDelAL.Add(Convert.ToInt64(temp));
+                }
+
+                if (decAL.Count > 0)
+                {
+                    for (int k = 0; k < decAL.Count; k++)
+                    {
+                        Hashtable tempData = (Hashtable)decAL[k];
+                        if (Convert.ToInt64(tempData["ID"]) == 0)
+                        {
+                            tempData["TRANSFERIDM"] = mData["TRANSFERIDM"];
+                            InsertTEDeclarant(tempData);//新增申報人
+                        }
+                        else
+                            UpdateTEDeclarant(Convert.ToInt64(tempData["ID"]), tempData);//更新申報人
+                    }
+                }
+
+                //刪除申報人
+                if (decDelAL.Count > 0)
+                {
+                    for (int i = 0; i < decDelAL.Count; i++)
+                        DeleteTEDeclarant(Convert.ToInt64(decDelAL[i]));
+                }
+
+                return new { status = "0", msg = "保存成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "保存失敗！" };
+            }
+        }
+
+        //集運單申報人編輯
+        [HttpPost]
+        public dynamic SaveShippingDecData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                JObject arrData = jsonData.Value<JObject>("formdata");
+                JArray delArrData = jsonData.Value<JArray>("dellist");
+
+                //Master data
+                Hashtable mData = new Hashtable();
+                mData["SHIPPINGIDM"] = arrData.Value<string>("idm");
+
+                //Declarant data
+                JArray decData = arrData.Value<JArray>("decform");
+                ArrayList decAL = new ArrayList();
+                for (int k = 0; k < decData.Count; k++)
+                {
+                    JObject temp = (JObject)decData[k];
+                    Hashtable deData = new Hashtable();
+                    foreach (var t in temp)
+                        deData[(t.Key).ToUpper()] = t.Value?.ToString();
+
+                    decAL.Add(deData);
+                }
+
+                ArrayList decDelAL = new ArrayList();
+                for (int j = 0; j < delArrData.Count; j++)
+                {
+                    JValue temp = (JValue)delArrData[j];
+
+                    decDelAL.Add(Convert.ToInt64(temp));
+                }
+
+                if (decAL.Count > 0)
+                {
+                    for (int k = 0; k < decAL.Count; k++)
+                    {
+                        Hashtable tempData = (Hashtable)decAL[k];
+                        if (Convert.ToInt64(tempData["ID"]) == 0)
+                        {
+                            tempData["SHIPPINGIDM"] = mData["SHIPPINGIDM"];
+                            InsertTNDeclarant(tempData);//新增申報人
+                        }
+                        else
+                            UpdateTNDeclarant(Convert.ToInt64(tempData["ID"]), tempData);//更新申報人
+                    }
+                }
+
+                //刪除申報人
+                if (decDelAL.Count > 0)
+                {
+                    for (int i = 0; i < decDelAL.Count; i++)
+                        DeleteTNDeclarant(Convert.ToInt64(decDelAL[i]));
+                }
+
+                return new { status = "0", msg = "保存成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "保存失敗！" };
             }
         }
         #endregion
@@ -537,7 +783,8 @@ namespace Tectransit.Controllers
             rowTSA.Username = htData["USERNAME"]?.ToString();
             rowTSA.Companyname = htData["COMPANYNAME"]?.ToString();
             rowTSA.Rateid = htData["RATEID"]?.ToString();
-            rowTSA.Warehouseno = "";
+            string WCode = objComm.GetSeqCode("WAREHOUSENO_CUS");
+            rowTSA.Warehouseno = "TECWCUS-" + WCode;
             rowTSA.Email = htData["EMAIL"]?.ToString();
             rowTSA.Taxid = htData["TAXID"]?.ToString();
             rowTSA.Phone = htData["PHONE"]?.ToString();
@@ -561,8 +808,9 @@ namespace Tectransit.Controllers
 
             _context.TSAcrankmap.Add(rowTSAR);
             _context.SaveChanges();
-            
 
+            //Update code
+            objComm.UpdateSeqCode("WAREHOUSENO_CUS");
         }
 
         private void InsertMemData(Hashtable htData)
@@ -657,39 +905,248 @@ namespace Tectransit.Controllers
             objComm.SendMail(F_User, T_User, subject, body, C_User);
         }
 
-        private string InsertTransferH(Hashtable sData)
+        private long InsertTransferM(Hashtable sData)
         {
-            TETransferH TEH = new TETransferH();
-            TEH.Accountid = Convert.ToInt64(sData["ACCOUNTID"]);
-            TEH.Stationcode = sData["STATIONCODE"].ToString();
-            TEH.Trasferno = sData["TRASFERNO"].ToString();
-            TEH.Status = 0;
+            long ID = 0;
+            try
+            {
+                TETransferM TEM = new TETransferM();
+                TEM.Accountid = Convert.ToInt64(sData["ACCOUNTID"]);
+                TEM.Stationcode = sData["STATIONCODE"]?.ToString();
+                TEM.Transferno = sData["TRANSFERNO"]?.ToString();
+                TEM.Total = sData["TOTAL"]?.ToString();
+                TEM.Receiver = sData["RECEIVER"]?.ToString();
+                TEM.ReceiverAddr = sData["RECEIVERADDR"]?.ToString();
+                TEM.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
+                TEM.Status = 0;
+                TEM.Remark = "";
+                TEM.Credate = DateTime.Now;
+                TEM.Createby = sData["_acccode"]?.ToString();
+                TEM.Upddate = TEM.Credate;
+                TEM.Updby = TEM.Createby;
 
-            TEH.Credate = DateTime.Now;
-            TEH.Createby = sData["_acccode"].ToString();
-            TEH.Upddate = DateTime.Now;
-            TEH.Updby = sData["_acccode"].ToString();
+                _context.TETransferM.Add(TEM);
+                _context.SaveChanges();
 
-            _context.TETransferH.Add(TEH);
-            _context.SaveChanges();
+                ID = TEM.Id;
 
-            string hid = TEH.Id.ToString();
+                return ID;
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+                return ID;
+            }
 
-            return hid;
-            
+        }
+
+        private long InsertTransferH(Hashtable sData)
+        {
+            long ID = 0;
+            try
+            {
+                TETransferH TEH = new TETransferH();
+                TEH.Boxno = sData["BOXNO"]?.ToString();
+                TEH.Receiver = sData["RECEIVER"]?.ToString();
+                TEH.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
+                TEH.TransferidM = Convert.ToInt64(sData["TRANSFERIDM"]);
+
+                _context.TETransferH.Add(TEH);
+                _context.SaveChanges();
+
+                ID = TEH.Id;
+
+                return ID;
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+                return ID;
+            }
         }
 
         private void InsertTransferD(Hashtable sData)
         {
-            TETransferD TED = new TETransferD();
-            TED.Product = sData["PRODUCT"].ToString();
-            TED.Quantity = sData["QUANTITY"].ToString();
-            TED.UnitPrice = sData["UNIT_PRICE"].ToString();
-            TED.Transferhid = sData["TRANSFERHID"].ToString();
+            try
+            {
+                TETransferD TED = new TETransferD();
+                TED.Product = sData["PRODUCT"]?.ToString();
+                TED.Quantity = sData["QUANTITY"]?.ToString();
+                TED.Unitprice = sData["UNITPRICE"]?.ToString();
+                TED.TransferidM = Convert.ToInt64(sData["TRANSFERIDM"]);
+                TED.TransferidH = Convert.ToInt64(sData["TRANSFERIDH"]);
 
-            _context.TETransferD.Add(TED);
-            _context.SaveChanges();
+                _context.TETransferD.Add(TED);
+                _context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+            }
+        }
+
+        private void InsertTEDeclarant(Hashtable sData)
+        {
+            try
+            {
+                TEDeclarant TED = new TEDeclarant();
+                TED.Name = sData["NAME"]?.ToString();
+                TED.Taxid = sData["TAXID"]?.ToString();
+                TED.Phone = sData["PHONE"]?.ToString();
+                TED.Mobile = sData["MOBILE"]?.ToString();
+                TED.Addr = sData["ADDR"]?.ToString();
+                TED.IdphotoF = sData["IDPHOTOF"]?.ToString();
+                TED.IdphotoB = sData["IDPHOTOB"]?.ToString();
+                TED.Appointment = sData["APPOINTMENT"]?.ToString();
+                TED.TransferidM = Convert.ToInt64(sData["TRANSFERIDM"]);
+
+                _context.TEDeclarant.Add(TED);
+                _context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+            }
+        }
+
+        private void UpdateTEDeclarant(long id, Hashtable sData)
+        {
+            var query = _context.TEDeclarant.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                TEDeclarant rowTED = query;
+
+                if (sData["NAME"] != null)
+                    rowTED.Name = sData["NAME"]?.ToString();
+                if (sData["TAXID"] != null)
+                    rowTED.Taxid = sData["TAXID"]?.ToString();
+                if (sData["PHONE"] != null)
+                    rowTED.Phone = sData["PHONE"]?.ToString();
+                if (sData["MOBILE"] != null)
+                    rowTED.Mobile = sData["MOBILE"]?.ToString();
+                if (sData["ADDR"] != null)
+                    rowTED.Addr = sData["ADDR"]?.ToString();
+                if (sData["IDPHOTOF"] != null)
+                    rowTED.IdphotoF = sData["IDPHOTOF"]?.ToString();
+                if (sData["IDPHOTOB"] != null)
+                    rowTED.IdphotoB = sData["IDPHOTOB"]?.ToString();
+                if (sData["APPOINTMENT"] != null)
+                    rowTED.Appointment = sData["APPOINTMENT"]?.ToString();
+
+                _context.SaveChanges();
+
+            }
+        }
+
+        //刪除申報人資料(單筆)
+        private void DeleteTEDeclarant(long id)
+        {
+            var query = _context.TEDeclarant.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                _context.TEDeclarant.Remove(query);
+                _context.SaveChanges();
+            }
+        }
+
+        //刪除主單(Master)/箱號(Header)/細項(Detail)/申報人資料(該集運單下所有)
+        private void DeleteTEData_All(string table, Hashtable sData)
+        {
+            //申報人先移除實體檔案
+            if (table == "T_E_DECLARANT")
+            {
+                var query = _context.TEDeclarant.Where(q => q.TransferidM == Convert.ToInt64(sData["TRANSFERIDM"])).ToList();
+                foreach (var qitem in query)
+                {
+                    if (!string.IsNullOrEmpty(qitem.IdphotoF))
+                        objComm.DeleteFileF(qitem.IdphotoF.Replace("res", ""));
+
+                    if (!string.IsNullOrEmpty(qitem.IdphotoB))
+                        objComm.DeleteFileF(qitem.IdphotoB.Replace("res", ""));
+
+                    if (!string.IsNullOrEmpty(qitem.Appointment))
+                        objComm.DeleteFileF(qitem.Appointment.Replace("res", ""));
+                }
+            }
+
+            string sql = "";
+            if (table == "T_E_TRANSFER_M")
+                sql = $@"DELETE FROM {table} WHERE ID = @TRANSFERIDM";
+            else
+                sql = $@"DELETE FROM {table} WHERE TRANSFERID_M = @TRANSFERIDM";
             
+            DBUtil.EXECUTE(sql, sData);
+        }
+
+        private void InsertTNDeclarant(Hashtable sData)
+        {
+            try
+            {
+                TNDeclarant TND = new TNDeclarant();
+                TND.Name = sData["NAME"]?.ToString();
+                TND.Taxid = sData["TAXID"]?.ToString();
+                TND.Phone = sData["PHONE"]?.ToString();
+                TND.Mobile = sData["MOBILE"]?.ToString();
+                TND.Addr = sData["ADDR"]?.ToString();
+                TND.IdphotoF = sData["IDPHOTOF"]?.ToString();
+                TND.IdphotoB = sData["IDPHOTOB"]?.ToString();
+                TND.Appointment = sData["APPOINTMENT"]?.ToString();
+                TND.ShippingidM = Convert.ToInt64(sData["SHIPPINGIDM"]);
+
+                _context.TNDeclarant.Add(TND);
+                _context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+            }
+        }
+
+        private void UpdateTNDeclarant(long id, Hashtable sData)
+        {
+            var query = _context.TNDeclarant.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                TNDeclarant rowTND = query;
+
+                if (sData["NAME"] != null)
+                    rowTND.Name = sData["NAME"]?.ToString();
+                if (sData["TAXID"] != null)
+                    rowTND.Taxid = sData["TAXID"]?.ToString();
+                if (sData["PHONE"] != null)
+                    rowTND.Phone = sData["PHONE"]?.ToString();
+                if (sData["MOBILE"] != null)
+                    rowTND.Mobile = sData["MOBILE"]?.ToString();
+                if (sData["ADDR"] != null)
+                    rowTND.Addr = sData["ADDR"]?.ToString();
+                if (sData["IDPHOTOF"] != null)
+                    rowTND.IdphotoF = sData["IDPHOTOF"]?.ToString();
+                if (sData["IDPHOTOB"] != null)
+                    rowTND.IdphotoB = sData["IDPHOTOB"]?.ToString();
+                if (sData["APPOINTMENT"] != null)
+                    rowTND.Appointment = sData["APPOINTMENT"]?.ToString();
+
+                _context.SaveChanges();
+
+            }
+        }
+
+        //刪除申報人資料(單筆)
+        private void DeleteTNDeclarant(long id)
+        {
+            var query = _context.TNDeclarant.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                _context.TNDeclarant.Remove(query);
+                _context.SaveChanges();
+            }
         }
 
         private void InsertDeclarant(Hashtable htData, int type)
@@ -893,7 +1350,7 @@ namespace Tectransit.Controllers
                 //Master data
                 Hashtable mData = new Hashtable();
                 mData["STATIONCODE"] = arrData.Value<string>("stationcode");
-                mData["TRASFERNO"] = arrData.Value<string>("trasferno");
+                mData["TRANSFERNO"] = arrData.Value<string>("transferno");
                 mData["TOTAL"] = arrData.Value<string>("total");
                 mData["ISMULTRECEIVER"] = arrData.Value<string>("ismultreceiver").ToLower() == "true" ? "Y" : "N";
 
@@ -1095,16 +1552,23 @@ namespace Tectransit.Controllers
                     {
                         Hashtable tempData = new Hashtable();
                         tempData["SHIPPINGIDM"] = Convert.ToInt64(DelAL[i]);
+                        
+                        //檢查是否有此單可刪除(避免前後台訂單狀態不同步)
+                        bool IsExist = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT SHIPPINGNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {tempData["SHIPPINGIDM"]} AND STATUS = 0")) ? false : true;
 
-                        //delete Declarant data
-                        DeleteTVData_All("T_V_DECLARANT", tempData);
+                        if (IsExist) {
+                            //delete Declarant data
+                            DeleteTVData_All("T_V_DECLARANT", tempData);
 
-                        //delete shipping_H & shipping_D data
-                        DeleteTVData_All("T_V_SHIPPING_D", tempData);
-                        DeleteTVData_All("T_V_SHIPPING_H", tempData);
+                            //delete shipping_H & shipping_D data
+                            DeleteTVData_All("T_V_SHIPPING_D", tempData);
+                            DeleteTVData_All("T_V_SHIPPING_H", tempData);
 
-                        //delete shipping_M data
-                        DeleteTVData_All("T_V_SHIPPING_M", tempData);
+                            //delete shipping_M data
+                            DeleteTVData_All("T_V_SHIPPING_M", tempData);
+                        }
+                        else
+                            return new { status = "99", msg = "刪除失敗！" };
                     }
                 }
 
@@ -1132,7 +1596,7 @@ namespace Tectransit.Controllers
                 TVM.Shippingno = "TECV" + DateTime.Now.ToString("yyyyMMdd") + autoSeqcode;
                 TVM.Trackingno = sData["STATIONCODE"] + "-" + autoSeqcode;
                 TVM.Mawbno = "";
-                TVM.Trasferno = sData["TRASFERNO"]?.ToString();
+                TVM.Transferno = sData["TRANSFERNO"]?.ToString();
                 TVM.Total = sData["TOTAL"]?.ToString();
                 TVM.Trackingtype = 0;//尚未使用-0:無
                 TVM.Receiver = sData["RECEIVER"]?.ToString();
@@ -1277,6 +1741,23 @@ namespace Tectransit.Controllers
         //刪除主單(Master)/箱號(Header)/細項(Detail)/申報人資料(該集運單下所有)
         private void DeleteTVData_All(string table, Hashtable sData)
         {
+            //申報人先移除實體檔案
+            if (table == "T_V_DECLARANT")
+            {
+                var query = _context.TVDeclarant.Where(q => q.ShippingidM == Convert.ToInt64(sData["SHIPPINGIDM"])).ToList();
+                foreach (var qitem in query)
+                {
+                    if (!string.IsNullOrEmpty(qitem.IdphotoF))
+                        objComm.DeleteFileF(qitem.IdphotoF.Replace("res", ""));
+
+                    if (!string.IsNullOrEmpty(qitem.IdphotoB))
+                        objComm.DeleteFileF(qitem.IdphotoB.Replace("res", ""));
+
+                    if (!string.IsNullOrEmpty(qitem.Appointment))
+                        objComm.DeleteFileF(qitem.Appointment.Replace("res", ""));
+                }
+            }
+
             string sql = "";
             if (table == "T_V_SHIPPING_M")
                 sql = $@"DELETE FROM {table} WHERE ID = @SHIPPINGIDM";

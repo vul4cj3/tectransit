@@ -36,7 +36,7 @@
             </div>
             <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
               <label for="strackno" class="mr-sm-2">快遞單號</label>
-              <input type="text" id="strasferno" formControlName="strasferno" class="form-control">
+              <input type="text" id="stransferno" formControlName="stransferno" class="form-control">
             </div>
             <!--
             <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
@@ -113,12 +113,12 @@
                 <td>{{item.stationname}}</td>
                 <td>{{item.shippingno}}</td>
                 <td>{{item.trackingno}}</td>
-                <td>{{item.trasferno}}</td>
+                <td>{{item.transferno}}</td>
                 <td>{{item.companyname}}</td>
                 <td>{{item.accountcode}}</td>
                 <td>{{item.credate}}</td>
                 <td>{{item.upddate}}</td>
-                <td>{{item.status}}</td>
+                <td>{{item.status | shippstatus}}</td>
                 <td>
                   <a routerLink="/shippingcus/edit/{{item.id}}">
                     <span class="symbol-edit">

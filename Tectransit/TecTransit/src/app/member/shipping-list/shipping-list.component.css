@@ -1,135 +1,101 @@
-  body .card-header {
-    height: auto;
-    display: block;
-    padding: 0.75rem 1.5rem;
-    text-align: center; }
-    body .card-header .btn-actions-pane-right {
-      padding: 0.75rem 0 0; }
-    body .card-header .actions-icon-btn {
-      padding: 0; }
-
-.sub_menu{
-  padding: 5px;
+.shipping .shipping-contain {
+  width: 850px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 1.875rem 0 rgba(0, 0, 0, .1);
+  margin: 0 auto;
 }
 
-.sub_menu a{
-  border: 1px solid #272d50;
-  margin-right: 5px;
-}
-
-.sub_menu a.active{
-  color: #fff;
-  background-color: #272d50;
-}
-
-.sub_menu a:hover{
-  color: #fff;
-  background-color: #272d50;
-}
-
-.row {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  margin-right: -15px;
-  margin-left: -15px;
-}
-
-.col-md-12 {
+.shippingform {
   position: relative;
   width: 100%;
-  padding-right: 15px;
-  padding-left: 15px; }
-
-  .card {
-    position: relative;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-direction: column;
-        flex-direction: column;
-    min-width: 0;
-    word-wrap: break-word;
-    background-color: #fff;
-    background-clip: border-box;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    border-radius: 0.25rem;
-    -webkit-box-shadow: 0 0.46875rem 2.1875rem rgba(0, 0, 0, 0.03), 0 0.9375rem 1.40625rem rgba(0, 0, 0, 0.03), 0 0.25rem 0.53125rem rgba(0, 0, 0, 0.05), 0 0.125rem 0.1875rem rgba(0, 0, 0, 0.03);
-    box-shadow: 0 0.46875rem 2.1875rem rgba(0, 0, 0, 0.03), 0 0.9375rem 1.40625rem rgba(0, 0, 0, 0.03), 0 0.25rem 0.53125rem rgba(0, 0, 0, 0.05), 0 0.125rem 0.1875rem rgba(0, 0, 0, 0.03);
-    border-width: 0;
-    -webkit-transition: all .2s;
-    -o-transition: all .2s;
-    transition: all .2s;
-  }
-
-  .card-header {
-    padding: 0.75rem 1.25rem;
-    margin-bottom: 0;
-    color: inherit;
-    background-color: #fff;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.125); }
-    .card-header:first-child {
-      border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0; }
-    .card-header + .list-group .list-group-item:first-child {
-      border-top: 0;
-    }
-
-    .card-footer {
-      padding: 0.75rem 1.25rem;
-      background-color: #fff;
-      border-top: 1px solid rgba(0, 0, 0, 0.125); }
-      .card-footer:last-child {
-        border-radius: 0 0 calc(0.25rem - 1px) calc(0.25rem - 1px); }
-
-.btn-actions-pane-right {
-    margin-left: auto;
-    white-space: nowrap;
-  }
-.btn-actions-pane-right a {
-    text-transform: none;
-  }
-
-  .align-baseline {
-    vertical-align: baseline !important; }
-
-  .align-top {
-    vertical-align: top !important; }
-
-  .align-middle {
-    vertical-align: middle !important; }
-
-  .align-bottom {
-    vertical-align: bottom !important; }
-
-  .align-text-bottom {
-    vertical-align: text-bottom !important; }
-
-  .align-text-top {
-    vertical-align: text-top !important; }
-
-.mb-0,
-.my-0 {
-  margin-bottom: 0 !important; }
-
-  .table-borderless th,
-  .table-borderless td,
-  .table-borderless thead th,
-  .table-borderless tbody + tbody {
-    border: 0; }
-
-    .table-striped tbody tr:nth-of-type(odd) {
-      background-color: rgba(0, 0, 0, 0.03); }
-
-    .table-hover tbody tr:hover {
-      background-color: #d1f3ff; }
-
-      .table-hover .table-primary:hover {
-        background-color: #a8bbcf; }
-        .table-hover .table-primary:hover > td,
-        .table-hover .table-primary:hover > th {
-          background-color: #a8bbcf; }
-
-.table-responsive th,td{
-  padding: 10px;
 }
 
+.main-card {
+  margin-top: 70px;
+}
+
+.main-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgb(221, 220, 220);
+}
+
+.card-header .sel {
+  padding-left: 10px;
+}
+
+.card-header .sel span {
+  font-size: 14px;
+  padding-right: 10px;
+}
+
+.card-header .sel select {
+  width: 150px;
+  height: 20px;
+  border: 0;
+  outline: 0;
+  border-bottom: 1px dashed #aaa;
+}
+
+.btn-right {
+  padding-right: 10px;
+}
+
+.btn-right a {
+  font-size: 14px;
+  padding: 5px 10px;
+  background-color: #3f4e81;
+  color: #eee;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: .5s;
+  margin-left: 5px;
+}
+
+.btn-right a:hover {
+  background-color: #273152;
+}
+
+.card-contain {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.shipping-table {
+  width: 100%;
+}
+
+.shipping-table thead tr th {
+  width: 10%;
+  font-size: 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgb(221, 220, 220);
+}
+
+.shipping-table tbody tr td {
+  font-size: 14px;
+  padding: 10px;
+  border-bottom: 1px solid rgb(221, 220, 220);
+  text-align: center;
+}
+
+.shipping-table tbody tr td label {
+  cursor: pointer;
+}
+
+.shipping-table tbody tr:nth-child(even) {
+  background-color: rgb(248, 247, 247);
+}
+
+.card-footer {
+  padding-bottom: 50px;
+  padding-left: 350px;
+}
+
+.warn {
+  font-weight: 600;
+  color: #cf3b3b;
+  letter-spacing: 2px;
+}

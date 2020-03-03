@@ -18,7 +18,6 @@ import { RegmemComponent } from './regmem/regmem.component';
 import { RegcusComponent } from './regcus/regcus.component';
 import { RegconfirmComponent } from './regconfirm/regconfirm.component';
 import { RegfinalComponent } from './regfinal/regfinal.component';
-import { ShippstatusPipe } from './_Helper/shippstatus.pipe';
 import { ForgetpwComponent } from './forgetpw/forgetpw.component';
 import { ShareModule } from './share/share.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -40,7 +39,6 @@ import { ContactComponent } from './contact/contact.component';
     RegcusComponent,
     RegconfirmComponent,
     RegfinalComponent,
-    ShippstatusPipe,
     ForgetpwComponent,
     BannerComponent,
     NewsListComponent,

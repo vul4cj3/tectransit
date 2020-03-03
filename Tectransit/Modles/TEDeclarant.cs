@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Tectransit.Modles
 {
-    public partial class TNDeclarant
+    public partial class TEDeclarant
     {
         public long Id { get; set; }
         public string Name { get; set; }
@@ -14,6 +14,6 @@ namespace Tectransit.Modles
         public string IdphotoF { get; set; }
         public string IdphotoB { get; set; }
         public string Appointment { get; set; }
-        public long ShippingidM { get; set; }
+        public long TransferidM { get; set; }
     }
 }

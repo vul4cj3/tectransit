@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TransferHInfo, MemStationInfo, ShippingHInfo } from 'src/app/_Helper/models';
+import { TransferMInfo, MemStationInfo, ShippingMInfo } from 'src/app/_Helper/models';
 import { ShippstatusPipe } from 'src/app/_Helper/shippstatus.pipe';
-import { IfStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-shipping-list',
@@ -22,11 +21,11 @@ export class ShippingListComponent implements OnInit {
   private catedataUrl = 'GetStationData';
   private delUrl = 'DelACTransferData';
 
-  tableTitle = ['#', '快遞單號', '狀態', '建單時間', '更新時間', '細項'];
-  tableTitle2 = ['#', '集運單號', '狀態', '付款狀態', '建單時間', '付款時間', '發貨時間', '瀏覽'];
+  tableTitle = ['#', '快遞單號', '訂單狀態', '建單時間', '更新時間', '細項'];
+  tableTitle2 = ['#', '集運單號', '追蹤號碼', '訂單狀態', '付款狀態', '付款時間', '建單時間', '發貨時間', '細項'];
 
-  data: TransferHInfo[];
-  data2: ShippingHInfo[];
+  data: TransferMInfo[];
+  data2: ShippingMInfo[];
   rowTotal = 0;
   currentpage = 1;
   pageSize = 20;
@@ -34,9 +33,9 @@ export class ShippingListComponent implements OnInit {
   cateData: MemStationInfo;
   cateID;
   shippingType;
+  tempList: any = [];
   chkList: any = [];
   srhList: any = [];
-  chkNum = 1;
 
   constructor(
     public commonService: CommonService,
@@ -50,23 +49,41 @@ export class ShippingListComponent implements OnInit {
     this.cateID = this.route.snapshot.paramMap.get('id');
 
     if (this.cateID === '0') {
-      this.cateID = 'S1';
+      // 取得預設第一筆站別
+      const promise = new Promise((resolve, reject) => {
+        this.commonService.getSingleData(this.baseUrl + this.catedataUrl)
+          .subscribe(
+            data => {
+              this.cateData = data.rows;
+              resolve('success');
+            },
+            error => {
+              console.log(error);
+            });
+      });
+
+      Promise.all([promise])
+        .then(() => {
+          this.cateID = this.cateData[0].stationcode;
+          this.srhList.push({ status: this.shippingType, stationcode: this.cateID });
+
+          let page = this.baseUrl + this.shippingdataUrl;
+          if (this.shippingType === 't1' || this.shippingType === 't2') {
+            page = this.baseUrl + this.transferdataUrl;
+          }
+          this.crePagination(this.currentpage, page);
+        });
+
+    } else {
+      this.getCateData();
+      this.srhList.push({ status: this.shippingType, stationcode: this.cateID });
+
+      let page = this.baseUrl + this.shippingdataUrl;
+      if (this.shippingType === 't1' || this.shippingType === 't2') {
+        page = this.baseUrl + this.transferdataUrl;
+      }
+      this.crePagination(this.currentpage, page);
     }
-
-    this.getCateData();
-
-    this.srhList.push({ status: this.shippingType, stationcode: this.cateID });
-
-    // 未入庫,已入庫
-    if (this.shippingType === 't1' || this.shippingType === 't2') {
-      this.crePagination(this.currentpage, this.baseUrl + this.transferdataUrl);
-    }
-
-    // 待出貨,已出貨,已完成
-    if (this.shippingType === 'st1' || this.shippingType === 'st2' || this.shippingType === 'st3') {
-      this.crePagination(this.currentpage, this.baseUrl + this.shippingdataUrl);
-    }
-
   }
 
   getCateData() {
@@ -85,16 +102,19 @@ export class ShippingListComponent implements OnInit {
       .subscribe(
         data => {
           if (data.total > 0) {
-            for (const item of data.rows) {
-              item.status = this.shippstatus.transform(item.status);
+            if (this.shippingType === 't1' || this.shippingType === 't2') {
+              this.data = data.rows;
+            } else {
+              this.data2 = data.rows;
             }
-            this.data = data.rows;
+
             this.rowTotal = data.total;
             this.currentpage = newPage;
 
             this.commonService.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
           } else {
             this.data = null;
+            this.data2 = null;
             this.rowTotal = 0;
             this.currentpage = 1;
 
@@ -108,31 +128,28 @@ export class ShippingListComponent implements OnInit {
 
   changeData(newPage: number) {
     if (newPage !== this.currentpage) {
-
-      let pageurl = '';
+      let pageurl = this.baseUrl + this.shippingdataUrl;
       if (this.shippingType === 't1' || this.shippingType === 't2') {
         pageurl = this.baseUrl + this.transferdataUrl;
-      }
-
-      // 待出貨,已出貨,已完成
-      if (this.shippingType === 'st1' || this.shippingType === 'st2' || this.shippingType === 'st3') {
-        pageurl = this.baseUrl + this.shippingdataUrl;
       }
 
       this.commonService.getListData(this.srhList, newPage, this.pageSize, pageurl)
         .subscribe(
           data => {
             if (data.total > 0) {
-              for (const item of data.rows) {
-                item.status = this.shippstatus.transform(item.status);
+              if (this.shippingType === 't1' || this.shippingType === 't2') {
+                this.data = data.rows;
+              } else {
+                this.data2 = data.rows;
               }
-              this.data = data.rows;
+
               this.rowTotal = data.total;
               this.currentpage = newPage;
 
               this.commonService.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
             } else {
               this.data = null;
+              this.data2 = null;
               this.rowTotal = 0;
               this.currentpage = 1;
 
@@ -150,20 +167,17 @@ export class ShippingListComponent implements OnInit {
   }
 
   SelChange(val, Ischk) {
-    this.chkNum = 0;
+    this.tempList = [];
     this.chkList.map((item) => {
-      if (item.id === val) {
-        item.isenable = Ischk;
-        this.chkNum++;
+      if (item !== val) {
+        this.tempList.push(item);
       }
     });
 
-    if (this.chkList.length === 0) {
-      this.chkList.push({ id: val, isenable: Ischk });
-    } else {
-      if (this.chkNum === 0) {
-        this.chkList.push({ id: val, isenable: Ischk });
-      }
+    this.chkList = this.tempList;
+
+    if (Ischk) {
+      this.chkList.push(val);
     }
 
   }
@@ -188,22 +202,6 @@ export class ShippingListComponent implements OnInit {
 
       } else { alert('無項目被刪除！'); }
     } else { }
-  }
-
-  doCombine() {
-    let idlist = '';
-    if (this.chkList.length > 0) {
-      sessionStorage.removeItem('transid');
-      for (const item of this.chkList) {
-        if (item.isenable === true) {
-          idlist += (idlist === '' ? '' : ';') + item.id;
-        }
-      }
-      sessionStorage.setItem('transid', idlist);
-      this.router.navigate(['/member/shipping/combine']);
-    } else {
-      alert('請至少選擇一筆！');
-    }
   }
 
 }

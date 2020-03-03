@@ -285,20 +285,26 @@ namespace Tectransit.Datas
         public string WAREHOUSENO { set; get; }
     }
 
-    public class TransferHListInfo
+    /*----------------- 個人會員用 ----------------*/
+
+    public class TransferMInfo
     {
-        public long TRANSID { set; get; }
-        public string ACCOUNTID { set; get; }
+        public long ID { set; get; }
+        public long ACCOUNTID { set; get; }
         public string ACCOUNTCODE { set; get; }
         public string STATIONCODE { set; get; }
         public string STATIONNAME { set; get; }
-        public string TRASFERNO { set; get; }
-        public string TRASFERCOMPANY { set; get; }
+        public string TRANSFERNO { set; get; }
+        public string TRANSFERCOMPANY { set; get; }
         public string PLENGTH { set; get; }
         public string PWIDTH { set; get; }
         public string PHEIGHT { set; get; }
         public string PWEIGHT { set; get; }
         public string PVALUEPRICE { set; get; }
+        public string TOTAL { set; get; }
+        public string RECEIVER { set; get; }
+        public string RECEIVERADDR { set; get; }
+        public string ISMULTRECEIVER { set; get; }
         public string STATUS { set; get; }
         public string REMARK { set; get; }
         public string CREDATE { set; get; }
@@ -309,10 +315,50 @@ namespace Tectransit.Datas
 
     public class TransferHInfo
     {
-        public long TRANSID { set; get; }
+        public long ID { set; get; }
+        public string BOXNO { set; get; }
+        public string RECEIVER { set; get; }
+        public string RECEIVERADDR { set; get; }
+        public string REMARK { set; get; }
+        public long TRANSFERID_M { set; get; }
+    }
+
+    public class TransferDInfo
+    {
+        public long ID { set; get; }
+        public string PRODUCT { set; get; }
+        public string PRODUCTURL { set; get; }
+        public string UNITPRICE { set; get; }
+        public string QUANTITY { set; get; }
+        public string REMARK { set; get; }
+        public long TRANSFERID_M { set; get; }
+        public long TRANSFERID_H { set; get; }
+    }
+
+    public class DeclarantMemInfo
+    {
+        public long ID { set; get; }
+        public long TYPE { set; get; }
+        public string NAME { set; get; }
+        public string TAXID { set; get; }
+        public string IDPHOTOF { set; get; }
+        public string IDPHOTOB { set; get; }
+        public string PHONE { set; get; }
+        public string MOBILE { set; get; }
+        public string ADDR { set; get; }
+        public string APPOINTMENT { set; get; }
+        public long TRANSFERID_M { set; get; }
+        public long SHIPPINGID_M { set; get; }
+    }
+
+    public class TransferNONInfo
+    {
+        public long ID { set; get; }
         public string STATIONCODE { set; get; }
-        public string TRASFERNO { set; get; }
-        public string TRASFERCOMPANY { set; get; }
+        public string STATIONNAME { set; get; }
+        public string TRANSFERNO { set; get; }
+        public string TRANSFERCOMPANY { set; get; }
+        public string ACCOUNTNAME { set; get; }
         public string PLENGTH { set; get; }
         public string PWIDTH { set; get; }
         public string PHEIGHT { set; get; }
@@ -326,34 +372,15 @@ namespace Tectransit.Datas
         public string UPDBY { set; get; }
     }
 
-    public class TransferDInfo
+    public class ShippingMInfo
     {
-        public long TRANSID { set; get; }
-        public string PRODUCT { set; get; }
-        public string PRODUCTURL { set; get; }
-        public string UNITPRICE { set; get; }
-        public string QUANTITY { set; get; }
-        public string REMARK { set; get; }
-        public string TRANSHID { set; get; }        
-    }
-
-    public class TransferDInfo_Combine
-    {
-        public long TRANSID { set; get; }
-        public string PRODUCT { set; get; }
-        public string PRODUCTURL { set; get; }
-        public string UNITPRICE { set; get; }
-        public string QUANTITY { set; get; }
-        public string REMARK { set; get; }
-        public string TRANSHID { set; get; }
-        public string TRASFERNO { set; get; }
-    }
-
-    public class ShippingHInfo
-    {
-        public long SHIPPINGID { set; get; }
-        public string SHIPPINGNO { set; get; }
+        public long ID { set; get; }
+        public long ACCOUNTID { set; get; }
+        public string ACCOUNTCODE { set; get; }
+        public string COMPANYNAME { set; get; }
         public string STATIONCODE { set; get; }
+        public string STATIONNAME { set; get; }
+        public string SHIPPINGNO { set; get; }
         public string TRACKINGNO { set; get; }
         public string TRACKINGDESC { set; get; }
         public string TRACKINGREMARK { set; get; }
@@ -361,10 +388,15 @@ namespace Tectransit.Datas
         public string PWIDTH { set; get; }
         public string PHEIGHT { set; get; }
         public string PWEIGHT { set; get; }
-        public string PTRACKINGNO { set; get; }
+        public string PVALUEPRICE { set; get; }
+        public string MAWBNO { set; get; }
+        public string CLEARANCENO { set; get; }
+        public string HAWBNO { set; get; }
         public string TOTAL { set; get; }
+        public string TOTALPRICE { set; get; }
         public string RECEIVER { set; get; }
-        public string RECEIVER_ADDR { set; get; }
+        public string RECEIVERADDR { set; get; }
+        public string ISMULTRECEIVER { set; get; }
         public string TRACKINGTYPE { set; get; }
         public string STATUS { set; get; }
         public string PAYTYPE { set; get; }
@@ -380,15 +412,27 @@ namespace Tectransit.Datas
         public string UPDBY { set; get; }
     }
 
+    public class ShippingHInfo
+    {
+        public long ID { set; get; }
+        public string TRANSFERNO { set; get; }
+        public string BOXNO { set; get; }
+        public string RECEIVER { set; get; }
+        public string RECEIVERADDR { set; get; }
+        public string REMARK { set; get; }
+        public long SHIPPINGID_M { set; get; }
+    }
+
     public class ShippingDInfo
     {
-        public long SHIPPINGID { set; get; }
-        public string PACKNAME { set; get; }
-        public string PACKURL { set; get; }
+        public long ID { set; get; }
+        public string PRODUCT { set; get; }
+        public string PRODUCTURL { set; get; }
         public string UNITPRICE { set; get; }
         public string QUANTITY { set; get; }
         public string REMARK { set; get; }
-        public string SHIPPINGID_H { set; get; }
+        public long SHIPPINGID_M { set; get; }
+        public long SHIPPINGID_H { set; get; }
     }
 
     /*----------------- upload ----------------*/
@@ -417,7 +461,9 @@ namespace Tectransit.Datas
         public string SHIPPINGNO { set; get; }
         public string TRACKINGNO { set; get; }
         public string MAWBNO { set; get; }
-        public string TRASFERNO { set; get; }        
+        public string CLEARANCENO { set; get; }
+        public string HAWBNO { set; get; }
+        public string TRANSFERNO { set; get; }        
         public string TOTAL { set; get; }
         public string TRACKINGTYPE { set; get; }
         public string RECEIVER { set; get; }

@@ -5,18 +5,28 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ShippstatusPipe implements PipeTransform {
 
-  transform(value: string): any {
-    if (value === '0') {
-      return '未入庫';
-    } else if (value === '1') {
-      return '已入庫';
-    } else if (value === '2') {
-      return '待出貨';
-    } else if (value === '3') {
-      return '已出貨';
-    } else if (value === '4') {
-      return '已完成';
-    } else { }
+  transform(value: string, type: string = 's'): any {
+    if (type === 'pay') {
+      if (value === '0') {
+        return '未付款';
+      } else if (value === '1') {
+        return '付款成功';
+      } else if (value === '2') {
+        return '付款失敗';
+      } else { }
+    } else {
+      if (value === '0') {
+        return '未入庫';
+      } else if (value === '1') {
+        return '已入庫';
+      } else if (value === '2') {
+        return '待出貨';
+      } else if (value === '3') {
+        return '已出貨';
+      } else if (value === '4') {
+        return '已完成';
+      } else { }
+    }
 
     return null;
   }

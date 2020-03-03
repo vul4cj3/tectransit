@@ -487,6 +487,15 @@ namespace Tectransit.Datas
             
         }
 
+        //刪除前台實體檔案
+        public void DeleteFileF(string file)
+        {
+            var filepath = Path.Combine(Directory.GetCurrentDirectory(), "TecTransit/dist/TecTransit" + file);
+            if (File.Exists(filepath))
+                File.Delete(filepath);
+
+        }
+
         public string GetRandomString()
         {
             string allowedChars = "ABCDEFGHJKLMNOPQRSTUVWXYZ0123456789!@$?_-";

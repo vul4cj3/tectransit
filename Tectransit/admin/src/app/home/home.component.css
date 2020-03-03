@@ -2045,6 +2045,7 @@ textarea.form-control {
 .form-row {
   display: flex;
   flex-wrap: wrap;
+  margin-top: 10px;
   margin-right: -5px;
   margin-left: -5px; }
   .form-row > .col,

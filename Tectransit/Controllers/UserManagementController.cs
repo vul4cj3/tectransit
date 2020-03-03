@@ -422,7 +422,8 @@ namespace Tectransit.Controllers
 
             }
 
-            return objUsm.GetTransferListData(sWhere, pageIndex, pageSize);
+            //return objUsm.GetTransferListData(sWhere, pageIndex, pageSize);
+            return "";
         }
 
         [HttpPost]
@@ -463,7 +464,7 @@ namespace Tectransit.Controllers
                     for (int i = 0; i < AL.Count; i++)
                     {
                         Hashtable sData = (Hashtable)AL[i];
-                        UpdateTransfer(Convert.ToInt64(sData["TRANSFERID"]), sData);
+                        //UpdateTransfer(Convert.ToInt64(sData["TRANSFERID"]), sData);
 
                         logMsg += (logMsg == "" ? "" : ",") + $@"[TRANSFERID({sData["TRANSFERID"]}):{((sData["STATUS"]?.ToString() == "1") ? "已入庫" : "未入庫")}]";
                     }
@@ -522,7 +523,7 @@ namespace Tectransit.Controllers
                     for (int i = 0; i < AL.Count; i++)
                     {
                         Hashtable sData = (Hashtable)AL[i];
-                        UpdateTransfer(Convert.ToInt64(sData["TRANSFERID"]), sData);
+                        //UpdateTransfer(Convert.ToInt64(sData["TRANSFERID"]), sData);
 
                         logMsg += (logMsg == "" ? "" : ",") + $@"[TRANSFERID({sData["TRANSFERID"]}):{((sData["STATUS"]?.ToString() == "1") ? "已入庫" : "未入庫")}]";
                     }
@@ -562,7 +563,7 @@ namespace Tectransit.Controllers
                 srhKey.Add("sstationcode", "STATIONCODE");
                 srhKey.Add("sshippingno", "SHIPPINGNO");
                 srhKey.Add("strackingno", "TRACKINGNO");
-                srhKey.Add("strasferno", "TRASFERNO");
+                srhKey.Add("stransferno", "TRANSFERNO");
                 srhKey.Add("sacccode", "ACCOUNTCODE");
                 srhKey.Add("sstatus", "STATUS");
                 Hashtable htData = new Hashtable();
@@ -582,8 +583,8 @@ namespace Tectransit.Controllers
                 if (!string.IsNullOrEmpty(htData["TRACKINGNO"]?.ToString()))
                     sWhere += (sWhere == "" ? "WHERE" : " AND") + " TRACKINGNO LIKE '%" + htData["TRACKINGNO"]?.ToString() + "%'";
 
-                if (!string.IsNullOrEmpty(htData["TRASFERNO"]?.ToString()))
-                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " TRASFERNO LIKE '%" + htData["TRASFERNO"]?.ToString() + "%'";
+                if (!string.IsNullOrEmpty(htData["TRANSFERNO"]?.ToString()))
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " TRANSFERNO LIKE '%" + htData["TRANSFERNO"]?.ToString() + "%'";
 
                 //if (!string.IsNullOrEmpty(htData["ACCOUNTCODE"]?.ToString()))
                 //{
@@ -770,6 +771,8 @@ namespace Tectransit.Controllers
                 mData["RECEIVER"] = arrData.Value<string>("receiver");
                 mData["RECEIVERADDR"] = arrData.Value<string>("receiveraddr");
                 mData["MAWBNO"] = arrData.Value<string>("mawbno");
+                mData["CLEARANCENO"] = arrData.Value<string>("clearanceno");
+                mData["HAWBNO"] = arrData.Value<string>("hawbno");
                 mData["ISMULTRECEIVER"] = arrData.Value<string>("ismultreceiver").ToUpper();
                 mData["STATUS"] = arrData.Value<string>("status");
                 mData["_usercode"] = Request.Cookies["_usercode"];
@@ -1057,7 +1060,8 @@ namespace Tectransit.Controllers
         [HttpGet("{id}")]
         public dynamic GetTransferData(long id)
         {
-            return objUsm.GetTransferData(id);
+            //return objUsm.GetTransferData(id);
+            return "";
         }
 
         [HttpPost]
@@ -1316,7 +1320,7 @@ namespace Tectransit.Controllers
                 }
                 else
                 {
-                    UpdateTransfer(id, htData);
+                    //UpdateTransfer(id, htData);
 
                     string updMsg = "";
                     foreach (DictionaryEntry ht in htData)
@@ -1339,40 +1343,40 @@ namespace Tectransit.Controllers
             }
         }
 
-        private void UpdateTransfer(long id, Hashtable sData)
-        {
-            var query = _context.TETransferH.Where(q => q.Id == id).FirstOrDefault();
+        //private void UpdateTransfer(long id, Hashtable sData)
+        //{
+        //    var query = _context.TETransferH.Where(q => q.Id == id).FirstOrDefault();
 
-            if (query != null)
-            {
-                TETransferH rowTET = query;
+        //    if (query != null)
+        //    {
+        //        TETransferH rowTET = query;
 
-                if (sData["TRASFERCOMPANY"] != null)
-                    rowTET.Trasfercompany = sData["TRASFERCOMPANY"]?.ToString();
-                if (sData["PLENGTH"] != null)
-                    rowTET.PLength = sData["PLENGTH"]?.ToString();
-                if (sData["PWIDTH"] != null)
-                    rowTET.PWidth = sData["PWIDTH"]?.ToString();
-                if (sData["PHEIGHT"] != null)
-                    rowTET.PHeight = sData["PHEIGHT"]?.ToString();
-                if (sData["PWEIGHT"] != null)
-                    rowTET.PWeight = sData["PWEIGHT"]?.ToString();
-                if (sData["PVALUEPRICE"] != null)
-                    rowTET.PValueprice = sData["PVALUEPRICE"]?.ToString();
-                if (sData["STATUS"] != null)
-                    rowTET.Status = Convert.ToInt32(sData["STATUS"]);
-                if (sData["REMARK"] != null)
-                    rowTET.Remark = sData["REMARK"]?.ToString();                
+        //        if (sData["TRASFERCOMPANY"] != null)
+        //            rowTET.Trasfercompany = sData["TRASFERCOMPANY"]?.ToString();
+        //        if (sData["PLENGTH"] != null)
+        //            rowTET.PLength = sData["PLENGTH"]?.ToString();
+        //        if (sData["PWIDTH"] != null)
+        //            rowTET.PWidth = sData["PWIDTH"]?.ToString();
+        //        if (sData["PHEIGHT"] != null)
+        //            rowTET.PHeight = sData["PHEIGHT"]?.ToString();
+        //        if (sData["PWEIGHT"] != null)
+        //            rowTET.PWeight = sData["PWEIGHT"]?.ToString();
+        //        if (sData["PVALUEPRICE"] != null)
+        //            rowTET.PValueprice = sData["PVALUEPRICE"]?.ToString();
+        //        if (sData["STATUS"] != null)
+        //            rowTET.Status = Convert.ToInt32(sData["STATUS"]);
+        //        if (sData["REMARK"] != null)
+        //            rowTET.Remark = sData["REMARK"]?.ToString();                
 
-                if (sData.Count > 2)//排除cookies
-                {
-                    rowTET.Upddate = DateTime.Now;
-                    rowTET.Updby = sData["_usercode"]?.ToString();
+        //        if (sData.Count > 2)//排除cookies
+        //        {
+        //            rowTET.Upddate = DateTime.Now;
+        //            rowTET.Updby = sData["_usercode"]?.ToString();
 
-                    _context.SaveChanges();
-                }
-            }
-        }
+        //            _context.SaveChanges();
+        //        }
+        //    }
+        //}
 
         private void updateCusShippingM(Hashtable sData)
         {
@@ -1383,6 +1387,8 @@ namespace Tectransit.Controllers
                 query.Receiver = sData["RECEIVER"]?.ToString();
                 query.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
                 query.Mawbno = sData["MAWBNO"]?.ToString();
+                query.Clearanceno = sData["CLEARANCENO"]?.ToString();
+                query.Hawbno = sData["HAWBNO"]?.ToString();
                 query.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
                 query.Status = Convert.ToInt32(sData["STATUS"]);
 

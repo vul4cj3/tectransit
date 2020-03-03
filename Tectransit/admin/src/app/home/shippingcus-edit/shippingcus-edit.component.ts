@@ -58,6 +58,8 @@ export class ShippingcusEditComponent implements OnInit {
       receiver: [''],
       receiveraddr: [''],
       mawbno: '',
+      clearanceno: '',
+      hawbno: '',
       ismultreceiver: 'N',
       status: '1',
       boxform: this.formBuilder.array([

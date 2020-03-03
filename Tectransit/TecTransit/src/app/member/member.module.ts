@@ -16,6 +16,8 @@ import { ShippingcusListComponent } from './shippingcus-list/shippingcus-list.co
 import { ShippingcusEditComponent } from './shippingcus-edit/shippingcus-edit.component';
 import { ShippingcusHeaderComponent } from './shippingcus-header/shippingcus-header.component';
 import { ShareModule } from '../share/share.module';
+import { ShippingHeaderComponent } from './shipping-header/shipping-header.component';
+import { ShippstatusPipe } from '../_Helper/shippstatus.pipe';
 
 
 
@@ -33,7 +35,9 @@ import { ShareModule } from '../share/share.module';
     ProfilecusComponent,
     ShippingcusListComponent,
     ShippingcusEditComponent,
-    ShippingcusHeaderComponent
+    ShippingcusHeaderComponent,
+    ShippingHeaderComponent,
+    ShippstatusPipe
   ],
   imports: [
     CommonModule,

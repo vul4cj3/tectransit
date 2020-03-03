@@ -43,6 +43,7 @@ import { TransferListComponent } from './transfer-list/transfer-list.component';
 import { TransferEditComponent } from './transfer-edit/transfer-edit.component';
 import { ShippingcusListComponent } from './shippingcus-list/shippingcus-list.component';
 import { ShippingcusEditComponent } from './shippingcus-edit/shippingcus-edit.component';
+import { ShippstatusPipe } from '../_Helper/shippstatus.pipe';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { ShippingcusEditComponent } from './shippingcus-edit/shippingcus-edit.co
     TransferListComponent,
     TransferEditComponent,
     ShippingcusListComponent,
-    ShippingcusEditComponent
+    ShippingcusEditComponent,
+    ShippstatusPipe
   ],
   imports: [
     CommonModule,

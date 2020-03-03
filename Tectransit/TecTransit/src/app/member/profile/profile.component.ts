@@ -19,6 +19,10 @@ export class ProfileComponent implements OnInit {
   memData: AccountInfo;
   dataChange;
 
+  isShow = false;
+  isShow2 = false;
+  isShow3 = false;
+
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
@@ -45,6 +49,29 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  showPW(id) {
+    const controls = document.getElementById(id) as HTMLInputElement;
+    if (controls.type === 'password') {
+      if (id === 'userpassword') {
+        this.isShow = true;
+      } else if (id === 'newpw') {
+        this.isShow2 = true;
+      } else {
+        this.isShow3 = true;
+      }
+      controls.type = 'text';
+    } else {
+      if (id === 'userpassword') {
+        this.isShow = false;
+      } else if (id === 'newpw') {
+        this.isShow2 = false;
+      } else {
+        this.isShow3 = false;
+      }
+      controls.type = 'password';
+    }
+  }
+
   getData() {
     this.commonservice.getSingleData(this.getdataUrl)
       .subscribe(data => {
@@ -59,13 +86,38 @@ export class ProfileComponent implements OnInit {
 
     // stop here if form is invalid
     if (this.memForm.invalid) {
-      return alert('必填欄位不能為空白！');
+      return alert('欄位不能為空白！');
     }
 
+    /* 密碼變更欄位檢查 */
+    const oldpw = (document.getElementById('userpassword')) as HTMLInputElement;
+    const npw = (document.getElementById('newpw')) as HTMLInputElement;
     const cpw = (document.getElementById('confirmpw')) as HTMLInputElement;
+    if (oldpw.value !== '') {
+      if (npw.value === '') {
+        return alert('請輸入新密碼值！');
+      } else if (cpw.value === '') {
+        return alert('請再確認一次新密碼！');
+      }
+    } else if (npw.value !== '') {
+      if (oldpw.value === '') {
+        return alert('請輸入舊密碼值！');
+      } else if (cpw.value === '') {
+        return alert('請再確認一次新密碼！');
+      }
+    } else if (cpw.value !== '') {
+      if (oldpw.value === '') {
+        return alert('請輸入舊密碼值！');
+      } else if (npw.value === '') {
+        return alert('請輸入新密碼值！');
+      }
+    }
+
     if (cpw.value !== form.newpw) {
       return alert('密碼資料不一致！');
     }
+
+    /* 保存資料 */
 
     if (Object.keys(form).length > 0) {
       this.dataChange = this.commonservice.formChanges(form, this.memData);

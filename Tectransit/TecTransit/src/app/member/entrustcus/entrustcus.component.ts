@@ -58,7 +58,7 @@ export class EntrustcusComponent implements OnInit {
 
     this.dataForm = this.formBuilder.group({
       stationcode: [''],
-      trasferno: [''],
+      transferno: [''],
       total: ['', Validators.required],
       idphotof: [''],
       idphotob: [''],

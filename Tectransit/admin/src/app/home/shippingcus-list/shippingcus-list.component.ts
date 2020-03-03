@@ -63,7 +63,7 @@ export class ShippingcusListComponent implements OnInit {
       sstationcode: 'ALL',
       sshippingno: '',
       strackingno: '',
-      strasferno: '',
+      stransferno: '',
       sacccode: '',
       sstatus: parseInt(sessionStorage.getItem('cusstatus'), 0)
     });
@@ -85,10 +85,6 @@ export class ShippingcusListComponent implements OnInit {
       .subscribe(
         data => {
           if (data.total > 0) {
-            for (const item of data.rows) {
-              item.status = this.shippstatus.transform(item.status);
-            }
-
             this.data = data.rows;
             this.rowTotal = data.total;
             this.currentpage = newPage;
@@ -113,10 +109,6 @@ export class ShippingcusListComponent implements OnInit {
         .subscribe(
           data => {
             if (data.total > 0) {
-              for (const item of data.rows) {
-                item.status = this.shippstatus.transform(item.status);
-              }
-
               this.data = data.rows;
               this.rowTotal = data.total;
               this.currentpage = newPage;

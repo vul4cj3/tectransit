@@ -230,14 +230,71 @@ export interface StationInfo {
   updby: string;
 }
 
-export interface TransferHInfo {
-  transid: number;
-  accountid: string;
+/* ----- 個人會員 ----- */
+
+export interface TransferMInfo {
+  id: number;
+  accountid: number;
   accountcode: string;
   stationcode: string;
   stationname: string;
-  trasferno: string;
-  trasfercompany: string;
+  transferno: string;
+  transfercompany: string;
+  plength: string;
+  pwidth: string;
+  pheight: string;
+  pweight: string;
+  pvalueprice: string;
+  total: string;
+  status: string;
+  remark: string;
+  credate: string;
+  creby: string;
+  upddate: string;
+  updby: string;
+}
+
+export interface TransferHInfo {
+  id: number;
+  boxno: string;
+  receiver: string;
+  receiveraddr: string;
+  remark: string;
+  transferiD_M: number;
+}
+
+export interface TransferDInfo {
+  id: number;
+  product: string;
+  producturl: string;
+  unitprice: string;
+  quantity: string;
+  remark: string;
+  transferiD_M: number;
+  transferiD_H: number;
+}
+
+export interface DeclarantMemInfo {
+  id: number;
+  name: string;
+  taxid: string;
+  phone: string;
+  mobile: string;
+  addr: string;
+  idphotof: string;
+  idphotob: string;
+  appointment: string;
+  transferiD_M: number;
+  shippingiD_M: number;
+}
+
+export interface TransferNONInfo {
+  id: number;
+  stationcode: string;
+  stationname: string;
+  transferno: string;
+  transfercompany: string;
+  accountname: string;
   plength: string;
   pwidth: string;
   pheight: string;
@@ -251,20 +308,14 @@ export interface TransferHInfo {
   updby: string;
 }
 
-export interface TransferDInfo {
-  transid: number;
-  product: string;
-  producturl: string;
-  unitprice: string;
-  quantity: string;
-  remark: string;
-  transhid: string;
-}
-
-export interface ShippingHInfo {
-  shippingid: number;
-  shippingno: string;
+export interface ShippingMInfo {
+  id: number;
+  accountid: number;
+  accountcode: string;
+  companyname: string;
   stationcode: string;
+  stationname: string;
+  shippingno: string;
   trackingno: string;
   trackingdesc: string;
   trackingmark: string;
@@ -272,10 +323,13 @@ export interface ShippingHInfo {
   pwidth: string;
   pheight: string;
   pweight: string;
-  ptrackingno: string;
+  mawbno: string;
+  clearanceno: string;
+  hawbno: string;
   total: string;
   receiver: string;
   receiver_addr: string;
+  ismultreceiver: string;
   trackingtype: string;
   status: string;
   paytype: string;
@@ -291,15 +345,28 @@ export interface ShippingHInfo {
   updby: string;
 }
 
+export interface ShippingHInfo {
+  id: number;
+  transferno: string;
+  boxno: string;
+  receiver: string;
+  receiveraddr: string;
+  remark: string;
+  shippingiD_M: number;
+}
+
 export interface ShippingDInfo {
-  shippingid: number;
-  packname: string;
-  packurl: string;
+  id: number;
+  product: string;
+  producturl: string;
   unitprice: string;
   quantity: string;
   remark: string;
-  shippingid_h: string;
+  shippingiD_M: number;
+  shippingiD_H: number;
 }
+
+/* ----- 廠商會員 ----- */
 
 export interface ShippingMCusInfo {
   id: number;
@@ -311,7 +378,9 @@ export interface ShippingMCusInfo {
   shippingno: string;
   trackingno: string;
   mawbno: string;
-  trasferno: string;
+  clearanceno: string;
+  hawbno: string;
+  transferno: string;
   total: string;
   trackingtype: number;
   receiver: string;
