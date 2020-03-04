@@ -293,6 +293,30 @@ namespace Tectransit.Controllers
         }
 
         [HttpPost]
+        public IActionResult editorImgUpload(IFormFile upload, string CKEditorFuncNum, string CKEditor, string langCode)
+        {
+            if (upload.Length <= 0) return null;
+
+            var fileName = Guid.NewGuid() + Path.GetExtension(upload.FileName).ToLower();
+            var folderpath = Path.Combine(Directory.GetCurrentDirectory(), @"tectransit\dist\tectransit\assets\ArticleImg\");
+            var filepath = Path.Combine(folderpath, fileName);
+
+            if (!Directory.Exists(folderpath))
+            {
+                Directory.CreateDirectory(folderpath);
+            }
+
+            using (var stream = new FileStream(filepath, FileMode.Create))
+            {
+                upload.CopyTo(stream);
+            }
+            
+            var url = $"{"/res/assets/ArticleImg/"}{fileName}";
+            
+            return Json(new { uploaded = true, url });
+        }
+
+        [HttpPost]
         [DisableRequestSizeLimit]
         public dynamic UploadImgData_F()
         {

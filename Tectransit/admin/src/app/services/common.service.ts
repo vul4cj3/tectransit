@@ -39,7 +39,7 @@ export class CommonService {
       '/'
     ],
     removeButtons: 'Strike,Subscript,Superscript,Anchor,Styles,Specialchar',
-    filebrowserImageUploadUrl: '/test2/',
+    filebrowserImageUploadUrl: '/api/CommonHelp/editorImgUpload/',
     height: 300
   };
 

@@ -35,6 +35,14 @@
               <label>收件人地址</label>
               <span>{{masterData.receiveraddr}}</span>
             </div>
+            <div class="form-control" *ngIf="masterData.clearanceno !== ''">
+              <label>清關條碼</label>
+              <span>{{masterData.clearanceno}}</span>
+            </div>
+            <div class="form-control" *ngIf="masterData.hawbno !== ''">
+              <label>託運單號</label>
+              <span>{{masterData.hawbno}}</span>
+            </div>
           </div>
           <!-- master data end-->
           <!-- header&datail start-->
