@@ -221,7 +221,8 @@ namespace Tectransit.Datas
         public string CREBY { set; get; }
         public string UPDDATE { set; get; }
         public string UPDBY { set; get; }
-        public string CATEID { set; get; }
+        public long CATEID { set; get; }
+        public string CATETITLE { set; get; }
     }
 
     public class FaqCate

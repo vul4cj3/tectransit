@@ -58,6 +58,61 @@ export interface MemStationInfo {
   address: string;
 }
 
+export interface AboutCate {
+  cateid: number;
+  title: string;
+  descr: string;
+  istop: string;
+}
+
+export interface AboutInfo {
+  cateid: number;
+  catetitle: string;
+  aboutid: number;
+  title: string;
+  descr: string;
+  credate: string;
+  upddate: string;
+}
+
+export interface BannerInfo {
+  id: number;
+  title: string;
+  descr: string;
+  imgurl: string;
+  upsdate: string;
+  upedate: string;
+  istop: string;
+  banseq: string;
+}
+
+export interface NewsInfo {
+  newsid: number;
+  title: string;
+  descr: string;
+  upsdate: string;
+  upedate: string;
+  istop: string;
+  newsseq: string;
+  credate: string;
+  upddate: string;
+}
+
+export interface FaqCate {
+  cateid: number;
+  title: string;
+  descr: string;
+  istop: string;
+}
+
+export interface FaqInfo {
+  faqid: number;
+  title: string;
+  descr: string;
+  credate: string;
+  upddate: string;
+}
+
 /* ----- 個人會員 ----- */
 
 export interface TransferMInfo {
@@ -273,42 +328,4 @@ export interface DeclarantCusInfo {
   idphotob: string;
   appointment: string;
   shippingiD_M: number;
-}
-
-export interface BannerInfo {
-  id: number;
-  title: string;
-  descr: string;
-  imgurl: string;
-  upsdate: string;
-  upedate: string;
-  istop: string;
-  banseq: string;
-}
-
-export interface NewsInfo {
-  newsid: number;
-  title: string;
-  descr: string;
-  upsdate: string;
-  upedate: string;
-  istop: string;
-  newsseq: string;
-  credate: string;
-  upddate: string;
-}
-
-export interface FaqCate {
-  cateid: number;
-  title: string;
-  descr: string;
-  istop: string;
-}
-
-export interface FaqInfo {
-  faqid: number;
-  title: string;
-  descr: string;
-  credate: string;
-  upddate: string;
 }

@@ -239,7 +239,7 @@ namespace Tectransit.Datas
                 {
                     AboutInfo m = new AboutInfo();
                     m.ABOUTID = Convert.ToInt64(DT.Rows[i]["ID"]);
-                    m.CATEID = DT.Rows[i]["CATEID"]?.ToString();
+                    m.CATEID = Convert.ToInt64(DT.Rows[i]["CATEID"]);
                     m.TITLE = DT.Rows[i]["TITLE"]?.ToString();
                     m.DESCR = DT.Rows[i]["DESCR"]?.ToString();
                     m.ABOUTSEQ = DT.Rows[i]["ABOUTDSEQ"]?.ToString();
@@ -275,7 +275,7 @@ namespace Tectransit.Datas
             {
                 AboutInfo m = new AboutInfo();
                 m.ABOUTID = Convert.ToInt64(DT.Rows[0]["ID"]);
-                m.CATEID = DT.Rows[0]["CATEID"]?.ToString();
+                m.CATEID = Convert.ToInt64(DT.Rows[0]["CATEID"]);
                 m.ABOUTSEQ = DT.Rows[0]["ABOUTDSEQ"]?.ToString();
                 m.TITLE = DT.Rows[0]["TITLE"]?.ToString();
                 m.DESCR = HttpUtility.HtmlDecode(DT.Rows[0]["DESCR"]?.ToString());

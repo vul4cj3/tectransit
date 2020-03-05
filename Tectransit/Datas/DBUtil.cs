@@ -189,6 +189,20 @@ namespace Tectransit.Datas
             return Result;
         }
 
+        public static string GetSingleValue1(string sql, Hashtable args)
+        {
+            string Result = string.Empty;
+            ArrayList dataAll = new ArrayList();
+            dataAll = Select(sql, (args != null ? args : null));            
+
+            if (dataAll.Count > 0)
+            {
+                Hashtable record = (Hashtable)dataAll[0];
+                Result = record["COL1"] == null ? "" : record["COL1"].ToString();
+            }
+            return Result;
+        }
+
         #region 私有
         private static void SetArgs(string sql, Hashtable args, IDbCommand cmd)
         {

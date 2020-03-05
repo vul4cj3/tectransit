@@ -1,0 +1,20 @@
+<div class="custom-container">
+  <ng-container *ngIf="data !== null">
+    <div class="custom-header">
+      <span class="date">{{data.credate}}</span>
+      <span class="title">{{data.title}}</span>
+      <div class="bread">
+        <a routerLink="/">首頁</a>
+        <span class="slash">/</span>
+        <a routerLink="/custom/0">集運介紹</a>
+        <span class="slash">/</span>
+      <a routerLink="/custom/{{data.cateid}}">{{data.catetitle}}</a>
+      </div>
+    </div>
+    <div class="custom-contain">
+      <div class="descr" [innerHTML]="data.descr | safeHtml"></div>
+    </div>
+  </ng-container>
+  <div class="upddate" *ngIf="data !== null"><span class="date">更新日期：{{data.upddate}}</span></div>
+<div class="btn" *ngIf="data !== null"><a routerLink="/custom/{{data.cateid}}">回列表</a></div>
+</div>

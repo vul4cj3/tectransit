@@ -26,6 +26,10 @@ import { NewsListComponent } from './news-list/news-list.component';
 import { NewsDetailComponent } from './news-detail/news-detail.component';
 import { FaqComponent } from './faq/faq.component';
 import { ContactComponent } from './contact/contact.component';
+import { CustomListComponent } from './custom-list/custom-list.component';
+import { CustomDetailComponent } from './custom-detail/custom-detail.component';
+import { SafeHtmlPipe } from './_Helper/safeHtml.pipe';
+import { SitemapComponent } from './sitemap/sitemap.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +48,11 @@ import { ContactComponent } from './contact/contact.component';
     NewsListComponent,
     NewsDetailComponent,
     FaqComponent,
-    ContactComponent
+    ContactComponent,
+    CustomListComponent,
+    CustomDetailComponent,
+    SafeHtmlPipe,
+    SitemapComponent
   ],
   imports: [
     BrowserModule,

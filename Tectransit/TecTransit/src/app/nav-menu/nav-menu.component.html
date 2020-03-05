@@ -10,8 +10,13 @@
         <a [routerLink]="item.menuurl" (mouseover)="chgSubnav($event)">{{item.menuname}}</a>
         <ul class="subnav">
           <ng-container *ngFor="let subitem of subdata">
-            <li class="subitem" *ngIf="subitem.parentcode===item.menucode"><a
+            <li class="subitem" *ngIf="subitem.parentcode === item.menucode"><a
                 [routerLink]="subitem.menuurl">{{subitem.menuname}}</a></li>
+          </ng-container>
+          <ng-container *ngFor="let aboutitem of aboutdata">
+            <li class="subitem" *ngIf="item.menuname === '集運介紹'">
+              <a href="/custom/{{aboutitem.cateid}}">{{aboutitem.title}}</a>
+            </li>
           </ng-container>
         </ul>
       </li>

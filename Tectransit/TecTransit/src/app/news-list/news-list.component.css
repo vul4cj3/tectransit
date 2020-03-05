@@ -28,12 +28,11 @@
 }
 
 .news-header .line {
-  position: absolute;
-  top: 25px;
-  left: 140px;
+  display: block;
   width: 85%;
   height: 1px;
   border-bottom: 1px solid #aaa;
+  margin-top: 10px;
 }
 
 .news-contain {
@@ -80,8 +79,20 @@
   color: rgb(107, 189, 192);
 }
 
+.news-container .card-list {
+  width: 85%;
+  border-bottom: 1px solid #aaa;
+}
+
+.news-container .card-list p{
+  text-align: center;
+  color: #c54343;
+  font-family: 'Noto Sans TC';
+  padding-bottom: 10px;
+}
+
 .card-footer {
   position: absolute;
-  right: 0;
-  margin-top: 10px;
+  left: 40%;
+  margin-top: 20px;
 }

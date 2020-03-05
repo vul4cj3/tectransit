@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../services/login.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../services/common.service';
-import { MenuInfo } from '../_Helper/models';
+import { MenuInfo, AboutCate } from '../_Helper/models';
 
 @Component({
   selector: 'app-nav-menu',
@@ -18,6 +18,7 @@ export class NavMenuComponent implements OnInit {
 
   data: MenuInfo[];
   subdata: MenuInfo[];
+  aboutdata: AboutCate[];
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -53,6 +54,7 @@ export class NavMenuComponent implements OnInit {
         if (data.status === '0') {
           this.data = data.pList;
           this.subdata = data.item;
+          this.aboutdata = data.aboutitem;
         }
       }, error => {
         console.log(error);

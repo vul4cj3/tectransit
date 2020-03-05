@@ -26,7 +26,7 @@
               <span>{{subitem.title}}</span>
               <em></em>
             </div>
-            <div class="card-descr" [innerHTML]="subitem.descr"></div>
+            <div class="card-descr" [innerHTML]="subitem.descr | safeHtml"></div>
           </div>
         </ng-container>
       </div>

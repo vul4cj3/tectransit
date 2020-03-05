@@ -35,17 +35,15 @@ a {
 }
 
 .contact-header .line {
-  position: absolute;
-  top: 35px;
-  left: 140px;
+  display: block;
   width: 80%;
   height: 1px;
   border-bottom: 1px solid #aaa;
+  margin-top: 10px;
 }
 
 .contact-contain {
   width: 750px;
-  margin: 0 auto;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 0 1.875rem 0 rgba(0, 0, 0, .1);

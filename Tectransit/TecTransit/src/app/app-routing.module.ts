@@ -12,10 +12,15 @@ import { NewsListComponent } from './news-list/news-list.component';
 import { NewsDetailComponent } from './news-detail/news-detail.component';
 import { FaqComponent } from './faq/faq.component';
 import { ContactComponent } from './contact/contact.component';
+import { CustomListComponent } from './custom-list/custom-list.component';
+import { CustomDetailComponent } from './custom-detail/custom-detail.component';
+import { SitemapComponent } from './sitemap/sitemap.component';
 
 
 const routes: Routes = [
   {path: 'home', component: HomeComponent},
+  {path: 'custom/:id', component: CustomListComponent},
+  {path: 'custom/detail/:cateid/:id', component: CustomDetailComponent},
   {path: 'news', component: NewsListComponent},
   {path: 'news/detail/:id', component: NewsDetailComponent},
   {path: 'faq', component: FaqComponent},
@@ -27,6 +32,7 @@ const routes: Routes = [
   {path: 'regfinal', component: RegfinalComponent},
   {path: 'login', component: LoginComponent},
   {path: 'forgetpw', component: ForgetpwComponent},
+  {path: 'sitemap', component: SitemapComponent},
 
   // firsttime and otherwise redirect to HomeComponent
   {path: '**', component: HomeComponent}

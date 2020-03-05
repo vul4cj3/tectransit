@@ -1,4 +1,4 @@
-.news-container {
+.custom-container {
   position: relative;
   width: 100%;
   margin: 0 auto;
@@ -6,13 +6,13 @@
   padding-right: 20%;
 }
 
-.news-header {
+.custom-header {
   position: relative;
   border-bottom: 1px dashed #aaa;
   padding: 10px;
 }
 
-.news-header .date {
+.custom-header .date {
   font-family: 'Noto Sans TC';
   font-size: 12px;
   width: 67px;
@@ -21,13 +21,13 @@
   color: #fff;
 }
 
-.news-header .title {
+.custom-header .title {
   font-size: 20px;
   font-family: 'Noto Sans TC';
   margin-left: 10px;
 }
 
-.news-header .bread{
+.custom-header .bread{
   position: absolute;
   right: 0;
   bottom: 10px;
@@ -48,14 +48,14 @@
   font-family: 'Noto Sans TC';
 }
 
-.news-contain {
+.custom-contain {
   border-bottom: 1px dashed #aaa;
   margin: 10px 0;
   padding-left: 20px;
   padding-bottom: 20px;
 }
 
-.news-container .btn {
+.custom-container .btn {
   text-align: center;
   margin-top: 30px;
 }

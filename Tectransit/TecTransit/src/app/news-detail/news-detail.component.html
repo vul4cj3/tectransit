@@ -3,9 +3,14 @@
     <div class="news-header">
       <span class="date">{{data.credate}}</span>
       <span class="title">{{data.title}}</span>
+      <div class="bread">
+        <a routerLink="/">首頁</a>
+        <span class="slash">/</span>
+        <a routerLink="/news">最新消息</a>
+      </div>
     </div>
     <div class="news-contain">
-      <div class="descr" [innerHTML]="data.descr"></div>
+    <div class="descr" [innerHTML]="data.descr | safeHtml"></div>
     </div>
   </ng-container>
   <div class="upddate" *ngIf="data !== null"><span class="date">更新日期：{{data.upddate}}</span></div>

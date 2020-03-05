@@ -1,20 +1,20 @@
-import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonService } from '../services/common.service';
-import { NewsInfo } from '../_Helper/models';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AboutInfo } from '../_Helper/models';
 
 @Component({
-  selector: 'app-news-detail',
-  templateUrl: './news-detail.component.html',
-  styleUrls: ['./news-detail.component.css']
+  selector: 'app-custom-detail',
+  templateUrl: './custom-detail.component.html',
+  styleUrls: ['./custom-detail.component.css']
 })
-export class NewsDetailComponent implements OnInit {
+export class CustomDetailComponent implements OnInit {
 
   /* web api url */
-  dataUrl = '/api/FrontHelp/GetNews';
+  dataUrl = '/api/FrontHelp/GetAboutData';
 
   id;
-  data: NewsInfo = null;
+  data: AboutInfo = null;
 
   constructor(
     private commonservice: CommonService,
@@ -31,10 +31,9 @@ export class NewsDetailComponent implements OnInit {
     this.commonservice.getData(id, this.dataUrl)
       .subscribe(result => {
         if (result.rows === '') {
-          this.router.navigate(['/news']);
+          this.router.navigate(['/custom']);
         } else {
           this.data = result.rows;
-          console.log(this.data);
         }
       }, error => {
         console.log(error);

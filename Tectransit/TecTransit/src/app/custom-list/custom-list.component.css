@@ -1,0 +1,77 @@
+.custom-container {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 20%;
+  padding-right: 20%;
+}
+
+.custom-header {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.custom-header .icon {
+  display: inline-block;
+}
+
+.custom-header img {
+  width: 55px;
+  height: 55px;
+}
+
+.custom-header .title {
+  position: absolute;
+  top: 15px;
+  font-size: 20px;
+  font-family: 'Noto Sans TC';
+}
+
+.custom-header .bread{
+  position: absolute;
+  right: 140px;
+  bottom: 10px;
+}
+
+.bread a{
+  font-size: 14px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.custom-header .line {
+  display: block;
+  width: 85%;
+  height: 1px;
+  border-bottom: 1px solid #aaa;
+}
+
+.custom-container {
+  position: relative;
+}
+
+.custom-container .card-list {
+  width: 85%;
+  border-bottom: 1px solid #aaa;
+}
+
+.custom-container .card-list .row {
+  margin-bottom: 10px;
+}
+
+.card-list .row a:hover{
+  color: rgb(107, 189, 192);
+}
+
+.custom-container .card-list p{
+  text-align: center;
+  color: #c54343;
+  font-family: 'Noto Sans TC';
+  padding-bottom: 10px;
+}
+
+.card-footer {
+  position: absolute;
+  left: 40%;
+  margin-top: 20px;
+}

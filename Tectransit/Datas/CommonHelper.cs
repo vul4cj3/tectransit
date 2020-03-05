@@ -368,7 +368,7 @@ namespace Tectransit.Datas
             if (dtMenulist.Rows.Count > 0)
             {
                 List<MenuInfo_F> pmenuList = new List<MenuInfo_F>();
-                List<MenuInfo_F> dmenuList = new List<MenuInfo_F>();
+                List<MenuInfo_F> dmenuList = new List<MenuInfo_F>();                
                 for (int i = 0; i < dtMenulist.Rows.Count; i++)
                 {
                     MenuInfo_F m = new MenuInfo_F();
@@ -385,10 +385,28 @@ namespace Tectransit.Datas
                         dmenuList.Add(m);
                 }
 
-                return new { status = "0", pList = pmenuList, item = dmenuList };
+                DataTable dtAboutlist = DBUtil.SelectDataTable($@"SELECT ID AS CATEID, TITLE
+                                                                  FROM T_D_ABOUT_H
+                                                                  WHERE ISENABLE = 'true'
+                                                                  ORDER BY ISTOP, ABOUTHSEQ");
+
+                List<AboutCate> aboutList = new List<AboutCate>();
+                if (dtAboutlist.Rows.Count > 0)
+                {
+                    for (int j = 0; j < dtAboutlist.Rows.Count; j++)
+                    {
+                        AboutCate m = new AboutCate();
+                        m.CATEID = Convert.ToInt64(dtAboutlist.Rows[j]["CATEID"]);
+                        m.TITLE = dtAboutlist.Rows[j]["TITLE"]?.ToString();
+
+                        aboutList.Add(m);
+                    }
+                }
+
+                return new { status = "0", pList = pmenuList, item = dmenuList, aboutitem = aboutList };
             }
 
-            return new { status = "99", pList = "", item = "" };
+            return new { status = "99", pList = "", item = "", aboutitem = "" };
 
         }
 
