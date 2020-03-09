@@ -86,7 +86,7 @@
   <ng-template #memcusProfile>
     <div class="memNav">
       <a class="btn-entrust" routerLink="/member/entrustcus">委託集運</a>
-      <a class="btn-entrust" routerLink="/member/entrustcusim">匯入集運</a>
+      <a class="btn-entrust" *ngIf="ismemcusm" routerLink="/member/entrustcusim">匯入集運</a>
       <div class="btn-profile" (mouseover)="chgProfilelist($event)">
         <img class="rounded-circle" src="/res/assets/util/no-image.jpg">
         <img class="icon-arrow"

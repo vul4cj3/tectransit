@@ -153,7 +153,15 @@ namespace Tectransit.Controllers
                             WHERE C.RANKTYPE = 2 AND A.USERCODE = '{htData["_acccode"]}' AND A.ISENABLE = 'true'";
             string IsCusMem = string.IsNullOrEmpty(DBUtil.GetSingleValue1(sql)) ? "N" : "Y";
 
-            return new { status = "0", data = IsCusMem };
+
+            //有月結廠商會員權限-->顯示"匯入集運"
+            sql = $@"SELECT A.USERCODE AS COL1 FROM T_S_ACCOUNT A
+                            LEFT JOIN T_S_ACRANKMAP B ON A.USERCODE = B.USERCODE 
+                            LEFT JOIN T_S_RANK C ON B.RANKID = C.ID
+                            WHERE C.RANKTYPE = 2 AND A.USERCODE = '{htData["_acccode"]}' AND A.ISENABLE = 'true' AND C.ID = 7";
+            string IsCusMem_m = string.IsNullOrEmpty(DBUtil.GetSingleValue1(sql)) ? "N" : "Y";
+
+            return new { status = "0", data = IsCusMem, data2 = IsCusMem_m };
         }
 
         [HttpPost]

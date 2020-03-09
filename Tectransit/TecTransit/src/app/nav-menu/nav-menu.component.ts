@@ -13,6 +13,7 @@ export class NavMenuComponent implements OnInit {
 
   ismemLogin = false;
   ismemcus = false;
+  ismemcusm = false; // 匯入集運顯示
   isactive = false;
   isScroll = false;
 
@@ -39,9 +40,8 @@ export class NavMenuComponent implements OnInit {
 
     this.commonservice.chkMemtype()
       .subscribe(data => {
-        if (data.data === 'Y') {
-          this.ismemcus = true;
-        } else { this.ismemcus = false; }
+        this.ismemcus = (data.data === 'Y' ? true : false);
+        this.ismemcusm = (data.data2 === 'Y' ? true : false);
       },
         error => {
           console.log(error);
