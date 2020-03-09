@@ -1375,6 +1375,8 @@ namespace Tectransit.Controllers
                         mData["RECEIVER"] = arrData.Value<string>("receiver");
                     if (arrData.Value<string>("receiveraddr") != null)
                         mData["RECEIVERADDR"] = arrData.Value<string>("receiveraddr");
+                    if (arrData.Value<string>("receiverphone") != null)
+                        mData["RECEIVERPHONE"] = arrData.Value<string>("receiverphone");
                 }
 
                 mData["_acccode"] = Request.Cookies["_acccode"];
@@ -1655,7 +1657,7 @@ namespace Tectransit.Controllers
                 TVM.Flightnum = sData["FLIGHTNUM"]?.ToString() ?? string.Empty;
                 TVM.Transferno = sData["TRANSFERNO"]?.ToString();
                 TVM.Total = sData["TOTAL"]?.ToString();
-                TVM.Total = sData["TOTALWEIGHT"]?.ToString() ?? string.Empty;
+                TVM.Totalweight = sData["TOTALWEIGHT"]?.ToString() ?? string.Empty;
                 TVM.Trackingtype = 0;//尚未使用-0:無
                 TVM.Receiver = sData["RECEIVER"]?.ToString();
                 TVM.Receiveraddr = sData["RECEIVERADDR"]?.ToString();

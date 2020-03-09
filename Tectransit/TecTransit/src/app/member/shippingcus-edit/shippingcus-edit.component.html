@@ -43,6 +43,10 @@
               <label>收件人地址</label>
               <span>{{masterData.receiveraddr}}</span>
             </div>
+            <div class="form-control" *ngIf="masterData.ismultreceiver !== 'Y'">
+              <label>收件人電話</label>
+              <span>{{masterData.receiverphone}}</span>
+            </div>
           </div>
           <!-- master data end-->
           <!-- header&datail start-->
@@ -60,6 +64,10 @@
               <div class="form-control" *ngIf="masterData.ismultreceiver === 'Y'">
                 <label>收件人地址</label>
                 <span>{{item.receiveraddr}}</span>
+              </div>
+              <div class="form-control" *ngIf="masterData.ismultreceiver === 'Y'">
+                <label>收件人電話</label>
+                <span>{{item.receiverphone}}</span>
               </div>
             </div>
             <!-- header data end -->
