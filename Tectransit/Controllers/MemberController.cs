@@ -1270,13 +1270,9 @@ namespace Tectransit.Controllers
 
                 if (tempArray.Count > 0)
                 {
-                    Dictionary<string, string> srhKey = new Dictionary<string, string>();
-                    srhKey.Add("status", "STATUS");
-                    srhKey.Add("stationcode", "STATIONCODE");
-
                     JObject temp = (JObject)tempArray[0];
                     foreach (var t in temp)
-                        htData[srhKey[t.Key]] = t.Value?.ToString();
+                        htData[t.Key.ToUpper()] = t.Value?.ToString();
 
                     if (!string.IsNullOrEmpty(htData["ACCOUNTID"]?.ToString()))
                         sWhere += (sWhere == "" ? "WHERE" : " AND") + " ACCOUNTID = " + htData["ACCOUNTID"];
@@ -1301,6 +1297,21 @@ namespace Tectransit.Controllers
 
                     if (!string.IsNullOrEmpty(htData["STATIONCODE"]?.ToString()))
                         sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATIONCODE = '" + htData["STATIONCODE"]?.ToString() + "'";
+
+                    if (!string.IsNullOrEmpty(htData["TRANSFERNO"]?.ToString()))
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " TRANSFERNO LIKE '%" + htData["TRANSFERNO"]?.ToString() + "%'";
+
+                    if (!string.IsNullOrEmpty(htData["CRESDATE"]?.ToString()) && !string.IsNullOrEmpty(htData["CREEDATE"]?.ToString()))
+                    {
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + $" (CREDATE BETWEEN '{htData["CRESDATE"]?.ToString()} 00:00:00' AND '{htData["CREEDATE"]?.ToString()} 23:59:59')";
+                    }
+
+                    //已完成狀態下預設抓當天的
+                    if (htData["STATUS"]?.ToString() == "t5" && string.IsNullOrEmpty(htData["CRESDATE"]?.ToString()) && string.IsNullOrEmpty(htData["CREEDATE"]?.ToString()))
+                    {
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + $" (CREDATE BETWEEN '{DateTime.Now.ToString("yyyy-MM-dd")} 00:00:00' AND '{DateTime.Now.ToString("yyyy-MM-dd")} 23:59:59')";
+                    }
+
                 }
 
 

@@ -22,16 +22,20 @@
   border-bottom: 1px solid rgb(221, 220, 220);
 }
 
-.card-header .sel {
+.card-header .srhlist{
+  display: flex;
+}
+
+.card-header .srhlist .sel {
   padding-left: 10px;
 }
 
-.card-header .sel span {
+.card-header .srhlist .sel span {
   font-size: 14px;
   padding-right: 10px;
 }
 
-.card-header .sel select {
+.card-header .srhlist .sel select {
   width: 150px;
   height: 20px;
   border: 0;
@@ -39,8 +43,16 @@
   border-bottom: 1px dashed #aaa;
 }
 
-.btn-right {
+.card-header .srhlist .form-input label{
+  font-size: 14px;
   padding-right: 10px;
+}
+
+.card-header .srhlist .form-input input{
+  width: 120px;
+  border: 0;
+  outline: 0;
+  border-bottom: 1px dashed #aaa;
 }
 
 .btn-right a {
@@ -51,6 +63,7 @@
   border-radius: 3px;
   cursor: pointer;
   transition: .5s;
+  margin-right: 2px;
 }
 
 .btn-right a:hover {

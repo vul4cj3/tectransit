@@ -366,8 +366,7 @@ namespace Tectransit.Modles
 
                 entity.Property(e => e.Name)
                     .HasColumnName("NAME")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Phone)
                     .HasColumnName("PHONE")
@@ -624,8 +623,7 @@ namespace Tectransit.Modles
 
                 entity.Property(e => e.Name)
                     .HasColumnName("NAME")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Phone)
                     .HasColumnName("PHONE")
@@ -1622,8 +1620,7 @@ namespace Tectransit.Modles
 
                 entity.Property(e => e.Name)
                     .HasColumnName("NAME")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Phone)
                     .HasColumnName("PHONE")

@@ -5,17 +5,29 @@
       <!-- content start -->
       <div class="main-card">
         <div class="card-header">
-          <div class="sel">
-            <span>集運站 <i class="fas fa-truck"></i></span>
-            <select id="cateSel" (change)="cateChange($event.target.value)">
-              <ng-container *ngFor="let cateitem of cateData">
-                <option value="{{cateitem.stationcode}}" [selected]="cateitem.stationcode === this.cateID">
-                  {{cateitem.stationname}}
-                </option>
-              </ng-container>
-            </select>
+          <div class="srhlist">
+            <div class="sel">
+              <span>集運站 <i class="fas fa-truck"></i></span>
+              <select id="cateSel" (change)="cateChange($event.target.value)">
+                <ng-container *ngFor="let cateitem of cateData">
+                  <option value="{{cateitem.stationcode}}" [selected]="cateitem.stationcode === this.cateID">
+                    {{cateitem.stationname}}
+                  </option>
+                </ng-container>
+              </select>
+            </div>
+            <div class="form-input">
+              <label>快遞單號</label>
+              <input type="text" id="transferno">
+            </div>
+            <div class="form-input">
+              <label>建單時間</label>
+              <input type="date" id="credates"> -
+              <input type="date" id="credatee">
+            </div>
           </div>
           <div class="btn-right">
+            <a (click)="srhData()">查詢</a>
             <ng-container *ngIf="this.shippingType === 't1'">
               <a (click)="doDelete()">刪除</a>
             </ng-container>
@@ -55,7 +67,9 @@
                 </td>
               </tr>
               <!-- 資料筆數=0顯示 -->
-              <tr *ngIf="data === null"><td colspan="8"><span class="warn">尚無資料</span></td></tr>
+              <tr *ngIf="data === null">
+                <td colspan="8"><span class="warn">尚無資料</span></td>
+              </tr>
             </tbody>
           </table>
         </div>

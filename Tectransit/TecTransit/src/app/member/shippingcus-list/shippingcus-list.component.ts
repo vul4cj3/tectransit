@@ -3,6 +3,7 @@ import { MemStationInfo, ShippingMCusInfo } from 'src/app/_Helper/models';
 import { CommonService } from 'src/app/services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ShippstatusPipe } from 'src/app/_Helper/shippstatus.pipe';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-shippingcus-list',
@@ -35,6 +36,7 @@ export class ShippingcusListComponent implements OnInit {
   srhList: any = [];
 
   constructor(
+    private formBuilder: FormBuilder,
     public commonService: CommonService,
     private route: ActivatedRoute,
     private router: Router,
@@ -72,6 +74,20 @@ export class ShippingcusListComponent implements OnInit {
       this.srhList.push({ status: this.shippingType, stationcode: this.cateID });
       this.crePagination(this.currentpage, this.baseUrl + this.transferdataUrl);
     }
+  }
+
+  srhData() {
+    this.srhList = [];
+    const transno = document.getElementById('transferno') as HTMLInputElement;
+    const sdate = document.getElementById('credates') as HTMLInputElement;
+    const edate = document.getElementById('credatee') as HTMLInputElement;
+
+    this.srhList.push({
+      status: this.shippingType, stationcode: this.cateID, transferno: transno.value
+      , cresdate: sdate.value, creedate: edate.value
+    });
+
+    this.crePagination(this.currentpage, this.baseUrl + this.transferdataUrl);
   }
 
   getCateData() {
