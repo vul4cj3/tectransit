@@ -19,7 +19,7 @@ input[type="file"] {
   transition: .4s;
 }
 
-.custom-file-upload:hover{
+.custom-file-upload:hover {
   background-color: #2a3558;
 }
 
@@ -56,7 +56,7 @@ input[type="file"] {
 
 .master-section .form-control {
   display: inline-block;
-  width: 250px;
+  width: 400px;
   margin-bottom: 10px;
 }
 
@@ -67,6 +67,7 @@ input[type="file"] {
 
 .master-section .form-control span {
   border-bottom: 1px dashed #273152;
+  line-height: 1.5rem;
 }
 
 .box-section {
@@ -194,6 +195,6 @@ input[type="file"] {
   transition: .4s;
 }
 
-.btn a:hover{
+.btn a:hover {
   background-color: #2a3558;
 }

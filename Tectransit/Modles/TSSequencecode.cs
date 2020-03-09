@@ -8,6 +8,7 @@ namespace Tectransit.Modles
         public long Id { get; set; }
         public string Startcode { get; set; }
         public string Endcode { get; set; }
+        public string Firstcode { get; set; }
         public string Nextcode { get; set; }
         public string Codename { get; set; }
         public string Codedesc { get; set; }

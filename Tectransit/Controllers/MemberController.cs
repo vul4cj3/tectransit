@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using OfficeOpenXml;
 using Tectransit.Datas;
 using Tectransit.Modles;
 
@@ -54,7 +58,7 @@ namespace Tectransit.Controllers
                     if (objComm.GetMd5Hash(htData["USERPASSWORD"]?.ToString()) != oldPW)
                         return new { status = "99", msg = "保存失敗，用戶密碼(舊密碼)輸入錯誤！" };
                 }
-                
+
 
                 //get cookies
                 htData["_acccode"] = Request.Cookies["_acccode"];
@@ -382,13 +386,13 @@ namespace Tectransit.Controllers
                 string sWhere = "";
                 var jsonData = JObject.FromObject(form);
                 string transid = jsonData.Value<string>("id");
-                
+
                 if (!string.IsNullOrEmpty(transid))
                 {
                     string[] arrList = transid.Split(';');
                     if (arrList.Length > 0)
                     {
-                        
+
                         for (int i = 0; i < arrList.Length; i++)
                         {
                             sWhere += (sWhere == "" ? "" : ",") + $@"'{arrList[i]}'";
@@ -738,7 +742,7 @@ namespace Tectransit.Controllers
                     InsertDeclarant(htData, 2);
                 else
                     UpdateDeclarant(Convert.ToInt64(htData["ID"]), htData);
-                
+
                 return new { status = "0", msg = "保存成功！" };
             }
             catch (Exception ex)
@@ -801,7 +805,7 @@ namespace Tectransit.Controllers
 
             _context.TSAccount.Add(rowTSA);
             _context.SaveChanges();
-            
+
             TSAcrankmap rowTSAR = new TSAcrankmap();
             rowTSAR.Usercode = htData["USERCODE"]?.ToString();
             rowTSAR.Rankid = 2;//一般廠商會員
@@ -1078,7 +1082,7 @@ namespace Tectransit.Controllers
                 sql = $@"DELETE FROM {table} WHERE ID = @TRANSFERIDM";
             else
                 sql = $@"DELETE FROM {table} WHERE TRANSFERID_M = @TRANSFERIDM";
-            
+
             DBUtil.EXECUTE(sql, sData);
         }
 
@@ -1168,7 +1172,7 @@ namespace Tectransit.Controllers
             rowTSD.Createby = htData["_acccode"]?.ToString();
             rowTSD.Upddate = rowTSD.Credate;
             rowTSD.Updby = htData["_acccode"]?.ToString();
-            
+
             _context.TSDeclarant.Add(rowTSD);
             _context.SaveChanges();
 
@@ -1179,7 +1183,7 @@ namespace Tectransit.Controllers
             rowTSAD.Declarantid = decID;
 
             _context.TSAcdeclarantmap.Add(rowTSAD);
-            _context.SaveChanges();            
+            _context.SaveChanges();
 
         }
 
@@ -1190,7 +1194,7 @@ namespace Tectransit.Controllers
             if (query != null)
             {
                 TSDeclarant rowTSD = query;
-                
+
                 if (sData["NAME"] != null)
                     rowTSD.Name = sData["NAME"]?.ToString();
                 if (sData["TAXID"] != null)
@@ -1294,7 +1298,7 @@ namespace Tectransit.Controllers
 
                         sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATUS = " + status;
                     }
-                    
+
                     if (!string.IsNullOrEmpty(htData["STATIONCODE"]?.ToString()))
                         sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATIONCODE = '" + htData["STATIONCODE"]?.ToString() + "'";
                 }
@@ -1328,7 +1332,7 @@ namespace Tectransit.Controllers
                                 WHERE A.USERCODE = '{htData["_acccode"]}' AND C.RANKTYPE = '2'";
 
                 htData["ACCOUNTID"] = DBUtil.GetSingleValue1(sql);
-                
+
                 return objMember.GetSingleShippingCusData(htData);
             }
             catch (Exception ex)
@@ -1354,11 +1358,12 @@ namespace Tectransit.Controllers
                 mData["TOTAL"] = arrData.Value<string>("total");
                 mData["ISMULTRECEIVER"] = arrData.Value<string>("ismultreceiver").ToLower() == "true" ? "Y" : "N";
 
-                if (mData["ISMULTRECEIVER"]?.ToString() == "N") {
+                if (mData["ISMULTRECEIVER"]?.ToString() == "N")
+                {
                     if (arrData.Value<string>("receiver") != null)
                         mData["RECEIVER"] = arrData.Value<string>("receiver");
                     if (arrData.Value<string>("receiveraddr") != null)
-                        mData["RECEIVERADDR"] = arrData.Value<string>("receiveraddr");                    
+                        mData["RECEIVERADDR"] = arrData.Value<string>("receiveraddr");
                 }
 
                 mData["_acccode"] = Request.Cookies["_acccode"];
@@ -1371,7 +1376,7 @@ namespace Tectransit.Controllers
                 mData["ACCOUNTID"] = DBUtil.GetSingleValue1(sql);
 
                 //Header(box) data                
-                JArray boxData = arrData.Value<JArray>("boxform");                
+                JArray boxData = arrData.Value<JArray>("boxform");
                 ArrayList AL = new ArrayList();
                 for (int i = 0; i < boxData.Count; i++)
                 {
@@ -1395,11 +1400,11 @@ namespace Tectransit.Controllers
                                 subAL.Add(dData);
                             }
                             hData["PRDFORM"] = subAL;
-                            
+
                         }
                         else
                             hData[(t.Key).ToUpper()] = t.Value?.ToString();
-                        
+
                     }
                     AL.Add(hData);
                 }
@@ -1416,7 +1421,7 @@ namespace Tectransit.Controllers
 
                     decAL.Add(deData);
                 }
-                
+
                 //新增主單
                 long MID = InsertCusShippingM(mData);
 
@@ -1454,7 +1459,7 @@ namespace Tectransit.Controllers
                         InsertTVDeclarant(tempData);
                     }
                 }
-                
+
                 return new { status = "0", msg = "保存成功！" };
             }
             catch (Exception ex)
@@ -1463,7 +1468,7 @@ namespace Tectransit.Controllers
                 return new { status = "99", msg = "保存失敗！" };
             }
         }
-        
+
         //集運單申報人編輯
         [HttpPost]
         public dynamic SaveCusShippingDecData([FromBody] object form)
@@ -1477,7 +1482,7 @@ namespace Tectransit.Controllers
                 //Master data
                 Hashtable mData = new Hashtable();
                 mData["SHIPPINGIDM"] = arrData.Value<string>("shippingidm");
-                
+
                 //Declarant data
                 JArray decData = arrData.Value<JArray>("decform");
                 ArrayList decAL = new ArrayList();
@@ -1552,11 +1557,12 @@ namespace Tectransit.Controllers
                     {
                         Hashtable tempData = new Hashtable();
                         tempData["SHIPPINGIDM"] = Convert.ToInt64(DelAL[i]);
-                        
+
                         //檢查是否有此單可刪除(避免前後台訂單狀態不同步)
                         bool IsExist = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT SHIPPINGNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {tempData["SHIPPINGIDM"]} AND STATUS = 0")) ? false : true;
 
-                        if (IsExist) {
+                        if (IsExist)
+                        {
                             //delete Declarant data
                             DeleteTVData_All("T_V_DECLARANT", tempData);
 
@@ -1581,6 +1587,44 @@ namespace Tectransit.Controllers
             }
         }
 
+        //委託集運單(匯入Excel)
+        [HttpPost]
+        public dynamic ImportCusShippingData()
+        {
+            try
+            {
+                string usercode = Request.Cookies["_acccode"];
+                string stationcode = Request.Form["stationcode"];
+
+                var file = Request.Form.Files;
+                var folderName = Path.Combine(@"tectransit\dist\tectransit\assets\import", usercode);
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+                //save file
+                if (!Directory.Exists(pathToSave))
+                {
+                    Directory.CreateDirectory(pathToSave);
+                }
+
+                var fileName = Guid.NewGuid() + Path.GetExtension(file[0].FileName).ToLower();
+                var fullPath = Path.Combine(pathToSave, fileName);
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    file[0].CopyTo(stream);
+                }
+
+                //import excel to database
+                ImportCusShippingData(usercode, stationcode, fileName);
+
+                return new { status = "0", msg = "匯入成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "匯入失敗！" };
+            }
+        }
+
         #endregion
 
         #region 私有function
@@ -1593,21 +1637,25 @@ namespace Tectransit.Controllers
                 TVM.Accountid = Convert.ToInt64(sData["ACCOUNTID"]);
                 string autoSeqcode = objComm.GetSeqCode(sData["STATIONCODE"] + "_CUS");
                 TVM.Stationcode = sData["STATIONCODE"]?.ToString();
-                TVM.Shippingno = "TECV" + DateTime.Now.ToString("yyyyMMdd") + autoSeqcode;
-                TVM.Trackingno = sData["STATIONCODE"] + "-" + autoSeqcode;
-                TVM.Mawbno = "";
+                TVM.Shippingno = "TECV" + DateTime.Now.ToString("yyMMdd") + autoSeqcode;
+                TVM.Trackingno = sData["STATIONCODE"] + autoSeqcode;
+                TVM.Mawbno = sData["MAWBNO"]?.ToString() ?? string.Empty;
+                TVM.Clearanceno = sData["CLEARANCENO"]?.ToString() ?? string.Empty;
+                TVM.Flightnum = sData["FLIGHTNUM"]?.ToString() ?? string.Empty;
                 TVM.Transferno = sData["TRANSFERNO"]?.ToString();
                 TVM.Total = sData["TOTAL"]?.ToString();
+                TVM.Total = sData["TOTALWEIGHT"]?.ToString() ?? string.Empty;
                 TVM.Trackingtype = 0;//尚未使用-0:無
                 TVM.Receiver = sData["RECEIVER"]?.ToString();
                 TVM.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
+                TVM.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
                 TVM.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
                 TVM.Status = 0;
                 TVM.Credate = DateTime.Now;
                 TVM.Createby = sData["_acccode"]?.ToString();
                 TVM.Upddate = TVM.Credate;
                 TVM.Updby = TVM.Createby;
-                
+
                 _context.TVShippingM.Add(TVM);
                 _context.SaveChanges();
 
@@ -1634,6 +1682,8 @@ namespace Tectransit.Controllers
                 TVH.Boxno = sData["BOXNO"]?.ToString();
                 TVH.Receiver = sData["RECEIVER"]?.ToString();
                 TVH.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
+                TVH.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
+                TVH.Weight = sData["WEIGHT"]?.ToString() ?? string.Empty;
                 TVH.ShippingidM = Convert.ToInt64(sData["SHIPPINGIDM"]);
 
                 _context.TVShippingH.Add(TVH);
@@ -1658,12 +1708,14 @@ namespace Tectransit.Controllers
                 TVD.Product = sData["PRODUCT"]?.ToString();
                 TVD.Quantity = sData["QUANTITY"]?.ToString();
                 TVD.Unitprice = sData["UNITPRICE"]?.ToString();
+                TVD.Unit = sData["UNIT"]?.ToString() ?? string.Empty;
+                TVD.Origin = sData["ORIGIN"]?.ToString() ?? string.Empty;
                 TVD.ShippingidM = Convert.ToInt64(sData["SHIPPINGIDM"]);
                 TVD.ShippingidH = Convert.ToInt64(sData["SHIPPINGIDH"]);
 
                 _context.TVShippingD.Add(TVD);
                 _context.SaveChanges();
-                
+
             }
             catch (Exception ex)
             {
@@ -1693,6 +1745,26 @@ namespace Tectransit.Controllers
             catch (Exception ex)
             {
                 string errMsg = ex.Message.ToString();
+            }
+        }
+
+        private void UpdateCusShippingM(Hashtable sData)
+        {
+            var query = _context.TVShippingM.Where(q => q.Id == Convert.ToInt64(sData["ID"])).FirstOrDefault();
+
+            if (query != null)
+            {
+                TVShippingM rowTVM = query;
+
+                if (sData["TOTAL"] != null)
+                    rowTVM.Total = sData["TOTAL"]?.ToString();
+                if (sData["TOTALWEIGHT"] != null)
+                    rowTVM.Totalweight = sData["TOTALWEIGHT"]?.ToString();
+                if (sData["ISMULTRECEIVER"] != null)
+                    rowTVM.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
+
+                _context.SaveChanges();
+
             }
         }
 
@@ -1767,7 +1839,129 @@ namespace Tectransit.Controllers
             DBUtil.EXECUTE(sql, sData);
         }
 
-        #endregion
+        //匯入集運(Excel to DB)
+        public void ImportCusShippingData(string usercode, string stationcode, string file)
+        {
 
+            var folderName = Path.Combine(@"tectransit\dist\tectransit\assets\import", usercode);
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            var fullPath = Path.Combine(pathToSave, file);
+            FileInfo newFile = new FileInfo(fullPath);
+
+            using (ExcelPackage ep = new ExcelPackage(newFile))
+            {
+                ExcelWorksheet ws = ep.Workbook.Worksheets[1];
+                var rowCt = ws.Dimension.End.Row;
+                Hashtable htData = new Hashtable();
+                htData.Add("NEWNUM", "");//編號(比對用)
+                htData.Add("NEWNO", "");//袋號(比對用)
+                htData.Add("NEWTOTALWG", "");//袋重(比對用)
+                htData.Add("NEWBOXNO", "");//提單號碼(比對用)
+                htData.Add("STATIONCODE", stationcode);//站別
+                htData.Add("_acccode", usercode);//用戶帳號
+                string ACID = DBUtil.GetSingleValue1($@"SELECT ID AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{usercode}' AND ISENABLE = 'true'");
+                htData.Add("ACCOUNTID", ACID);//用戶ID
+                htData.Add("MAWBDATE", ws.Cells[1, 6].Value?.ToString().Trim());//消倉單日期
+                htData.Add("MAWBNO", ws.Cells[1, 10].Value?.ToString().Trim());//MAWB
+                htData.Add("FLIGHTNUM", ws.Cells[1, 15].Value?.ToString().Trim());//航班號
+
+
+                long MID = 0;
+                long HID = 0;
+                decimal TotalWG = 0; //總重量
+                List<string> Box = new List<string>();
+                List<string> Rec = new List<string>();
+
+                for (int i = 3; i <= rowCt; i++)
+                {
+                    #region Excel資料欄位
+                    htData["NEWNUM"] = ws.Cells[i, 1].Value?.ToString().Trim();
+                    htData["NEWNO"] = ws.Cells[i, 2].Value?.ToString().Trim();
+                    htData["NEWTOTALWG"] = ws.Cells[i, 3].Value?.ToString().Trim();
+                    htData["NEWBOXNO"] = ws.Cells[i, 4].Value?.ToString().Trim();
+                    if (!string.IsNullOrEmpty(ws.Cells[i, 2].Value?.ToString().Trim()))
+                        htData["CLEARANCENO"] = ws.Cells[i, 2].Value?.ToString().Trim();//袋號=清關條碼
+
+                    if (!string.IsNullOrEmpty(ws.Cells[i, 3].Value?.ToString().Trim()))
+                        htData["TOTALWEIGHT"] = ws.Cells[i, 3].Value?.ToString().Trim();//總重量
+
+                    htData["TRANSFERNO"] = ws.Cells[i, 4].Value?.ToString().Trim();//提單號碼=快遞單號                        
+                    htData["TOTAL"] = ws.Cells[i, 5].Value?.ToString().Trim();//總件數
+                    htData["WEIGHT"] = ws.Cells[i, 6].Value?.ToString().Trim();//提單重量
+                    htData["PRODUCT"] = ws.Cells[i, 7].Value?.ToString().Trim();//品名
+                    htData["QUANTITY"] = ws.Cells[i, 8].Value?.ToString().Trim();//數量
+                    htData["UNIT"] = ws.Cells[i, 9].Value?.ToString().Trim();//單位
+                    htData["ORIGIN"] = ws.Cells[i, 10].Value?.ToString().Trim();//產地
+                    htData["UNITPRICE"] = ws.Cells[i, 11].Value?.ToString().Trim();//單價
+
+                    htData["RECEIVER"] = ws.Cells[i, 15].Value?.ToString().Trim();//收件人
+                    htData["RECEIVERPHONE"] = ws.Cells[i, 16].Value?.ToString().Trim();//收件人電話
+                    htData["RECEIVERADDR"] = ws.Cells[i, 17].Value?.ToString().Trim();//收件人地址
+                    htData["TAXID"] = ws.Cells[i, 18].Value?.ToString().Trim();//統編or身分證字號
+                    #endregion
+
+                    //new master data & new header data
+                    if (!string.IsNullOrEmpty(htData["NEWBOXNO"]?.ToString()))
+                    {
+
+                        MID = InsertCusShippingM(htData);
+
+                        TotalWG = 0;
+                        Box.Clear();
+                        Rec.Clear();
+
+                        htData["SHIPPINGIDM"] = MID;
+                        HID = InsertCusShippingH(htData);
+                    }
+
+                    //New Detail
+                    if (MID != 0 && HID != 0)
+                    {
+                        if (!string.IsNullOrEmpty(htData["PRODUCT"]?.ToString()) && !string.IsNullOrEmpty(htData["QUANTITY"]?.ToString()))
+                        {
+                            htData["SHIPPINGIDM"] = MID;
+                            htData["SHIPPINGIDH"] = HID;
+                            InsertCusShippingD(htData);
+                        }
+                    }
+
+                    if (MID != 0) {
+                        //New Declarant
+                        Hashtable sData = new Hashtable();
+                        sData["SHIPPINGIDM"] = MID;
+                        sData["NAME"] = htData["RECEIVER"]?.ToString();
+                        sData["TAXID"] = htData["TAXID"]?.ToString();
+                        sData["PHONE"] = htData["RECEIVERPHONE"]?.ToString();
+                        sData["ADDR"] = htData["RECEIVERADDR"]?.ToString();
+
+                        if (!string.IsNullOrEmpty(htData["NEWBOXNO"]?.ToString()))
+                            objMember.InsertTVDeclarant(sData); //SQL INSERT
+
+                        //check receiver
+                        int chk = 0;
+                        foreach (var r in Rec)
+                            if (r == htData["RECEIVER"]?.ToString())
+                                chk++;
+                        if (chk == 0)
+                            Rec.Add(htData["RECEIVER"]?.ToString());
+
+                        decimal ReceiverCt = Rec.Count();
+
+                        //Update Master Data
+                        //TotalWG += Convert.ToDecimal(htData["WEIGHT"]);
+                        Hashtable tempData = new Hashtable();
+                        tempData["ID"] = MID;
+                        tempData["TOTAL"] = htData["TOTAL"];
+                        tempData["TOTALWEIGHT"] = htData["TOTALWEIGHT"];
+                        tempData["ISMULTRECEIVER"] = ReceiverCt > 1 ? "Y" : "N";
+                        UpdateCusShippingM(tempData);
+                    }
+                }
+
+                ws.Dispose();
+            }
+
+            #endregion
+        }
     }
 }

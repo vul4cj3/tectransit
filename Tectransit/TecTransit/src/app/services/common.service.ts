@@ -217,6 +217,13 @@ export class CommonService {
       }));
   }
 
+  Upload(form, pageUrl: string) {
+    return this.http.post<any>(pageUrl, form)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
   /* form common function */
   formChanges(obj1, obj2) {
     const obj = {};

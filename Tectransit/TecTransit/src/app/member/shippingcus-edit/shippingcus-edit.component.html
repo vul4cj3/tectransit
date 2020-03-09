@@ -19,8 +19,16 @@
               <label>快遞單號</label>
               <span>{{masterData.transferno}}</span>
             </div>
+            <div class="form-control" *ngIf="masterData.clearanceno !== ''">
+              <label>清關條碼</label>
+              <span>{{masterData.clearanceno}}</span>
+            </div>
+            <div class="form-control" *ngIf="masterData.hawbno !== ''">
+              <label>託運單號</label>
+              <span>{{masterData.hawbno}}</span>
+            </div>
             <div class="form-control">
-              <label>所屬集運站</label>
+              <label>集運站</label>
               <span>{{masterData.stationname}}</span>
             </div>
             <div class="form-control">
@@ -34,14 +42,6 @@
             <div class="form-control" *ngIf="masterData.ismultreceiver !== 'Y'">
               <label>收件人地址</label>
               <span>{{masterData.receiveraddr}}</span>
-            </div>
-            <div class="form-control" *ngIf="masterData.clearanceno !== ''">
-              <label>清關條碼</label>
-              <span>{{masterData.clearanceno}}</span>
-            </div>
-            <div class="form-control" *ngIf="masterData.hawbno !== ''">
-              <label>託運單號</label>
-              <span>{{masterData.hawbno}}</span>
             </div>
           </div>
           <!-- master data end-->

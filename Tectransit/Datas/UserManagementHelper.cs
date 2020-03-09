@@ -163,13 +163,14 @@ namespace Tectransit.Datas
         public dynamic GetCompanyListData(string sWhere, int pageIndex, int pageSize)
         {
             string sql = $@"SELECT * FROM (
-                                            SELECT ROW_NUMBER() OVER (ORDER BY A.USERSEQ) AS ROW_ID, A.ID, A.USERCODE, A.USERNAME, A.USERDESC, A.EMAIL,
+                                SELECT ROW_NUMBER() OVER (ORDER BY A.ID) AS ROW_ID, * FROM (
+                                            SELECT DISTINCT A.ID, A.USERCODE, A.USERNAME, A.USERDESC, A.EMAIL,
                                                    FORMAT(A.CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(A.LASTLOGINDATE, 'yyyy-MM-dd HH:mm:ss') As LASTLOGINDATE,
                                                    A.LOGINCOUNT, A.ISENABLE, A.COMPANYNAME, A.RATEID
                                             From T_S_ACCOUNT A
                                             LEFT JOIN T_S_ACRANKMAP B ON A.USERCODE = B.USERCODE
                                             LEFT JOIN T_S_RANK C ON B.RANKID = C.ID
-                                            {sWhere}) AS A";
+                                            {sWhere}) AS A) AS B";
             string sql1 = sql + $@" WHERE ROW_ID BETWEEN {((pageIndex - 1) * pageSize + 1).ToString()} AND {(pageIndex * pageSize).ToString()}";
             DataTable DT = DBUtil.SelectDataTable(sql1);
             if (DT.Rows.Count > 0)
@@ -380,7 +381,7 @@ namespace Tectransit.Datas
         public dynamic GetSingleShippingCusData(Hashtable sData)
         {
             string sql = $@"SELECT ID, ACCOUNTID, STATIONCODE, SHIPPINGNO, TRACKINGNO, TRANSFERNO, MAWBNO, CLEARANCENO, HAWBNO,
-                                   TOTAL, RECEIVER, RECEIVERADDR, STATUS, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
+                                   TOTAL, RECEIVER, RECEIVERADDR, RECEIVERPHONE, STATUS, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
                                    CREATEBY AS CREBY, UPDBY, ISMULTRECEIVER
                             FROM T_V_SHIPPING_M
@@ -405,6 +406,7 @@ namespace Tectransit.Datas
                 m.ISMULTRECEIVER = Convert.ToBoolean(DT.Rows[0]["ISMULTRECEIVER"]) == true ? "Y" : "N";
                 m.RECEIVER = DT.Rows[0]["RECEIVER"]?.ToString();
                 m.RECEIVERADDR = DT.Rows[0]["RECEIVERADDR"]?.ToString();
+                m.RECEIVERPHONE = DT.Rows[0]["RECEIVERPHONE"]?.ToString();
                 m.STATUS = DT.Rows[0]["STATUS"]?.ToString();
                 m.PAYDATE = DT.Rows[0]["PAYDATE"]?.ToString();
                 m.EXPORTDATE = DT.Rows[0]["EXPORTDATE"]?.ToString();
@@ -415,7 +417,7 @@ namespace Tectransit.Datas
 
 
                 sql = $@"SELECT A.SHIPPINGID_M AS MID, A.ID AS HID, B.ID AS DID, A.BOXNO, A.RECEIVER,
-                                A.RECEIVERADDR, B.ID AS DID, B.PRODUCT, B.UNITPRICE, B.QUANTITY
+                                A.RECEIVERADDR, A.RECEIVERPHONE, B.ID AS DID, B.PRODUCT, B.UNITPRICE, B.QUANTITY
                          FROM T_V_SHIPPING_H A
                          LEFT JOIN T_V_SHIPPING_D B ON A.ID = B.SHIPPINGID_H
                          WHERE A.SHIPPINGID_M = @SHIPPINGIDM";
@@ -436,6 +438,7 @@ namespace Tectransit.Datas
                             rows.BOXNO = DT_Sub.Rows[j]["BOXNO"]?.ToString();
                             rows.RECEIVER = DT_Sub.Rows[j]["RECEIVER"]?.ToString();
                             rows.RECEIVERADDR = DT_Sub.Rows[j]["RECEIVERADDR"]?.ToString();
+                            rows.RECEIVERPHONE = DT_Sub.Rows[j]["RECEIVERPHONE"]?.ToString();
                             rows.SHIPPINGID_M = Convert.ToInt64(DT_Sub.Rows[j]["MID"]);
 
                             h.Add(rows);

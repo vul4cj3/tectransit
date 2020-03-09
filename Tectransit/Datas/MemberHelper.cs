@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Tectransit.Datas
 {
@@ -564,7 +562,7 @@ namespace Tectransit.Datas
             string sql = $@"SELECT ID, ACCOUNTID, STATIONCODE, SHIPPINGNO, TRACKINGNO, TRANSFERNO,
                                    TOTAL, RECEIVER, RECEIVERADDR, STATUS, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
-                                   CREATEBY AS CREBY, UPDBY, ISMULTRECEIVER
+                                   CREATEBY AS CREBY, UPDBY, ISMULTRECEIVER, CLEARANCENO, HAWBNO
                             FROM T_V_SHIPPING_M
                             WHERE ID = @SHIPPINGIDM AND ACCOUNTID = @ACCOUNTID";
             DataTable DT = DBUtil.SelectDataTable(sql, sData);
@@ -574,6 +572,8 @@ namespace Tectransit.Datas
                 m.ID = Convert.ToInt64(DT.Rows[0]["ID"]);
                 m.ACCOUNTID = Convert.ToInt64(DT.Rows[0]["ACCOUNTID"]);
                 m.SHIPPINGNO = DT.Rows[0]["SHIPPINGNO"]?.ToString();
+                m.CLEARANCENO = DT.Rows[0]["CLEARANCENO"]?.ToString();
+                m.HAWBNO = DT.Rows[0]["HAWBNO"]?.ToString();
                 m.STATIONCODE = DT.Rows[0]["STATIONCODE"]?.ToString();
                 m.STATIONNAME = DBUtil.GetSingleValue1($@"SELECT STATIONNAME AS COL1 FROM T_S_STATION WHERE STATIONCODE = '{DT.Rows[0]["STATIONCODE"]?.ToString()}'");
                 m.TRACKINGNO = DT.Rows[0]["TRACKINGNO"]?.ToString();
@@ -662,6 +662,15 @@ namespace Tectransit.Datas
             }
 
             return new { status = "0", rowM = "", rowH = "", rowD = "", rowDEC = "" };
+        }
+
+        public void InsertTVDeclarant(Hashtable sData)
+        {
+            string sql = $@"INSERT INTO T_V_DECLARANT (NAME, TAXID, PHONE, ADDR, SHIPPINGID_M)
+                           VALUES (N'{sData["NAME"]}', N'{sData["TAXID"]}', {sData["PHONE"]}, N'{sData["ADDR"]}', {sData["SHIPPINGIDM"]})";
+
+            DBUtil.EXECUTE(sql);
+
         }
 
     }

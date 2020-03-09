@@ -1,0 +1,88 @@
+.entrust .warn-section {
+  width: 960px;
+  margin: 0 auto;
+  background-color: #FFF9E1;
+  text-align: left;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.inner-border {
+  border: 1px dashed rgb(134, 132, 121);
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.warn-item {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.warn-icon {
+  width: 20px;
+  height: 20px;
+  background: url('/res/assets/util/warning-icon.svg');
+  background-size: 64px 54px;
+  background-repeat: no-repeat;
+}
+
+.warn-item p {
+  font-size: 14px;
+  font-weight: 600;
+  padding-top: 5px;
+  padding-left: 5px;
+  letter-spacing: 1px;
+  color: #59574F;
+}
+
+.warn-item p i {
+  color: rgb(150, 121, 6);
+  border-bottom: 1px solid rgb(150, 121, 6);
+}
+
+.warn-item p i.required {
+  color: #c24040;
+  border: 0;
+}
+
+.required {
+  color: #c24040;
+}
+
+.entrust-contain {
+  width: 960px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 1.875rem 0 rgba(0, 0, 0, .1);
+  margin-top: 20px;
+  display: flex;
+  padding: 20px 10px;
+}
+
+.row label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 5px;
+}
+
+.row select {
+  width: 150px;
+  height: 20px;
+  border: 0;
+  outline: 0;
+  border-bottom: 1px dashed #aaa;
+}
+
+.btn a {
+  padding: 5px 10px;
+  background-color: rgb(45, 175, 125);
+  border-radius: 2px;
+  color: #fff;
+  cursor: pointer;
+  transition: all .4s 0s ease;
+}
+
+.btn a:hover {
+  background-color: rgb(38, 136, 98);
+}

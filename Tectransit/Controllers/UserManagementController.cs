@@ -770,6 +770,7 @@ namespace Tectransit.Controllers
                 mData["TOTAL"] = arrData.Value<string>("total");
                 mData["RECEIVER"] = arrData.Value<string>("receiver");
                 mData["RECEIVERADDR"] = arrData.Value<string>("receiveraddr");
+                mData["RECEIVERPHONE"] = arrData.Value<string>("receiverphone");
                 mData["MAWBNO"] = arrData.Value<string>("mawbno");
                 mData["CLEARANCENO"] = arrData.Value<string>("clearanceno");
                 mData["HAWBNO"] = arrData.Value<string>("hawbno");
@@ -782,6 +783,7 @@ namespace Tectransit.Controllers
                 {
                     mData["RECEIVER"] = "";
                     mData["RECEIVERADDR"] = "";
+                    mData["RECEIVERPHONE"] = "";
                 }
 
                 //Header(box) data                
@@ -1386,6 +1388,7 @@ namespace Tectransit.Controllers
                 query.Total = sData["TOTAL"]?.ToString();
                 query.Receiver = sData["RECEIVER"]?.ToString();
                 query.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
+                query.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
                 query.Mawbno = sData["MAWBNO"]?.ToString();
                 query.Clearanceno = sData["CLEARANCENO"]?.ToString();
                 query.Hawbno = sData["HAWBNO"]?.ToString();
@@ -1408,6 +1411,7 @@ namespace Tectransit.Controllers
                 TVH.Boxno = sData["BOXNO"]?.ToString();
                 TVH.Receiver = sData["RECEIVER"]?.ToString();
                 TVH.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
+                TVH.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
                 TVH.ShippingidM = Convert.ToInt64(sData["SHIPPINGIDM"]);
 
                 _context.TVShippingH.Add(TVH);
@@ -1432,6 +1436,7 @@ namespace Tectransit.Controllers
                 query.Boxno = sData["BOXNO"]?.ToString();
                 query.Receiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVER"]?.ToString() : "";
                 query.Receiveraddr = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVERADDR"]?.ToString() : "";
+                query.Receiverphone = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVERPHONE"]?.ToString() : "";
 
                 _context.SaveChanges();
             }

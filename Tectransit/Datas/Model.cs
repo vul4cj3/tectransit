@@ -469,6 +469,7 @@ namespace Tectransit.Datas
         public string TRACKINGTYPE { set; get; }
         public string RECEIVER { set; get; }
         public string RECEIVERADDR { set; get; }
+        public string RECEIVERPHONE { set; get; }
         public string ISMULTRECEIVER { set; get; }
         public string STATUS { set; get; }
         public string REMARK1 { set; get; }
@@ -488,6 +489,7 @@ namespace Tectransit.Datas
         public string BOXNO { set; get; }
         public string RECEIVER { set; get; }
         public string RECEIVERADDR { set; get; }
+        public string RECEIVERPHONE { set; get; }
         public string REMARK { set; get; }
         public long SHIPPINGID_M { set; get; }
     }

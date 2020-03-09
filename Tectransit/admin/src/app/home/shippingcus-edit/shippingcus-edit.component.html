@@ -128,8 +128,12 @@
             </div>
           </div>
           <div class="position-relative form-inline" *ngIf="!ismult">
+            <label for="receiverphone">收件人電話</label>
+            <input type="text" id="receiverphone" class="form-control" formControlName="receiverphone">
+          </div>
+          <div class="position-relative form-inline" *ngIf="!ismult">
             <label for="receiveraddr">收件人地址</label>
-            <input type="text" id="receiveraddr" class="form-control" style="width:500px"
+            <input type="text" id="receiveraddr" class="form-control" style="margin-top:10px;width:500px"
               formControlName="receiveraddr">
           </div>
         </div>
@@ -155,6 +159,10 @@
                 <div class="header-row" *ngIf="ismult">
                   <span>收件人</span>
                   <p>{{item.receiver}}</p>
+                </div>
+                <div class="header-row" *ngIf="ismult">
+                  <span>收件人電話</span>
+                  <p>{{item.receiverphone}}</p>
                 </div>
                 <div class="header-row" *ngIf="ismult">
                   <span>收件人地址</span>
@@ -188,7 +196,7 @@
           <div class="main-card mb-3 card" formArrayName="boxform">
             <ng-container *ngFor="let box of dataForm.get('boxform')['controls']; let ibox=index">
               <div formGroupName="{{ibox}}">
-                <div class="card-header">
+                <div class="card-header edit">
                   <input type="hidden" class="form-control" formControlName="id">
                   <div class="col-md-4">
                     <div class="position-relative form-inline">
@@ -200,6 +208,12 @@
                     <div class="position-relative form-inline" *ngIf="ismult">
                       <label for="receiver{{ibox}}">收件人</label>
                       <input type="text" id="receiver{{ibox}}" class="form-control" formControlName="receiver">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="position-relative form-inline" *ngIf="ismult">
+                      <label for="receiverphone{{ibox}}">收件人電話</label>
+                      <input type="text" id="receiverphone{{ibox}}" class="form-control" formControlName="receiverphone">
                     </div>
                   </div>
                   <div class="col-md-4">

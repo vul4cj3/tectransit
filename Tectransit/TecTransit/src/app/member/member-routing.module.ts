@@ -13,6 +13,7 @@ import { EntrustcusComponent } from './entrustcus/entrustcus.component';
 import { ProfilecusComponent } from './profilecus/profilecus.component';
 import { ShippingcusListComponent } from './shippingcus-list/shippingcus-list.component';
 import { ShippingcusEditComponent } from './shippingcus-edit/shippingcus-edit.component';
+import { EntrustcusImportComponent } from './entrustcus-import/entrustcus-import.component';
 
 const routes: Routes = [
   {
@@ -43,6 +44,11 @@ const routes: Routes = [
       {
         path: 'entrustcus',
         component: EntrustcusComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'entrustcusim',
+        component: EntrustcusImportComponent,
         canActivate: [AuthGuard],
       },
       {

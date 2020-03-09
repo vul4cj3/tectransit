@@ -89,8 +89,9 @@
 }
 
 .card-footer {
+  margin: auto;
+  width: 50%;
   padding-bottom: 50px;
-  padding-left: 350px;
 }
 
 .warn {

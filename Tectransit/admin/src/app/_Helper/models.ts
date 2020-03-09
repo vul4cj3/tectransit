@@ -385,6 +385,7 @@ export interface ShippingMCusInfo {
   trackingtype: number;
   receiver: string;
   receiveraddr: string;
+  receiverphone: string;
   ismultreceiver: string;
   status: string;
   remark1: string;
@@ -403,6 +404,7 @@ export interface ShippingHCusInfo {
   boxno: string;
   receiver: string;
   receiveraddr: string;
+  receiverphone: string;
   remark: string;
   shippingiD_M: number;
 }

@@ -1,0 +1,39 @@
+<div class="entrust">
+  <div class="warn-section">
+    <div class="inner-border">
+      <div class="warn-item">
+        <div class="warn-icon"></div>
+        <p>匯入前請先下載<a href="" target="_blank">匯入用Excel檔</a>，並確實填寫資料！</p>
+      </div>
+      <div class="warn-item">
+        <div class="warn-icon"></div>
+        <p>請選擇集運站！</p>
+      </div>
+      <div class="warn-item">
+        <div class="warn-icon"></div>
+        <p>匯入成功後，請至<i>集運單管理</i>查看！</p>
+      </div>
+      <div class="warn-item">
+        <div class="warn-icon"></div>
+        <p>若匯入資料量龐大，請耐心等候訊息結果，<i class="required">請勿在未跳出訊息時，關閉或離開介面！</i></p>
+      </div>
+    </div>
+  </div>
+  <div class="entrust-contain">
+    <div class="row">
+      <label for="stationcode" class="required">集運站</label>
+      <select id="stationcode">
+        <option value="{{item.stationcode}}" *ngFor="let item of stationData">{{item.stationname}}</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="filesupload" class="custom-file-upload">
+        <img width="16px" height="16px" src="/res/assets/util/upload-icon.svg">
+      </label>
+      <input type="file" id="filesupload" #filesupload accept=".xlsx,.xls" (change)="fileChange($event)">
+    </div>
+    <div class="btn">
+      <a (click)='saveData()'>匯入</a>
+    </div>
+  </div>
+</div>

@@ -65,6 +65,7 @@ export class EntrustcusComponent implements OnInit {
       appointment: [''],
       receiver: [''],
       receiveraddr: [''],
+      receiverphone: [''],
       ismultreceiver: [''],
       boxform: this.formBuilder.array([
         this.initBox()
@@ -84,7 +85,8 @@ export class EntrustcusComponent implements OnInit {
           this.initProduct()
         ]),
         receiver: [''],
-        receiveraddr: ['']
+        receiveraddr: [''],
+        receiverphone: ['']
       });
     } else {
       return this.formBuilder.group({
@@ -143,10 +145,12 @@ export class EntrustcusComponent implements OnInit {
         const temp = control.controls[i] as FormGroup;
         temp.addControl('receiver', new FormControl(''));
         temp.addControl('receiveraddr', new FormControl(''));
+        temp.addControl('receiverphone', new FormControl(''));
       }
     } else {
       this.dataForm.addControl('receiver', new FormControl(''));
       this.dataForm.addControl('receiveraddr', new FormControl(''));
+      this.dataForm.addControl('receiverphone', new FormControl(''));
     }
   }
 
@@ -172,12 +176,14 @@ export class EntrustcusComponent implements OnInit {
     if (this.IsmultRec) {
       this.dataForm.removeControl('receiver');
       this.dataForm.removeControl('receiveraddr');
+      this.dataForm.removeControl('receiverphone');
     } else {
       const control = this.dataForm.get('boxform') as FormArray;
       for (let i = 0; i < control.length; i++) {
         const temp = control.controls[i] as FormGroup;
         temp.removeControl('receiver');
         temp.removeControl('receiveraddr');
+        temp.removeControl('receiverphone');
       }
     }
   }

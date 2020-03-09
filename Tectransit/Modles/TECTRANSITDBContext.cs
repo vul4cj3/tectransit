@@ -1365,6 +1365,11 @@ namespace Tectransit.Modles
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Firstcode)
+                    .HasColumnName("FIRSTCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Nextcode)
                     .HasColumnName("NEXTCODE")
                     .HasMaxLength(100)
@@ -1639,6 +1644,10 @@ namespace Tectransit.Modles
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.Origin)
+                    .HasColumnName("ORIGIN")
+                    .HasMaxLength(200);
+
                 entity.Property(e => e.Product)
                     .HasColumnName("PRODUCT")
                     .HasMaxLength(500);
@@ -1658,6 +1667,10 @@ namespace Tectransit.Modles
                 entity.Property(e => e.ShippingidH).HasColumnName("SHIPPINGID_H");
 
                 entity.Property(e => e.ShippingidM).HasColumnName("SHIPPINGID_M");
+
+                entity.Property(e => e.Unit)
+                    .HasColumnName("UNIT")
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Unitprice)
                     .HasColumnName("UNITPRICE")
@@ -1683,9 +1696,19 @@ namespace Tectransit.Modles
                     .HasColumnName("RECEIVERADDR")
                     .HasMaxLength(300);
 
+                entity.Property(e => e.Receiverphone)
+                    .HasColumnName("RECEIVERPHONE")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Remark).HasColumnName("REMARK");
 
                 entity.Property(e => e.ShippingidM).HasColumnName("SHIPPINGID_M");
+
+                entity.Property(e => e.Weight)
+                    .HasColumnName("WEIGHT")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TVShippingM>(entity =>
@@ -1713,12 +1736,22 @@ namespace Tectransit.Modles
                     .HasColumnName("EXPORTDATE")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.Flightnum)
+                    .HasColumnName("FLIGHTNUM")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Hawbno)
                     .HasColumnName("HAWBNO")
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Ismultreceiver).HasColumnName("ISMULTRECEIVER");
+
+                entity.Property(e => e.Mawbdate)
+                    .HasColumnName("MAWBDATE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Mawbno)
                     .HasColumnName("MAWBNO")
@@ -1736,6 +1769,11 @@ namespace Tectransit.Modles
                 entity.Property(e => e.Receiveraddr)
                     .HasColumnName("RECEIVERADDR")
                     .HasMaxLength(300);
+
+                entity.Property(e => e.Receiverphone)
+                    .HasColumnName("RECEIVERPHONE")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Remark1).HasColumnName("REMARK1");
 
@@ -1758,6 +1796,11 @@ namespace Tectransit.Modles
                 entity.Property(e => e.Total)
                     .HasColumnName("TOTAL")
                     .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Totalweight)
+                    .HasColumnName("TOTALWEIGHT")
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Trackingno)

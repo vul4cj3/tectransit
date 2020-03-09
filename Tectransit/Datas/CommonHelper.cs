@@ -445,8 +445,8 @@ namespace Tectransit.Datas
             if (type == "station") //各集運站追蹤代碼-流水號
             {
                 Hashtable tempData = new Hashtable();
-                tempData["STARTCODE"] = "10001";
-                tempData["ENDCODE"] = "99999";
+                tempData["STARTCODE"] = "000000";
+                tempData["ENDCODE"] = "999999";
                 tempData["NEXTCODE"] = "10001";
                 tempData["CODENAME"] = sData["STATIONCODE"];
                 tempData["CODENAME2"] = sData["STATIONCODE"] +"_CUS";
@@ -471,23 +471,104 @@ namespace Tectransit.Datas
 
         public string GetSeqCode(string type)
         {
-            string num = DBUtil.GetSingleValue1($@"SELECT NEXTCODE AS COL1 FROM T_S_SEQUENCECODE WHERE CODENAME = '{type}'");
-            
-            return num;
+            if (type.IndexOf("WAREHOUSENO") < 0)
+            {
+                string fcode = DBUtil.GetSingleValue1($@"SELECT FIRSTCODE AS COL1 FROM T_S_SEQUENCECODE WHERE CODENAME = '{type}'");
+                string num = DBUtil.GetSingleValue1($@"SELECT NEXTCODE AS COL1 FROM T_S_SEQUENCECODE WHERE CODENAME = '{type}'");
+
+                //字母編組用
+                if (fcode != "*")
+                    num = fcode + num;
+
+                return num;
+            }
+            else
+            {
+                string num = DBUtil.GetSingleValue1($@"SELECT NEXTCODE AS COL1 FROM T_S_SEQUENCECODE WHERE CODENAME = '{type}'");
+
+                return num;
+            }
         }
 
         public void UpdateSeqCode(string type)
         {
             string num = DBUtil.GetSingleValue1($@"SELECT NEXTCODE AS COL1 FROM T_S_SEQUENCECODE WHERE CODENAME = '{type}'");
+            string endcode = DBUtil.GetSingleValue1($@"SELECT ENDCODE AS COL1 FROM T_S_SEQUENCECODE WHERE CODENAME = '{type}'");
 
             if (!string.IsNullOrEmpty(num))
             {
                 long tempCode = Convert.ToInt64(num);
                 tempCode++;
 
-                DBUtil.EXECUTE($@"UPDATE T_S_SEQUENCECODE SET NEXTCODE = '{tempCode}' WHERE CODENAME = '{type}'");
+                if (type.IndexOf("WAREHOUSENO") < 0)
+                    num = tempCode.ToString().PadLeft(endcode.Length, '0');
+                else
+                    num = tempCode.ToString();
+
+                DBUtil.EXECUTE($@"UPDATE T_S_SEQUENCECODE SET NEXTCODE = '{num}' WHERE CODENAME = '{type}'");
+
+                //檢查code是否已用完
+                CheckSeqCode(type, tempCode);
             }
 
+        }
+
+        public void CheckSeqCode(string type, long code)
+        {
+            string num = DBUtil.GetSingleValue1($@"SELECT ENDCODE AS COL1 FROM T_S_SEQUENCECODE WHERE CODENAME = '{type}'");
+            string firstcode = DBUtil.GetSingleValue1($@"SELECT FIRSTCODE AS COL1 FROM T_S_SEQUENCECODE WHERE CODENAME = '{type}'");
+            string newcode = "";
+            string newstartcode = "";
+            string newendcode = "";
+
+            //超過範圍則重新編號
+            if (code > Convert.ToInt64(num))
+            {
+                string[] Alpha = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
+                                   "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+                                   "U", "V", "W", "X", "Y", "Z"};
+
+                if (firstcode == "*")
+                {
+                    newcode = Alpha[0];
+                    newstartcode = "00000";
+                    newendcode = "99999";
+                }
+                else
+                {
+                    if (firstcode.Length == 3)
+                    {
+                        for (int i = 0; i < Alpha.Length; i++)
+                        {
+                            if (firstcode.Substring(0, 1) == Alpha[i])
+                                newcode = Alpha[i + 1];
+                        }
+                    }
+                    else
+                        newcode = firstcode + firstcode.Substring(0, 1);
+
+                    
+                    if (newcode.Length == 1)
+                    {
+                        newstartcode = "00000";
+                        newendcode = "99999";
+                    }
+                    else if (newcode.Length == 2)
+                    {
+                        newstartcode = "0000";
+                        newendcode = "9999";
+                    }
+                    else if (newcode.Length == 3)
+                    {
+                        newstartcode = "000";
+                        newendcode = "999";
+                    }
+                    else { }
+                }
+
+                DBUtil.EXECUTE($@"UPDATE T_S_SEQUENCECODE SET FIRSTCODE = '{newcode}', STARTCODE = '{newstartcode}', ENDCODE = '{newendcode}', NEXTCODE = '{newstartcode}' WHERE CODENAME = '{type}'");
+
+            }
         }
 
         public void DeleteSingleTableData(string table, string column, string value)

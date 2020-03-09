@@ -57,6 +57,7 @@ export class ShippingcusEditComponent implements OnInit {
       total: ['0', Validators.required],
       receiver: [''],
       receiveraddr: [''],
+      receiverphone: [''],
       mawbno: '',
       clearanceno: '',
       hawbno: '',
@@ -121,6 +122,9 @@ export class ShippingcusEditComponent implements OnInit {
         if (temp.controls.receiveraddr === undefined) {
           temp.addControl('receiveraddr', new FormControl(''));
         }
+        if (temp.controls.receiverphone === undefined) {
+          temp.addControl('receiverphone', new FormControl(''));
+        }
       }
       control.patchValue(this.headerData);
     } else {
@@ -132,6 +136,9 @@ export class ShippingcusEditComponent implements OnInit {
         }
         if (temp.controls.receiveraddr !== undefined) {
           temp.removeControl('receiveraddr');
+        }
+        if (temp.controls.receiverphone !== undefined) {
+          temp.removeControl('receiverphone');
         }
       }
     }
@@ -152,7 +159,8 @@ export class ShippingcusEditComponent implements OnInit {
           this.initProduct()
         ]),
         receiver: [''],
-        receiveraddr: ['']
+        receiveraddr: [''],
+        receiverphone: ['']
       });
     } else {
       return this.formBuilder.group({
@@ -249,7 +257,8 @@ export class ShippingcusEditComponent implements OnInit {
             productform: this.formBuilder.array([
             ]),
             receiver: [this.headerData[i].receiver],
-            receiveraddr: [this.headerData[i].receiveraddr]
+            receiveraddr: [this.headerData[i].receiveraddr],
+            receiverphone: [this.headerData[i].receiverphone]
           }));
         } else {
           control.push(this.formBuilder.group({
