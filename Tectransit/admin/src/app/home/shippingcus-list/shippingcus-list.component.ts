@@ -61,6 +61,7 @@ export class ShippingcusListComponent implements OnInit {
     // built form controls and default form value
     this.srhForm = this.formBuilder.group({
       sstationcode: 'ALL',
+      scompany: '',
       sshippingno: '',
       strackingno: '',
       stransferno: '',

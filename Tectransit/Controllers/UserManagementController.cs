@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -561,6 +562,7 @@ namespace Tectransit.Controllers
             {
                 Dictionary<string, string> srhKey = new Dictionary<string, string>();
                 srhKey.Add("sstationcode", "STATIONCODE");
+                srhKey.Add("scompany", "COMPANY");
                 srhKey.Add("sshippingno", "SHIPPINGNO");
                 srhKey.Add("strackingno", "TRACKINGNO");
                 srhKey.Add("stransferno", "TRANSFERNO");
@@ -576,6 +578,27 @@ namespace Tectransit.Controllers
                 if (!string.IsNullOrEmpty(htData["STATIONCODE"]?.ToString()))
                     if (htData["STATIONCODE"]?.ToString() != "ALL")
                         sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATIONCODE LIKE '%" + htData["STATIONCODE"]?.ToString() + "%'";
+
+                if (!string.IsNullOrEmpty(htData["COMPANY"]?.ToString()))
+                {
+                    string sql = $@"SELECT DISTINCT A.ID FROM T_S_ACCOUNT A
+                                    LEFT JOIN T_S_ACRANKMAP B ON A.USERCODE = B.USERCODE
+                                    LEFT JOIN T_S_RANK C ON B.RANKID = C.ID
+                                    WHERE C.RANKTYPE = '2' AND A.COMPANYNAME LIKE '%{htData["COMPANY"]?.ToString()}%'";
+                    DataTable DT = DBUtil.SelectDataTable(sql);
+                    string tempACID = "";
+                    if (DT.Rows.Count > 0)
+                    {
+
+                        for (int i = 0; i < DT.Rows.Count; i++)
+                        {
+                            tempACID += (tempACID == "" ? "" : ",") + DT.Rows[i]["ID"];
+                        }
+                        
+                    }
+                    else { tempACID = "0"; }
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " ACCOUNTID IN (" + tempACID + ")";
+                }
 
                 if (!string.IsNullOrEmpty(htData["SHIPPINGNO"]?.ToString()))
                     sWhere += (sWhere == "" ? "WHERE" : " AND") + " SHIPPINGNO LIKE '%" + htData["SHIPPINGNO"]?.ToString() + "%'";

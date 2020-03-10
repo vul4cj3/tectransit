@@ -1740,7 +1740,7 @@ namespace Tectransit.Controllers
                     InsertBan(htData);
 
                     //add user log
-                    objComm.AddUserControlLog(htData, "banner/edit/0", "首頁廣告管理", 1, htData["BANID"]?.ToString());
+                    objComm.AddUserControlLog(htData, "banner/edit/0", "首頁廣告管理", 1, htData["TITLE"]?.ToString());
                 }
                 else
                 {
@@ -1838,7 +1838,7 @@ namespace Tectransit.Controllers
                     InsertNews(htData);
 
                     //add user log
-                    objComm.AddUserControlLog(htData, "news/edit/0", "公告消息管理", 1, htData["NEWSID"]?.ToString());
+                    objComm.AddUserControlLog(htData, "news/edit/0", "公告消息管理", 1, htData["TITLE"]?.ToString());
                 }
                 else
                 {
@@ -1932,7 +1932,7 @@ namespace Tectransit.Controllers
                     InsertAboutCate(htData);
 
                     //add user log
-                    objComm.AddUserControlLog(htData, "about/edit/0", "集貨介紹管理-分類", 1, htData["CATEID"]?.ToString());
+                    objComm.AddUserControlLog(htData, "about/edit/0", "集貨介紹管理-分類", 1, htData["TITLE"]?.ToString());
                 }
                 else
                 {
@@ -2023,7 +2023,7 @@ namespace Tectransit.Controllers
                     InsertAbout(htData);
 
                     //add user log
-                    objComm.AddUserControlLog(htData, "about/infoedit/0", "集貨介紹管理-細項", 1, htData["ABOUTID"]?.ToString());
+                    objComm.AddUserControlLog(htData, "about/infoedit/0", "集貨介紹管理-細項", 1, htData["TITLE"]?.ToString());
                 }
                 else
                 {
@@ -2117,7 +2117,7 @@ namespace Tectransit.Controllers
                     InsertFaqCate(htData);
 
                     //add user log
-                    objComm.AddUserControlLog(htData, "faq/edit/0", "常見問題管理-分類", 1, htData["CATEID"]?.ToString());
+                    objComm.AddUserControlLog(htData, "faq/edit/0", "常見問題管理-分類", 1, htData["TITLE"]?.ToString());
                 }
                 else
                 {
@@ -2208,7 +2208,7 @@ namespace Tectransit.Controllers
                     InsertFaq(htData);
 
                     //add user log
-                    objComm.AddUserControlLog(htData, "faq/infoedit/0", "常見問題管理-細項", 1, htData["FAQID"]?.ToString());
+                    objComm.AddUserControlLog(htData, "faq/infoedit/0", "常見問題管理-細項", 1, htData["TITLE"]?.ToString());
                 }
                 else
                 {
@@ -2308,7 +2308,7 @@ namespace Tectransit.Controllers
                     objComm.InsertSeqCode(htData, "station");
 
                     //add user log
-                    objComm.AddUserControlLog(htData, "station/edit/0", "集貨站管理", 1, htData["STATIONID"]?.ToString());
+                    objComm.AddUserControlLog(htData, "station/edit/0", "集貨站管理", 1, htData["STATIONNAME"]?.ToString());
                 }
                 else
                 {
