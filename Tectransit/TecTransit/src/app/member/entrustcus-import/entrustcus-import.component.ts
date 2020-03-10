@@ -40,6 +40,9 @@ export class EntrustcusImportComponent implements OnInit {
 
   saveData() {
     if (this.fileList.length > 0) {
+      const process = document.getElementById('process-msg') as HTMLDivElement;
+      process.innerHTML = '<span>匯入中，請稍後片刻……</span>';
+
       const formdata = new FormData();
       const scode = document.getElementById('stationcode') as HTMLSelectElement;
       formdata.append('stationcode', scode.value);
@@ -47,6 +50,7 @@ export class EntrustcusImportComponent implements OnInit {
 
       this.commonservice.Upload(formdata, this.importUrl)
         .subscribe(data => {
+          process.innerHTML = '<span>' + data.msg + '</span>';
           alert(data.msg);
         },
           error => {

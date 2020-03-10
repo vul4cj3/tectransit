@@ -1,5 +1,6 @@
 import { Component, Inject, HostListener, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { AuthenticationService } from './services/login.service';
 
 @Component({
   selector: 'app-root',
@@ -8,10 +9,12 @@ import { DOCUMENT } from '@angular/common';
 })
 export class AppComponent implements OnInit {
 
+  userActivity;
   isScroll = false;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
+    private authenticationService: AuthenticationService
   ) {
   }
 
@@ -25,6 +28,12 @@ export class AppComponent implements OnInit {
     } else if (document.body.scrollTop === 0 || document.documentElement.scrollTop === 0) {
       this.isScroll = false;
     }
+  }
+
+  @HostListener('window:mousemove', [])
+  onWindowMousemove() {
+    clearTimeout(this.userActivity);
+    this.setLoginTimeout();
   }
 
   clearnav() {
@@ -48,4 +57,14 @@ export class AppComponent implements OnInit {
     });
   }
 
+  setLoginTimeout() {
+    // user閒置1hr則自動登出
+    this.userActivity = setTimeout(() => {
+      const currentAcct = sessionStorage.getItem('currentAcct');
+      if (currentAcct) {
+        this.authenticationService.logout();
+        document.location.href = '/login';
+      }
+    }, 3600000);
+  }
 }

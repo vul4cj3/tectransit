@@ -86,3 +86,7 @@
 .btn a:hover {
   background-color: rgb(38, 136, 98);
 }
+
+#process-msg{
+  margin-left: 10px;
+}

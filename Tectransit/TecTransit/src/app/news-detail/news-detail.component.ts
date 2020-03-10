@@ -34,7 +34,6 @@ export class NewsDetailComponent implements OnInit {
           this.router.navigate(['/news']);
         } else {
           this.data = result.rows;
-          console.log(this.data);
         }
       }, error => {
         console.log(error);
