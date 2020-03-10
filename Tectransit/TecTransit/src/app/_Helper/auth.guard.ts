@@ -1,8 +1,8 @@
-import { Injectable, HostListener } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 import { AuthenticationService } from '../services/login.service';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
@@ -10,9 +10,6 @@ export class AuthGuard implements CanActivate {
   public currentAcct: Observable<any>;
 
   isExpire = 0;
-  userActivity;
-  userInactive: Subject<any> = new Subject();
-
 
   constructor(
     private router: Router,
