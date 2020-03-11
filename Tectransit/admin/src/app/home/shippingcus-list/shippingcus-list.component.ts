@@ -21,13 +21,13 @@ export class ShippingcusListComponent implements OnInit {
   private delUrl = 'DelTVShippingMData';
   private stationUrl = '/api/CommonHelp/GetStationData';
 
-  tableTitle = ['#', '集運站', '集運單號', '追蹤號碼', '快遞單號', '廠商', '會員帳號', '建單時間',
+  tableTitle = ['#', '集運站', '集運單號', '追蹤號碼', '提單號碼', '廠商', '會員帳號', '建單時間',
     '更新時間', '狀態', '編輯'];
   data: ShippingMCusInfo[];
   stationData: StationInfo[];
   rowTotal = 0;
   currentpage = 1;
-  pageSize = 10;
+  pageSize = 20;
   srhForm: FormGroup;
 
   tempList: any = [];

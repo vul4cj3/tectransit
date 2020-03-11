@@ -405,7 +405,7 @@ namespace Tectransit.Controllers
             {
                 Dictionary<string, string> srhKey = new Dictionary<string, string>();
                 srhKey.Add("sstationcode", "STATIONCODE");
-                srhKey.Add("strackno", "TRASFERNO");
+                srhKey.Add("strackno", "TRANSFERNO");
                 srhKey.Add("sacccode", "ACCOUNTCODE");
                 Hashtable htData = new Hashtable();
                 foreach (var t in temp)
@@ -415,8 +415,8 @@ namespace Tectransit.Controllers
                     if (htData["STATIONCODE"]?.ToString() != "ALL")
                         sWhere += (sWhere == "" ? "WHERE" : " AND") + " A.STATIONCODE = '" + htData["STATIONCODE"]?.ToString() + "'";
 
-                if (!string.IsNullOrEmpty(htData["TRASFERNO"]?.ToString()))
-                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " A.TRASFERNO LIKE '%" + htData["TRASFERNO"]?.ToString() + "%'";
+                if (!string.IsNullOrEmpty(htData["TRANSFERNO"]?.ToString()))
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " A.TRANSFERNO LIKE '%" + htData["TRANSFERNO"]?.ToString() + "%'";
 
                 if (!string.IsNullOrEmpty(htData["ACCOUNTCODE"]?.ToString()))
                     sWhere += (sWhere == "" ? "WHERE" : " AND") + " B.USERCODE LIKE '%" + htData["ACCOUNTCODE"]?.ToString() + "%'";
@@ -710,16 +710,26 @@ namespace Tectransit.Controllers
                     AL.Add(temp);
                 }
 
-
+                List<string> MAWBNO = new List<string>();
                 if (AL.Count > 0)
                 {
                     for (int i = 0; i < AL.Count; i++)
                     {
                         Hashtable sData = new Hashtable();
                         sData["SHIPPINGIDM"] = AL[i].ToString();
-                        sData["TRASFERNO"] = DBUtil.GetSingleValue1($@"SELECT TRASFERNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {sData["SHIPPINGIDM"]}");
+                        sData["TRANSFERNO"] = DBUtil.GetSingleValue1($@"SELECT TRANSFERNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {sData["SHIPPINGIDM"]}");
                         sData["ACCOUNTID"] = DBUtil.GetSingleValue1($@"SELECT ACCOUNTID AS COL1 FROM T_V_SHIPPING_M WHERE ID = {sData["SHIPPINGIDM"]}");
                         sData["COMPANYNAME"] = DBUtil.GetSingleValue1($@"SELECT COMPANYNAME AS COL1 FROM T_S_ACCOUNT WHERE ID = {sData["ACCOUNTID"]}");
+
+                        int chkMawb = 0;
+                        string tempMawb = DBUtil.GetSingleValue1($@"SELECT MAWBNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {sData["SHIPPINGIDM"]} AND STATUS = 0");
+                        //檢查是否有重複的主單且為未入庫狀態
+                        for (int j = 0; j < MAWBNO.Count(); j++)
+                        {
+                            if (!string.IsNullOrEmpty(tempMawb))
+                                if (MAWBNO[j] == tempMawb)
+                                    chkMawb++;
+                        }
 
                         //delete Declarant data
                         DeleteTVData_All("T_V_DECLARANT", sData);
@@ -731,7 +741,18 @@ namespace Tectransit.Controllers
                         //delete shipping_M data
                         DeleteTVData_All("T_V_SHIPPING_M", sData);
 
-                        logMsg += (logMsg == "" ? "" : ",") + $@"[SHIPPINGIDM({sData["SHIPPINGIDM"]})=COMPANYNAME:{sData["COMPANYNAME"]?.ToString()}/TRASFERNO: {sData["TRASFERNO"]?.ToString()}]";
+                        logMsg += (logMsg == "" ? "" : ",") + $@"[SHIPPINGIDM({sData["SHIPPINGIDM"]})=COMPANYNAME:{sData["COMPANYNAME"]?.ToString()}/TRANSFERNO: {sData["TRANSFERNO"]?.ToString()}]";
+
+                        if (chkMawb == 0)
+                            if (!string.IsNullOrEmpty(tempMawb))
+                                MAWBNO.Add(tempMawb);
+                    }
+
+                    //寫入異動拋轉紀錄
+                    if (MAWBNO.Count() > 0)
+                    {
+                        for (int k = 0; k < MAWBNO.Count(); k++)
+                            objComm.InsertDepotRecord(2, MAWBNO[k]);
                     }
                 }
 
@@ -911,6 +932,13 @@ namespace Tectransit.Controllers
                 //update master
                 updateCusShippingM(mData);
                 #endregion
+
+
+                //寫入異動拋轉紀錄(未入庫狀態)
+                string tempMAWB = DBUtil.GetSingleValue1($@"SELECT MAWBNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {mData["ID"]?.ToString()} AND STATUS = 0");
+                if (!string.IsNullOrEmpty(tempMAWB))
+                    objComm.InsertDepotRecord(2, tempMAWB);
+                
 
                 //add user operation log
                 Hashtable logData = new Hashtable();

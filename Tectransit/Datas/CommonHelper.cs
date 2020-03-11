@@ -447,7 +447,8 @@ namespace Tectransit.Datas
                 Hashtable tempData = new Hashtable();
                 tempData["STARTCODE"] = "000000";
                 tempData["ENDCODE"] = "999999";
-                tempData["NEXTCODE"] = "10001";
+                tempData["FIRSTCODE"] = "*";
+                tempData["NEXTCODE"] = "000000";
                 tempData["CODENAME"] = sData["STATIONCODE"];
                 tempData["CODENAME2"] = sData["STATIONCODE"] +"_CUS";
                 tempData["CODEDESC"] = sData["STATIONNAME"] +"(會員)";
@@ -457,11 +458,11 @@ namespace Tectransit.Datas
                 tempData["UPDDATE"] = tempData["CREDATE"];
                 tempData["UPDBY"] = tempData["CREATEBY"];
 
-                string sql = $@"INSERT INTO T_S_SEQUENCECODE(STARTCODE, ENDCODE, NEXTCODE, CODENAME, CODEDESC, CREDATE, CREATEBY, UPDDATE, UPDBY)
-                            VALUES (@STARTCODE, @ENDCODE, @NEXTCODE, @CODENAME, @CODEDESC, @CREDATE, @CREATEBY, @UPDDATE, @UPDBY)";
+                string sql = $@"INSERT INTO T_S_SEQUENCECODE(STARTCODE, ENDCODE, FIRSTCODE, NEXTCODE, CODENAME, CODEDESC, CREDATE, CREATEBY, UPDDATE, UPDBY)
+                            VALUES (@STARTCODE, @ENDCODE, @FIRSTCODE, @NEXTCODE, @CODENAME, @CODEDESC, @CREDATE, @CREATEBY, @UPDDATE, @UPDBY)";
 
-                string sql1 = $@"INSERT INTO T_S_SEQUENCECODE(STARTCODE, ENDCODE, NEXTCODE, CODENAME, CODEDESC, CREDATE, CREATEBY, UPDDATE, UPDBY)
-                            VALUES (@STARTCODE, @ENDCODE, @NEXTCODE, @CODENAME2, @CODEDESC2, @CREDATE, @CREATEBY, @UPDDATE, @UPDBY)";
+                string sql1 = $@"INSERT INTO T_S_SEQUENCECODE(STARTCODE, ENDCODE, FIRSTCODE, NEXTCODE, CODENAME, CODEDESC, CREDATE, CREATEBY, UPDDATE, UPDBY)
+                            VALUES (@STARTCODE, @ENDCODE, @FIRSTCODE, @NEXTCODE, @CODENAME2, @CODEDESC2, @CREDATE, @CREATEBY, @UPDDATE, @UPDBY)";
 
                 DBUtil.EXECUTE(sql, tempData);//會員用
                 DBUtil.EXECUTE(sql1, tempData);//廠商用
@@ -731,6 +732,27 @@ namespace Tectransit.Datas
             #endregion
         }
 
-    }    
-    
+        //寫入拋轉厚生倉API紀錄
+        /// <summary>
+        /// [type] = 1:個人用戶/2:廠商
+        /// [shippingno] = 個人用戶: 快遞單號?/廠商: 主單號(MAWB)
+        /// </summary>
+        /// <returns></returns>
+        public void InsertDepotRecord(int type, string shippingno)
+        {
+            Hashtable sData = new Hashtable();
+            sData["TYPE"] = type;
+            sData["ACTIVE"] = 0; //0:未拋轉/1:拋轉成功/2:拋轉失敗
+            sData["SHIPPINGNO"] = shippingno;
+            sData["CREDATE"] = DateTime.Now;
+            sData["UPDDATE"] = sData["CREDATE"];
+
+            string sql = $@"INSERT INTO T_S_DEPOTRECORD(TYPE, ACTIVE, SHIPPINGNO, CREDATE, UPDDATE)
+                            VALUES (@TYPE, @ACTIVE, @SHIPPINGNO, @CREDATE, @UPDDATE)";
+
+            DBUtil.EXECUTE(sql, sData);            
+        }
+
+    }
+
 }

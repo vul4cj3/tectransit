@@ -1564,6 +1564,8 @@ namespace Tectransit.Controllers
                     DelAL.Add(Convert.ToInt64(temp));
                 }
 
+                List<string> MAWBNO = new List<string>();
+                string delfail = "";
                 if (DelAL.Count > 0)
                 {
                     for (int i = 0; i < DelAL.Count; i++)
@@ -1576,6 +1578,16 @@ namespace Tectransit.Controllers
 
                         if (IsExist)
                         {
+                            int chkMawb = 0;
+                            string tempMawb = DBUtil.GetSingleValue1($@"SELECT MAWBNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {tempData["SHIPPINGIDM"]} AND STATUS = 0");
+                            //檢查是否有重複的主單
+                            for (int j = 0; j < MAWBNO.Count(); j++)
+                            {
+                                if (!string.IsNullOrEmpty(tempMawb))
+                                    if (MAWBNO[j] == tempMawb)
+                                        chkMawb++;
+                            }
+
                             //delete Declarant data
                             DeleteTVData_All("T_V_DECLARANT", tempData);
 
@@ -1585,13 +1597,31 @@ namespace Tectransit.Controllers
 
                             //delete shipping_M data
                             DeleteTVData_All("T_V_SHIPPING_M", tempData);
+
+                            if (chkMawb == 0)
+                                if (!string.IsNullOrEmpty(tempMawb))
+                                    MAWBNO.Add(tempMawb);
                         }
                         else
-                            return new { status = "99", msg = "刪除失敗！" };
+                        {
+                            string tempTransfer = DBUtil.GetSingleValue1($@"SELECT TRANSFERNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {tempData["SHIPPINGIDM"]}");
+                            delfail += (delfail == "" ? "" : ",") + tempTransfer;
+                        }
                     }
+
+                    //寫入異動拋轉紀錄
+                    if (MAWBNO.Count() > 0)
+                    {
+                        for (int k = 0; k < MAWBNO.Count(); k++)
+                            objComm.InsertDepotRecord(2, MAWBNO[k]);
+                    }
+
                 }
 
-                return new { status = "0", msg = "刪除成功！" };
+                if (string.IsNullOrEmpty(delfail))
+                    return new { status = "0", msg = "刪除成功！" };
+                else
+                    return new { status = "99", msg = $"提單號碼：{delfail}，刪除失敗！" };
             }
             catch (Exception ex)
             {
@@ -1627,7 +1657,11 @@ namespace Tectransit.Controllers
                 }
 
                 //import excel to database
-                ImportCusShippingData(usercode, stationcode, fileName);
+                string MAWBNO = ImportCusShippingData(usercode, stationcode, fileName);
+
+                //寫入拋轉紀錄
+                if (!string.IsNullOrEmpty(MAWBNO))
+                    objComm.InsertDepotRecord(2, MAWBNO);
 
                 return new { status = "0", msg = "匯入成功！" };
             }
@@ -1664,6 +1698,7 @@ namespace Tectransit.Controllers
                 TVM.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
                 TVM.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
                 TVM.Status = 0;
+                TVM.Mawbdate = sData["MAWBDATE"]?.ToString();
                 TVM.Credate = DateTime.Now;
                 TVM.Createby = sData["_acccode"]?.ToString();
                 TVM.Upddate = TVM.Credate;
@@ -1853,7 +1888,7 @@ namespace Tectransit.Controllers
         }
 
         //匯入集運(Excel to DB)
-        public void ImportCusShippingData(string usercode, string stationcode, string file)
+        public string ImportCusShippingData(string usercode, string stationcode, string file)
         {
 
             var folderName = Path.Combine(@"tectransit\dist\tectransit\assets\import", usercode);
@@ -1972,6 +2007,9 @@ namespace Tectransit.Controllers
                 }
 
                 ws.Dispose();
+
+                //匯入成功回傳MAWB
+                return htData["MAWBNO"]?.ToString();
             }
 
             #endregion

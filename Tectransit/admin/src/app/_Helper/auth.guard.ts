@@ -9,7 +9,6 @@ export class AuthGuard implements CanActivate {
   private currentUserSubject: BehaviorSubject<any>;
   public currentUser: Observable<any>;
 
-  isExpire = 0;
 
   constructor(
     private router: Router,
@@ -17,22 +16,6 @@ export class AuthGuard implements CanActivate {
   ) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    // check cookies expire or not
-    this.isExpire = 0;
-    if (document.cookie !== '') {
-      document.cookie.split(';').filter(item => {
-        if (item.trim().indexOf('_usercode=') === 0) {
-          this.isExpire++;
-        } else if (item.trim().indexOf('_username=') === 0) {
-          this.isExpire++;
-        } else { }
-      });
-    } else { this.isExpire = 0; }
-
-    if (this.isExpire < 2) {
-      sessionStorage.removeItem('currentUser'); // logout
-      this.currentUserSubject.next(null);
-    }
 
     // const currentUser = this.authenticationService.currentUserValue;
     const currentUser = sessionStorage.getItem('currentUser');

@@ -37,6 +37,7 @@ namespace Tectransit.Modles
         public virtual DbSet<TSAcrankmap> TSAcrankmap { get; set; }
         public virtual DbSet<TSButton> TSButton { get; set; }
         public virtual DbSet<TSDeclarant> TSDeclarant { get; set; }
+        public virtual DbSet<TSDepotrecord> TSDepotrecord { get; set; }
         public virtual DbSet<TSMenu> TSMenu { get; set; }
         public virtual DbSet<TSRank> TSRank { get; set; }
         public virtual DbSet<TSRole> TSRole { get; set; }
@@ -1145,6 +1146,51 @@ namespace Tectransit.Modles
                 entity.Property(e => e.Updby)
                     .HasColumnName("UPDBY")
                     .HasMaxLength(300);
+
+                entity.Property(e => e.Upddate)
+                    .HasColumnName("UPDDATE")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<TSDepotrecord>(entity =>
+            {
+                entity.ToTable("T_S_DEPOTRECORD");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Active).HasColumnName("ACTIVE");
+
+                entity.Property(e => e.Apiurl)
+                    .HasColumnName("APIURL")
+                    .HasMaxLength(1000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Credate)
+                    .HasColumnName("CREDATE")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Msg)
+                    .HasColumnName("MSG")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Remark).HasColumnName("REMARK");
+
+                entity.Property(e => e.Responsedata).HasColumnName("RESPONSEDATA");
+
+                entity.Property(e => e.Senddata).HasColumnName("SENDDATA");
+
+                entity.Property(e => e.Shippingno)
+                    .HasColumnName("SHIPPINGNO")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Status)
+                    .HasColumnName("STATUS")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Type).HasColumnName("TYPE");
 
                 entity.Property(e => e.Upddate)
                     .HasColumnName("UPDDATE")
