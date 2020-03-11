@@ -130,6 +130,7 @@ export interface TransferMInfo {
   pvalueprice: string;
   total: string;
   receiver: string;
+  receiverphone: string;
   receiveraddr: string;
   ismultreceiver: string;
   status: string;
@@ -144,6 +145,7 @@ export interface TransferHInfo {
   id: number;
   boxno: string;
   receiver: string;
+  receiverphone: string;
   receiveraddr: string;
   remark: string;
   transferiD_M: number;
@@ -216,6 +218,7 @@ export interface ShippingMInfo {
   total: string;
   totalprice: string;
   receiver: string;
+  receiverphone: string;
   receiveraddr: string;
   ismultreceiver: string;
   trackingtype: string;
@@ -238,6 +241,7 @@ export interface ShippingHInfo {
   transferno: string;
   boxno: string;
   receiver: string;
+  receiverphone: string;
   receiveraddr: string;
   remark: string;
   shippingiD_M: number;

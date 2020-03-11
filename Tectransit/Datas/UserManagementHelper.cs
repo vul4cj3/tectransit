@@ -224,8 +224,8 @@ namespace Tectransit.Datas
                     m.ROWID = i + 1;
                     m.ID = Convert.ToInt64(DT.Rows[i]["ID"]);
                     m.NAME = DT.Rows[i]["NAME"]?.ToString();
-                    m.IDPHOTO_F = DT.Rows[i]["IDPHOTO_F"]?.ToString();
-                    m.IDPHOTO_B = DT.Rows[i]["IDPHOTO_B"]?.ToString();
+                    m.IDPHOTOF = DT.Rows[i]["IDPHOTO_F"]?.ToString();
+                    m.IDPHOTOB = DT.Rows[i]["IDPHOTO_B"]?.ToString();
                     m.PHONE = DT.Rows[i]["PHONE"]?.ToString();
                     m.MOBILE = DT.Rows[i]["MOBILE"]?.ToString();
                     m.ADDR = DT.Rows[i]["ADDR"]?.ToString();

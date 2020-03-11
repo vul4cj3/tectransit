@@ -183,7 +183,7 @@ namespace Tectransit.Datas
         public dynamic GetSingleACTransferData(Hashtable sData)
         {
             string sql = $@"SELECT ID, ACCOUNTID, STATIONCODE, TRANSFERNO, TOTAL,
-                                   RECEIVER, RECEIVER_ADDR, ISMULTRECEIVER, STATUS,
+                                   RECEIVER, RECEIVERPHONE, RECEIVER_ADDR, ISMULTRECEIVER, STATUS,
 								   P_LENGTH, P_WIDTH, P_HEIGHT, P_WEIGHT, P_VALUEPRICE,
                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
                                    CREATEBY AS CREBY, UPDBY
@@ -206,6 +206,7 @@ namespace Tectransit.Datas
                 m.TOTAL = DT.Rows[0]["TOTAL"]?.ToString();
                 m.ISMULTRECEIVER = Convert.ToBoolean(DT.Rows[0]["ISMULTRECEIVER"]) == true ? "Y" : "N";
                 m.RECEIVER = DT.Rows[0]["RECEIVER"]?.ToString();
+                m.RECEIVERPHONE = DT.Rows[0]["RECEIVERPHONE"]?.ToString();
                 m.RECEIVERADDR = DT.Rows[0]["RECEIVER_ADDR"]?.ToString();
                 m.STATUS = DT.Rows[0]["STATUS"]?.ToString();
                 m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
@@ -215,7 +216,7 @@ namespace Tectransit.Datas
 
 
                 sql = $@"SELECT A.TRANSFERID_M AS MID, A.ID AS HID, B.ID AS DID, A.BOXNO, A.RECEIVER,
-                                A.RECEIVERADDR, B.PRODUCT, B.UNITPRICE, B.QUANTITY
+                                A.RECEIVERPHONE, A.RECEIVERADDR, B.PRODUCT, B.UNITPRICE, B.QUANTITY
                          FROM T_E_TRANSFER_H A
                          LEFT JOIN T_E_TRANSFER_D B ON A.ID = B.TRANSFERID_H
                          WHERE A.TRANSFERID_M = @TRANSFERIDM";
@@ -235,6 +236,7 @@ namespace Tectransit.Datas
                             rows.ID = Convert.ToInt64(DT_Sub.Rows[j]["HID"]);
                             rows.BOXNO = DT_Sub.Rows[j]["BOXNO"]?.ToString();
                             rows.RECEIVER = DT_Sub.Rows[j]["RECEIVER"]?.ToString();
+                            rows.RECEIVERPHONE = DT_Sub.Rows[j]["RECEIVERPHONE"]?.ToString();
                             rows.RECEIVERADDR = DT_Sub.Rows[j]["RECEIVERADDR"]?.ToString();
                             rows.TRANSFERID_M = Convert.ToInt64(DT_Sub.Rows[j]["MID"]);
 
@@ -291,7 +293,7 @@ namespace Tectransit.Datas
         {
             string sql = $@"SELECT ID, ACCOUNTID, STATIONCODE, SHIPPINGNO, TOTAL, TOTALPRICE,
 								   TRACKINGNO, TRACKINGDESC, TRACKINGREMARK,
-                                   RECEIVER, RECEIVER_ADDR, ISMULTRECEIVER, STATUS,
+                                   RECEIVER, RECEIVERPHONE, RECEIVER_ADDR, ISMULTRECEIVER, STATUS,
 								   P_LENGTH, P_WIDTH, P_HEIGHT, P_WEIGHT, P_VALUEPRICE,
                                    MAWBNO, CLEARANCENO, HAWBNO,
 								   PAYTYPE, PAYSTATUS, TRACKINGTYPE, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') As PAYDATE,
@@ -324,6 +326,7 @@ namespace Tectransit.Datas
                 m.TOTALPRICE = DT.Rows[0]["TOTALPRICE"]?.ToString();
                 m.ISMULTRECEIVER = Convert.ToBoolean(DT.Rows[0]["ISMULTRECEIVER"]) == true ? "Y" : "N";
                 m.RECEIVER = DT.Rows[0]["RECEIVER"]?.ToString();
+                m.RECEIVERPHONE = DT.Rows[0]["RECEIVERPHONE"]?.ToString();
                 m.RECEIVERADDR = DT.Rows[0]["RECEIVER_ADDR"]?.ToString();
                 m.STATUS = DT.Rows[0]["STATUS"]?.ToString();
                 m.TRACKINGTYPE = DT.Rows[0]["TRACKINGTYPE"]?.ToString();
@@ -338,7 +341,7 @@ namespace Tectransit.Datas
 
 
                 sql = $@"SELECT A.SHIPPINGID_M AS MID, A.ID AS HID, B.ID AS DID, A.TRANSFERNO, A.BOXNO, A.RECEIVER,
-                                A.RECEIVERADDR, B.PRODUCT, B.UNITPRICE, B.QUANTITY
+                                A.RECEIVERPHONE, A.RECEIVERADDR, B.PRODUCT, B.UNITPRICE, B.QUANTITY
                          FROM T_N_SHIPPING_H A
                          LEFT JOIN T_N_SHIPPING_D B ON A.ID = B.SHIPPINGID_H
                          WHERE A.SHIPPINGID_M = @SHIPPINGIDM";
@@ -359,6 +362,7 @@ namespace Tectransit.Datas
                             rows.TRANSFERNO = DT_Sub.Rows[j]["TRANSFERNO"]?.ToString();
                             rows.BOXNO = DT_Sub.Rows[j]["BOXNO"]?.ToString();
                             rows.RECEIVER = DT_Sub.Rows[j]["RECEIVER"]?.ToString();
+                            rows.RECEIVERPHONE = DT_Sub.Rows[j]["RECEIVERPHONE"]?.ToString();
                             rows.RECEIVERADDR = DT_Sub.Rows[j]["RECEIVERADDR"]?.ToString();
                             rows.SHIPPINGID_M = Convert.ToInt64(DT_Sub.Rows[j]["MID"]);
 
@@ -467,8 +471,8 @@ namespace Tectransit.Datas
                     m.PHONE = DT.Rows[0]["PHONE"]?.ToString();
                     m.MOBILE = DT.Rows[0]["MOBILE"]?.ToString();
                     m.ADDR = DT.Rows[0]["ADDR"]?.ToString();
-                    m.IDPHOTO_F = DT.Rows[0]["IDPHOTO_F"]?.ToString();
-                    m.IDPHOTO_B = DT.Rows[0]["IDPHOTO_B"]?.ToString();
+                    m.IDPHOTOF = DT.Rows[0]["IDPHOTO_F"]?.ToString();
+                    m.IDPHOTOB = DT.Rows[0]["IDPHOTO_B"]?.ToString();
                     m.APPOINTMENT = DT.Rows[0]["APPOINTMENT"]?.ToString();
                     m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
                     m.CREBY = DT.Rows[0]["CREATEBY"]?.ToString();
@@ -490,8 +494,8 @@ namespace Tectransit.Datas
                         d.PHONE = DT.Rows[i]["PHONE"]?.ToString();
                         d.MOBILE = DT.Rows[i]["MOBILE"]?.ToString();
                         d.ADDR = DT.Rows[i]["ADDR"]?.ToString();
-                        d.IDPHOTO_F = DT.Rows[i]["IDPHOTO_F"]?.ToString();
-                        d.IDPHOTO_B = DT.Rows[i]["IDPHOTO_B"]?.ToString();
+                        d.IDPHOTOF = DT.Rows[i]["IDPHOTO_F"]?.ToString();
+                        d.IDPHOTOB = DT.Rows[i]["IDPHOTO_B"]?.ToString();
                         d.APPOINTMENT = DT.Rows[i]["APPOINTMENT"]?.ToString();
                         d.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
                         d.CREBY = DT.Rows[i]["CREATEBY"]?.ToString();

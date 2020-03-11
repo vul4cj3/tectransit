@@ -18,6 +18,7 @@ export class DeclarantComponent implements OnInit {
   getdata2Url = '/api/Member/GetDeclarantData';
   deldataUrl = '/api/Member/EditDeclarantData';
   saveUrl = '/api/Member/SaveDeclarantData';
+  testUrl = '/api/DepotCheck/';
 
   dataList: DeclarantInfo[];
   dataChange;
@@ -60,6 +61,8 @@ export class DeclarantComponent implements OnInit {
       .subscribe(data => {
         if (data.rows.length > 0) {
           this.dataList = data.rows;
+        } else {
+          this.dataList = null;
         }
       },
         error => {

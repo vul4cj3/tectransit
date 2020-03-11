@@ -432,6 +432,11 @@ namespace Tectransit.Modles
                     .HasColumnName("RECEIVERADDR")
                     .HasMaxLength(300);
 
+                entity.Property(e => e.Receiverphone)
+                    .HasColumnName("RECEIVERPHONE")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Remark).HasColumnName("REMARK");
 
                 entity.Property(e => e.TransferidM).HasColumnName("TRANSFERID_M");
@@ -487,6 +492,11 @@ namespace Tectransit.Modles
                 entity.Property(e => e.ReceiverAddr)
                     .HasColumnName("RECEIVER_ADDR")
                     .HasMaxLength(500);
+
+                entity.Property(e => e.Receiverphone)
+                    .HasColumnName("RECEIVERPHONE")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Remark).HasColumnName("REMARK");
 
@@ -689,6 +699,11 @@ namespace Tectransit.Modles
                     .HasColumnName("RECEIVERADDR")
                     .HasMaxLength(300);
 
+                entity.Property(e => e.Receiverphone)
+                    .HasColumnName("RECEIVERPHONE")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Remark).HasColumnName("REMARK");
 
                 entity.Property(e => e.ShippingidM).HasColumnName("SHIPPINGID_M");
@@ -780,6 +795,11 @@ namespace Tectransit.Modles
                 entity.Property(e => e.ReceiverAddr)
                     .HasColumnName("RECEIVER_ADDR")
                     .HasMaxLength(500);
+
+                entity.Property(e => e.Receiverphone)
+                    .HasColumnName("RECEIVERPHONE")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Remark1).HasColumnName("REMARK1");
 
@@ -1774,6 +1794,11 @@ namespace Tectransit.Modles
                 entity.Property(e => e.Credate)
                     .HasColumnName("CREDATE")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.Depotstatus)
+                    .HasColumnName("DEPOTSTATUS")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Exportdate)
                     .HasColumnName("EXPORTDATE")

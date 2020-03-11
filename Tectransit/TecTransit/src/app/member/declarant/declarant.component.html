@@ -1,75 +1,99 @@
-<div class="memprofile">
-  <div class="profile-contain">
-    <div class="memheader"><span>申報人管理</span></div>
-    <div class="form-control">
-      <table>
-        <tr>
-          <th>申報人姓名</th>
-          <th>身份證字號/統一編號</th>
-          <th>連絡電話</th>
-          <th>手機</th>
-          <th>地址</th>
-          <th>身分證件照</th>
-          <th>委任書</th>
-          <th>修改</th>
-          <th>刪除</th>
-        </tr>
-        <tr *ngFor="let item of dataList">
-          <td>{{item.name}}</td>
-          <td>{{item.taxid}}</td>
-          <td>{{item.phone}}</td>
-          <td>{{item.mobile}}</td>
-          <td>{{item.addr}}</td>
-          <td><a *ngIf="item.idphotO_F !== ''" [href]="item.idphotO_F" target="_block">身分證照1</a><a *ngIf="item.idphotO_B !== ''" [href]="item.idphotO_B" target="_block">身分證照2</a></td>
-          <td><a *ngIf="item.appointment !== ''" [href]="item.appointment" target="_block">下載</a></td>
-          <td><a (click)="editData(item.id)"><span class="symbol"><i class="fas fa-pen-square"></i></span></a></td>
-          <td><a (click)="delData(item.id)"><span class="symbol"><i class="fas fa-times"></i></span></a></td>
-        </tr>
-      </table>
+<div class="declarant">
+  <div class="declarant-contain">
+    <div class="header">
+      <span class="mem-icon">
+        <i class="fas fa-universal-access"></i>
+        申報人管理
+      </span>
     </div>
-    <div class="regform">
-      <form [formGroup]="dataForm">
-        <input type="hidden" id="id" formControlName="id">
-        <div class="form-control">
-          <label for="name">申報人姓名</label>
-          <input type="text" id="name" formControlName="name">
-        </div>
-        <div class="form-control">
-          <label for="taxid">身份證字號/統一編號</label>
-          <input type="text" id="taxid" formControlName="taxid">
-        </div>
-        <div class="form-control">
-          <label for="phone">連絡電話</label>
-          <input type="text" id="phone" formControlName="phone" maxlength="15">
-        </div>
-        <div class="form-control">
-          <label for="mobile">手機</label>
-          <input type="text" id="mobile" formControlName="mobile" maxlength="15">
-        </div>
-        <div class="form-control">
-          <label for="addr">地址</label>
-          <input type="text" id="addr" formControlName="addr">
-        </div>
-        <div class="form-control">
-          <label for="idphoto">身分證件照(正反面)</label>
-          <input type="file" #imgupload accept="image/*" multiple (change)="imgChange($event)">
-          <div class="img-preview-container">
-            <div id="img-preview" class="img-preview">
-            </div>
+    <div class="declarant-container">
+      <div class="form-control">
+        <table class="declarant-table">
+          <thead>
+            <tr>
+              <th>申報人</th>
+              <th>身份證字號</th>
+              <th>連絡電話</th>
+              <th>手機</th>
+              <th>地址</th>
+              <th>證件檔案</th>
+              <th>委任書</th>
+              <th>修改</th>
+              <th>刪除</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of dataList">
+              <td>{{item.name}}</td>
+              <td>{{item.taxid}}</td>
+              <td>{{item.phone}}</td>
+              <td>{{item.mobile}}</td>
+              <td>{{item.addr}}</td>
+              <td><a *ngIf="item.idphotof !== ''" [href]="item.idphotof" target="_blank" title="身分證檔案1">
+                  <img width="24px" height="24px" src="/res/assets/util/img-icon.svg" alt="身分證檔案1">
+                </a>
+                <a *ngIf="item.idphotob !== ''" [href]="item.idphotob" target="_blank" title="身分證檔案2">
+                  <img width="24px" height="24px" src="/res/assets/util/img-icon.svg" alt="身分證檔案2">
+                </a></td>
+              <td><a *ngIf="item.appointment !== ''" [href]="item.appointment" target="_block">下載</a></td>
+              <td><a (click)="editData(item.id)"><span class="symbol"><i class="fas fa-pen-square"></i></span></a></td>
+              <td><a (click)="delData(item.id)"><span class="symbol"><i class="fas fa-times"></i></span></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="form-control">
+        <form [formGroup]="dataForm">
+          <input type="hidden" id="id" formControlName="id">
+          <div class="row">
+            <label for="name">申報人</label>
+            <input type="text" id="name" formControlName="name">
           </div>
-          <input type="hidden" id="idphotO_F" formControlName="idphotO_F">
-          <input type="hidden" id="idphotO_B" formControlName="idphotO_B">
-        </div>
-        <div class="form-control">
-          <label for="appointment">委任書</label>
-          <input type="file" #fileupload (change)="fileChange($event)">
-          <input type="hidden" id="appointment" formControlName="appointment">
-        </div>
-        <div class="form-control">
-          <button type="button" (click)="saveData(dataForm.value)">送出</button>
-          <button type="button" (click)="doCancel()">取消</button>
-        </div>
-      </form>
+          <div class="row">
+            <label for="taxid">身份證字號</label>
+            <input type="text" id="taxid" formControlName="taxid">
+          </div>
+          <div class="row">
+            <label for="phone">連絡電話</label>
+            <input type="text" id="phone" formControlName="phone" maxlength="15">
+          </div>
+          <div class="row">
+            <label for="mobile">手機</label>
+            <input type="text" id="mobile" formControlName="mobile" maxlength="15">
+          </div>
+          <div class="row large">
+            <label for="addr">地址</label>
+            <input type="text" id="addr" formControlName="addr">
+          </div>
+          <div class="row">
+            <label for="idphoto">證件檔案</label>
+            <label for="imgupload" class="custom-file-upload">
+              <img width="16px" height="16px" src="/res/assets/util/upload-icon.svg">
+              <span>上傳</span>
+            </label>
+            <input type="file" id="imgupload" #imgupload accept="image/*" multiple (change)="imgChange($event)">
+            <div class="img-preview-container">
+              <div id="img-preview" class="img-preview">
+              </div>
+            </div>
+            <input type="hidden" id="idphotO_F" formControlName="idphotO_F">
+            <input type="hidden" id="idphotO_B" formControlName="idphotO_B">
+          </div>
+          <div class="row">
+            <label for="appointment">委任書</label>
+            <label for="fileupload" class="custom-file-upload">
+              <img width="16px" height="16px" src="/res/assets/util/upload-icon.svg">
+              <span>上傳</span>
+            </label>
+            <input type="file" id="fileupload" #fileupload (change)="fileChange($event)">
+            <input type="hidden" id="appointment" formControlName="appointment">
+          </div>
+        </form>
+      </div>
+      <div class="btn-two">
+        <a (click)="saveData(dataForm.value)">送出</a>
+        <a (click)="doCancel()">取消</a>
+      </div>
     </div>
   </div>
 </div>

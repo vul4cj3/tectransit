@@ -23,6 +23,7 @@ namespace Tectransit.Modles
         public string Receiverphone { get; set; }
         public bool Ismultreceiver { get; set; }
         public int Status { get; set; }
+        public string Depotstatus { get; set; }
         public string Remark1 { get; set; }
         public string Remark2 { get; set; }
         public string Remark3 { get; set; }

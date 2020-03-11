@@ -21,6 +21,10 @@
                 <span>{{masterData.receiver}}</span>
               </div>
               <div class="form-control" *ngIf="masterData.ismultreceiver !== 'Y'">
+                <label>收件人電話</label>
+                <span>{{masterData.receiverphone}}</span>
+              </div>
+              <div class="form-control" *ngIf="masterData.ismultreceiver !== 'Y'">
                 <label>收件人地址</label>
                 <span>{{masterData.receiveraddr}}</span>
               </div>
@@ -60,6 +64,10 @@
               <div class="form-control" *ngIf="masterData2.ismultreceiver !== 'Y'">
                 <label>收件人</label>
                 <span>{{masterData2.receiver}}</span>
+              </div>
+              <div class="form-control" *ngIf="masterData2.ismultreceiver !== 'Y'">
+                <label>收件人電話</label>
+                <span>{{masterData2.receiverphone}}</span>
               </div>
               <div class="form-control" *ngIf="masterData2.ismultreceiver !== 'Y'">
                 <label>收件人地址</label>
@@ -103,6 +111,10 @@
                   <span>{{item.receiver}}</span>
                 </div>
                 <div class="form-control" *ngIf="masterData.ismultreceiver === 'Y'">
+                  <label>收件人電話</label>
+                  <span>{{item.receiverphone}}</span>
+                </div>
+                <div class="form-control" *ngIf="masterData.ismultreceiver === 'Y'">
                   <label>收件人地址</label>
                   <span>{{item.receiveraddr}}</span>
                 </div>
@@ -141,6 +153,10 @@
                 <div class="form-control" *ngIf="masterData2.ismultreceiver === 'Y'">
                   <label>收件人</label>
                   <span>{{item.receiver}}</span>
+                </div>
+                <div class="form-control" *ngIf="masterData2.ismultreceiver === 'Y'">
+                  <label>收件人電話</label>
+                  <span>{{item.receiverphone}}</span>
                 </div>
                 <div class="form-control" *ngIf="masterData2.ismultreceiver === 'Y'">
                   <label>收件人地址</label>

@@ -222,6 +222,8 @@ namespace Tectransit.Controllers
                         mData["RECEIVER"] = arrData.Value<string>("receiver");
                     if (arrData.Value<string>("receiveraddr") != null)
                         mData["RECEIVERADDR"] = arrData.Value<string>("receiveraddr");
+                    if (arrData.Value<string>("receiverphone") != null)
+                        mData["RECEIVERPHONE"] = arrData.Value<string>("receiverphone");
                 }
 
                 mData["_acccode"] = Request.Cookies["_acccode"];
@@ -921,6 +923,7 @@ namespace Tectransit.Controllers
                 TEM.Total = sData["TOTAL"]?.ToString();
                 TEM.Receiver = sData["RECEIVER"]?.ToString();
                 TEM.ReceiverAddr = sData["RECEIVERADDR"]?.ToString();
+                TEM.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
                 TEM.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
                 TEM.Status = 0;
                 TEM.Remark = "";
@@ -953,6 +956,7 @@ namespace Tectransit.Controllers
                 TEH.Boxno = sData["BOXNO"]?.ToString();
                 TEH.Receiver = sData["RECEIVER"]?.ToString();
                 TEH.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
+                TEH.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
                 TEH.TransferidM = Convert.ToInt64(sData["TRANSFERIDM"]);
 
                 _context.TETransferH.Add(TEH);

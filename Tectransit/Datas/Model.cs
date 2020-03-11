@@ -149,8 +149,8 @@ namespace Tectransit.Datas
         public long TYPE { set; get; }
         public string NAME { set; get; }
         public string TAXID { set; get; }
-        public string IDPHOTO_F { set; get; }
-        public string IDPHOTO_B { set; get; }
+        public string IDPHOTOF { set; get; }
+        public string IDPHOTOB { set; get; }
         public string PHONE { set; get; }
         public string MOBILE { set; get; }
         public string ADDR { set; get; }
@@ -304,6 +304,7 @@ namespace Tectransit.Datas
         public string PVALUEPRICE { set; get; }
         public string TOTAL { set; get; }
         public string RECEIVER { set; get; }
+        public string RECEIVERPHONE { set; get; }
         public string RECEIVERADDR { set; get; }
         public string ISMULTRECEIVER { set; get; }
         public string STATUS { set; get; }
@@ -319,6 +320,7 @@ namespace Tectransit.Datas
         public long ID { set; get; }
         public string BOXNO { set; get; }
         public string RECEIVER { set; get; }
+        public string RECEIVERPHONE { set; get; }
         public string RECEIVERADDR { set; get; }
         public string REMARK { set; get; }
         public long TRANSFERID_M { set; get; }
@@ -396,6 +398,7 @@ namespace Tectransit.Datas
         public string TOTAL { set; get; }
         public string TOTALPRICE { set; get; }
         public string RECEIVER { set; get; }
+        public string RECEIVERPHONE { set; get; }
         public string RECEIVERADDR { set; get; }
         public string ISMULTRECEIVER { set; get; }
         public string TRACKINGTYPE { set; get; }
@@ -419,6 +422,7 @@ namespace Tectransit.Datas
         public string TRANSFERNO { set; get; }
         public string BOXNO { set; get; }
         public string RECEIVER { set; get; }
+        public string RECEIVERPHONE { set; get; }
         public string RECEIVERADDR { set; get; }
         public string REMARK { set; get; }
         public long SHIPPINGID_M { set; get; }

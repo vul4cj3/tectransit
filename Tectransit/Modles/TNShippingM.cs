@@ -24,6 +24,7 @@ namespace Tectransit.Modles
         public string Totalprice { get; set; }
         public string Receiver { get; set; }
         public string ReceiverAddr { get; set; }
+        public string Receiverphone { get; set; }
         public bool Ismultreceiver { get; set; }
         public string Trackingtype { get; set; }
         public int Status { get; set; }
