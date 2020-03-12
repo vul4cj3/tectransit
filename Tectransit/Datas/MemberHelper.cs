@@ -125,7 +125,7 @@ namespace Tectransit.Datas
         {
             string sql = $@"SELECT * FROM (
                                             SELECT ROW_NUMBER() OVER (ORDER BY UPDDATE) AS ROW_ID, ID, STATIONCODE, SHIPPINGNO, TRACKINGNO, TRACKINGDESC, TRACKINGREMARK,
-                                                   P_LENGTH, P_WIDTH, P_HEIGHT, P_WEIGHT, TOTAL, RECEIVER, RECEIVER_ADDR, ISMULTRECEIVER, TRACKINGTYPE, STATUS,
+                                                   P_LENGTH, P_WIDTH, P_HEIGHT, P_WEIGHT, TOTAL, RECEIVER, RECEIVERADDR, ISMULTRECEIVER, TRACKINGTYPE, STATUS,
                                                    PAYTYPE, PAYSTATUS, REMARK1, REMARK2, REMARK3, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
                                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
                                                    CREATEBY AS CREBY, UPDBY
@@ -152,7 +152,7 @@ namespace Tectransit.Datas
                     m.PWEIGHT = DT.Rows[i]["P_WEIGHT"]?.ToString();
                     m.TOTAL = DT.Rows[i]["TOTAL"]?.ToString();
                     m.RECEIVER = DT.Rows[i]["RECEIVER"]?.ToString();
-                    m.RECEIVERADDR = DT.Rows[i]["RECEIVER_ADDR"]?.ToString();
+                    m.RECEIVERADDR = DT.Rows[i]["RECEIVERADDR"]?.ToString();
                     m.ISMULTRECEIVER = Convert.ToBoolean(DT.Rows[0]["ISMULTRECEIVER"]) == true ? "Y" : "N";
                     m.TRACKINGTYPE = DT.Rows[i]["TRACKINGTYPE"]?.ToString();
                     m.STATUS = DT.Rows[i]["STATUS"]?.ToString();
@@ -183,7 +183,7 @@ namespace Tectransit.Datas
         public dynamic GetSingleACTransferData(Hashtable sData)
         {
             string sql = $@"SELECT ID, ACCOUNTID, STATIONCODE, TRANSFERNO, TOTAL,
-                                   RECEIVER, RECEIVERPHONE, RECEIVER_ADDR, ISMULTRECEIVER, STATUS,
+                                   RECEIVER, RECEIVERPHONE, RECEIVERADDR, ISMULTRECEIVER, STATUS,
 								   P_LENGTH, P_WIDTH, P_HEIGHT, P_WEIGHT, P_VALUEPRICE,
                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
                                    CREATEBY AS CREBY, UPDBY
@@ -207,7 +207,7 @@ namespace Tectransit.Datas
                 m.ISMULTRECEIVER = Convert.ToBoolean(DT.Rows[0]["ISMULTRECEIVER"]) == true ? "Y" : "N";
                 m.RECEIVER = DT.Rows[0]["RECEIVER"]?.ToString();
                 m.RECEIVERPHONE = DT.Rows[0]["RECEIVERPHONE"]?.ToString();
-                m.RECEIVERADDR = DT.Rows[0]["RECEIVER_ADDR"]?.ToString();
+                m.RECEIVERADDR = DT.Rows[0]["RECEIVERADDR"]?.ToString();
                 m.STATUS = DT.Rows[0]["STATUS"]?.ToString();
                 m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
                 m.CREBY = DT.Rows[0]["CREBY"]?.ToString();
@@ -293,7 +293,7 @@ namespace Tectransit.Datas
         {
             string sql = $@"SELECT ID, ACCOUNTID, STATIONCODE, SHIPPINGNO, TOTAL, TOTALPRICE,
 								   TRACKINGNO, TRACKINGDESC, TRACKINGREMARK,
-                                   RECEIVER, RECEIVERPHONE, RECEIVER_ADDR, ISMULTRECEIVER, STATUS,
+                                   RECEIVER, RECEIVERPHONE, RECEIVERADDR, ISMULTRECEIVER, STATUS,
 								   P_LENGTH, P_WIDTH, P_HEIGHT, P_WEIGHT, P_VALUEPRICE,
                                    MAWBNO, CLEARANCENO, HAWBNO,
 								   PAYTYPE, PAYSTATUS, TRACKINGTYPE, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') As PAYDATE,
@@ -327,7 +327,7 @@ namespace Tectransit.Datas
                 m.ISMULTRECEIVER = Convert.ToBoolean(DT.Rows[0]["ISMULTRECEIVER"]) == true ? "Y" : "N";
                 m.RECEIVER = DT.Rows[0]["RECEIVER"]?.ToString();
                 m.RECEIVERPHONE = DT.Rows[0]["RECEIVERPHONE"]?.ToString();
-                m.RECEIVERADDR = DT.Rows[0]["RECEIVER_ADDR"]?.ToString();
+                m.RECEIVERADDR = DT.Rows[0]["RECEIVERADDR"]?.ToString();
                 m.STATUS = DT.Rows[0]["STATUS"]?.ToString();
                 m.TRACKINGTYPE = DT.Rows[0]["TRACKINGTYPE"]?.ToString();
                 m.PAYTYPE = DT.Rows[0]["PAYTYPE"]?.ToString();

@@ -922,7 +922,7 @@ namespace Tectransit.Controllers
                 TEM.Transferno = sData["TRANSFERNO"]?.ToString();
                 TEM.Total = sData["TOTAL"]?.ToString();
                 TEM.Receiver = sData["RECEIVER"]?.ToString();
-                TEM.ReceiverAddr = sData["RECEIVERADDR"]?.ToString();
+                TEM.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
                 TEM.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
                 TEM.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
                 TEM.Status = 0;

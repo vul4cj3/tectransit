@@ -26,8 +26,8 @@
               </select>
             </div>
             <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
-              <label for="strackno" class="mr-sm-2">快遞單號</label>
-              <input type="text" id="strackno" formControlName="strackno" class="form-control">
+              <label for="stransferno" class="mr-sm-2">快遞單號</label>
+              <input type="text" id="stransferno" formControlName="stransferno" class="form-control">
             </div>
             <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
               <label for="sacccode" class="mr-sm-2">會員帳號</label>
@@ -70,19 +70,20 @@
                 <td class="text-center text-muted">
                   <label class="chkbox-container">
                     <input type="checkbox" name="Chk" id="chk{{idx}}"
-                      (click)="SelChange($event.toElement.value, $event.toElement.checked)" value="{{item.transid}}">
+                      (click)="SelChange($event.toElement.value, $event.toElement.checked)" value="{{item.id}}">
                     <span class="checkmark"></span>
                   </label>
                 </td>
                 <td>{{item.stationcode}}</td>
                 <td>{{item.stationname}}</td>
-                <td>{{item.trasferno}}</td>
+                <td>{{item.transferno}}</td>
                 <td>{{item.accountcode}}</td>
+                <td>{{item.accountname}}</td>
                 <td>{{item.credate}}</td>
                 <td>{{item.upddate}}</td>
                 <td>{{item.status === '0'?'未入庫':''}}</td>
                 <td>
-                  <a routerLink="/transfer/edit/{{item.transid}}">
+                  <a routerLink="/transfer/edit/{{item.id}}">
                     <span class="symbol-edit">
                       <i class="pe-7s-note2"></i>
                     </span>
@@ -130,19 +131,20 @@
                   <label class="chkbox-container">
                     <input type="checkbox" name="Chk" id="instorechk{{idx}}"
                       (click)="instoreSelChange($event.toElement.value, $event.toElement.checked)"
-                      value="{{item.transid}}">
+                      value="{{item.id}}">
                     <span class="checkmark"></span>
                   </label>
                 </td>
                 <td>{{item.stationcode}}</td>
                 <td>{{item.stationname}}</td>
-                <td>{{item.trasferno}}</td>
+                <td>{{item.transferno}}</td>
                 <td>{{item.accountcode}}</td>
+                <td>{{item.accountname}}</td>
                 <td>{{item.credate}}</td>
                 <td>{{item.upddate}}</td>
                 <td>{{item.status === '1'?'已入庫':''}}</td>
                 <td>
-                  <a routerLink="/transfer/edit/{{item.transid}}">
+                  <a routerLink="/transfer/edit/{{item.id}}">
                     <span class="symbol-edit">
                       <i class="pe-7s-note2"></i>
                     </span>

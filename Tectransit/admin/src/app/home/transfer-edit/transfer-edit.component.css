@@ -1,0 +1,17 @@
+.position-relative.form-inline input{
+  margin-right: 5px;
+  margin-top: 5px;
+}
+
+.position-relative.form-inline img {
+  margin-top: 5px;
+}
+
+.card-header.edit {
+  flex-wrap: wrap;
+  height: 7rem;
+}
+
+.form-inline {
+  padding: 5px;
+}

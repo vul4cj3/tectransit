@@ -489,8 +489,8 @@ namespace Tectransit.Modles
                     .HasColumnName("RECEIVER")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.ReceiverAddr)
-                    .HasColumnName("RECEIVER_ADDR")
+                entity.Property(e => e.Receiveraddr)
+                    .HasColumnName("RECEIVERADDR")
                     .HasMaxLength(500);
 
                 entity.Property(e => e.Receiverphone)
@@ -792,8 +792,8 @@ namespace Tectransit.Modles
                     .HasColumnName("RECEIVER")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.ReceiverAddr)
-                    .HasColumnName("RECEIVER_ADDR")
+                entity.Property(e => e.Receiveraddr)
+                    .HasColumnName("RECEIVERADDR")
                     .HasMaxLength(500);
 
                 entity.Property(e => e.Receiverphone)

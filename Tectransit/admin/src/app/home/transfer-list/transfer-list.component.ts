@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { CommonService } from 'src/app/services/common.service';
-import { TransferHInfo, StationInfo } from 'src/app/_Helper/models';
+import { StationInfo, TransferMInfo } from 'src/app/_Helper/models';
 
 @Component({
   selector: 'app-transfer-list',
@@ -18,13 +18,13 @@ export class TransferListComponent implements OnInit {
   private delUrl = 'DelTETransferData';
   private stationUrl = '/api/CommonHelp/GetStationData';
 
-  tableTitle = ['#', '集運站代碼', '集運站', '快遞單號', '會員帳號', '建單時間',
+  tableTitle = ['#', '集運站代碼', '集運站', '快遞單號', '會員帳號', '會員', '建單時間',
     '更新時間', '狀態', '編輯'];
-  data: TransferHInfo[];
+  data: TransferMInfo[];
   stationData: StationInfo[];
   rowTotal = 0;
   currentpage = 1;
-  pageSize = 10;
+  pageSize = 20;
   srhForm: FormGroup;
 
   chkList: any = [];
@@ -51,7 +51,7 @@ export class TransferListComponent implements OnInit {
     // built form controls and default form value
     this.srhForm = this.formBuilder.group({
       sstationcode: 'ALL',
-      strackno: '',
+      stransferno: '',
       sacccode: ''
     });
   }

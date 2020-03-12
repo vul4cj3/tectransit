@@ -9423,6 +9423,10 @@ body {
   width: 50%;
 }
 
+.form-control.bigger {
+  width: 75%;
+}
+
 .form-control.largepx {
   width: 500px;
 }

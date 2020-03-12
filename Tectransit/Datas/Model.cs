@@ -293,6 +293,7 @@ namespace Tectransit.Datas
         public long ID { set; get; }
         public long ACCOUNTID { set; get; }
         public string ACCOUNTCODE { set; get; }
+        public string ACCOUNTNAME { set; get; }
         public string STATIONCODE { set; get; }
         public string STATIONNAME { set; get; }
         public string TRANSFERNO { set; get; }
