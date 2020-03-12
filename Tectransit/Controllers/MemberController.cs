@@ -1914,13 +1914,14 @@ namespace Tectransit.Controllers
                 string ACID = DBUtil.GetSingleValue1($@"SELECT ID AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{usercode}' AND ISENABLE = 'true'");
                 htData.Add("ACCOUNTID", ACID);//用戶ID
                 htData.Add("MAWBDATE", ws.Cells[1, 6].Value?.ToString().Trim());//消倉單日期
-                htData.Add("MAWBNO", ws.Cells[1, 10].Value?.ToString().Trim());//MAWB
+                htData.Add("MAWBNO", (ws.Cells[1, 10].Value?.ToString().Trim()).Replace(" ", "").Replace("　","").Replace("\r", ""));//MAWB
                 htData.Add("FLIGHTNUM", ws.Cells[1, 15].Value?.ToString().Trim());//航班號
 
 
                 long MID = 0;
                 long HID = 0;
                 decimal TotalWG = 0; //總重量
+                decimal Total = 0; //各提單總件數(商品) 
                 List<string> Box = new List<string>();
                 List<string> Rec = new List<string>();
 
@@ -1939,6 +1940,11 @@ namespace Tectransit.Controllers
 
                     htData["TRANSFERNO"] = ws.Cells[i, 4].Value?.ToString().Trim();//提單號碼=快遞單號                        
                     htData["TOTAL"] = ws.Cells[i, 5].Value?.ToString().Trim();//總件數
+                    if (string.IsNullOrEmpty(htData["NEWBOXNO"]?.ToString()) && !string.IsNullOrEmpty(htData["TOTAL"]?.ToString()))
+                        Total += Convert.ToDecimal(htData["TOTAL"]);
+                    else
+                        Total = Convert.ToDecimal(htData["TOTAL"]);
+                    
                     htData["WEIGHT"] = ws.Cells[i, 6].Value?.ToString().Trim();//提單重量
                     htData["PRODUCT"] = ws.Cells[i, 7].Value?.ToString().Trim();//品名
                     htData["QUANTITY"] = ws.Cells[i, 8].Value?.ToString().Trim();//數量
@@ -2003,7 +2009,7 @@ namespace Tectransit.Controllers
                         //TotalWG += Convert.ToDecimal(htData["WEIGHT"]);
                         Hashtable tempData = new Hashtable();
                         tempData["ID"] = MID;
-                        tempData["TOTAL"] = htData["TOTAL"];
+                        tempData["TOTAL"] = Total;
                         tempData["TOTALWEIGHT"] = htData["TOTALWEIGHT"];
                         tempData["ISMULTRECEIVER"] = ReceiverCt > 1 ? "Y" : "N";
                         UpdateCusShippingM(tempData);
