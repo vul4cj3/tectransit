@@ -22,7 +22,7 @@ namespace Tectransit.Service
             //ServiceBase.Run(ServicesToRun);
             if (Environment.UserInteractive)
             {
-                Service1 s = new Service1();
+                Tectrans s = new Tectrans();
                 s.start(null);
                 Console.WriteLine("服務已啟動，請按下 Enter 鍵關閉服務...");
                 // 必須要透過 Console.ReadLine(); 先停止程式執行
@@ -37,7 +37,7 @@ namespace Tectransit.Service
                 ServiceBase[] ServicesToRun;
                 ServicesToRun = new ServiceBase[]
                 {
-                    new Service1()
+                    new Tectrans()
                 };
                 ServiceBase.Run(ServicesToRun);
             }

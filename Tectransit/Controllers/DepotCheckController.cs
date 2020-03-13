@@ -153,10 +153,15 @@ namespace Tectransit.Controllers
             else
                 sData["REMARK1"] = "未收到倉庫端的點收資料";
 
+            sData["UPDBY"] = "SYSTEM";
+            sData["UPDDATE"] = DateTime.Now;
+
             string sql = $@"UPDATE T_V_SHIPPING_M SET
                                    STATUS = @STATUS,
                                    DEPOTSTATUS = @STATE,
-                                   REMARK1 = @REMARK1
+                                   REMARK1 = @REMARK1,
+                                   UPDBY = @UPDBY,
+                                   UPDDATE = @UPDDATE
                              WHERE ID = @ID";
 
             DBUtil.EXECUTE(sql, sData);

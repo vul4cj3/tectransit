@@ -132,9 +132,9 @@ namespace Tectransit.Service.Library
                                             {
                                                 dataDetail detail = new dataDetail();
                                                 detail.product = dData.Rows[m]["PRODUCT"]?.ToString();
-                                                detail.quantity = Convert.ToDecimal(dData.Rows[m]["QUANTITY"]);
+                                                detail.quantity = Convert.ToInt32(dData.Rows[m]["QUANTITY"]);
                                                 detail.unit = dData.Rows[m]["UNIT"]?.ToString();
-                                                detail.unitprice = Convert.ToDecimal(dData.Rows[m]["UNITPRICE"]);
+                                                detail.unitprice = Convert.ToInt32(dData.Rows[m]["UNITPRICE"]);
                                                 detail.origin = dData.Rows[m]["ORIGIN"]?.ToString();
 
                                                 detailList.Add(detail);
@@ -163,6 +163,8 @@ namespace Tectransit.Service.Library
                             //更新拋轉紀錄
                             string postjson = JsonConvert.SerializeObject(postData);
                             objShip.UpdateRecord(Convert.ToInt64(recordData["ID"]), postjson, res);
+
+                            writeLog("拋轉成功！");
 
                         }
                     }

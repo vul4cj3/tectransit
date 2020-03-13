@@ -64,11 +64,11 @@
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service1.cs">
+    <Compile Include="Tectrans.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Service1.Designer.cs">
-      <DependentUpon>Service1.cs</DependentUpon>
+    <Compile Include="Tectrans.Designer.cs">
+      <DependentUpon>Tectrans.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -79,8 +79,8 @@
     <EmbeddedResource Include="ProjectInstaller.resx">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Service1.resx">
-      <DependentUpon>Service1.cs</DependentUpon>
+    <EmbeddedResource Include="Tectrans.resx">
+      <DependentUpon>Tectrans.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

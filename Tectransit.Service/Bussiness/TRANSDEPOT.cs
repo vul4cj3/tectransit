@@ -130,9 +130,9 @@ namespace Tectransit.Service.Bussiness
     public class dataDetail
     {
         public string product { get; set; }
-        public decimal quantity { get; set; }
+        public int quantity { get; set; }
         public string unit { get; set; }
-        public decimal unitprice { get; set; }
+        public int unitprice { get; set; }
         public string origin { get; set; }
 
     }

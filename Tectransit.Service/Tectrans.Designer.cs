@@ -1,6 +1,6 @@
 ﻿namespace Tectransit.Service
 {
-    partial class Service1
+    partial class Tectrans
     {
         /// <summary> 
         /// 設計工具所需的變數。
@@ -34,12 +34,12 @@
             // timer1
             // 
             this.timer1.Enabled = true;
-            this.timer1.Interval = 5000D;
+            this.timer1.Interval = 60000D;
             this.timer1.Elapsed += new System.Timers.ElapsedEventHandler(this.timer1_Elapsed);
             // 
-            // Service1
+            // Tectrans
             // 
-            this.ServiceName = "Service1";
+            this.ServiceName = "Tectrans";
             ((System.ComponentModel.ISupportInitialize)(this.timer1)).EndInit();
 
         }

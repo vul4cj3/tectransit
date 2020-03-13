@@ -8,17 +8,16 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Tectransit.Service.Bussiness;
 using Tectransit.Service.Library;
 using static Tectransit.Service.Library.Tools;
 
 namespace Tectransit.Service
 {
-    partial class Service1 : ServiceBase
+    partial class Tectrans : ServiceBase
     {
         private List<mission> listMission = new List<mission>();
 
-        public Service1()
+        public Tectrans()
         {
             InitializeComponent();
         }
@@ -86,4 +85,3 @@ namespace Tectransit.Service
         }
     }
 }
-
