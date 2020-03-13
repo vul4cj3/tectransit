@@ -1,0 +1,32 @@
+[
+  {
+    "mawbno": "123-456-789",
+    "number": 1,
+    "clearanceno": "757MV369",
+    "detail": [
+      {
+        "transferno": "001",
+        "state": "1"
+      },
+      {
+        "transferno": "002",
+        "state": "2"
+      },
+      {
+        "transferno": "003",
+        "state": "3"
+      }
+    ]
+  },
+  {
+    "mawbno": "123-456-789",
+    "number": 2,
+    "clearanceno": "757MV370",
+    "detail": [
+      {
+        "transferno": "001",
+        "state": "1"
+      }
+    ]
+  }
+]

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -255,6 +256,20 @@ export class CommonService {
       .pipe(map(data => {
         return data;
       }));
+  }
+
+  /*test get json */
+
+  insertData2(form, pageUrl: string) {
+    const postData = { json: form };
+    return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  getJson(): Observable<any> {
+    return this.http.get('/res/assets/util/samplecheck.json');
   }
 
 }

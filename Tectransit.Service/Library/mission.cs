@@ -77,10 +77,12 @@ namespace Tectransit.Service.Library
                         recordData["MAWBNO"] = DT.Rows[i]["SHIPPINGNO"];//主單號
                         
                         #region post資料處理
-                        sql = $@"SELECT MAWBNO, FLIGHTNUM AS FLIGHTNO, CLEARANCENO, TOTALWEIGHT
+
+                        //只傳未入庫(未點收)的資料
+                        sql = $@"SELECT MAWBNO, FLIGHTNUM AS FLIGHTNO, CLEARANCENO, TOTALWEIGHT, STATUS
                            　FROM T_V_SHIPPING_M
-                           　WHERE MAWBNO = '{recordData["MAWBNO"]?.ToString()}'
-                           　GROUP BY MAWBNO, FLIGHTNUM, CLEARANCENO, TOTALWEIGHT";
+                           　WHERE MAWBNO = '{recordData["MAWBNO"]?.ToString()} AND STATUS = 0'
+                           　GROUP BY MAWBNO, FLIGHTNUM, CLEARANCENO, TOTALWEIGHT, STATUS";
 
                         DataTable MasterDT = DBUtil.SelectDataTable(sql);
                         List<data> postData = new List<data>();
