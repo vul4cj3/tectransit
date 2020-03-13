@@ -1939,15 +1939,22 @@ namespace Tectransit.Controllers
                         htData["TOTALWEIGHT"] = ws.Cells[i, 3].Value?.ToString().Trim();//總重量
 
                     htData["TRANSFERNO"] = ws.Cells[i, 4].Value?.ToString().Trim();//提單號碼=快遞單號                        
-                    htData["TOTAL"] = ws.Cells[i, 5].Value?.ToString().Trim();//總件數
-                    if (string.IsNullOrEmpty(htData["NEWBOXNO"]?.ToString()) && !string.IsNullOrEmpty(htData["TOTAL"]?.ToString()))
-                        Total += Convert.ToDecimal(htData["TOTAL"]);
-                    else
-                        Total = Convert.ToDecimal(htData["TOTAL"]);
-                    
+                    htData["TOTAL"] = ws.Cells[i, 5].Value?.ToString().Trim();//件數                    
                     htData["WEIGHT"] = ws.Cells[i, 6].Value?.ToString().Trim();//提單重量
                     htData["PRODUCT"] = ws.Cells[i, 7].Value?.ToString().Trim();//品名
                     htData["QUANTITY"] = ws.Cells[i, 8].Value?.ToString().Trim();//數量
+
+                    //總件數
+                    if (!string.IsNullOrEmpty(htData["PRODUCT"]?.ToString()))
+                    {
+                        if (string.IsNullOrEmpty(htData["NEWBOXNO"]?.ToString()) && !string.IsNullOrEmpty(htData["QUANTITY"]?.ToString()))
+                            Total += Convert.ToDecimal(htData["QUANTITY"]);
+
+                        else
+                            Total = Convert.ToDecimal(htData["QUANTITY"]);
+
+                    }
+
                     htData["UNIT"] = ws.Cells[i, 9].Value?.ToString().Trim();//單位
                     htData["ORIGIN"] = ws.Cells[i, 10].Value?.ToString().Trim();//產地
                     htData["UNITPRICE"] = ws.Cells[i, 11].Value?.ToString().Trim();//單價
@@ -1957,6 +1964,8 @@ namespace Tectransit.Controllers
                     htData["RECEIVERADDR"] = ws.Cells[i, 17].Value?.ToString().Trim();//收件人地址
                     htData["TAXID"] = ws.Cells[i, 18].Value?.ToString().Trim();//統編or身分證字號
                     #endregion
+
+                    
 
                     //new master data & new header data
                     if (!string.IsNullOrEmpty(htData["NEWBOXNO"]?.ToString()))
