@@ -2009,7 +2009,7 @@ namespace Tectransit.Controllers
                         foreach (var r in Rec)
                             if (r == htData["RECEIVER"]?.ToString())
                                 chk++;
-                        if (chk == 0)
+                        if (chk == 0 && !string.IsNullOrEmpty(htData["RECEIVER"]?.ToString()))
                             Rec.Add(htData["RECEIVER"]?.ToString());
 
                         decimal ReceiverCt = Rec.Count();
