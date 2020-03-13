@@ -81,7 +81,7 @@ namespace Tectransit.Service.Library
                         //只傳未入庫(未點收)的資料
                         sql = $@"SELECT MAWBNO, FLIGHTNUM AS FLIGHTNO, CLEARANCENO, TOTALWEIGHT, STATUS
                            　FROM T_V_SHIPPING_M
-                           　WHERE MAWBNO = '{recordData["MAWBNO"]?.ToString()} AND STATUS = 0'
+                           　WHERE MAWBNO = '{recordData["MAWBNO"]?.ToString()}' AND STATUS = 0
                            　GROUP BY MAWBNO, FLIGHTNUM, CLEARANCENO, TOTALWEIGHT, STATUS";
 
                         DataTable MasterDT = DBUtil.SelectDataTable(sql);

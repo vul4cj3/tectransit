@@ -8,7 +8,7 @@
       <div class="form-control">
         <div class="title"><label for="idcode">身分證字號或統一編號</label></div>
         <div class="contant">
-          <input type="text" id="idcode" (keyup.enter)="onSubmit()" [ngClass]="{'is-invalid': isErr}"
+          <input type="text" id="idcode" (keyup.enter)="onSubmit(this.dataForm.value)" [ngClass]="{'is-invalid': isErr}"
             formControlName="idcode">
           <span class="outline"></span>
         </div>
@@ -17,7 +17,7 @@
       <div class="form-control">
         <div class="title"><label for="email">E-Mail</label></div>
         <div class="contant">
-          <input type="text" id="email" (keyup.enter)="onSubmit()" [ngClass]="{'is-invalid': isErr}"
+          <input type="text" id="email" (keyup.enter)="onSubmit(this.dataForm.value)" [ngClass]="{'is-invalid': isErr}"
             formControlName="email">
           <span class="outline"></span>
         </div>

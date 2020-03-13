@@ -11,6 +11,7 @@ using System.Web.Script.Serialization;
 using System.Collections;
 using Newtonsoft.Json;
 using System.Collections.Specialized;
+using System.Xml.Linq;
 
 namespace Tectransit.Service.Bussiness
 {
@@ -58,7 +59,9 @@ namespace Tectransit.Service.Bussiness
                     if (reader != null)
                     {
                         string temp = reader.ReadToEnd();
-                        objResponse = JsonConvert.DeserializeObject<result>(temp);                        
+                        var xml = XDocument.Parse(temp);
+                        
+                        objResponse = JsonConvert.DeserializeObject<result>(xml.Root.Value);                        
                     }
                 }
                 return objResponse;
@@ -93,6 +96,8 @@ namespace Tectransit.Service.Bussiness
                                  RESPONSEDATA = @RESPONSEDATA,
                                  UPDDATE = @UPDDATE                                 
                             WHERE ID = @ID";
+
+            DBUtil.EXECUTE(sql, sData);
         }
 
     }
@@ -138,6 +143,7 @@ namespace Tectransit.Service.Bussiness
         public int status { get; set; }
         public string msg { get; set; }
         public string errormsg { get; set; }
+
     }
 
 }
