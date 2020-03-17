@@ -32,7 +32,7 @@ namespace Tectransit.Service.Bussiness
 
     public class ShipmentTransfer
     {
-        public result getData(List<data> datalist)
+        public result getData(data datalist)
         {
             try
             {
@@ -105,10 +105,11 @@ namespace Tectransit.Service.Bussiness
     //Postdata
     public class data
     {
-        public int number { get; set; }
+        public long accountid { get; set; }
+        public string accountname { get; set; }
+        public string shippingno { get; set; }
         public string mawbno { get; set; }
         public string flightno { get; set; }
-        public string clearanceno { get; set; }
         public string totalweight { get; set; }
         public string total { get; set; }
         public List<dataItems> items { get; set; }
@@ -117,8 +118,10 @@ namespace Tectransit.Service.Bussiness
 
     public class dataItems
     {
+        public string clearanceno { get; set; }
         public string transferno { get; set; }
         public string weight { get; set; }
+        public string totalitem { get; set; }
         public string receiver { get; set; }
         public string receiveraddr { get; set; }
         public string receiverphone { get; set; }

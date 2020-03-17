@@ -1780,6 +1780,11 @@ namespace Tectransit.Modles
 
                 entity.Property(e => e.ShippingidM).HasColumnName("SHIPPINGID_M");
 
+                entity.Property(e => e.Taxid)
+                    .HasColumnName("TAXID")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Totalitem)
                     .HasColumnName("TOTALITEM")
                     .HasMaxLength(50)
@@ -1867,6 +1872,11 @@ namespace Tectransit.Modles
                     .IsUnicode(false);
 
                 entity.Property(e => e.Status).HasColumnName("STATUS");
+
+                entity.Property(e => e.Taxid)
+                    .HasColumnName("TAXID")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Total)
                     .HasColumnName("TOTAL")

@@ -74,99 +74,106 @@ namespace Tectransit.Service.Library
                         result res = new result();
                         Hashtable recordData = new Hashtable();
                         recordData["ID"] = DT.Rows[i]["ID"];//拋轉紀錄ID
-                        recordData["MAWBNO"] = DT.Rows[i]["SHIPPINGNO"];//主單號
+                        recordData["SHIPPINGNO"] = DT.Rows[i]["SHIPPINGNO"];//集運單號
                         
                         #region post資料處理
 
                         //只傳未入庫(未點收)的資料
-                        sql = $@"SELECT MAWBNO, FLIGHTNUM AS FLIGHTNO, CLEARANCENO, TOTALWEIGHT, STATUS
-                           　FROM T_V_SHIPPING_M
-                           　WHERE MAWBNO = '{recordData["MAWBNO"]?.ToString()}' AND STATUS = 0
-                           　GROUP BY MAWBNO, FLIGHTNUM, CLEARANCENO, TOTALWEIGHT, STATUS";
+                        sql = $@"SELECT ID, ACCOUNTID, SHIPPINGNO, MAWBNO, FLIGHTNUM AS FLIGHTNO,
+                                        TOTAL, TOTALWEIGHT, STATUS, ISMULTRECEIVER, RECEIVER, TAXID, RECEIVERPHONE, RECEIVERADDR
+                           　    FROM T_V_SHIPPING_M
+                           　    WHERE SHIPPINGNO = '{recordData["SHIPPINGNO"]?.ToString()}' AND STATUS = 0";
 
                         DataTable MasterDT = DBUtil.SelectDataTable(sql);
-                        List<data> postData = new List<data>();
-
+                        
                         if (MasterDT.Rows.Count > 0)
                         {
-                            int num = 0;
-                            for (int j = 0; j < MasterDT.Rows.Count; j++)
+                            data postData = new data();
+                            postData.accountid = Convert.ToInt64(MasterDT.Rows[0]["ACCOUNTID"]);
+                            postData.accountname = DBUtil.GetSingleValue1($@"SELECT COMPANYNAME AS COL1 FROM T_S_ACCOUNT WHERE ID = {MasterDT.Rows[0]["ACCOUNTID"]?.ToString()}");
+                            postData.shippingno = MasterDT.Rows[0]["SHIPPINGNO"]?.ToString();
+                            postData.mawbno = MasterDT.Rows[0]["MAWBNO"]?.ToString();
+                            postData.flightno = MasterDT.Rows[0]["FLIGHTNO"]?.ToString();
+                            postData.total = MasterDT.Rows[0]["TOTAL"]?.ToString();
+                            postData.totalweight = MasterDT.Rows[0]["TOTALWEIGHT"]?.ToString();
+                            
+                            sql = $@"SELECT A.ID AS HID, A.CLEARANCENO, A.TRANSFERNO, A.WEIGHT, A.TOTALITEM, A.RECEIVER, A.TAXID, A.RECEIVERPHONE, A.RECEIVERADDR
+                                     FROM T_V_SHIPPING_H A
+									 WHERE A.SHIPPINGID_M = {MasterDT.Rows[0]["ID"]?.ToString()}
+                                     ORDER BY A.CLEARANCENO";
+
+                            DataTable hData = DBUtil.SelectDataTable(sql);
+                            List<dataItems> itemsList = new List<dataItems>();
+                            if (hData.Rows.Count > 0)
                             {
-                                data masterD = new data();
-                                masterD.number = ++num;
-                                masterD.mawbno = MasterDT.Rows[j]["MAWBNO"]?.ToString();
-                                masterD.flightno = MasterDT.Rows[j]["FLIGHTNO"]?.ToString();
-                                masterD.clearanceno = MasterDT.Rows[j]["CLEARANCENO"]?.ToString();
-                                masterD.totalweight = MasterDT.Rows[j]["TOTALWEIGHT"]?.ToString();
-                                masterD.total = DBUtil.GetSingleValue1($@"SELECT COUNT(TRANSFERNO) AS COL1 FROM T_V_SHIPPING_M WHERE CLEARANCENO = '{MasterDT.Rows[j]["CLEARANCENO"]}'");
-
-                                sql = $@"SELECT A.ID AS HID, A.TRANSFERNO, B.WEIGHT, D.NAME, D.TAXID, D.PHONE, D.ADDR
-                                     FROM T_V_SHIPPING_M A
-                                     LEFT JOIN T_V_SHIPPING_H B ON A.ID = B.SHIPPINGID_M
-                                     LEFT JOIN T_V_DECLARANT D  ON A.ID = D.SHIPPINGID_M
-                                     WHERE A.CLEARANCENO = '{MasterDT.Rows[j]["CLEARANCENO"]}'
-                                     ORDER BY A.TRANSFERNO";
-
-                                DataTable hData = DBUtil.SelectDataTable(sql);
-                                List<dataItems> itemsList = new List<dataItems>();
-                                if (hData.Rows.Count > 0)
+                                for (int k = 0; k < hData.Rows.Count; k++)
                                 {
-                                    for (int k = 0; k < hData.Rows.Count; k++)
+                                    dataItems item = new dataItems();
+                                    item.clearanceno = hData.Rows[k]["CLEARANCENO"]?.ToString();
+                                    item.transferno = hData.Rows[k]["TRANSFERNO"]?.ToString();
+                                    item.weight = hData.Rows[k]["WEIGHT"]?.ToString();
+                                    item.totalitem = hData.Rows[k]["TOTALITEM"]?.ToString();
+                                    if (Convert.ToBoolean(MasterDT.Rows[0]["ISMULTRECEIVER"]) == true)
                                     {
-                                        dataItems item = new dataItems();
-                                        item.transferno = hData.Rows[k]["TRANSFERNO"]?.ToString();
-                                        item.weight = hData.Rows[k]["WEIGHT"]?.ToString();
-                                        item.receiver = hData.Rows[k]["NAME"]?.ToString();
-                                        item.receiveraddr = hData.Rows[k]["ADDR"]?.ToString();
-                                        item.receiverphone = hData.Rows[k]["PHONE"]?.ToString();
+                                        item.receiver = hData.Rows[k]["RECEIVER"]?.ToString();
+                                        item.receiveraddr = hData.Rows[k]["RECEIVERADDR"]?.ToString();
+                                        item.receiverphone = hData.Rows[k]["RECEIVERPHONE"]?.ToString();
                                         item.taxid = hData.Rows[k]["TAXID"]?.ToString();
-
-                                        sql = $@"SELECT PRODUCT, QUANTITY, UNITPRICE, UNIT, ORIGIN
+                                    }
+                                    else
+                                    {
+                                        item.receiver = MasterDT.Rows[0]["RECEIVER"]?.ToString();
+                                        item.receiveraddr = MasterDT.Rows[0]["RECEIVERADDR"]?.ToString();
+                                        item.receiverphone = MasterDT.Rows[0]["RECEIVERPHONE"]?.ToString();
+                                        item.taxid = MasterDT.Rows[0]["TAXID"]?.ToString();
+                                    }
+                                    
+                                    sql = $@"SELECT PRODUCT, QUANTITY, UNITPRICE, UNIT, ORIGIN
 									         FROM T_V_SHIPPING_D
 									         WHERE SHIPPINGID_H = {hData.Rows[k]["HID"]}";
-                                        DataTable dData = DBUtil.SelectDataTable(sql);
-                                        List<dataDetail> detailList = new List<dataDetail>();
-                                        if (dData.Rows.Count > 0)
+                                    DataTable dData = DBUtil.SelectDataTable(sql);
+                                    List<dataDetail> detailList = new List<dataDetail>();
+                                    if (dData.Rows.Count > 0)
+                                    {
+                                        for (int m = 0; m < dData.Rows.Count; m++)
                                         {
-                                            for (int m = 0; m < dData.Rows.Count; m++)
-                                            {
-                                                dataDetail detail = new dataDetail();
-                                                detail.product = dData.Rows[m]["PRODUCT"]?.ToString();
-                                                detail.quantity = Convert.ToInt32(dData.Rows[m]["QUANTITY"]);
-                                                detail.unit = dData.Rows[m]["UNIT"]?.ToString();
-                                                detail.unitprice = Convert.ToInt32(dData.Rows[m]["UNITPRICE"]);
-                                                detail.origin = dData.Rows[m]["ORIGIN"]?.ToString();
+                                            dataDetail detail = new dataDetail();
+                                            detail.product = dData.Rows[m]["PRODUCT"]?.ToString();
+                                            detail.quantity = Convert.ToInt32(dData.Rows[m]["QUANTITY"]);
+                                            detail.unit = dData.Rows[m]["UNIT"]?.ToString();
+                                            detail.unitprice = Convert.ToInt32(dData.Rows[m]["UNITPRICE"]);
+                                            detail.origin = dData.Rows[m]["ORIGIN"]?.ToString();
 
-                                                detailList.Add(detail);
-                                            }
+                                            detailList.Add(detail);
                                         }
-
-                                        item.detail = detailList;
-                                        itemsList.Add(item);
                                     }
+
+                                    item.detail = detailList;
+                                    itemsList.Add(item);
                                 }
 
-                                masterD.items = itemsList;
-                                postData.Add(masterD);
-                            }
-                            
-                        }
+                                postData.items = itemsList;
 
+                            }
+
+                            //執行拋轉
+                            ShipmentTransfer objShip = new ShipmentTransfer();
+                            if (postData != null)
+                            {
+                                res = objShip.getData(postData);
+
+                                //更新拋轉紀錄
+                                string postjson = JsonConvert.SerializeObject(postData);
+                                objShip.UpdateRecord(Convert.ToInt64(recordData["ID"]), postjson, res);
+
+                                writeLog("拋轉成功！");
+
+                            }
+
+                        }
                         #endregion
 
-                        //執行拋轉
-                        ShipmentTransfer objShip = new ShipmentTransfer();
-                        if (postData.Count > 0)
-                        {
-                            res = objShip.getData(postData);
-                            
-                            //更新拋轉紀錄
-                            string postjson = JsonConvert.SerializeObject(postData);
-                            objShip.UpdateRecord(Convert.ToInt64(recordData["ID"]), postjson, res);
 
-                            writeLog("拋轉成功！");
-
-                        }
                     }
                 }
                 else { writeLog("沒有需要拋轉的資料！"); }
