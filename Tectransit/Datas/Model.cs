@@ -462,15 +462,10 @@ namespace Tectransit.Datas
         public long ACCOUNTID { set; get; }
         public string ACCOUNTCODE { set; get; }
         public string COMPANYNAME { set; get; }
-        public string STATIONCODE { set; get; }
-        public string STATIONNAME { set; get; }
         public string SHIPPINGNO { set; get; }
-        public string TRACKINGNO { set; get; }
         public string MAWBNO { set; get; }
-        public string CLEARANCENO { set; get; }
-        public string HAWBNO { set; get; }
-        public string TRANSFERNO { set; get; }        
         public string TOTAL { set; get; }
+        public string TOTALWEIGHT { set; get; }
         public string TRACKINGTYPE { set; get; }
         public string RECEIVER { set; get; }
         public string RECEIVERADDR { set; get; }
@@ -491,11 +486,18 @@ namespace Tectransit.Datas
     public class ShippingHCusInfo
     {
         public long ID { set; get; }
-        public string BOXNO { set; get; }
+        public string CLEARANCENO { set; get; }
+        public string TRANSFERNO { set; get; }
+        public string TRACKINGNO { set; get; }
+        public string DEPOTSTATUS { set; get; }
         public string RECEIVER { set; get; }
         public string RECEIVERADDR { set; get; }
         public string RECEIVERPHONE { set; get; }
-        public string REMARK { set; get; }
+        public string WEIGHT { set; get; }
+        public string TOTALITEM { set; get; }
+        public string REMARK1 { set; get; }
+        public string REMARK2 { set; get; }
+        public string REMARK3 { set; get; }
         public long SHIPPINGID_M { set; get; }
     }
 
@@ -524,5 +526,6 @@ namespace Tectransit.Datas
         public string ADDR { set; get; }
         public string APPOINTMENT { set; get; }
         public long SHIPPINGID_M { set; get; }
+        public long SHIPPINGID_H { set; get; }
     }
 }

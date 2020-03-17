@@ -470,6 +470,7 @@ namespace Tectransit.Datas
             else { }
         }
 
+        
         public string GetSeqCode(string type)
         {
             if (type.IndexOf("WAREHOUSENO") < 0)

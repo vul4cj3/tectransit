@@ -617,11 +617,9 @@ namespace Tectransit.Controllers
             if (temp.Count > 0)
             {
                 Dictionary<string, string> srhKey = new Dictionary<string, string>();
-                srhKey.Add("sstationcode", "STATIONCODE");
                 srhKey.Add("scompany", "COMPANY");
                 srhKey.Add("sshippingno", "SHIPPINGNO");
-                srhKey.Add("strackingno", "TRACKINGNO");
-                srhKey.Add("stransferno", "TRANSFERNO");
+                srhKey.Add("smawbno", "MAWBNO");
                 srhKey.Add("sacccode", "ACCOUNTCODE");
                 srhKey.Add("sstatus", "STATUS");
                 Hashtable htData = new Hashtable();
@@ -630,11 +628,7 @@ namespace Tectransit.Controllers
 
                     htData[srhKey[t.Key]] = t.Value?.ToString();
                 }
-
-                if (!string.IsNullOrEmpty(htData["STATIONCODE"]?.ToString()))
-                    if (htData["STATIONCODE"]?.ToString() != "ALL")
-                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " STATIONCODE LIKE '%" + htData["STATIONCODE"]?.ToString() + "%'";
-
+                
                 if (!string.IsNullOrEmpty(htData["COMPANY"]?.ToString()))
                 {
                     string sql = $@"SELECT DISTINCT A.ID FROM T_S_ACCOUNT A
@@ -659,11 +653,9 @@ namespace Tectransit.Controllers
                 if (!string.IsNullOrEmpty(htData["SHIPPINGNO"]?.ToString()))
                     sWhere += (sWhere == "" ? "WHERE" : " AND") + " SHIPPINGNO LIKE '%" + htData["SHIPPINGNO"]?.ToString() + "%'";
 
-                if (!string.IsNullOrEmpty(htData["TRACKINGNO"]?.ToString()))
-                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " TRACKINGNO LIKE '%" + htData["TRACKINGNO"]?.ToString() + "%'";
-
-                if (!string.IsNullOrEmpty(htData["TRANSFERNO"]?.ToString()))
-                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " TRANSFERNO LIKE '%" + htData["TRANSFERNO"]?.ToString() + "%'";
+                if (!string.IsNullOrEmpty(htData["MAWBNO"]?.ToString()))
+                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " MAWBNO LIKE '%" + htData["MAWBNO"]?.ToString() + "%'";
+                
 
                 //if (!string.IsNullOrEmpty(htData["ACCOUNTCODE"]?.ToString()))
                 //{
@@ -766,7 +758,7 @@ namespace Tectransit.Controllers
                     AL.Add(temp);
                 }
 
-                List<string> MAWBNO = new List<string>();
+                List<string> SHIPPINGNO = new List<string>();
                 if (AL.Count > 0)
                 {
                     for (int i = 0; i < AL.Count; i++)
@@ -777,15 +769,7 @@ namespace Tectransit.Controllers
                         sData["ACCOUNTID"] = DBUtil.GetSingleValue1($@"SELECT ACCOUNTID AS COL1 FROM T_V_SHIPPING_M WHERE ID = {sData["SHIPPINGIDM"]}");
                         sData["COMPANYNAME"] = DBUtil.GetSingleValue1($@"SELECT COMPANYNAME AS COL1 FROM T_S_ACCOUNT WHERE ID = {sData["ACCOUNTID"]}");
 
-                        int chkMawb = 0;
-                        string tempMawb = DBUtil.GetSingleValue1($@"SELECT MAWBNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {sData["SHIPPINGIDM"]} AND STATUS = 0");
-                        //檢查是否有重複的主單且為未入庫狀態
-                        for (int j = 0; j < MAWBNO.Count(); j++)
-                        {
-                            if (!string.IsNullOrEmpty(tempMawb))
-                                if (MAWBNO[j] == tempMawb)
-                                    chkMawb++;
-                        }
+                        string tempShipping = DBUtil.GetSingleValue1($@"SELECT SHIPPINGNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {sData["SHIPPINGIDM"]} AND STATUS = 0");
 
                         //delete Declarant data
                         DeleteTVData_All("T_V_DECLARANT", sData);
@@ -799,16 +783,15 @@ namespace Tectransit.Controllers
 
                         logMsg += (logMsg == "" ? "" : ",") + $@"[SHIPPINGIDM({sData["SHIPPINGIDM"]})=COMPANYNAME:{sData["COMPANYNAME"]?.ToString()}/TRANSFERNO: {sData["TRANSFERNO"]?.ToString()}]";
 
-                        if (chkMawb == 0)
-                            if (!string.IsNullOrEmpty(tempMawb))
-                                MAWBNO.Add(tempMawb);
+                        if (!string.IsNullOrEmpty(tempShipping))
+                            SHIPPINGNO.Add(tempShipping);
                     }
 
                     //寫入異動拋轉紀錄
-                    if (MAWBNO.Count() > 0)
+                    if (SHIPPINGNO.Count() > 0)
                     {
-                        for (int k = 0; k < MAWBNO.Count(); k++)
-                            objComm.InsertDepotRecord(2, MAWBNO[k]);
+                        for (int k = 0; k < SHIPPINGNO.Count(); k++)
+                            objComm.InsertDepotRecord(2, SHIPPINGNO[k]);
                     }
                 }
 
@@ -1767,8 +1750,6 @@ namespace Tectransit.Controllers
                 query.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
                 query.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
                 query.Mawbno = sData["MAWBNO"]?.ToString();
-                query.Clearanceno = sData["CLEARANCENO"]?.ToString();
-                query.Hawbno = sData["HAWBNO"]?.ToString();
                 query.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
                 query.Status = Convert.ToInt32(sData["STATUS"]);
 
@@ -1785,7 +1766,6 @@ namespace Tectransit.Controllers
             try
             {
                 TVShippingH TVH = new TVShippingH();
-                TVH.Boxno = sData["BOXNO"]?.ToString();
                 TVH.Receiver = sData["RECEIVER"]?.ToString();
                 TVH.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
                 TVH.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
@@ -1810,7 +1790,6 @@ namespace Tectransit.Controllers
             var query = _context.TVShippingH.Where(q => q.Id == Convert.ToInt64(sData["ID"])).FirstOrDefault();
             if (query != null)
             {
-                query.Boxno = sData["BOXNO"]?.ToString();
                 query.Receiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVER"]?.ToString() : "";
                 query.Receiveraddr = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVERADDR"]?.ToString() : "";
                 query.Receiverphone = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVERPHONE"]?.ToString() : "";

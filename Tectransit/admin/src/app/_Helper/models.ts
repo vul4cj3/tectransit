@@ -384,24 +384,21 @@ export interface ShippingMCusInfo {
   accountid: number;
   accountcode: string;
   companyname: string;
-  stationcode: string;
-  stationname: string;
   shippingno: string;
-  trackingno: string;
   mawbno: string;
-  clearanceno: string;
-  hawbno: string;
-  transferno: string;
+  flightnum: string;
   total: string;
+  totalweight: string;
   trackingtype: number;
   receiver: string;
   receiveraddr: string;
   receiverphone: string;
   ismultreceiver: string;
-  status: string;
+  status: number;
   remark1: string;
   remark2: string;
   remark3: string;
+  mawbdate: string;
   paydate: string;
   exportdate: string;
   credate: string;
@@ -412,11 +409,18 @@ export interface ShippingMCusInfo {
 
 export interface ShippingHCusInfo {
   id: number;
-  boxno: string;
+  clearanceno: string;
+  transferno: string;
+  trackingno: string;
+  depotstatus: string;
   receiver: string;
   receiveraddr: string;
   receiverphone: string;
-  remark: string;
+  weight: string;
+  totalitem: string;
+  remark1: string;
+  remark2: string;
+  remark3: string;
   shippingiD_M: number;
 }
 
@@ -442,6 +446,7 @@ export interface DeclarantCusInfo {
   idphotob: string;
   appointment: string;
   shippingiD_M: number;
+  shippingiD_H: number;
 }
 
 

@@ -19,14 +19,6 @@
         <div class="card-body">
           <div class="form-inline">
             <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
-              <label for="sstationcode" class="mr-sm-2">集運站</label>
-              <select id="sstationcode" class="mb-2 mr-2 dropdown-toggle btn btn-outline-secondary"
-                formControlName="sstationcode">
-                <option value="ALL">全部</option>
-                <option [value]="sitem.stationcode" *ngFor="let sitem of stationData">{{sitem.stationname}}</option>
-              </select>
-            </div>
-            <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
               <label for="scompany" class="mr-sm-2">廠商</label>
               <input type="text" id="scompany" formControlName="scompany" class="form-control">
             </div>
@@ -35,12 +27,8 @@
               <input type="text" id="sshippingno" formControlName="sshippingno" class="form-control">
             </div>
             <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
-              <label for="strackingno" class="mr-sm-2">追蹤號碼</label>
-              <input type="text" id="strackingno" formControlName="strackingno" class="form-control">
-            </div>
-            <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
-              <label for="stransferno" class="mr-sm-2">提單號碼</label>
-              <input type="text" id="stransferno" formControlName="stransferno" class="form-control">
+              <label for="smawbno" class="mr-sm-2">主單號</label>
+              <input type="text" id="smawbno" formControlName="smawbno" class="form-control">
             </div>
             <!--
             <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
@@ -114,10 +102,8 @@
                     <span class="checkmark"></span>
                   </label>
                 </td>
-                <td>{{item.stationname}}</td>
                 <td>{{item.shippingno}}</td>
-                <td>{{item.trackingno}}</td>
-                <td>{{item.transferno}}</td>
+                <td>{{item.mawbno}}</td>
                 <td>{{item.companyname}}</td>
                 <td>{{item.accountcode}}</td>
                 <td>{{item.credate}}</td>

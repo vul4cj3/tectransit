@@ -19,7 +19,6 @@ export class ShippingcusEditComponent implements OnInit {
   dataForm: FormGroup;
 
   shippingType;
-  cateID;
   dataID;
 
   isExist = false;
@@ -45,7 +44,6 @@ export class ShippingcusEditComponent implements OnInit {
 
   ngOnInit() {
     this.shippingType = this.route.snapshot.paramMap.get('type');
-    this.cateID = this.route.snapshot.paramMap.get('code');
     this.dataID = this.route.snapshot.paramMap.get('id');
 
     // declarant data can modify or not
@@ -58,6 +56,7 @@ export class ShippingcusEditComponent implements OnInit {
   resetForm() {
     this.dataForm = this.formBuilder.group({
       shippingidm: [''],
+      shippingidh: [''],
       decform: this.formBuilder.array([
         this.initDec()
       ])
@@ -114,7 +113,7 @@ export class ShippingcusEditComponent implements OnInit {
         });
   }
 
-  chgDec(type) {
+  chgDec(type, hid) {
     if (type === 'm') {
       this.isModify = true;
 
@@ -124,7 +123,10 @@ export class ShippingcusEditComponent implements OnInit {
       if (this.declarData.length > 0) {
         for (let i = 0; i < this.declarData.length; i++) {
           if (control.at(i) !== undefined) {
-            control.at(i).patchValue(this.declarData[i]);
+            console.log(this.declarData[i].shippingiD_H);
+            if (this.declarData[i].shippingiD_H === hid) {
+              control.at(i).patchValue(this.declarData[i]);
+            }
           } else {
             control.push(this.formBuilder.group({
               id: [this.declarData[i].id],

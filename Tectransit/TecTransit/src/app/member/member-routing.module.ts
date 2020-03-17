@@ -67,12 +67,12 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: 'shippingcus/:type/:id',
+        path: 'shippingcus/:type',
         component: ShippingcusListComponent,
         canActivate: [AuthGuard],
       },
       {
-        path: 'shippingcus/edit/:type/:code/:id',
+        path: 'shippingcus/edit/:type/:id',
         component: ShippingcusEditComponent,
         canActivate: [AuthGuard],
       },

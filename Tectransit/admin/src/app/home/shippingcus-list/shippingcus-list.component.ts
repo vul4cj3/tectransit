@@ -19,12 +19,9 @@ export class ShippingcusListComponent implements OnInit {
   private dataUrl = 'GetTVShippingMListData';
   private statusUrl = 'EditTVShippingMStatus';
   private delUrl = 'DelTVShippingMData';
-  private stationUrl = '/api/CommonHelp/GetStationData';
 
-  tableTitle = ['#', '集運站', '集運單號', '追蹤號碼', '提單號碼', '廠商', '會員帳號', '建單時間',
-    '更新時間', '狀態', '編輯'];
+  tableTitle = ['#', '集運單號', '主單號', '廠商', '會員帳號', '建單時間', '更新時間', '狀態', '編輯'];
   data: ShippingMCusInfo[];
-  stationData: StationInfo[];
   rowTotal = 0;
   currentpage = 1;
   pageSize = 20;
@@ -42,7 +39,6 @@ export class ShippingcusListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getStation();
     this.resetData();
     this.crePagination(this.currentpage);
   }
@@ -60,25 +56,13 @@ export class ShippingcusListComponent implements OnInit {
 
     // built form controls and default form value
     this.srhForm = this.formBuilder.group({
-      sstationcode: 'ALL',
-      scompany: '',
       sshippingno: '',
-      strackingno: '',
-      stransferno: '',
+      smawbno: '',
+      scompany: '',
       sacccode: '',
       sstatus: parseInt(sessionStorage.getItem('cusstatus'), 0)
     });
 
-  }
-
-  getStation() {
-    this.commonService.getData(this.stationUrl)
-      .subscribe(data => {
-        this.stationData = data.rows;
-      },
-        error => {
-          console.log(error);
-        });
   }
 
   crePagination(newPage: number) {

@@ -7,14 +7,9 @@ namespace Tectransit.Modles
     {
         public long Id { get; set; }
         public long Accountid { get; set; }
-        public string Stationcode { get; set; }
         public string Shippingno { get; set; }
-        public string Trackingno { get; set; }
         public string Mawbno { get; set; }
-        public string Clearanceno { get; set; }
-        public string Hawbno { get; set; }
         public string Flightnum { get; set; }
-        public string Transferno { get; set; }
         public string Total { get; set; }
         public string Totalweight { get; set; }
         public int Trackingtype { get; set; }
@@ -23,7 +18,6 @@ namespace Tectransit.Modles
         public string Receiverphone { get; set; }
         public bool Ismultreceiver { get; set; }
         public int Status { get; set; }
-        public string Depotstatus { get; set; }
         public string Remark1 { get; set; }
         public string Remark2 { get; set; }
         public string Remark3 { get; set; }

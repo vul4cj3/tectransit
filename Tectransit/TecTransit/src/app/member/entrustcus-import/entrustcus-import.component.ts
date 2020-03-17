@@ -9,10 +9,7 @@ import { CommonService } from 'src/app/services/common.service';
 export class EntrustcusImportComponent implements OnInit {
 
   /* web api url */
-  getStationUrl = '/api/Member/GetStationData';
   importUrl = '/api/Member/ImportCusShippingData';
-
-  stationData;
 
   tempList: any = [];
   fileList: any = [];
@@ -22,19 +19,10 @@ export class EntrustcusImportComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getData();
-  }
-
-  getData() {
-    this.commonservice.getSingleData(this.getStationUrl)
-      .subscribe(data => {
-        this.stationData = data.rows;
-      }, error => {
-        console.log(error);
-      });
   }
 
   fileChange(e) {
+    this.fileList = [];
     this.fileList.push({ file: e.target.files[0] });
   }
 
@@ -44,8 +32,6 @@ export class EntrustcusImportComponent implements OnInit {
       process.innerHTML = '<span>匯入中，請稍後片刻……</span>';
 
       const formdata = new FormData();
-      const scode = document.getElementById('stationcode') as HTMLSelectElement;
-      formdata.append('stationcode', scode.value);
       formdata.append('fileUpload', this.fileList[0].file);
 
       this.commonservice.Upload(formdata, this.importUrl)

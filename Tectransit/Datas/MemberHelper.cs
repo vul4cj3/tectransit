@@ -517,8 +517,8 @@ namespace Tectransit.Datas
         public dynamic GetShippingCusData(string sWhere, int pageIndex, int pageSize)
         {
             string sql = $@"SELECT * FROM (
-                                            SELECT ROW_NUMBER() OVER (ORDER BY CREDATE DESC) AS ROW_ID, ID, ACCOUNTID, STATIONCODE, SHIPPINGNO, TRACKINGNO, TRANSFERNO,
-                                                   TOTAL, RECEIVER, RECEIVERADDR, STATUS, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
+                                            SELECT ROW_NUMBER() OVER (ORDER BY CREDATE DESC) AS ROW_ID, ID, ACCOUNTID, SHIPPINGNO, MAWBNO,
+                                                   TOTAL, TOTALWEIGHT, STATUS, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
                                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
                                                    CREATEBY AS CREBY, UPDBY
                                             From T_V_SHIPPING_M
@@ -535,12 +535,9 @@ namespace Tectransit.Datas
                     m.ID = Convert.ToInt64(DT.Rows[i]["ID"]);
                     m.ACCOUNTID = Convert.ToInt64(DT.Rows[i]["ACCOUNTID"]);
                     m.SHIPPINGNO = DT.Rows[i]["SHIPPINGNO"]?.ToString();
-                    m.STATIONCODE = DT.Rows[i]["STATIONCODE"]?.ToString();
-                    m.TRACKINGNO = DT.Rows[i]["TRACKINGNO"]?.ToString();
-                    m.TRANSFERNO = DT.Rows[i]["TRANSFERNO"]?.ToString();
+                    m.MAWBNO = DT.Rows[i]["MAWBNO"]?.ToString();
                     m.TOTAL = DT.Rows[i]["TOTAL"]?.ToString();
-                    m.RECEIVER = DT.Rows[i]["RECEIVER"]?.ToString();
-                    m.RECEIVERADDR = DT.Rows[i]["RECEIVERADDR"]?.ToString();
+                    m.TOTALWEIGHT = DT.Rows[i]["TOTALWEIGHT"]?.ToString();
                     m.STATUS = DT.Rows[i]["STATUS"]?.ToString();
                     m.PAYDATE = DT.Rows[i]["PAYDATE"]?.ToString();
                     m.EXPORTDATE = DT.Rows[i]["EXPORTDATE"]?.ToString();
@@ -563,10 +560,10 @@ namespace Tectransit.Datas
 
         public dynamic GetSingleShippingCusData(Hashtable sData)
         {
-            string sql = $@"SELECT ID, ACCOUNTID, STATIONCODE, SHIPPINGNO, TRACKINGNO, TRANSFERNO,
-                                   TOTAL, RECEIVER, RECEIVERADDR, RECEIVERPHONE, STATUS, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
+            string sql = $@"SELECT ID, ACCOUNTID, SHIPPINGNO, MAWBNO, TOTAL,
+                                   TOTALWEIGHT, ISMULTRECEIVER, RECEIVER, RECEIVERADDR, RECEIVERPHONE, STATUS, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
-                                   CREATEBY AS CREBY, UPDBY, ISMULTRECEIVER, CLEARANCENO, HAWBNO
+                                   CREATEBY AS CREBY, UPDBY
                             FROM T_V_SHIPPING_M
                             WHERE ID = @SHIPPINGIDM AND ACCOUNTID = @ACCOUNTID";
             DataTable DT = DBUtil.SelectDataTable(sql, sData);
@@ -575,19 +572,15 @@ namespace Tectransit.Datas
                 ShippingMCusInfo m = new ShippingMCusInfo();
                 m.ID = Convert.ToInt64(DT.Rows[0]["ID"]);
                 m.ACCOUNTID = Convert.ToInt64(DT.Rows[0]["ACCOUNTID"]);
-                m.SHIPPINGNO = DT.Rows[0]["SHIPPINGNO"]?.ToString();
-                m.CLEARANCENO = DT.Rows[0]["CLEARANCENO"]?.ToString();
-                m.HAWBNO = DT.Rows[0]["HAWBNO"]?.ToString();
-                m.STATIONCODE = DT.Rows[0]["STATIONCODE"]?.ToString();
-                m.STATIONNAME = DBUtil.GetSingleValue1($@"SELECT STATIONNAME AS COL1 FROM T_S_STATION WHERE STATIONCODE = '{DT.Rows[0]["STATIONCODE"]?.ToString()}'");
-                m.TRACKINGNO = DT.Rows[0]["TRACKINGNO"]?.ToString();
-                m.TRANSFERNO = DT.Rows[0]["TRANSFERNO"]?.ToString();
+                m.SHIPPINGNO = DT.Rows[0]["SHIPPINGNO"]?.ToString();                
+                m.MAWBNO = DT.Rows[0]["MAWBNO"]?.ToString();                
                 m.TOTAL = DT.Rows[0]["TOTAL"]?.ToString();
+                m.TOTALWEIGHT = DT.Rows[0]["TOTALWEIGHT"]?.ToString();
                 m.ISMULTRECEIVER = Convert.ToBoolean(DT.Rows[0]["ISMULTRECEIVER"]) == true ? "Y" : "N";
                 m.RECEIVER = DT.Rows[0]["RECEIVER"]?.ToString();
                 m.RECEIVERADDR = DT.Rows[0]["RECEIVERADDR"]?.ToString();
                 m.RECEIVERPHONE = DT.Rows[0]["RECEIVERPHONE"]?.ToString();
-                m.STATUS = DT.Rows[0]["STATUS"]?.ToString();
+                m.STATUS = DT.Rows[0]["STATUS"]?.ToString();                
                 m.PAYDATE = DT.Rows[0]["PAYDATE"]?.ToString();
                 m.EXPORTDATE = DT.Rows[0]["EXPORTDATE"]?.ToString();
                 m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
@@ -596,8 +589,10 @@ namespace Tectransit.Datas
                 m.UPDBY = DT.Rows[0]["UPDBY"]?.ToString();
 
 
-                sql = $@"SELECT A.SHIPPINGID_M AS MID, A.ID AS HID, B.ID AS DID, A.BOXNO, A.RECEIVER,
-                                A.RECEIVERADDR, A.RECEIVERPHONE, B.PRODUCT, B.UNITPRICE, B.QUANTITY
+                sql = $@"SELECT A.SHIPPINGID_M AS MID, A.ID AS HID, B.ID AS DID, A.CLEARANCENO, A.TRANSFERNO,
+                                A.TRACKINGNO, A.DEPOTSTATUS, A.RECEIVER, A.RECEIVERADDR, A.RECEIVERPHONE,
+                                A.WEIGHT, A.TOTALITEM, A.REMARK1, A.REMARK2,
+                                B.PRODUCT, B.UNITPRICE, B.QUANTITY
                          FROM T_V_SHIPPING_H A
                          LEFT JOIN T_V_SHIPPING_D B ON A.ID = B.SHIPPINGID_H
                          WHERE A.SHIPPINGID_M = @SHIPPINGIDM";
@@ -615,10 +610,17 @@ namespace Tectransit.Datas
                         {
                             ShippingHCusInfo rows = new ShippingHCusInfo();
                             rows.ID = Convert.ToInt64(DT_Sub.Rows[j]["HID"]);
-                            rows.BOXNO = DT_Sub.Rows[j]["BOXNO"]?.ToString();
+                            rows.CLEARANCENO = DT_Sub.Rows[j]["CLEARANCENO"]?.ToString();
+                            rows.TRANSFERNO = DT_Sub.Rows[j]["TRANSFERNO"]?.ToString();
+                            rows.TRACKINGNO = DT_Sub.Rows[j]["TRACKINGNO"]?.ToString();
+                            rows.DEPOTSTATUS = string.IsNullOrEmpty(DT_Sub.Rows[j]["DEPOTSTATUS"]?.ToString()) ? "0" : DT_Sub.Rows[j]["DEPOTSTATUS"]?.ToString();
                             rows.RECEIVER = DT_Sub.Rows[j]["RECEIVER"]?.ToString();
                             rows.RECEIVERADDR = DT_Sub.Rows[j]["RECEIVERADDR"]?.ToString();
                             rows.RECEIVERPHONE = DT_Sub.Rows[j]["RECEIVERPHONE"]?.ToString();
+                            rows.WEIGHT = DT_Sub.Rows[j]["WEIGHT"]?.ToString();
+                            rows.TOTALITEM = DT_Sub.Rows[j]["TOTALITEM"]?.ToString();
+                            rows.REMARK1 = DT_Sub.Rows[j]["REMARK1"]?.ToString();
+                            rows.REMARK2 = DT_Sub.Rows[j]["REMARK2"]?.ToString();
                             rows.SHIPPINGID_M = Convert.ToInt64(DT_Sub.Rows[j]["MID"]);
 
                             h.Add(rows);
@@ -637,8 +639,8 @@ namespace Tectransit.Datas
                     }
                 }
 
-                sql = $@"SELECT ID, NAME, TAXID, PHONE, MOBILE, ADDR, IDPHOTO_F AS IDPHOTOF,
-                                IDPHOTO_B AS IDPHOTOB, APPOINTMENT, SHIPPINGID_M AS MID
+                sql = $@"SELECT SHIPPINGID_M AS MID, SHIPPINGID_H AS HID, ID, NAME, TAXID, PHONE, MOBILE, ADDR, IDPHOTO_F AS IDPHOTOF,
+                                IDPHOTO_B AS IDPHOTOB, APPOINTMENT
                          FROM T_V_DECLARANT
                          WHERE SHIPPINGID_M = @SHIPPINGIDM";
 
@@ -659,6 +661,7 @@ namespace Tectransit.Datas
                         row_d.IDPHOTOB = DT_Dec.Rows[k]["IDPHOTOB"]?.ToString();
                         row_d.APPOINTMENT = DT_Dec.Rows[k]["APPOINTMENT"]?.ToString();
                         row_d.SHIPPINGID_M = Convert.ToInt64(DT_Dec.Rows[k]["MID"]);
+                        row_d.SHIPPINGID_H = Convert.ToInt64(DT_Dec.Rows[k]["HID"]);
 
                         Dec.Add(row_d);
                     }
@@ -672,8 +675,8 @@ namespace Tectransit.Datas
 
         public void InsertTVDeclarant(Hashtable sData)
         {
-            string sql = $@"INSERT INTO T_V_DECLARANT (NAME, TAXID, PHONE, ADDR, SHIPPINGID_M)
-                           VALUES (N'{sData["NAME"]}', N'{sData["TAXID"]}', {sData["PHONE"]}, N'{sData["ADDR"]}', {sData["SHIPPINGIDM"]})";
+            string sql = $@"INSERT INTO T_V_DECLARANT (NAME, TAXID, PHONE, ADDR, SHIPPINGID_M, SHIPPINGID_H)
+                           VALUES (N'{sData["NAME"]}', N'{sData["TAXID"]}', {sData["PHONE"]}, N'{sData["ADDR"]}', {sData["SHIPPINGIDM"]}, {sData["SHIPPINGIDH"]})";
 
             DBUtil.EXECUTE(sql);
 

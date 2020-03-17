@@ -15,5 +15,6 @@ namespace Tectransit.Modles
         public string IdphotoB { get; set; }
         public string Appointment { get; set; }
         public long ShippingidM { get; set; }
+        public long ShippingidH { get; set; }
     }
 }

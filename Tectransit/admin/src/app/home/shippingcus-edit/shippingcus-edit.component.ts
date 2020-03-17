@@ -55,12 +55,10 @@ export class ShippingcusEditComponent implements OnInit {
     this.dataForm = this.formBuilder.group({
       id: 0,
       total: ['0', Validators.required],
+      totalweight: ['0', Validators.required],
       receiver: [''],
       receiveraddr: [''],
       receiverphone: [''],
-      mawbno: '',
-      clearanceno: '',
-      hawbno: '',
       ismultreceiver: 'N',
       status: '1',
       boxform: this.formBuilder.array([
@@ -154,7 +152,10 @@ export class ShippingcusEditComponent implements OnInit {
     if (this.masterData.ismultreceiver) {
       return this.formBuilder.group({
         id: [0],
-        boxno: ['', [Validators.required]],
+        clearanceno: ['', [Validators.required]],
+        transferno: ['', [Validators.required]],
+        weight: [''],
+        totalitem: [''],
         productform: this.formBuilder.array([
           this.initProduct()
         ]),
@@ -165,7 +166,10 @@ export class ShippingcusEditComponent implements OnInit {
     } else {
       return this.formBuilder.group({
         id: [0],
-        boxno: ['', [Validators.required]],
+        clearanceno: ['', [Validators.required]],
+        transferno: ['', [Validators.required]],
+        weight: [''],
+        totalitem: [''],
         productform: this.formBuilder.array([
           this.initProduct()
         ])
@@ -253,7 +257,10 @@ export class ShippingcusEditComponent implements OnInit {
         if (this.ismult) {
           control.push(this.formBuilder.group({
             id: [this.headerData[i].id],
-            boxno: [this.headerData[i].boxno, [Validators.required]],
+            clearanceno: [this.headerData[i].clearanceno],
+            transferno: [this.headerData[i].transferno],
+            weight: [this.headerData[i].weight],
+            totalitem: [this.headerData[i].totalitem],
             productform: this.formBuilder.array([
             ]),
             receiver: [this.headerData[i].receiver],
@@ -263,7 +270,10 @@ export class ShippingcusEditComponent implements OnInit {
         } else {
           control.push(this.formBuilder.group({
             id: [this.headerData[i].id],
-            boxno: [this.headerData[i].boxno, [Validators.required]],
+            clearanceno: [this.headerData[i].clearanceno],
+            transferno: [this.headerData[i].transferno],
+            weight: [this.headerData[i].weight],
+            totalitem: [this.headerData[i].totalitem],
             productform: this.formBuilder.array([
             ])
           }));

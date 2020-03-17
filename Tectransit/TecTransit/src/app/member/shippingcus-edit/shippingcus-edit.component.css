@@ -143,10 +143,6 @@ input[type="file"] {
   word-break: break-all;
 }
 
-.declarant-table tbody tr:nth-child(even) {
-  background-color: rgb(248, 247, 247);
-}
-
 .declarant-table tbody tr td input {
   border-radius: 2px;
   outline: 0;

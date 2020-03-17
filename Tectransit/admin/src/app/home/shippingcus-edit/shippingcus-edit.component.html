@@ -27,20 +27,8 @@
           </div>
           <div class="col-md-4">
             <div class="position-relative form-inline">
-              <span>追蹤號碼</span>
-              <p>{{masterData.trackingno}}</p>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="position-relative form-inline">
-              <span>提單號碼</span>
-              <p>{{masterData.transferno}}</p>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="position-relative form-inline">
-              <span>所屬集運站</span>
-              <p>{{masterData.stationname}}</p>
+              <span>主單號</span>
+              <p>{{masterData.mawbno}}</p>
             </div>
           </div>
           <div class="col-md-4">
@@ -57,6 +45,16 @@
           </div>
           <div class="col-md-4">
             <div class="position-relative form-inline" *ngIf="!isModify">
+              <span>總重量</span>
+              <p>{{masterData.totalweight}}</p>
+            </div>
+            <div class="position-relative form-inline" *ngIf="isModify">
+              <label class="text-requied" for="totalweight">總重量</label>
+              <input type="text" id="totalweight" class="form-control" formControlName="totalweight">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline" *ngIf="!isModify">
               <span>總件數</span>
               <p>{{masterData.total}}</p>
             </div>
@@ -66,38 +64,8 @@
             </div>
           </div>
           <div class="col-md-4">
-            <div class="position-relative form-inline" *ngIf="masterData.status === '4'">
-              <span>MAWB</span>
-              <p>{{masterData.mawbno}}</p>
-            </div>
-            <div class="position-relative form-inline" *ngIf="masterData.status !== '4'">
-              <label for="mawbno">MAWB</label>
-              <input type="text" id="mawbno" class="form-control" formControlName="mawbno">
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="position-relative form-inline" *ngIf="masterData.status === '4'">
-              <span>清關條碼</span>
-              <p>{{masterData.clearanceno}}</p>
-            </div>
-            <div class="position-relative form-inline" *ngIf="masterData.status !== '4'">
-              <label for="clearanceno">清關條碼</label>
-              <input type="text" id="clearanceno" class="form-control" formControlName="clearanceno">
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="position-relative form-inline" *ngIf="masterData.status === '4'">
-              <span>HAWB</span>
-              <p>{{masterData.hawbno}}</p>
-            </div>
-            <div class="position-relative form-inline" *ngIf="masterData.status !== '4'">
-              <label for="hawbno">HAWB</label>
-              <input type="text" id="hawbno" class="form-control" formControlName="hawbno">
-            </div>
-          </div>
-          <div class="col-md-4">
             <div class="position-relative form-inline">
-              <label for="status">狀態</label>
+              <label for="status">訂單狀態</label>
               <select id="status" class="form-control" formControlName="status">
                 <option value="0" *ngIf="cusStatus === '0'">未入庫</option>
                 <option value="1" *ngIf="cusStatus === '0' || cusStatus === '1'">已入庫</option>
@@ -139,7 +107,7 @@
         </div>
         <!-- shipping header&detail start -->
         <div class="card-header" *ngIf="masterData !== undefined">
-          <div class="btn-actions-pane-right" *ngIf="masterData.status !== '4'">
+          <div class="btn-actions-pane-right" *ngIf="masterData.status !== 4">
             <div class="btn-group-sm btn-group" role="group">
               <button *ngIf="!isModify" class="mb-2 mr-2 btn-transition btn btn-outline-info"
                 (click)="chgDetail('m')">修改細項</button>
@@ -153,8 +121,20 @@
             <div *ngFor="let item of headerData">
               <div class="card-header">
                 <div class="header-row">
-                  <span>箱號</span>
-                  <p>{{item.boxno}}</p>
+                  <span>袋號</span>
+                  <p>{{item.clearanceno}}</p>
+                </div>
+                <div class="header-row">
+                  <span>提單號碼</span>
+                  <p>{{item.transferno}}</p>
+                </div>
+                <div class="header-row">
+                  <span>提單重量</span>
+                  <p>{{item.weight}}</p>
+                </div>
+                <div class="header-row">
+                  <span>商品總數量</span>
+                  <p>{{item.totalitem}}</p>
                 </div>
                 <div class="header-row" *ngIf="ismult">
                   <span>收件人</span>
@@ -167,6 +147,18 @@
                 <div class="header-row" *ngIf="ismult">
                   <span>收件人地址</span>
                   <p>{{item.receiveraddr}}</p>
+                </div>
+                <div class="header-row" *ngIf="item.depotstatus !== '0'">
+                  <span>點收狀態</span>
+                  <p>{{item.depotstatus | shippstatus:"check"}}</p>
+                </div>
+                <div class="header-row" *ngIf="item.depotstatus === '3'">
+                  <span>點收說明</span>
+                  <p>{{item.remark1}}</p>
+                </div>
+                <div class="header-row" *ngIf="item.trackingno !== ''">
+                  <span>託運單號</span>
+                  <p>{{item.trackingno}}</p>
                 </div>
               </div>
               <div class="card-body">
@@ -200,8 +192,26 @@
                   <input type="hidden" class="form-control" formControlName="id">
                   <div class="col-md-4">
                     <div class="position-relative form-inline">
-                      <label class="text-requied" for="boxno{{ibox}}">箱號</label>
-                      <input type="text" id="boxno{{ibox}}" class="form-control" formControlName="boxno">
+                      <label class="text-requied" for="clearanceno{{ibox}}">袋號</label>
+                      <input type="text" id="clearanceno{{ibox}}" class="form-control" formControlName="clearanceno">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="position-relative form-inline">
+                      <label class="text-requied" for="transferno{{ibox}}">提單號碼</label>
+                      <input type="text" id="transferno{{ibox}}" class="form-control" formControlName="transferno">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="position-relative form-inline">
+                      <label class="text-requied" for="weight{{ibox}}">提單重量</label>
+                      <input type="text" id="weight{{ibox}}" class="form-control" formControlName="weight">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="position-relative form-inline">
+                      <label class="text-requied" for="totalitem{{ibox}}">商品總數量</label>
+                      <input type="text" id="totalitem{{ibox}}" class="form-control" formControlName="totalitem">
                     </div>
                   </div>
                   <div class="col-md-4">
@@ -213,7 +223,8 @@
                   <div class="col-md-4">
                     <div class="position-relative form-inline" *ngIf="ismult">
                       <label for="receiverphone{{ibox}}">收件人電話</label>
-                      <input type="text" id="receiverphone{{ibox}}" class="form-control" formControlName="receiverphone">
+                      <input type="text" id="receiverphone{{ibox}}" class="form-control"
+                        formControlName="receiverphone">
                     </div>
                   </div>
                   <div class="col-md-4">
@@ -397,7 +408,8 @@
         </div>
         <div class="card-footer">
           <div class="btn-two center-elem2" *ngIf="masterData !== undefined">
-            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" *ngIf="masterData.status !== '4'" (click)="saveData(dataForm.value)">保存</button>
+            <button class="mb-2 mr-2 btn-hover-shine btn btn-info" *ngIf="masterData.status !== 4"
+              (click)="saveData(dataForm.value)">保存</button>
             <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/shippingcus">回列表</button>
           </div>
         </div>
