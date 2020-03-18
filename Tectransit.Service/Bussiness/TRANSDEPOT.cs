@@ -32,7 +32,7 @@ namespace Tectransit.Service.Bussiness
 
     public class ShipmentTransfer
     {
-        public result getData(data datalist)
+        public result getData(List<data> datalist)
         {
             try
             {

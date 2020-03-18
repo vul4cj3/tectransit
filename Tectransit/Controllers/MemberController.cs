@@ -1683,6 +1683,7 @@ namespace Tectransit.Controllers
                 TVM.Receiver = sData["RECEIVER"]?.ToString();
                 TVM.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
                 TVM.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
+                TVM.Taxid = sData["TAXID"]?.ToString();
                 TVM.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
                 TVM.Status = 0;
                 TVM.Mawbdate = sData["MAWBDATE"]?.ToString();
@@ -1719,6 +1720,7 @@ namespace Tectransit.Controllers
                 TVH.Receiver = sData["RECEIVER"]?.ToString();
                 TVH.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
                 TVH.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
+                TVH.Taxid = sData["TAXID"]?.ToString();
                 TVH.Weight = sData["WEIGHT"]?.ToString() ?? string.Empty;
                 TVH.Totalitem = sData["TOTALITEM"]?.ToString() ?? string.Empty;
                 TVH.ShippingidM = Convert.ToInt64(sData["SHIPPINGIDM"]);
@@ -1806,6 +1808,8 @@ namespace Tectransit.Controllers
                     rowTVM.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
                 if (sData["RECEIVERPHONE"] != null)
                     rowTVM.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
+                if (sData["TAXID"] != null)
+                    rowTVM.Taxid = sData["TAXID"]?.ToString();
 
                 _context.SaveChanges();
 
@@ -2077,12 +2081,14 @@ namespace Tectransit.Controllers
                             tempData["RECEIVER"] = htData["RECEIVER"]?.ToString();
                             tempData["RECEIVERPHONE"] = htData["RECEIVERPHONE"]?.ToString();
                             tempData["RECEIVERADDR"] = htData["RECEIVERADDR"]?.ToString();
+                            tempData["TAXID"] = htData["TAXID"]?.ToString();
                         }
                         else
                         {
                             tempData["RECEIVER"] = "";
                             tempData["RECEIVERPHONE"] = "";
                             tempData["RECEIVERADDR"] = "";
+                            tempData["TAXID"] = "";
                         }
                         UpdateCusShippingM(tempData);
                     }

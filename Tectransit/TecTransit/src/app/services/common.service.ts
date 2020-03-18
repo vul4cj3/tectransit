@@ -269,7 +269,7 @@ export class CommonService {
   }
 
   getJson(): Observable<any> {
-    return this.http.get('/res/assets/util/samplecheck.json');
+    return this.http.get('/res/assets/util/JSON.json');
   }
 
 }

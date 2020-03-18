@@ -12,6 +12,8 @@ export class ContactComponent implements OnInit {
   /* web api url */
   dataUrl = '/api/CommonHelp/EditContact';
 
+  jsonUrl = '/api/Depot/GetTracking';
+
   dataForm: FormGroup;
   public catpchaImg: string;
 
@@ -61,8 +63,20 @@ export class ContactComponent implements OnInit {
   }
 
   Clear() {
-    this.resetForm();
-    this.refreshCaptcha();
+    // this.resetForm();
+    // this.refreshCaptcha();
+    let jsonData = '';
+    this.commonservice.getJson().subscribe(data => {
+      jsonData = data;
+      this.commonservice.insertData2(jsonData, this.jsonUrl)
+        .subscribe(res => {
+          alert(res);
+        }, error => {
+          console.log(error);
+        });
+    }
+    );
+
   }
 
 }

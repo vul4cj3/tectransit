@@ -85,17 +85,18 @@ namespace Tectransit.Service.Library
                            　    WHERE SHIPPINGNO = '{recordData["SHIPPINGNO"]?.ToString()}' AND STATUS = 0";
 
                         DataTable MasterDT = DBUtil.SelectDataTable(sql);
-                        
+
+                        List<data> postData = new List<data>();
                         if (MasterDT.Rows.Count > 0)
                         {
-                            data postData = new data();
-                            postData.accountid = Convert.ToInt64(MasterDT.Rows[0]["ACCOUNTID"]);
-                            postData.accountname = DBUtil.GetSingleValue1($@"SELECT COMPANYNAME AS COL1 FROM T_S_ACCOUNT WHERE ID = {MasterDT.Rows[0]["ACCOUNTID"]?.ToString()}");
-                            postData.shippingno = MasterDT.Rows[0]["SHIPPINGNO"]?.ToString();
-                            postData.mawbno = MasterDT.Rows[0]["MAWBNO"]?.ToString();
-                            postData.flightno = MasterDT.Rows[0]["FLIGHTNO"]?.ToString();
-                            postData.total = MasterDT.Rows[0]["TOTAL"]?.ToString();
-                            postData.totalweight = MasterDT.Rows[0]["TOTALWEIGHT"]?.ToString();
+                            data masterData = new data();
+                            masterData.accountid = Convert.ToInt64(MasterDT.Rows[0]["ACCOUNTID"]);
+                            masterData.accountname = DBUtil.GetSingleValue1($@"SELECT COMPANYNAME AS COL1 FROM T_S_ACCOUNT WHERE ID = {MasterDT.Rows[0]["ACCOUNTID"]?.ToString()}");
+                            masterData.shippingno = MasterDT.Rows[0]["SHIPPINGNO"]?.ToString();
+                            masterData.mawbno = MasterDT.Rows[0]["MAWBNO"]?.ToString();
+                            masterData.flightno = MasterDT.Rows[0]["FLIGHTNO"]?.ToString();
+                            masterData.total = MasterDT.Rows[0]["TOTAL"]?.ToString();
+                            masterData.totalweight = MasterDT.Rows[0]["TOTALWEIGHT"]?.ToString();
                             
                             sql = $@"SELECT A.ID AS HID, A.CLEARANCENO, A.TRANSFERNO, A.WEIGHT, A.TOTALITEM, A.RECEIVER, A.TAXID, A.RECEIVERPHONE, A.RECEIVERADDR
                                      FROM T_V_SHIPPING_H A
@@ -152,8 +153,8 @@ namespace Tectransit.Service.Library
                                     itemsList.Add(item);
                                 }
 
-                                postData.items = itemsList;
-
+                                masterData.items = itemsList;
+                                postData.Add(masterData);
                             }
 
                             //執行拋轉
