@@ -7,6 +7,7 @@ namespace Tectransit.Datas
 {
     public class MemberHelper
     {
+        CommonHelper objComm = new CommonHelper();
         public dynamic GetMemData(Hashtable sData)
         {
             string sql = $@"
@@ -673,6 +674,90 @@ namespace Tectransit.Datas
             return new { status = "0", rowM = "", rowH = "", rowD = "", rowDEC = "" };
         }
 
+        public long InsertCusShippingM(Hashtable sData)
+        {
+            long ID = 0;
+            try
+            {
+                string autoSeqcode = objComm.GetSeqCode("SHIPPING_CUS");
+                sData["SHIPPINGNO"] = "TECTPEEC1" + DateTime.Now.ToString("yy") + autoSeqcode;
+                sData["TRACKINGTYPE"] = 0;
+                sData["ISMULTRECEIVER"] = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
+                sData["STATUS"] = 0;
+                sData["CREDATE"] = DateTime.Now;
+                sData["CREATEBY"] = sData["_acccode"];
+                sData["UPDDATE"] = sData["CREDATE"];
+                sData["UPDBY"] = sData["CREATEBY"];
+
+
+                string sql = $@"INSERT INTO T_V_SHIPPING_M (ACCOUNTID, SHIPPINGNO, MAWBNO, FLIGHTNUM, TOTAL,
+                                                            TOTALWEIGHT, TRACKINGTYPE, RECEIVER, RECEIVERADDR, RECEIVERPHONE,
+                                                            TAXID, ISMULTRECEIVER, STATUS, MAWBDATE, CREDATE,
+                                                            CREATEBY, UPDDATE, UPDBY)
+                                VALUES (@ACCOUNTID, @SHIPPINGNO, @MAWBNO, @FLIGHTNUM, @TOTAL,
+                                        @TOTALWEIGHT, @TRACKINGTYPE, @RECEIVER, @RECEIVERADDR, @RECEIVERPHONE,
+                                        @TAXID, @ISMULTRECEIVER, @STATUS, @MAWBDATE, @CREDATE,
+                                        @CREATEBY, @UPDDATE, @UPDBY)";
+
+                DBUtil.EXECUTE(sql, sData);
+
+                objComm.UpdateSeqCode("SHIPPING_CUS");
+
+                string MID = DBUtil.GetSingleValue1($@"SELECT ID AS COL1 FROM T_V_SHIPPING_M WHERE SHIPPINGNO = @SHIPPINGNO", sData);
+                ID = string.IsNullOrEmpty(MID) ? 0 : Convert.ToInt64(MID);
+
+                return ID;
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+                return ID;
+            }
+        }
+
+        public long InsertCusShippingH(Hashtable sData)
+        {
+            long ID = 0;
+            try
+            {
+
+                string sql = $@"INSERT INTO T_V_SHIPPING_H (CLEARANCENO, TRANSFERNO, RECEIVER, RECEIVERADDR, RECEIVERPHONE,
+                                                            TAXID, WEIGHT, TOTALITEM, SHIPPINGID_M)
+                                VALUES (@CLEARANCENO, @TRANSFERNO, @RECEIVER, @RECEIVERADDR, @RECEIVERPHONE,
+                                                            @TAXID, @WEIGHT, @TOTALITEM, @SHIPPINGIDM)";
+                
+                DBUtil.EXECUTE(sql, sData);
+                
+                string HID = DBUtil.GetSingleValue1($@"SELECT ID AS COL1 FROM T_V_SHIPPING_H WHERE TRANSFERNO = @TRANSFERNO AND SHIPPINGID_M = @SHIPPINGIDM", sData);
+                ID = string.IsNullOrEmpty(HID) ? 0 : Convert.ToInt64(HID);
+
+                return ID;
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+                return ID;
+            }
+        }
+
+        public void InsertCusShippingD(Hashtable sData)
+        {
+            try
+            {
+                string sql = $@"INSERT INTO T_V_SHIPPING_D (PRODUCT, QUANTITY, UNITPRICE, UNIT, ORIGIN,
+                                                            SHIPPINGID_M, SHIPPINGID_H)
+                                VALUES (@PRODUCT, @QUANTITY, @UNITPRICE, @UNIT, @ORIGIN,
+                                                            @SHIPPINGIDM, @SHIPPINGIDH)";
+
+                DBUtil.EXECUTE(sql, sData);
+
+            }
+            catch (Exception ex)
+            {
+                string errMsg = ex.Message.ToString();
+            }
+        }
+
         public void InsertTVDeclarant(Hashtable sData)
         {
             string sql = $@"INSERT INTO T_V_DECLARANT (NAME, TAXID, PHONE, ADDR, SHIPPINGID_M, SHIPPINGID_H)
@@ -680,6 +765,37 @@ namespace Tectransit.Datas
 
             DBUtil.EXECUTE(sql);
 
+        }
+
+        public void UpdateCusShippingM(Hashtable sData)
+        {
+            sData["ISMULTRECEIVER"] = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
+
+            string sql = $@"UPDATE T_V_SHIPPING_M SET
+                                                       TOTAL = @TOTAL,
+                                                       TOTALWEIGHT = @TOTALWEIGHT,
+                                                       ISMULTRECEIVER = @ISMULTRECEIVER,
+                                                       RECEIVER = @RECEIVER,
+                                                       RECEIVERADDR = @RECEIVERADDR,
+                                                       RECEIVERPHONE = @RECEIVERPHONE,
+                                                       TAXID = @TAXID
+                             WHERE ID = @ID";
+
+
+            DBUtil.EXECUTE(sql, sData);
+        }
+
+        public void UpdateCusShippingH(Hashtable sData)
+        {
+            
+            string sql = $@"UPDATE T_V_SHIPPING_H SET
+                                                       WEIGHT = @WEIGHT,
+                                                       TOTALITEM = @TOTALITEM
+                             WHERE ID = @SHIPPINGIDH";
+
+
+            DBUtil.EXECUTE(sql, sData);
+            
         }
 
     }
