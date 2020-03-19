@@ -393,6 +393,7 @@ export interface ShippingMCusInfo {
   receiver: string;
   receiveraddr: string;
   receiverphone: string;
+  receivertaxid: string;
   ismultreceiver: string;
   status: number;
   remark1: string;
@@ -416,6 +417,7 @@ export interface ShippingHCusInfo {
   receiver: string;
   receiveraddr: string;
   receiverphone: string;
+  receivertaxid: string;
   weight: string;
   totalitem: string;
   remark1: string;

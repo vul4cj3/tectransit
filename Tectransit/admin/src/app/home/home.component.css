@@ -130,7 +130,8 @@ body.jw-modal-open {
 
 .box-close{
   position: absolute;
-  right: 25px;
+  right: 0px;
+  top: 0px;
 }
 
 .text-requied {

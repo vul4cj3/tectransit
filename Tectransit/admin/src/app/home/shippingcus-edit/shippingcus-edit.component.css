@@ -1,8 +1,19 @@
-.card-header.edit {
-  flex-wrap: wrap;
-  height: 7rem;
+.card-header-vendor {
+  position: relative;
+  width: 100%;
 }
 
-.form-inline {
-  padding: 5px;
+.row-column {
+  display: flex;
+  margin-left: 10px;
 }
+
+.header-row{
+  display: flex;
+  flex-wrap: wrap;
+}
+.header-row label{
+  width: 100%;
+}
+
+

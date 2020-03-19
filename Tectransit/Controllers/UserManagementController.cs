@@ -830,19 +830,20 @@ namespace Tectransit.Controllers
                     objComm.DeleteSingleTableData("T_V_SHIPPING_D", "ID", temp.ToString());
                 }
 
-                //delete header&detail
-                for (int i = 0; i < hidList.Count; i++)
-                {
-                    JValue temp = (JValue)hidList[i];
-                    objComm.DeleteSingleTableData("T_V_SHIPPING_D", "SHIPPINGID_H", temp.ToString());
-                    objComm.DeleteSingleTableData("T_V_SHIPPING_H", "ID", temp.ToString());
-                }
-
                 //delete declarant
                 for (int i = 0; i < decidList.Count; i++)
                 {
                     JValue temp = (JValue)decidList[i];
                     objComm.DeleteSingleTableData("T_V_DECLARANT", "ID", temp.ToString());
+                }
+
+                //delete header&detail&declarant
+                for (int i = 0; i < hidList.Count; i++)
+                {
+                    JValue temp = (JValue)hidList[i];
+                    objComm.DeleteSingleTableData("T_V_SHIPPING_D", "SHIPPINGID_H", temp.ToString());
+                    objComm.DeleteSingleTableData("T_V_DECLARANT", "SHIPPINGID_H", temp.ToString());
+                    objComm.DeleteSingleTableData("T_V_SHIPPING_H", "ID", temp.ToString());                    
                 }
                 #endregion
 
@@ -850,13 +851,13 @@ namespace Tectransit.Controllers
                 //Master data
                 Hashtable mData = new Hashtable();
                 mData["ID"] = arrData.Value<string>("id");
+                mData["MAWBNO"] = arrData.Value<string>("mawbno");
                 mData["TOTAL"] = arrData.Value<string>("total");
+                mData["TOTALWEIGHT"] = arrData.Value<string>("totalweight");
                 mData["RECEIVER"] = arrData.Value<string>("receiver");
                 mData["RECEIVERADDR"] = arrData.Value<string>("receiveraddr");
                 mData["RECEIVERPHONE"] = arrData.Value<string>("receiverphone");
-                mData["MAWBNO"] = arrData.Value<string>("mawbno");
-                mData["CLEARANCENO"] = arrData.Value<string>("clearanceno");
-                mData["HAWBNO"] = arrData.Value<string>("hawbno");
+                mData["RECEIVERTAXID"] = arrData.Value<string>("receivertaxid");                
                 mData["ISMULTRECEIVER"] = arrData.Value<string>("ismultreceiver").ToUpper();
                 mData["STATUS"] = arrData.Value<string>("status");
                 mData["_usercode"] = Request.Cookies["_usercode"];
@@ -867,6 +868,7 @@ namespace Tectransit.Controllers
                     mData["RECEIVER"] = "";
                     mData["RECEIVERADDR"] = "";
                     mData["RECEIVERPHONE"] = "";
+                    mData["RECEIVERTAXID"] = "";
                 }
 
                 //Header(box) data                
@@ -896,6 +898,22 @@ namespace Tectransit.Controllers
                             hData["PRDFORM"] = subAL;
 
                         }
+                        else if (t.Key == "decform")
+                        {
+                            JArray decData = temp.Value<JArray>("decform");
+                            ArrayList decAL = new ArrayList();
+                            for (int j = 0; j < decData.Count; j++)
+                            {
+                                JObject temp2 = (JObject)decData[j];
+                                Hashtable dData = new Hashtable();
+                                foreach (var t2 in temp2)
+                                {
+                                    dData[(t2.Key).ToUpper()] = t2.Value?.ToString();
+                                }
+                                decAL.Add(dData);
+                            }
+                            hData["DECFORM"] = decAL;
+                        }
                         else
                             hData[(t.Key).ToUpper()] = t.Value?.ToString();
 
@@ -903,23 +921,23 @@ namespace Tectransit.Controllers
                     AL.Add(hData);
                 }
 
-                //Declarant data
-                JArray decData = arrData.Value<JArray>("decform");
-                ArrayList decAL = new ArrayList();
-                for (int k = 0; k < decData.Count; k++)
-                {
-                    JObject temp = (JObject)decData[k];
-                    Hashtable deData = new Hashtable();
-                    foreach (var t in temp)
-                        deData[(t.Key).ToUpper()] = t.Value?.ToString();
+                ////Declarant data
+                //JArray decData = arrData.Value<JArray>("decform");
+                //ArrayList decAL = new ArrayList();
+                //for (int k = 0; k < decData.Count; k++)
+                //{
+                //    JObject temp = (JObject)decData[k];
+                //    Hashtable deData = new Hashtable();
+                //    foreach (var t in temp)
+                //        deData[(t.Key).ToUpper()] = t.Value?.ToString();
 
-                    decAL.Add(deData);
-                }
+                //    decAL.Add(deData);
+                //}
                 #endregion
 
                 #region 新增or更新資料
 
-                //insert or update header&detail               
+                //insert or update header&detail&declarant               
                 if (AL.Count > 0)
                 {
                     for (int i = 0; i < AL.Count; i++)
@@ -951,22 +969,37 @@ namespace Tectransit.Controllers
                             }
                         }
 
+                        ArrayList decAL = (ArrayList)sData["DECFORM"];
+                        if (decAL.Count > 0)
+                        {
+                            for (int k = 0; k < decAL.Count; k++)
+                            {
+                                Hashtable tempData = (Hashtable)decAL[k];
+                                tempData["SHIPPINGIDM"] = mData["ID"];
+                                tempData["SHIPPINGIDH"] = HID;
+                                if (tempData["ID"]?.ToString() == "0")
+                                    InsertTVDeclarant(tempData);
+                                else
+                                    updateTVDeclarant(tempData);
+                            }
+                        }
+
                     }
                 }
 
-                //insert or update declarant
-                if (decAL.Count > 0)
-                {
-                    for (int k = 0; k < decAL.Count; k++)
-                    {
-                        Hashtable tempData = (Hashtable)decAL[k];
-                        tempData["SHIPPINGIDM"] = mData["ID"];
-                        if (tempData["ID"]?.ToString() == "0")
-                            InsertTVDeclarant(tempData);
-                        else
-                            updateTVDeclarant(tempData);
-                    }
-                }
+                ////insert or update declarant
+                //if (decAL.Count > 0)
+                //{
+                //    for (int k = 0; k < decAL.Count; k++)
+                //    {
+                //        Hashtable tempData = (Hashtable)decAL[k];
+                //        tempData["SHIPPINGIDM"] = mData["ID"];
+                //        if (tempData["ID"]?.ToString() == "0")
+                //            InsertTVDeclarant(tempData);
+                //        else
+                //            updateTVDeclarant(tempData);
+                //    }
+                //}
 
                 //update master
                 updateCusShippingM(mData);
@@ -974,9 +1007,9 @@ namespace Tectransit.Controllers
 
 
                 //寫入異動拋轉紀錄(未入庫狀態)
-                string tempMAWB = DBUtil.GetSingleValue1($@"SELECT MAWBNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {mData["ID"]?.ToString()} AND STATUS = 0");
-                if (!string.IsNullOrEmpty(tempMAWB))
-                    objComm.InsertDepotRecord(2, tempMAWB);
+                string tempShipping = DBUtil.GetSingleValue1($@"SELECT SHIPPINGNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {mData["ID"]?.ToString()} AND STATUS = 0");
+                if (!string.IsNullOrEmpty(tempShipping))
+                    objComm.InsertDepotRecord(2, tempShipping);
                 
 
                 //add user operation log
@@ -1745,11 +1778,13 @@ namespace Tectransit.Controllers
             var query = _context.TVShippingM.Where(q => q.Id == Convert.ToInt64(sData["ID"])).FirstOrDefault();
             if (query != null)
             {
+                query.Mawbno = sData["MAWBNO"]?.ToString();
                 query.Total = sData["TOTAL"]?.ToString();
+                query.Totalweight = sData["TOTALWEIGHT"]?.ToString();
                 query.Receiver = sData["RECEIVER"]?.ToString();
                 query.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
                 query.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
-                query.Mawbno = sData["MAWBNO"]?.ToString();
+                query.Taxid = sData["RECEIVERTAXID"]?.ToString();
                 query.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
                 query.Status = Convert.ToInt32(sData["STATUS"]);
 
@@ -1766,9 +1801,14 @@ namespace Tectransit.Controllers
             try
             {
                 TVShippingH TVH = new TVShippingH();
+                TVH.Clearanceno = sData["CLEARANCENO"]?.ToString();
+                TVH.Transferno = sData["TRANSFERNO"]?.ToString();
+                TVH.Weight = sData["WEIGHT"]?.ToString();
+                TVH.Totalitem = sData["TOTALITEM"]?.ToString();
                 TVH.Receiver = sData["RECEIVER"]?.ToString();
                 TVH.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
                 TVH.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
+                TVH.Taxid = sData["RECEIVERTAXID"]?.ToString();
                 TVH.ShippingidM = Convert.ToInt64(sData["SHIPPINGIDM"]);
 
                 _context.TVShippingH.Add(TVH);
@@ -1790,9 +1830,15 @@ namespace Tectransit.Controllers
             var query = _context.TVShippingH.Where(q => q.Id == Convert.ToInt64(sData["ID"])).FirstOrDefault();
             if (query != null)
             {
+
+                query.Clearanceno = sData["CLEARANCENO"]?.ToString();
+                query.Transferno = sData["TRANSFERNO"]?.ToString();
+                query.Weight = sData["WEIGHT"]?.ToString();
+                query.Totalitem = sData["TOTALITEM"]?.ToString();
                 query.Receiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVER"]?.ToString() : "";
                 query.Receiveraddr = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVERADDR"]?.ToString() : "";
                 query.Receiverphone = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVERPHONE"]?.ToString() : "";
+                query.Taxid= sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVERTAXID"]?.ToString() : "";
 
                 _context.SaveChanges();
             }
@@ -1846,6 +1892,7 @@ namespace Tectransit.Controllers
                 TVD.IdphotoB = sData["IDPHOTOB"]?.ToString();
                 TVD.Appointment = sData["APPOINTMENT"]?.ToString();
                 TVD.ShippingidM = Convert.ToInt64(sData["SHIPPINGIDM"]);
+                TVD.ShippingidH = Convert.ToInt64(sData["SHIPPINGIDH"]);
 
                 _context.TVDeclarant.Add(TVD);
                 _context.SaveChanges();

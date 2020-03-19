@@ -470,8 +470,9 @@ namespace Tectransit.Datas
         public string RECEIVER { set; get; }
         public string RECEIVERADDR { set; get; }
         public string RECEIVERPHONE { set; get; }
+        public string RECEIVERTAXID { set; get; }
         public string ISMULTRECEIVER { set; get; }
-        public string STATUS { set; get; }
+        public int STATUS { set; get; }
         public string REMARK1 { set; get; }
         public string REMARK2 { set; get; }
         public string REMARK3 { set; get; }
@@ -489,10 +490,11 @@ namespace Tectransit.Datas
         public string CLEARANCENO { set; get; }
         public string TRANSFERNO { set; get; }
         public string TRACKINGNO { set; get; }
-        public string DEPOTSTATUS { set; get; }
+        public int DEPOTSTATUS { set; get; }
         public string RECEIVER { set; get; }
         public string RECEIVERADDR { set; get; }
         public string RECEIVERPHONE { set; get; }
+        public string RECEIVERTAXID { set; get; }
         public string WEIGHT { set; get; }
         public string TOTALITEM { set; get; }
         public string REMARK1 { set; get; }

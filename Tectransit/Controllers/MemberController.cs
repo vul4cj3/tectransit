@@ -1493,12 +1493,15 @@ namespace Tectransit.Controllers
                 JObject arrData = jsonData.Value<JObject>("formdata");
                 JArray delArrData = jsonData.Value<JArray>("dellist");
 
+                JArray boxData = arrData.Value<JArray>("boxform");
+
                 //Master data
                 Hashtable mData = new Hashtable();
-                mData["SHIPPINGIDM"] = arrData.Value<string>("shippingidm");
+                mData["SHIPPINGIDM"] = boxData[0].Value<string>("shippingidm");
+                mData["SHIPPINGIDH"] = boxData[0].Value<string>("shippingidh");
 
                 //Declarant data
-                JArray decData = arrData.Value<JArray>("decform");
+                JArray decData = boxData[0].Value<JArray>("decform");
                 ArrayList decAL = new ArrayList();
                 for (int k = 0; k < decData.Count; k++)
                 {
@@ -1526,6 +1529,7 @@ namespace Tectransit.Controllers
                         if (Convert.ToInt64(tempData["ID"]) == 0)
                         {
                             tempData["SHIPPINGIDM"] = mData["SHIPPINGIDM"];
+                            tempData["SHIPPINGIDH"] = mData["SHIPPINGIDH"];
                             InsertTVDeclarant(tempData);//新增申報人
                         }
                         else

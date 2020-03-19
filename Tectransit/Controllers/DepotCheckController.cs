@@ -176,8 +176,8 @@ namespace Tectransit.Controllers
                     #region 資料處理
                     Dictionary<string, string> DC = new Dictionary<string, string>();
                     DC.Add("SHIPPING_NO", "SHIPPINGNO");
-                    DC.Add("ACCOUNT_ID", "ACCOUNTID");
-                    DC.Add("ACCOUNT_NAME", "ACCOUNTNAME");
+                    //DC.Add("ACCOUNT_ID", "ACCOUNTID");
+                    //DC.Add("ACCOUNT_NAME", "ACCOUNTNAME");
                     DC.Add("TRANSFER_NO", "TRANSFERNO");
                     DC.Add("TRACKING_NO", "TRACKINGNO");
 
@@ -237,7 +237,7 @@ namespace Tectransit.Controllers
                                     sql = $@"SELECT A.ID AS MID, A.STATUS, B.ID AS HID, B.TRANSFERNO, B.DEPOTSTATUS 
                                          FROM T_V_SHIPPING_M A
                                          LEFT JOIN T_V_SHIPPING_H B ON A.ID = B.SHIPPINGID_M
-                                         WHERE SHIPPINGNO = @SHIPPINGNO AND ACCOUNTID = @ACCOUNTID AND TRANSFERNO = @TRANSFERNO";
+                                         WHERE SHIPPINGNO = @SHIPPINGNO AND TRANSFERNO = @TRANSFERNO";
 
                                     DataTable DT = DBUtil.SelectDataTable(sql, sData);
                                     if (DT.Rows.Count > 0)
@@ -257,7 +257,7 @@ namespace Tectransit.Controllers
                                 sData["STATUS"] = 3;//訂單狀態(已出貨)
                                 UpdateShippingCusMState(sData);
 
-                                SHIPPINGNO = sData["SHIPPINGNO"]?.ToString();
+                                SHIPPINGNO += (SHIPPINGNO == "" ? "" : ";") + sData["SHIPPINGNO"]?.ToString();
                             }
                         }
 
@@ -298,7 +298,7 @@ namespace Tectransit.Controllers
                                    STATUS = @STATUS,
                                    UPDBY = @UPDBY,
                                    UPDDATE = @UPDDATE
-                             WHERE SHIPPINGNO = @SHIPPINGNO AND ACCOUNTID = @ACCOUNTID";
+                             WHERE SHIPPINGNO = @SHIPPINGNO";
 
             DBUtil.EXECUTE(sql, sData);
 

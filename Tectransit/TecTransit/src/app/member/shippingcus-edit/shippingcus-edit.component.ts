@@ -55,12 +55,66 @@ export class ShippingcusEditComponent implements OnInit {
 
   resetForm() {
     this.dataForm = this.formBuilder.group({
+      // shippingidm: [''],
+      // shippingidh: [''],
+      boxform: this.formBuilder.array([
+        this.initBox()
+      ])
+      // decform: this.formBuilder.array([
+      //   this.initDec()
+      // ])
+    });
+  }
+
+  initBox() {
+    return this.formBuilder.group({
       shippingidm: [''],
       shippingidh: [''],
       decform: this.formBuilder.array([
         this.initDec()
       ])
     });
+  }
+
+  readBox(id) {
+    const control = this.dataForm.controls.boxform as FormArray;
+    control.clear();
+    if (this.headerData.length > 0) {
+      // tslint:disable-next-line: prefer-for-of
+      for (let i = 0; i < this.headerData.length; i++) {
+        if (this.headerData[i].id === id) {
+          control.push(this.formBuilder.group({
+            shippingidm: [this.headerData[i].shippingiD_M],
+            shippingidh: [this.headerData[i].id],
+            decform: this.formBuilder.array([
+            ])
+          }));
+        }
+      }
+
+
+      const control2 = control.at(0).get('decform') as FormArray;
+      control2.clear();
+      // tslint:disable-next-line: prefer-for-of
+      for (let k = 0; k < this.declarData.length; k++) {
+        if (this.declarData[k].shippingiD_H === id) {
+          control2.push(this.formBuilder.group({
+            id: [this.declarData[k].id],
+            name: [this.declarData[k].name, Validators.required],
+            taxid: [this.declarData[k].taxid, Validators.required],
+            phone: [this.declarData[k].phone],
+            mobile: [this.declarData[k].mobile],
+            addr: [this.declarData[k].addr],
+            idphotof: [this.declarData[k].idphotof],
+            idphotob: [this.declarData[k].idphotob],
+            appointment: [this.declarData[k].appointment]
+          }));
+        }
+      }
+
+
+    }
+
   }
 
   initDec() {
@@ -80,12 +134,12 @@ export class ShippingcusEditComponent implements OnInit {
   }
 
   adddec() {
-    const control = this.dataForm.controls.decform as FormArray;
+    const control = (this.dataForm.controls.boxform as FormArray).at(0).get('decform') as FormArray;
     control.push(this.initDec());
   }
 
   removedec(rowIndex) {
-    const rows = this.dataForm.controls.decform as FormArray;
+    const rows = (this.dataForm.controls.boxform as FormArray).at(0).get('decform') as FormArray;
     const row = rows.controls[rowIndex] as FormGroup;
     if (row.controls.id.value !== 0) {
       this.iddellist.push(row.controls.id.value);
@@ -115,43 +169,101 @@ export class ShippingcusEditComponent implements OnInit {
 
   chgDec(type, hid) {
     if (type === 'm') {
-      this.isModify = true;
+      this.readBox(hid);
 
-      // read declarant data
-      this.dataForm.controls.shippingidm.setValue(this.masterData.id);
-      const control = this.dataForm.controls.decform as FormArray;
-      if (this.declarData.length > 0) {
-        for (let i = 0; i < this.declarData.length; i++) {
-          if (control.at(i) !== undefined) {
-            console.log(this.declarData[i].shippingiD_H);
-            if (this.declarData[i].shippingiD_H === hid) {
-              control.at(i).patchValue(this.declarData[i]);
-            }
-          } else {
-            control.push(this.formBuilder.group({
-              id: [this.declarData[i].id],
-              name: [this.declarData[i].name, Validators.required],
-              taxid: [this.declarData[i].taxid, Validators.required],
-              phone: [this.declarData[i].phone],
-              mobile: [this.declarData[i].mobile],
-              addr: [this.declarData[i].addr],
-              idphotof: [this.declarData[i].idphotof],
-              idphotob: [this.declarData[i].idphotob],
-              appointment: [this.declarData[i].appointment]
-            }));
-          }
+      // 檢查有無其他修改中的表格
+      this.clearTable();
 
-        }
-      }
+      const btn = document.getElementById('btn' + hid) as HTMLDivElement;
+      btn.children.item(0).classList.add('inActive');
+      btn.children.item(1).classList.add('Active');
+      btn.children.item(2).classList.add('Active');
+
+      const decform = document.getElementById('decform' + hid) as HTMLTableElement;
+      decform.classList.add('Active');
+
+      const dectb = document.getElementById('dectable' + hid) as HTMLTableElement;
+      dectb.classList.add('inActive');
+
     } else {
-      this.isModify = false;
       this.iddellist = [];
       this.resetForm();
+
+      const btn = document.getElementById('btn' + hid) as HTMLDivElement;
+      btn.children.item(0).classList.remove('inActive');
+      btn.children.item(1).classList.remove('Active');
+      btn.children.item(2).classList.remove('Active');
+
+      const decform = document.getElementById('decform' + hid) as HTMLTableElement;
+      decform.classList.remove('Active');
+
+      const dectb = document.getElementById('dectable' + hid) as HTMLTableElement;
+      dectb.classList.remove('inActive');
+    }
+    // if (type === 'm') {
+    //   this.isModify = true;
+
+    //   // read declarant data
+    //   this.dataForm.controls.shippingidm.setValue(this.masterData.id);
+    //   const control = this.dataForm.controls.decform as FormArray;
+    //   if (this.declarData.length > 0) {
+    //     for (let i = 0; i < this.declarData.length; i++) {
+    //       if (control.at(i) !== undefined) {
+    //         console.log(this.declarData[i].shippingiD_H);
+    //         if (this.declarData[i].shippingiD_H === hid) {
+    //           control.at(i).patchValue(this.declarData[i]);
+    //         }
+    //       } else {
+    //         control.push(this.formBuilder.group({
+    //           id: [this.declarData[i].id],
+    //           name: [this.declarData[i].name, Validators.required],
+    //           taxid: [this.declarData[i].taxid, Validators.required],
+    //           phone: [this.declarData[i].phone],
+    //           mobile: [this.declarData[i].mobile],
+    //           addr: [this.declarData[i].addr],
+    //           idphotof: [this.declarData[i].idphotof],
+    //           idphotob: [this.declarData[i].idphotob],
+    //           appointment: [this.declarData[i].appointment]
+    //         }));
+    //       }
+
+    //     }
+    //   }
+    // } else {
+    //   this.isModify = false;
+    //   this.iddellist = [];
+    //   this.resetForm();
+    // }
+  }
+
+  clearTable() {
+
+    const btnAll = document.getElementsByClassName('btn-three');
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < btnAll.length; i++) {
+      const item = btnAll[i] as HTMLDivElement;
+      item.children.item(0).classList.remove('inActive');
+      item.children.item(1).classList.remove('Active');
+      item.children.item(2).classList.remove('Active');
+    }
+
+    const decformAll = document.getElementsByClassName('decform-modify');
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < decformAll.length; i++) {
+      const item = decformAll[i] as HTMLTableElement;
+      item.classList.remove('Active');
+    }
+
+    const dectbAll = document.getElementsByClassName('declarant-table');
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < decformAll.length; i++) {
+      const item = dectbAll[i] as HTMLTableElement;
+      item.classList.remove('inActive');
     }
   }
 
   //#region upload function
-  imgChange(e, id) {
+  imgChange(e, hid, id) {
     if (e.target.files.length > 2) {
       return alert('請勿上傳超過兩個檔案！');
     }
@@ -164,7 +276,7 @@ export class ShippingcusEditComponent implements OnInit {
     }
     this.imgList = this.tempList;
 
-    const div = document.getElementById('img-preview' + id) as HTMLDivElement;
+    const div = document.getElementById('img-preview' + hid + '_' + id) as HTMLDivElement;
     div.innerHTML = '';
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < e.target.files.length; i++) {
@@ -189,7 +301,7 @@ export class ShippingcusEditComponent implements OnInit {
     this.imgList = this.tempList;
   }
 
-  fileChange(e, id) {
+  fileChange(e, hid, id) {
     this.tempList = [];
     for (const item of this.fileList) {
       if (item.idcode !== id) {
@@ -198,7 +310,7 @@ export class ShippingcusEditComponent implements OnInit {
     }
     this.fileList = this.tempList;
 
-    const div = document.getElementById('file-preview-container' + id) as HTMLDivElement;
+    const div = document.getElementById('file-preview-container' + hid + '_' + id) as HTMLDivElement;
     div.innerHTML = '<span>' + e.target.files[0].name + '</span>';
 
     this.fileList.push({ idcode: id, file: e.target.files[0] });
@@ -239,7 +351,8 @@ export class ShippingcusEditComponent implements OnInit {
               this.idimglist = data.imgurl;
               if (this.idimglist.length > 0) {
                 for (const item of this.idimglist) {
-                  const control = (this.dataForm.get('decform') as FormArray).at(+item.id) as FormGroup;
+                  const box = (this.dataForm.controls.boxform as FormArray).at(0).get('decform') as FormArray;
+                  const control = box.at(+item.id) as FormGroup;
                   control.controls.idphotof.setValue(item.idphotof);
                   control.controls.idphotob.setValue(item.idphotob);
                 }
@@ -271,7 +384,8 @@ export class ShippingcusEditComponent implements OnInit {
               this.idfilelist = data.fileurl;
               if (this.idfilelist.length > 0) {
                 for (const item of this.idfilelist) {
-                  const control = (this.dataForm.get('decform') as FormArray).at(+item.id) as FormGroup;
+                  const box = (this.dataForm.controls.boxform as FormArray).at(0).get('decform') as FormArray;
+                  const control = box.at(+item.id) as FormGroup;
                   control.controls.appointment.setValue(item.appointment);
                 }
 
@@ -296,7 +410,7 @@ export class ShippingcusEditComponent implements OnInit {
     this.commonservice.editNDelData(this.dataForm.value, this.iddellist, this.baseUrl + this.saveUrl)
       .subscribe(data => {
         if (data.status === '0') {
-          this.isModify = false;
+          this.iddellist = [];
           this.resetForm();
           this.getData();
           alert(data.msg);

@@ -54,19 +54,21 @@ export class ShippingcusEditComponent implements OnInit {
     // built form controls and default form value
     this.dataForm = this.formBuilder.group({
       id: 0,
+      mawbno: ['0', Validators.required],
       total: ['0', Validators.required],
       totalweight: ['0', Validators.required],
       receiver: [''],
       receiveraddr: [''],
       receiverphone: [''],
+      receivertaxid: [''],
       ismultreceiver: 'N',
       status: '1',
       boxform: this.formBuilder.array([
         // this.initBox()
-      ]),
-      decform: this.formBuilder.array([
-        // this.initDec()
       ])
+      // decform: this.formBuilder.array([
+      //   // this.initDec()
+      // ])
     });
   }
 
@@ -94,7 +96,6 @@ export class ShippingcusEditComponent implements OnInit {
     if (type === 'm') {
       this.isModify = true;
       this.readBox();
-      this.readDec();
 
     } else {
       this.isModify = false;
@@ -123,6 +124,9 @@ export class ShippingcusEditComponent implements OnInit {
         if (temp.controls.receiverphone === undefined) {
           temp.addControl('receiverphone', new FormControl(''));
         }
+        if (temp.controls.receivertaxid === undefined) {
+          temp.addControl('receivertaxid', new FormControl(''));
+        }
       }
       control.patchValue(this.headerData);
     } else {
@@ -137,6 +141,9 @@ export class ShippingcusEditComponent implements OnInit {
         }
         if (temp.controls.receiverphone !== undefined) {
           temp.removeControl('receiverphone');
+        }
+        if (temp.controls.receivertaxid !== undefined) {
+          temp.removeControl('receivertaxid');
         }
       }
     }
@@ -159,9 +166,13 @@ export class ShippingcusEditComponent implements OnInit {
         productform: this.formBuilder.array([
           this.initProduct()
         ]),
+        decform: this.formBuilder.array([
+          this.initDec()
+        ]),
         receiver: [''],
         receiveraddr: [''],
-        receiverphone: ['']
+        receiverphone: [''],
+        receivertaxid: [''],
       });
     } else {
       return this.formBuilder.group({
@@ -172,6 +183,9 @@ export class ShippingcusEditComponent implements OnInit {
         totalitem: [''],
         productform: this.formBuilder.array([
           this.initProduct()
+        ]),
+        decform: this.formBuilder.array([
+          this.initDec()
         ])
       });
     }
@@ -214,8 +228,8 @@ export class ShippingcusEditComponent implements OnInit {
     control.push(this.initProduct());
   }
 
-  adddec() {
-    const control = this.dataForm.controls.decform as FormArray;
+  adddec(ibox) {
+    const control = (this.dataForm.controls.boxform as FormArray).at(ibox).get('decform') as FormArray;
     control.push(this.initDec());
   }
 
@@ -237,13 +251,13 @@ export class ShippingcusEditComponent implements OnInit {
     rows.removeAt(subrowIndex);
   }
 
-  removedec(rowIndex) {
-    const rows = this.dataForm.controls.decform as FormArray;
-    const row = rows.controls[rowIndex] as FormGroup;
+  removedec(rowIndex, subrowIndex) {
+    const rows = (this.dataForm.controls.boxform as FormArray).at(rowIndex).get('decform') as FormArray;
+    const row = rows.controls[subrowIndex] as FormGroup;
     if (row.controls.id.value !== 0) {
       this.deciddellist.push(row.controls.id.value);
     }
-    rows.removeAt(rowIndex);
+    rows.removeAt(subrowIndex);
 
     // this.refreshImg(rowIndex);
     // this.refreshFile(rowIndex);
@@ -263,9 +277,12 @@ export class ShippingcusEditComponent implements OnInit {
             totalitem: [this.headerData[i].totalitem],
             productform: this.formBuilder.array([
             ]),
+            decform: this.formBuilder.array([
+            ]),
             receiver: [this.headerData[i].receiver],
             receiveraddr: [this.headerData[i].receiveraddr],
-            receiverphone: [this.headerData[i].receiverphone]
+            receiverphone: [this.headerData[i].receiverphone],
+            receivertaxid: [this.headerData[i].receivertaxid]
           }));
         } else {
           control.push(this.formBuilder.group({
@@ -275,6 +292,8 @@ export class ShippingcusEditComponent implements OnInit {
             weight: [this.headerData[i].weight],
             totalitem: [this.headerData[i].totalitem],
             productform: this.formBuilder.array([
+            ]),
+            decform: this.formBuilder.array([
             ])
           }));
         }
@@ -282,6 +301,7 @@ export class ShippingcusEditComponent implements OnInit {
 
       for (let j = 0; j < this.headerData.length; j++) {
         const control2 = control.at(j).get('productform') as FormArray;
+        const control3 = control.at(j).get('decform') as FormArray;
         // tslint:disable-next-line: prefer-for-of
         for (let k = 0; k < this.detailData.length; k++) {
           if (this.headerData[j].id === this.detailData[k].shippingiD_H) {
@@ -293,38 +313,33 @@ export class ShippingcusEditComponent implements OnInit {
             }));
           }
         }
-      }
-    }
 
-  }
-
-  // read declarant data
-  readDec() {
-    const control = this.dataForm.controls.decform as FormArray;
-    if (this.declarData.length > 0) {
-      for (let i = 0; i < this.declarData.length; i++) {
-        if (control.at(i) !== undefined) {
-          control.at(i).patchValue(this.declarData[i]);
-        } else {
-          control.push(this.formBuilder.group({
-            id: [this.declarData[i].id],
-            name: [this.declarData[i].name, Validators.required],
-            taxid: [this.declarData[i].taxid, Validators.required],
-            phone: [this.declarData[i].phone],
-            mobile: [this.declarData[i].mobile],
-            addr: [this.declarData[i].addr],
-            idphotof: [this.declarData[i].idphotof],
-            idphotob: [this.declarData[i].idphotob],
-            appointment: [this.declarData[i].appointment]
-          }));
+        // tslint:disable-next-line: prefer-for-of
+        for (let k = 0; k < this.declarData.length; k++) {
+          if (this.headerData[j].id === this.declarData[k].shippingiD_H) {
+            control3.push(this.formBuilder.group({
+              id: [this.declarData[k].id],
+              name: [this.declarData[k].name, Validators.required],
+              taxid: [this.declarData[k].taxid, Validators.required],
+              phone: [this.declarData[k].phone],
+              mobile: [this.declarData[k].mobile],
+              addr: [this.declarData[k].addr],
+              idphotof: [this.declarData[k].idphotof],
+              idphotob: [this.declarData[k].idphotob],
+              appointment: [this.declarData[k].appointment]
+            }));
+          }
         }
 
       }
     }
+
   }
+
   //#endregion
 
   saveData(form) {
+    // console.log(form);
     // check Form
     if (this.dataForm.invalid) {
       return alert('必填不能為空！');

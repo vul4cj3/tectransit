@@ -539,7 +539,7 @@ namespace Tectransit.Datas
                     m.MAWBNO = DT.Rows[i]["MAWBNO"]?.ToString();
                     m.TOTAL = DT.Rows[i]["TOTAL"]?.ToString();
                     m.TOTALWEIGHT = DT.Rows[i]["TOTALWEIGHT"]?.ToString();
-                    m.STATUS = DT.Rows[i]["STATUS"]?.ToString();
+                    m.STATUS = Convert.ToInt32(DT.Rows[i]["STATUS"]);
                     m.PAYDATE = DT.Rows[i]["PAYDATE"]?.ToString();
                     m.EXPORTDATE = DT.Rows[i]["EXPORTDATE"]?.ToString();
                     m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
@@ -581,7 +581,7 @@ namespace Tectransit.Datas
                 m.RECEIVER = DT.Rows[0]["RECEIVER"]?.ToString();
                 m.RECEIVERADDR = DT.Rows[0]["RECEIVERADDR"]?.ToString();
                 m.RECEIVERPHONE = DT.Rows[0]["RECEIVERPHONE"]?.ToString();
-                m.STATUS = DT.Rows[0]["STATUS"]?.ToString();                
+                m.STATUS = Convert.ToInt32(DT.Rows[0]["STATUS"]);                
                 m.PAYDATE = DT.Rows[0]["PAYDATE"]?.ToString();
                 m.EXPORTDATE = DT.Rows[0]["EXPORTDATE"]?.ToString();
                 m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
@@ -614,7 +614,7 @@ namespace Tectransit.Datas
                             rows.CLEARANCENO = DT_Sub.Rows[j]["CLEARANCENO"]?.ToString();
                             rows.TRANSFERNO = DT_Sub.Rows[j]["TRANSFERNO"]?.ToString();
                             rows.TRACKINGNO = DT_Sub.Rows[j]["TRACKINGNO"]?.ToString();
-                            rows.DEPOTSTATUS = string.IsNullOrEmpty(DT_Sub.Rows[j]["DEPOTSTATUS"]?.ToString()) ? "0" : DT_Sub.Rows[j]["DEPOTSTATUS"]?.ToString();
+                            rows.DEPOTSTATUS = string.IsNullOrEmpty(DT_Sub.Rows[j]["DEPOTSTATUS"]?.ToString()) ? 0 : Convert.ToInt32(DT_Sub.Rows[j]["DEPOTSTATUS"]);
                             rows.RECEIVER = DT_Sub.Rows[j]["RECEIVER"]?.ToString();
                             rows.RECEIVERADDR = DT_Sub.Rows[j]["RECEIVERADDR"]?.ToString();
                             rows.RECEIVERPHONE = DT_Sub.Rows[j]["RECEIVERPHONE"]?.ToString();

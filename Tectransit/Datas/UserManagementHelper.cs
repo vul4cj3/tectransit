@@ -424,7 +424,7 @@ namespace Tectransit.Datas
                     m.COMPANYNAME = DBUtil.GetSingleValue1($@"SELECT COMPANYNAME AS COL1 FROM T_S_ACCOUNT WHERE ID = {DT.Rows[i]["ACCOUNTID"]}");
                     m.SHIPPINGNO = DT.Rows[i]["SHIPPINGNO"]?.ToString();
                     m.MAWBNO = DT.Rows[i]["MAWBNO"]?.ToString();
-                    m.STATUS = DT.Rows[i]["STATUS"]?.ToString();
+                    m.STATUS = Convert.ToInt32(DT.Rows[i]["STATUS"]);
                     m.CREDATE = DT.Rows[i]["CREDATE"]?.ToString();
                     m.UPDDATE = DT.Rows[i]["UPDDATE"]?.ToString();
 
@@ -443,7 +443,7 @@ namespace Tectransit.Datas
         public dynamic GetSingleShippingCusData(Hashtable sData)
         {
             string sql = $@"SELECT ID, ACCOUNTID, SHIPPINGNO, MAWBNO, FLIGHTNUM, TOTAL, TOTALWEIGHT,
-                                   RECEIVER, RECEIVERADDR, RECEIVERPHONE, STATUS, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
+                                   RECEIVER, RECEIVERADDR, RECEIVERPHONE, TAXID, STATUS, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
                                    CREATEBY AS CREBY, UPDBY, ISMULTRECEIVER
                             FROM T_V_SHIPPING_M
@@ -464,7 +464,8 @@ namespace Tectransit.Datas
                 m.RECEIVER = DT.Rows[0]["RECEIVER"]?.ToString();
                 m.RECEIVERADDR = DT.Rows[0]["RECEIVERADDR"]?.ToString();
                 m.RECEIVERPHONE = DT.Rows[0]["RECEIVERPHONE"]?.ToString();
-                m.STATUS = DT.Rows[0]["STATUS"]?.ToString();
+                m.RECEIVERTAXID = DT.Rows[0]["TAXID"]?.ToString();
+                m.STATUS = Convert.ToInt32(DT.Rows[0]["STATUS"]);
                 m.PAYDATE = DT.Rows[0]["PAYDATE"]?.ToString();
                 m.EXPORTDATE = DT.Rows[0]["EXPORTDATE"]?.ToString();
                 m.CREDATE = DT.Rows[0]["CREDATE"]?.ToString();
@@ -475,7 +476,7 @@ namespace Tectransit.Datas
 
                 sql = $@"SELECT A.SHIPPINGID_M AS MID, A.ID AS HID, B.ID AS DID, A.CLEARANCENO, A.TRANSFERNO,
                                 A.TRACKINGNO, A.DEPOTSTATUS, A.WEIGHT, A.TOTALITEM, A.REMARK1, A.REMARK2,
-                                A.RECEIVER, A.RECEIVERADDR, A.RECEIVERPHONE, B.PRODUCT, B.UNITPRICE, B.QUANTITY
+                                A.RECEIVER, A.RECEIVERADDR, A.RECEIVERPHONE, A.TAXID, B.PRODUCT, B.UNITPRICE, B.QUANTITY
                          FROM T_V_SHIPPING_H A
                          LEFT JOIN T_V_SHIPPING_D B ON A.ID = B.SHIPPINGID_H
                          WHERE A.SHIPPINGID_M = @SHIPPINGIDM";
@@ -496,10 +497,11 @@ namespace Tectransit.Datas
                             rows.CLEARANCENO = DT_Sub.Rows[j]["CLEARANCENO"]?.ToString();
                             rows.TRANSFERNO = DT_Sub.Rows[j]["TRANSFERNO"]?.ToString();
                             rows.TRACKINGNO = DT_Sub.Rows[j]["TRACKINGNO"]?.ToString();
-                            rows.DEPOTSTATUS = string.IsNullOrEmpty(DT_Sub.Rows[j]["DEPOTSTATUS"]?.ToString()) ? "0" : DT_Sub.Rows[j]["DEPOTSTATUS"]?.ToString();
+                            rows.DEPOTSTATUS = string.IsNullOrEmpty(DT_Sub.Rows[j]["DEPOTSTATUS"]?.ToString()) ? 0 : Convert.ToInt32(DT_Sub.Rows[j]["DEPOTSTATUS"]);
                             rows.RECEIVER = DT_Sub.Rows[j]["RECEIVER"]?.ToString();
                             rows.RECEIVERADDR = DT_Sub.Rows[j]["RECEIVERADDR"]?.ToString();
                             rows.RECEIVERPHONE = DT_Sub.Rows[j]["RECEIVERPHONE"]?.ToString();
+                            rows.RECEIVERTAXID = DT_Sub.Rows[j]["TAXID"]?.ToString();
                             rows.WEIGHT = DT_Sub.Rows[j]["WEIGHT"]?.ToString();
                             rows.TOTALITEM = DT_Sub.Rows[j]["TOTALITEM"]?.ToString();
                             rows.REMARK1 = DT_Sub.Rows[j]["REMARK1"]?.ToString();

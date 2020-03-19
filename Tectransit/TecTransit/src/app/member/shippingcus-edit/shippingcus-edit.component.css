@@ -79,20 +79,26 @@ input[type="file"] {
 .box-section .boxheader {
   position: relative;
   width: 100%;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .box-section .boxheader .form-control {
-  display: inline-block;
-  margin-right: 10px;
+  width: 250px;
   margin-bottom: 10px;
 }
 
-.boxheader .form-control label {
+.box-section .boxheader .form-control-large {
+  width: 450px;
+  margin-bottom: 10px;
+}
+
+.boxheader .form-control label, .boxheader .form-control-large label {
   margin-right: 5px;
   font-weight: bolder;
 }
 
-.boxheader .form-control span {
+.boxheader .form-control span, .boxheader .form-control-large span {
   border-bottom: 1px dashed #273152;
 }
 
@@ -193,4 +199,21 @@ input[type="file"] {
 
 .btn a:hover {
   background-color: #2a3558;
+}
+
+.btn-three {
+  position: relative;
+  width: 100%;
+}
+
+.inActive {
+  display: none;
+}
+
+.decform-modify, .btn-form {
+  display: none;
+}
+
+.decform-modify.Active, .btn-form.Active {
+  display: inline-block;
 }
