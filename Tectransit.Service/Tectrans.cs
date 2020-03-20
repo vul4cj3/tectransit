@@ -28,6 +28,8 @@ namespace Tectransit.Service
 
             //廠商匯入&異動資料(未入庫)拋轉到厚生倉
             listMission.Add(new Bussiness.TRANSDEPOT());
+            //廠商託運單號(嘉里大榮)拋轉到台空貨況
+            listMission.Add(new Bussiness.TRANSTECECO());
 
             writeLog("Service結束");
         }

@@ -9,6 +9,7 @@ namespace Tectransit.Modles
         public string Clearanceno { get; set; }
         public string Transferno { get; set; }
         public string Trackingno { get; set; }
+        public string Trackstatus { get; set; }
         public string Depotstatus { get; set; }
         public string Receiver { get; set; }
         public string Receiveraddr { get; set; }

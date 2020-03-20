@@ -16,6 +16,7 @@ namespace Tectransit.Controllers
     [Route("api/Depot/[action]")]
     public class DepotCheckController : ControllerBase
     {
+        CommonHelper objComm = new CommonHelper();
 
         //倉庫點收API
         [HttpPost]
@@ -263,7 +264,11 @@ namespace Tectransit.Controllers
 
                         if (UPDNum > 0)
                         {
-                            ts.Complete();                            
+                            //寫入拋轉到台空貨況API的紀錄
+                            objComm.InsertTectrackRecord(2, SHIPPINGNO);
+
+                            ts.Complete();
+                            
                             return new { status = 0, msg = "成功", error = "" };
                         }
                         else
@@ -330,10 +335,12 @@ namespace Tectransit.Controllers
         private string UpdateShippingCusHTrack(Hashtable sData)
         {
             //備註:出貨商
+            sData["TRACKSTATUS"] = "0";
             sData["REMARK2"] = "嘉里大榮";
             
             string sql = $@"UPDATE T_V_SHIPPING_H SET
                                    TRACKINGNO = @TRACKINGNO,
+                                   TRACKSTATUS = @TRACKSTATUS,
                                    REMARK2 = @REMARK2
                              WHERE ID = @ID";
 

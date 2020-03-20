@@ -1841,6 +1841,11 @@ namespace Tectransit.Modles
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Trackstatus)
+                    .HasColumnName("TRACKSTATUS")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Transferno)
                     .HasColumnName("TRANSFERNO")
                     .HasMaxLength(100)

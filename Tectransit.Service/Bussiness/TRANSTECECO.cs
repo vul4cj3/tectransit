@@ -1,23 +1,20 @@
-﻿using System;
-using System.Net;
-using System.IO;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Tectransit.Service.Library;
 using static Tectransit.Service.Library.Tools;
-using System.Web.Script.Serialization;
-using System.Collections;
-using Newtonsoft.Json;
-using System.Collections.Specialized;
-using System.Xml.Linq;
 
 namespace Tectransit.Service.Bussiness
 {
-    public class TRANSDEPOT:mission
+    public class TRANSTECECO : mission
     {
-        public TRANSDEPOT() : base("TRANSDEPOT")
+        public TRANSTECECO() : base("TRANSTECECO")
         {
         }
 
@@ -25,26 +22,26 @@ namespace Tectransit.Service.Bussiness
         {
             writeLog("=======" + DateTime.Now.ToString() + "=======", base._Name);
             writeLog("開始執行", base._Name);
-            Task();
+            Task2();
             writeLog("結束執行", base._Name);
         }
     }
 
-    public class ShipmentTransfer
+    public class EcoTransfer
     {
-        public result getData(List<data> datalist)
+        public Ecoresult getData(List<Ecodata> datalist)
         {
             try
             {
-                string sUrl = $@"http://192.168.11.158:90/Areas/Express/Express.asmx/PostExpressDataJSON";
+                string sUrl = $@"http://e-commerce.t3ex-tec.com/Api/TransitCheckApi/GetTrackingData";
                 var postData = JsonConvert.SerializeObject(datalist);
 
-                result objResponse = new result();
+                Ecoresult objResponse = new Ecoresult();
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(sUrl);
-                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentType = "application/json";
                 request.Method = "POST";
-                
-                string postParams = "json=" + postData;
+
+                string postParams = postData;
 
                 byte[] byteArray = Encoding.UTF8.GetBytes(postParams);//要發送的字串轉為byte[]
 
@@ -59,9 +56,8 @@ namespace Tectransit.Service.Bussiness
                     if (reader != null)
                     {
                         string temp = reader.ReadToEnd();
-                        var xml = XDocument.Parse(temp);
-                        
-                        objResponse = JsonConvert.DeserializeObject<result>(xml.Root.Value);                        
+
+                        objResponse = JsonConvert.DeserializeObject<Ecoresult>(temp);
                     }
                 }
                 return objResponse;
@@ -69,37 +65,52 @@ namespace Tectransit.Service.Bussiness
             catch (Exception ex)
             {
                 string errMsg = ex.Message.ToString();
-                result res = null;
+                Ecoresult res = null;
                 return res;
             }
         }
 
         //更新拋轉紀錄
-        public void UpdateRecord(long id, string postjson, result res)
+        public void UpdateTectrackRecord(long id, string postjson, Ecoresult res)
         {
             Hashtable sData = new Hashtable();
             sData["ID"] = id;
-            sData["ACTIVE"] = res.status == 0 ? 1 : 2; //1:拋轉成功/2:拋轉失敗
-            sData["APIURL"] = "http://192.168.11.158:90/Areas/Express/Express.asmx/PostExpressDataJSON";
+            sData["ACTIVE"] = res.status == 0 ? 1 : 2; //1:拋轉成功/2:拋轉失敗/3:其他
+            if (res.status == 99 && res.error.IndexOf("託運單號已存在") > 0)
+            {
+                sData["ACTIVE"] = 3;
+                sData["REMARK"] = "台空貨況已存在相同單號，不再進行拋轉";
+            }
+            sData["APIURL"] = "http://e-commerce.t3ex-tec.com/Api/TransitCheckApi/GetTrackingData";
             sData["SENDDATA"] = postjson; //傳送json資料(request)            
             sData["STATUS"] = res.status; //回傳結果:狀態            
             sData["MSG"] = res.msg; //回傳結果:狀態說明            
-            sData["RESPONSEDATA"] = res.errormsg;//回傳結果:99-紀錄errmsg
+            sData["RESPONSEDATA"] = res.error;//回傳結果:99-紀錄errmsg
             sData["UPDDATE"] = DateTime.Now;//更新時間
 
-            string sql = $@"UPDATE T_S_DEPOTRECORD SET
+            string sql = $@"UPDATE T_S_TECTRACKRECORD SET
                                  ACTIVE = @ACTIVE,
                                  APIURL = @APIURL,
                                  SENDDATA = @SENDDATA,
                                  STATUS = @STATUS,
                                  MSG = @MSG,
                                  RESPONSEDATA = @RESPONSEDATA,
+                                 REMARK = @REMARK,
                                  UPDDATE = @UPDDATE                                 
                             WHERE ID = @ID";
 
             DBUtil.EXECUTE(sql, sData);
         }
 
-    }    
+        //更新託運單拋轉狀態
+        public void UpdateShippingCusH(Hashtable sData)
+        {
+            string sql = $@"UPDATE T_V_SHIPPING_H SET
+                                 TRACKSTATUS = @TRACKSTATUS                                
+                            WHERE TRACKINGNO = @TRACKINGNO AND DEPOTSTATUS = '1'";
 
+            DBUtil.EXECUTE(sql, sData);
+        }
+
+    }
 }

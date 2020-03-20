@@ -562,7 +562,7 @@ namespace Tectransit.Datas
         public dynamic GetSingleShippingCusData(Hashtable sData)
         {
             string sql = $@"SELECT ID, ACCOUNTID, SHIPPINGNO, MAWBNO, TOTAL,
-                                   TOTALWEIGHT, ISMULTRECEIVER, RECEIVER, RECEIVERADDR, RECEIVERPHONE, STATUS, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
+                                   TOTALWEIGHT, ISMULTRECEIVER, RECEIVER, RECEIVERADDR, RECEIVERPHONE, TAXID, STATUS, FORMAT(PAYDATE, 'yyyy-MM-dd HH:mm:ss') AS PAYDATE, FORMAT(EXPORTDATE, 'yyyy-MM-dd HH:mm:ss') AS EXPORTDATE,
                                    FORMAT(CREDATE, 'yyyy-MM-dd HH:mm:ss') As CREDATE, FORMAT(UPDDATE, 'yyyy-MM-dd HH:mm:ss') As UPDDATE,
                                    CREATEBY AS CREBY, UPDBY
                             FROM T_V_SHIPPING_M
@@ -581,6 +581,7 @@ namespace Tectransit.Datas
                 m.RECEIVER = DT.Rows[0]["RECEIVER"]?.ToString();
                 m.RECEIVERADDR = DT.Rows[0]["RECEIVERADDR"]?.ToString();
                 m.RECEIVERPHONE = DT.Rows[0]["RECEIVERPHONE"]?.ToString();
+                m.RECEIVERTAXID = DT.Rows[0]["TAXID"]?.ToString();
                 m.STATUS = Convert.ToInt32(DT.Rows[0]["STATUS"]);                
                 m.PAYDATE = DT.Rows[0]["PAYDATE"]?.ToString();
                 m.EXPORTDATE = DT.Rows[0]["EXPORTDATE"]?.ToString();
@@ -591,7 +592,7 @@ namespace Tectransit.Datas
 
 
                 sql = $@"SELECT A.SHIPPINGID_M AS MID, A.ID AS HID, B.ID AS DID, A.CLEARANCENO, A.TRANSFERNO,
-                                A.TRACKINGNO, A.DEPOTSTATUS, A.RECEIVER, A.RECEIVERADDR, A.RECEIVERPHONE,
+                                A.TRACKINGNO, A.DEPOTSTATUS, A.RECEIVER, A.RECEIVERADDR, A.RECEIVERPHONE, A.TAXID,
                                 A.WEIGHT, A.TOTALITEM, A.REMARK1, A.REMARK2,
                                 B.PRODUCT, B.UNITPRICE, B.QUANTITY
                          FROM T_V_SHIPPING_H A
@@ -618,6 +619,7 @@ namespace Tectransit.Datas
                             rows.RECEIVER = DT_Sub.Rows[j]["RECEIVER"]?.ToString();
                             rows.RECEIVERADDR = DT_Sub.Rows[j]["RECEIVERADDR"]?.ToString();
                             rows.RECEIVERPHONE = DT_Sub.Rows[j]["RECEIVERPHONE"]?.ToString();
+                            rows.RECEIVERTAXID = DT_Sub.Rows[j]["TAXID"]?.ToString();
                             rows.WEIGHT = DT_Sub.Rows[j]["WEIGHT"]?.ToString();
                             rows.TOTALITEM = DT_Sub.Rows[j]["TOTALITEM"]?.ToString();
                             rows.REMARK1 = DT_Sub.Rows[j]["REMARK1"]?.ToString();

@@ -54,6 +54,11 @@ namespace Tectransit.Service.Library
             TransportData();
         }
 
+        protected void Task2()
+        {
+            TransportEcoData();
+        }
+
         /// <summary>
         ///廠商匯入&異動資料(未入庫)拋轉到厚生倉
         /// </summary>
@@ -175,6 +180,111 @@ namespace Tectransit.Service.Library
                         #endregion
 
 
+                    }
+                }
+                else { writeLog("沒有需要拋轉的資料！"); }
+            }
+            catch (Exception ex)
+            {
+                writeLog(ex.Message.ToString());
+                writeLog("拋轉失敗！");
+            }
+        }
+
+        /// <summary>
+        ///廠商託運單號(嘉里大榮)拋轉到台空貨況
+        /// </summary>
+        protected void TransportEcoData()
+        {
+            try
+            {
+                //抓取需要拋轉的紀錄(廠商)
+                string sql = $@"SELECT * FROM T_S_TECTRACKRECORD 
+                            WHERE TYPE = 2 AND ACTIVE IN (0, 2)
+                            ORDER BY CREDATE";
+
+                DataTable DT = DBUtil.SelectDataTable(sql);
+                if (DT.Rows.Count > 0)
+                {
+                    for (int i = 0; i < DT.Rows.Count; i++)
+                    {
+                        Ecoresult res = new Ecoresult();
+                        Hashtable recordData = new Hashtable();
+                        recordData["ID"] = DT.Rows[i]["ID"];//拋轉紀錄ID
+                        recordData["SHIPPINGNO"] = DT.Rows[i]["SHIPPINGNO"];//集運單號
+
+                        #region Post資料處理
+                        List<Ecodata> postData = new List<Ecodata>();
+                        string[] SNOList = recordData["SHIPPINGNO"]?.ToString().Split(';');
+                        if (SNOList.Length > 0)
+                        {
+                            for (int j = 0; j < SNOList.Length; j++)
+                            {
+                                sql = $@"SELECT A.SHIPPINGNO, FORMAT(A.UPDDATE, 'yyyy-MM-dd HH:mm:ss') AS SHIPPINGDATE, B.TRACKINGNO 
+                                         FROM T_V_SHIPPING_M A 
+                                         LEFT JOIN T_V_SHIPPING_H B ON A.ID = B.SHIPPINGID_M
+                                         WHERE SHIPPINGNO = '{SNOList[j]}' AND B.TRACKSTATUS IN ('0')";
+
+                                DataTable MasterDT = DBUtil.SelectDataTable(sql);                                
+                                if (MasterDT.Rows.Count > 0)
+                                {
+                                    for (int k = 0; k < MasterDT.Rows.Count; k++)
+                                    {
+                                        if (!string.IsNullOrEmpty(MasterDT.Rows[k]["TRACKINGNO"]?.ToString()))
+                                        {
+                                            Ecodata masterData = new Ecodata();
+                                            masterData.TRACKINGNO = MasterDT.Rows[k]["TRACKINGNO"]?.ToString();
+                                            masterData.CUSTOMERID = "2"; //1:颿達/2:嘉里大榮
+
+                                            //貨況細項
+                                            List<EcoItems> DetailList = new List<EcoItems>();
+                                            EcoItems detailData = new EcoItems();
+                                            detailData.TWDATE = MasterDT.Rows[k]["SHIPPINGDATE"]?.ToString();
+                                            detailData.TWPLACE = "桃園";
+                                            detailData.TWSTATUS = "已清關";
+                                            detailData.ENDATE = detailData.TWDATE;
+                                            detailData.ENPLACE = "Taoyuan";
+                                            detailData.ENSTATUS = "the clearance of goods";
+
+
+                                            DetailList.Add(detailData);
+                                            masterData.DETAIL = DetailList;
+
+                                            postData.Add(masterData);
+                                        }
+                                    }
+                                }
+
+                            }
+
+                            //執行拋轉
+                            EcoTransfer objEco = new EcoTransfer();
+                            if (postData != null)
+                            {
+                                res = objEco.getData(postData);
+
+                                //更新拋轉紀錄
+                                string postjson = JsonConvert.SerializeObject(postData);
+                                objEco.UpdateTectrackRecord(Convert.ToInt64(recordData["ID"]), postjson, res);
+
+                                //拋轉成功--->更新託運單狀態(避免已建立的託運單又被重拋)
+                                if (res.status == 0)
+                                {
+                                    for (int m = 0; m < postData.Count; m++)
+                                    {
+                                        Hashtable htData = new Hashtable();
+                                        htData["TRACKINGNO"] = postData[m].TRACKINGNO;
+                                        htData["TRACKSTATUS"] = "1";
+                                        objEco.UpdateShippingCusH(htData);
+                                    }
+                                }
+
+                                writeLog("拋轉成功！");
+
+                            }
+
+                        }
+                        #endregion
                     }
                 }
                 else { writeLog("沒有需要拋轉的資料！"); }

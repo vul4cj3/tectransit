@@ -53,8 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bussiness\TRANSDEPOT.cs" />
+    <Compile Include="Bussiness\TRANSTECECO.cs" />
     <Compile Include="Library\DBUtil.cs" />
     <Compile Include="Library\mission.cs" />
+    <Compile Include="Library\Models.cs" />
     <Compile Include="Library\Tools.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">

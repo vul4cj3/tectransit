@@ -256,7 +256,7 @@ export class ShippingcusEditComponent implements OnInit {
 
     const dectbAll = document.getElementsByClassName('declarant-table');
     // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < decformAll.length; i++) {
+    for (let i = 0; i < dectbAll.length; i++) {
       const item = dectbAll[i] as HTMLTableElement;
       item.classList.remove('inActive');
     }

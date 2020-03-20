@@ -736,7 +736,7 @@ namespace Tectransit.Datas
         //寫入拋轉厚生倉API紀錄
         /// <summary>
         /// [type] = 1:個人用戶/2:廠商
-        /// [shippingno] = 個人用戶: 快遞單號?/廠商: 主單號(MAWB)
+        /// [shippingno] = 個人用戶: 快遞單號?/廠商: 集運單號
         /// </summary>
         /// <returns></returns>
         public void InsertDepotRecord(int type, string shippingno)
@@ -752,6 +752,27 @@ namespace Tectransit.Datas
                             VALUES (@TYPE, @ACTIVE, @SHIPPINGNO, @CREDATE, @UPDDATE)";
 
             DBUtil.EXECUTE(sql, sData);            
+        }
+
+        //寫入拋轉到台空貨況API的紀錄
+        /// <summary>
+        /// [type] = 1:個人用戶/2:廠商
+        /// [shippingno] = 個人用戶: 快遞單號?/廠商: 集運單號
+        /// </summary>
+        /// <returns></returns>
+        public void InsertTectrackRecord(int type, string shippingno)
+        {
+            Hashtable sData = new Hashtable();
+            sData["TYPE"] = type;
+            sData["ACTIVE"] = 0; //0:未拋轉/1:拋轉成功/2:拋轉失敗/3:其他
+            sData["SHIPPINGNO"] = shippingno;
+            sData["CREDATE"] = DateTime.Now;
+            sData["UPDDATE"] = sData["CREDATE"];
+
+            string sql = $@"INSERT INTO T_S_TECTRACKRECORD(TYPE, ACTIVE, SHIPPINGNO, CREDATE, UPDDATE)
+                            VALUES (@TYPE, @ACTIVE, @SHIPPINGNO, @CREDATE, @UPDDATE)";
+
+            DBUtil.EXECUTE(sql, sData);
         }
 
     }
