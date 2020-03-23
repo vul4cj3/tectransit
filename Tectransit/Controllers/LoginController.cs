@@ -61,6 +61,7 @@ namespace Tectransit.Controllers
             htData["USERCODE"] = jsonData.Value<string>("USERCODE");
             htData["PASSWORD"] = jsonData.Value<string>("PASSWORD");
             htData["CAPTCHA"] = jsonData.Value<string>("CODE");
+            htData["RANKTYPE"] = 1;//個人用戶
             htData["HOSTNAME"] = HttpContext.Request.Host.Host;
             htData["ClientIP"] = clientIP;
 
@@ -82,6 +83,42 @@ namespace Tectransit.Controllers
             //Delete the cookie  
             Remove("_acccode");
             Remove("_accname");
+
+            return "0";
+        }
+
+        [HttpPost]
+        public dynamic doCusLogin([FromBody] object form)
+        {
+            var jsonData = JObject.FromObject(form);
+            string clientIP = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            Hashtable htData = new Hashtable();
+            htData["USERCODE"] = jsonData.Value<string>("USERCODE");
+            htData["PASSWORD"] = jsonData.Value<string>("PASSWORD");
+            htData["CAPTCHA"] = jsonData.Value<string>("CODE");
+            htData["RANKTYPE"] = 2;//廠商
+            htData["HOSTNAME"] = HttpContext.Request.Host.Host;
+            htData["ClientIP"] = clientIP;
+
+            if (!CheckCode(htData["CAPTCHA"]?.ToString()))
+                return new { status = "error", message = "驗證碼輸入錯誤！" };
+
+            user objuser = new user();
+
+            var res = objuser.ACLogin(htData, true);
+            if (res.status?.ToString() == "success")
+                LoginHandler(res.ID?.ToString(), "C");
+
+            return res;
+        }
+
+        [HttpGet]
+        public dynamic doCusLogout()
+        {
+            //Delete the cookie  
+            Remove("_cuscode");
+            Remove("_cusname");
 
             return "0";
         }
@@ -120,6 +157,12 @@ namespace Tectransit.Controllers
                 Set("_acccode", ID, 120);
                 string accName = DBUtil.GetSingleValue1($@"SELECT USERNAME AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{ID}' AND ISENABLE = 'true'");
                 Set("_accname", accName, 120);
+            }
+            else if (Type == "C")
+            {
+                Set("_cuscode", ID, 120);
+                string accName = DBUtil.GetSingleValue1($@"SELECT USERNAME AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{ID}' AND ISENABLE = 'true'");
+                Set("_cusname", accName, 120);
             }
 
         }

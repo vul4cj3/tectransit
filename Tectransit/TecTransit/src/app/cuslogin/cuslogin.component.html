@@ -1,0 +1,49 @@
+<div class="login-contain">
+  <div class="loginform">
+    <form class="form-contain" [formGroup]="loginForm">
+      <!-- Account -->
+      <div class="form-control">
+        <input type="text" id="AccountID" class="form-control mb-4 space_" (keyup.enter)="onSubmit()"
+          [ngClass]="{'is-invalid': isErr}" formControlName="username">
+        <span class="outline"></span>
+        <span class="symbol-login">
+          <i class="fas fa-user"></i>
+        </span>
+      </div>
+      <!-- Password -->
+      <div class="form-control">
+        <input type="password" id="ACPassword" class="form-control mb-4 space_" (keyup.enter)="onSubmit()"
+          [ngClass]="{'is-invalid': isErr}" formControlName="password">
+        <span class="outline"></span>
+        <span class="symbol-login">
+          <i class="fas fa-lock"></i>
+        </span>
+      </div>
+      <!-- 驗證碼 -->
+      <div class="form-control">
+        <input type="text" id="ACCaptcha" class="form-control mb-4 space_" (keyup.enter)="onSubmit()"
+          [ngClass]="{'is-invalid': isErr}" formControlName="captcha" placeholder="請輸入驗證碼">
+        <span class="outline"></span>
+        <img [src]="catpchaImg" />
+        <a (click)="refreshCaptcha()">
+          <span class="symbol-login-captcha">
+            <i class="fas fa-sync"></i>
+          </span>
+        </a>
+      </div>
+      <div>
+        <div>
+          <!-- Forgot password -->
+          <a class="btn-forget" routerLink="/forgetpw">忘記密碼？</a>
+        </div>
+      </div>
+      <!-- Sign in button -->
+      <div class="btn-two">
+        <a (click)="onSubmit()">登入</a>
+        <a (click)="Clear()">清除</a>
+      </div>
+    </form>
+    <div class="login-ad">
+    </div>
+  </div>
+</div>

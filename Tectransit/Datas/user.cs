@@ -73,6 +73,7 @@ namespace Tectransit.Datas
         {
             string sUSERCODE = ConvertString(request["USERCODE"]);
             string sPASSWORD = ConvertString(request["PASSWORD"]);
+            int sRANKTYPE = Convert.ToInt32(request["RANKTYPE"]);
 
             //ACC帳號密碼檢查
             if (String.IsNullOrEmpty(sUSERCODE) || String.IsNullOrEmpty(sPASSWORD))
@@ -92,7 +93,7 @@ namespace Tectransit.Datas
             string IsUSEREnable = DBUtil.GetSingleValue1($@"SELECT DISTINCT A.USERCODE AS COL1 FROM T_S_ACCOUNT A
                                                           LEFT JOIN T_S_ACRANKMAP B ON A.USERCODE = B.USERCODE
                                                           LEFT JOIN T_S_RANK C ON C.ID = B.RANKID
-                                                          WHERE A.USERCODE = '{sUSERCODE}' AND A.ISENABLE = 'true' AND C.ISENABLE = 'true'");
+                                                          WHERE A.USERCODE = '{sUSERCODE}' AND A.ISENABLE = 'true' AND C.RANKTYPE = {sRANKTYPE} AND C.ISENABLE = 'true'");
 
             if (string.IsNullOrEmpty(IsUSEREnable))
                 return new { status = "error", message = "帳號已被停用或不存在，請洽網站人員！" };

@@ -36,14 +36,6 @@ export class NavMenuComponent implements OnInit {
     if (currentAcct) {
       this.ismemLogin = true;
     }
-
-    this.commonservice.chkMemtype()
-      .subscribe(data => {
-        this.ismemcus = (data.data === 'Y' ? true : false);
-      },
-        error => {
-          console.log(error);
-        });
   }
 
   getMenu() {
