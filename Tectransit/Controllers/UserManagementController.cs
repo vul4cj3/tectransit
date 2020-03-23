@@ -1543,7 +1543,8 @@ namespace Tectransit.Controllers
                 if (sData["USERCODE"] != null)
                     rowTSA.Usercode = sData["USERCODE"]?.ToString();
                 if (sData["USERPASSWORD"] != null)
-                    rowTSA.Userpassword = sData["USERPASSWORD"]?.ToString();
+                    if (!string.IsNullOrEmpty(sData["USERPASSWORD"]?.ToString()))
+                        rowTSA.Userpassword = objComm.GetMd5Hash(sData["USERPASSWORD"]?.ToString());
                 if (sData["USERSEQ"] != null)
                     rowTSA.Userseq = sData["USERSEQ"]?.ToString();
                 if (sData["USERNAME"] != null)
@@ -1568,8 +1569,8 @@ namespace Tectransit.Controllers
                     rowTSA.Phone = sData["PHONE"]?.ToString();
                 if (sData["MOBILE"] != null)
                     rowTSA.Mobile = sData["MOBILE"]?.ToString();
-                if (sData["ADDR"] != null)
-                    rowTSA.Addr = sData["ADDR"]?.ToString();
+                if (sData["ADDRESS"] != null)
+                    rowTSA.Addr = sData["ADDRESS"]?.ToString();
                 if (sData["ISENABLE"] != null)
                     rowTSA.Isenable = sData["ISENABLE"]?.ToString() == "1" ? true : false;
 

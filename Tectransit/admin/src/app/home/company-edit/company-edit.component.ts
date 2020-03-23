@@ -34,6 +34,7 @@ export class CompanyEditComponent implements OnInit {
     this.dataForm = this.formBuilder.group({
       userid: 0,
       usercode: ['', Validators.required],
+      userpassword: [''],
       username: '',
       userdesc: '',
       userseq: '',
@@ -55,10 +56,6 @@ export class CompanyEditComponent implements OnInit {
 
     // get parameters id then get data
     this.userID = this.route.snapshot.paramMap.get('id');
-    // 不開放新增功能
-    if (this.userID === '0') {
-      this.router.navigate(['/accounts']);
-    }
 
     if (this.userID !== '0') {
       this.getData(this.userID);
@@ -82,7 +79,7 @@ export class CompanyEditComponent implements OnInit {
     // check Form
     if (this.dataForm.invalid) {
       this.isErr = true;
-      return alert('用戶代碼不能為空！');
+      return alert('用戶代碼&用戶密碼不能為空！');
     }
 
     if (this.userID !== '0') {

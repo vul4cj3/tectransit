@@ -39,7 +39,7 @@
 
 .reg-contain .col {
   display: inline-block;
-  width: 300px;
+  width: 500px;
   height: 100%;
   background-color: #fff;
   padding: 10px;
@@ -73,7 +73,7 @@
   width: 270px;
   height: 40px;
   padding: 10px;
-  margin-left: 5px;
+  margin-left: 100px;
   color: #fff;
   background-color: rgb(45, 175, 125);
   border-radius: 2px;
