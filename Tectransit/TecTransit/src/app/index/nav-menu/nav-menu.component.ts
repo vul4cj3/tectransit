@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthenticationService } from '../services/login.service';
+import { AuthenticationService } from '../../services/login.service';
 import { Router } from '@angular/router';
-import { CommonService } from '../services/common.service';
-import { MenuInfo, AboutCate } from '../_Helper/models';
+import { CommonService } from '../../services/common.service';
+import { MenuInfo, AboutCate } from '../../_Helper/models';
 
 @Component({
   selector: 'app-nav-menu',

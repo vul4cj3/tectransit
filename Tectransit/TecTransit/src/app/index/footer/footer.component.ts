@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuInfo } from '../_Helper/models';
-import { CommonService } from '../services/common.service';
+import { MenuInfo } from '../../_Helper/models';
+import { CommonService } from '../../services/common.service';
 
 @Component({
   selector: 'app-footer',

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -11,17 +11,22 @@ import { ShippingcusHeaderComponent } from './shippingcus-header/shippingcus-hea
 import { EntrustcusImportComponent } from './entrustcus-import/entrustcus-import.component';
 import { CusIndexRoutingModule } from './cusindex-routing.module';
 import { ShareModule } from '../share/share.module';
+import { NavMenucusComponent } from './nav-menucus/nav-menucus.component';
+import { CusindexComponent } from './cusindex.component';
+import { CommonService } from '../services/common.service';
 
 
 
 @NgModule({
   declarations: [
+    CusindexComponent,
     EntrustcusComponent,
     ProfilecusComponent,
     ShippingcusListComponent,
     ShippingcusEditComponent,
     ShippingcusHeaderComponent,
-    EntrustcusImportComponent
+    EntrustcusImportComponent,
+    NavMenucusComponent
   ],
   imports: [
     CommonModule,
@@ -30,6 +35,9 @@ import { ShareModule } from '../share/share.module';
     HttpClientModule,
     CusIndexRoutingModule,
     ShareModule
-  ]
+  ],
+  providers: [CommonService],
+  exports: [CusindexComponent],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class CusindexModule { }

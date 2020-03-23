@@ -9,22 +9,13 @@ import { CommonService } from './services/common.service';
 import { ShareModule } from './share/share.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { IndexModule } from './index/index.module';
-import { IndexComponent } from './index/index.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { FooterComponent } from './footer/footer.component';
 import { CusloginComponent } from './cuslogin/cuslogin.component';
-import { CusindexComponent } from './cusindex/cusindex.component';
 import { CusindexModule } from './cusindex/cusindex.module';
-import { ShippstatusPipe } from './_Helper/shippstatus.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
-    IndexComponent,
-    NavMenuComponent,
-    FooterComponent,
-    CusloginComponent,
-    CusindexComponent
+    CusloginComponent
   ],
   imports: [
     BrowserModule,

@@ -34,12 +34,18 @@ import { DeclarantComponent } from './declarant/declarant.component';
 import { ShippingCombineComponent } from './shipping-combine/shipping-combine.component';
 import { ShippingEditComponent } from './shipping-edit/shipping-edit.component';
 import { ShippingListComponent } from './shipping-list/shipping-list.component';
+import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { FooterComponent } from './footer/footer.component';
+import { IndexComponent } from './index.component';
 
 
 
 @NgModule({
   declarations: [
+    IndexComponent,
     HomeComponent,
+    NavMenuComponent,
+    FooterComponent,
     BannerComponent,
     LoginComponent,
     RegisterComponent,
@@ -75,7 +81,7 @@ import { ShippingListComponent } from './shipping-list/shipping-list.component';
     ShareModule,
     NgbModule
   ],
-  exports: [],
+  exports: [IndexComponent],
   providers: [AuthenticationService, AuthGuard, CommonService],
   schemas: [NO_ERRORS_SCHEMA]
 })
