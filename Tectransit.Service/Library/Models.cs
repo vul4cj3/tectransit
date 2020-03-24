@@ -63,6 +63,7 @@ namespace Tectransit.Service.Library
     public class Ecodata
     {
         public string TRACKINGNO { get; set; }
+        public string TRANSFERNO { get; set; }
         public string CUSTOMERID { get; set; }        
         public List<EcoItems> DETAIL { get; set; }
 

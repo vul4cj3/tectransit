@@ -220,7 +220,7 @@ namespace Tectransit.Service.Library
                         {
                             for (int j = 0; j < SNOList.Length; j++)
                             {
-                                sql = $@"SELECT A.SHIPPINGNO, FORMAT(A.UPDDATE, 'yyyy-MM-dd HH:mm:ss') AS SHIPPINGDATE, B.TRACKINGNO 
+                                sql = $@"SELECT A.SHIPPINGNO, FORMAT(A.UPDDATE, 'yyyy-MM-dd HH:mm:ss') AS SHIPPINGDATE, B.TRANSFERNO, B.TRACKINGNO 
                                          FROM T_V_SHIPPING_M A 
                                          LEFT JOIN T_V_SHIPPING_H B ON A.ID = B.SHIPPINGID_M
                                          WHERE SHIPPINGNO = '{SNOList[j]}' AND B.TRACKSTATUS IN ('0')";
@@ -234,6 +234,7 @@ namespace Tectransit.Service.Library
                                         {
                                             Ecodata masterData = new Ecodata();
                                             masterData.TRACKINGNO = MasterDT.Rows[k]["TRACKINGNO"]?.ToString();
+                                            masterData.TRANSFERNO = MasterDT.Rows[k]["TRANSFERNO"]?.ToString();
                                             masterData.CUSTOMERID = "2"; //1:颿達/2:嘉里大榮
 
                                             //貨況細項
