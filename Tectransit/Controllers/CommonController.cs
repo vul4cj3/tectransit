@@ -177,7 +177,7 @@ namespace Tectransit.Controllers
 
                 string sql = $@"SELECT USERCODE AS COL1 
                             FROM T_S_ACCOUNT 
-                            WHERE (TAXID = '{htData["IDCODE"]}' OR RATEID = '{htData["IDCODE"]}') AND EMAIL = '{htData["EMAIL"]}' AND ISENABLE = 'true'";
+                            WHERE TAXID = '{htData["IDCODE"]}' AND EMAIL = '{htData["EMAIL"]}' AND ISENABLE = 'true'";
 
                 string IsCusMem = DBUtil.GetSingleValue1(sql);
 

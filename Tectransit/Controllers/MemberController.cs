@@ -75,6 +75,54 @@ namespace Tectransit.Controllers
             }
         }
 
+        [HttpGet]
+        public dynamic GetCusMemData()
+        {
+            Hashtable htData = new Hashtable();
+            htData["_cuscode"] = Request.Cookies["_cuscode"];
+            htData["_cusname"] = Request.Cookies["_cusname"];
+
+            return objMember.GetCusMemData(htData);
+        }
+
+        [HttpPost]
+        public dynamic EditCusMemData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                long id = Convert.ToInt64(jsonData.Value<string>("id"));
+                JObject arrData = jsonData.Value<JObject>("formdata");
+
+                Hashtable htData = new Hashtable();
+                foreach (var t in arrData)
+                    htData[t.Key.ToUpper()] = t.Value?.ToString();
+
+
+                //檢查舊密碼是否符合(不符合則不可修改)
+                if (!string.IsNullOrEmpty(htData["USERPASSWORD"]?.ToString()) && !string.IsNullOrEmpty(htData["NEWPW"]?.ToString()))
+                {
+                    string oldPW = DBUtil.GetSingleValue1($@"SELECT USERPASSWORD AS COL1 FROM T_S_ACCOUNT WHERE ID = {id}");
+                    if (objComm.GetMd5Hash(htData["USERPASSWORD"]?.ToString()) != oldPW)
+                        return new { status = "99", msg = "保存失敗，用戶密碼(舊密碼)輸入錯誤！" };
+                }
+
+
+                //get cookies
+                htData["_cuscode"] = Request.Cookies["_cuscode"];
+                htData["_cusname"] = Request.Cookies["_cusname"];
+
+                UpdateCusMemData(id, htData);
+
+                return new { status = "0", msg = "保存成功！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "0", msg = "保存失敗！" };
+            }
+        }
+
         [HttpPost]
         public dynamic SaveRegData([FromBody] object form)
         {
@@ -896,6 +944,43 @@ namespace Tectransit.Controllers
             }
         }
 
+        private void UpdateCusMemData(long id, Hashtable sData)
+        {
+            var query = _context.TSAccount.Where(q => q.Id == id).FirstOrDefault();
+
+            if (query != null)
+            {
+                TSAccount rowTSA = query;
+
+                if (!string.IsNullOrEmpty(sData["NEWPW"]?.ToString()))
+                    rowTSA.Userpassword = objComm.GetMd5Hash(sData["NEWPW"]?.ToString());
+                if (sData["USERNAME"] != null)
+                    rowTSA.Username = sData["USERNAME"]?.ToString();
+                if (sData["USERDESC"] != null)
+                    rowTSA.Userdesc = sData["USERDESC"]?.ToString();
+                if (sData["EMAIL"] != null)
+                    rowTSA.Email = sData["EMAIL"]?.ToString();
+                if (sData["TAXID"] != null)
+                    rowTSA.Taxid = sData["TAXID"]?.ToString();
+                if (sData["PHONE"] != null)
+                    rowTSA.Phone = sData["PHONE"]?.ToString();
+                if (sData["MOBILE"] != null)
+                    rowTSA.Mobile = sData["MOBILE"]?.ToString();
+                if (sData["ADDRESS"] != null)
+                    rowTSA.Addr = sData["ADDRESS"]?.ToString();
+                if (sData["ISENABLE"] != null)
+                    rowTSA.Isenable = sData["ISENABLE"]?.ToString() == "1" ? true : false;
+
+                if (sData.Count > 2)//排除cookies
+                {
+                    rowTSA.Upddate = DateTime.Now;
+                    rowTSA.Updby = sData["_cuscode"]?.ToString();
+
+                    _context.SaveChanges();
+                }
+            }
+        }
+
         private void SendEmailAccept(Hashtable sData)
         {
             string F_User = "TEC Website System<ebs.sys@t3ex-group.com>";
@@ -1335,13 +1420,13 @@ namespace Tectransit.Controllers
                 Hashtable htData = new Hashtable();
                 htData["SHIPPINGIDM"] = id.ToString();
                 //get cookies
-                htData["_acccode"] = Request.Cookies["_acccode"];
-                htData["_accname"] = Request.Cookies["_accname"];
+                htData["_cuscode"] = Request.Cookies["_cuscode"];
+                htData["_cusname"] = Request.Cookies["_cusname"];
 
                 string sql = $@"SELECT A.ID AS COL1 FROM T_S_ACCOUNT A
                                 LEFT JOIN T_S_ACRANKMAP B ON B.USERCODE = A.USERCODE
                                 LEFT JOIN T_S_RANK C ON C.ID = B.RANKID
-                                WHERE A.USERCODE = '{htData["_acccode"]}' AND C.RANKTYPE = '2'";
+                                WHERE A.USERCODE = '{htData["_cuscode"]}' AND C.RANKTYPE = '2'";
 
                 htData["ACCOUNTID"] = DBUtil.GetSingleValue1(sql);
 

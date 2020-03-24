@@ -84,12 +84,13 @@
 .login-ad span {
   display: block;
   position: absolute;
-  bottom: 130px;
+  bottom: 20px;
   left: 150px;
   font-size: 14px;
-  font-weight: 500;
+  font-family: 'Noto Sans TC', sans-serif;
+  font-weight: 550;
   letter-spacing: 4px;
-  color: rgb(130, 150, 119);
+  color: rgb(91, 116, 78);
 }
 
 .login-ad a {

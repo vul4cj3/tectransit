@@ -1,0 +1,84 @@
+a {
+  cursor: pointer;
+}
+
+.app-sidebar {
+  position: fixed;
+  height: 100vh;
+  width: 280px;
+}
+
+.app-sidebar .header {
+  position: relative;
+  width: 100%;
+  margin-bottom: 50px;
+}
+
+.app-sidebar .header .logo {
+  position: absolute;
+  top: 16px;
+  left: 90px;
+  height: 50px;
+  width: 97px;
+  background-image: url(/res/assets/util/logo.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 3;
+}
+
+.app-sidebar .contain {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: 100vh;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+.app-sidebar .contain .nav {
+  text-align: center;
+  margin: 10px;
+}
+
+.nav li {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 550;
+  padding: 10px 5px;
+  border-radius: 10px;
+}
+
+.nav li:hover {
+  background-color: rgb(253, 252, 252, .4);
+}
+
+.sidebar-bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 280px;
+  background-position: -80px;
+  background-size: contain;
+  background-attachment: fixed;
+  opacity: .3;
+  z-index: 2;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(206, 204, 204);
+  border-radius: 5px;
+  transition: .7s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(179, 175, 175);
+}

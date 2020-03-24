@@ -12,8 +12,8 @@ import { CommonService } from 'src/app/services/common.service';
 export class ProfilecusComponent implements OnInit {
   memForm: FormGroup;
 
-  getdataUrl = '/api/Member/GetMemData';
-  saveUrl = '/api/Member/EditMemData';
+  getdataUrl = '/api/Member/GetCusMemData';
+  saveUrl = '/api/Member/EditCusMemData';
 
   memData: AccountInfo;
   dataChange;

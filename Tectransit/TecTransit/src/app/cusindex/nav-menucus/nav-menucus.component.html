@@ -1,1 +1,18 @@
-<p>nav-menucus works!</p>
+<div class="app-sidebar">
+  <!-- Logo section -->
+  <div class="header">
+    <div class="logo"></div>
+  </div>
+  <!-- Menu section -->
+  <div class="contain">
+    <div class="nav">
+      <ul>
+        <li><a routerLink="/cus/profile">會員主頁</a></li>
+        <li><a routerLink="/cus/entrustim">匯入集運</a></li>
+        <li><a routerLink="/cus/shipping/t1">集運單管理</a></li>
+        <li><a (click)="doLogout()">登出</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="sidebar-bg" style="background-image: url('/res/assets/util/cusloginbg.jpg');"></div>
+</div>
