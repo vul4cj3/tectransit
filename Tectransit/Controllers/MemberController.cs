@@ -1717,7 +1717,7 @@ namespace Tectransit.Controllers
         {
             try
             {
-                string usercode = Request.Cookies["_acccode"];
+                string usercode = Request.Cookies["_cuscode"];
 
                 var file = Request.Form.Files;
                 var folderName = Path.Combine(@"tectransit\dist\tectransit\assets\import", usercode);
@@ -2021,7 +2021,7 @@ namespace Tectransit.Controllers
                         htData.Add("NEWNO", "");//袋號(比對用)
                         htData.Add("NEWTOTALWG", "");//袋重(比對用)
                         htData.Add("NEWBOXNO", "");//提單號碼(比對用)
-                        htData.Add("_acccode", usercode);//用戶帳號
+                        htData.Add("_cuscode", usercode);//用戶帳號
                         string ACID = DBUtil.GetSingleValue1($@"SELECT ID AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{usercode}' AND ISENABLE = 'true'");
                         htData.Add("ACCOUNTID", ACID);//用戶ID
                         htData.Add("MAWBDATE", ws.Cells[1, 6].Value?.ToString().Trim());//消倉單日期

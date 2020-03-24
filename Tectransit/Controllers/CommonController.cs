@@ -330,7 +330,7 @@ namespace Tectransit.Controllers
         {
             try
             {
-                string usercode = Request.Cookies["_acccode"];
+                string usercode = Request.Cookies["_acccode"] ?? Request.Cookies["_cuscode"];
 
                 string type = Request.Form["TYPE"];
                 var file = Request.Form.Files;
@@ -438,7 +438,7 @@ namespace Tectransit.Controllers
         {
             try
             {
-                string usercode = Request.Cookies["_acccode"];
+                string usercode = Request.Cookies["_acccode"] ?? Request.Cookies["_cuscode"];
 
                 string type = Request.Form["TYPE"];
                 var file = Request.Form.Files;

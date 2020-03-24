@@ -728,7 +728,7 @@ namespace Tectransit.Datas
                 sData["ISMULTRECEIVER"] = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
                 sData["STATUS"] = 0;
                 sData["CREDATE"] = DateTime.Now;
-                sData["CREATEBY"] = sData["_acccode"];
+                sData["CREATEBY"] = sData["_cuscode"];
                 sData["UPDDATE"] = sData["CREDATE"];
                 sData["UPDBY"] = sData["CREATEBY"];
 

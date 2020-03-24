@@ -328,7 +328,6 @@ export class ShippingcusEditComponent implements OnInit {
   //#endregion
 
   saveData(form) {
-
     if (this.dataForm.invalid) {
       return alert('必填欄位不能為空白！');
     }
