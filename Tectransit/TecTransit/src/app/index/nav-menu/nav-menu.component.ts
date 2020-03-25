@@ -54,7 +54,7 @@ export class NavMenuComponent implements OnInit {
   doLogout() {
     this.authenticationService.logout();
     // redirect to login page
-    document.location.href = '/';
+    document.location.href = '/login';
   }
 
   chgSubnav(e) {

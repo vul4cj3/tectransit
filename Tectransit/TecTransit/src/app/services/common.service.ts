@@ -272,4 +272,8 @@ export class CommonService {
     return this.http.get('/res/assets/util/TRACKING_JSON.json');
   }
 
+  post711() {
+    return this.http.post('/api/Store/PostToStore', '');
+  }
+
 }

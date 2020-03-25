@@ -11,11 +11,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { IndexModule } from './index/index.module';
 import { CusloginComponent } from './cuslogin/cuslogin.component';
 import { CusindexModule } from './cusindex/cusindex.module';
+import { MainComponent } from './main/main.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CusloginComponent
+    CusloginComponent,
+    MainComponent
   ],
   imports: [
     BrowserModule,

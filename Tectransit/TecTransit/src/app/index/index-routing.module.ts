@@ -24,14 +24,21 @@ import { ShippingListComponent } from './shipping-list/shipping-list.component';
 import { ShippingEditComponent } from './shipping-edit/shipping-edit.component';
 import { ShippingCombineComponent } from './shipping-combine/shipping-combine.component';
 import { DeclarantComponent } from './declarant/declarant.component';
+import { MainComponent } from '../main/main.component';
 
 const routes: Routes = [
+
+  {
+    /* 2020.03.24 domain redirect to preview page, close real transit website */
+    path: '',
+    component: MainComponent
+  },
   {
     path: '',
     component: IndexComponent,
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'home' },
-      { path: 'home', component: HomeComponent, },
+      // { path: '', pathMatch: 'full', redirectTo: 'membercenter' },
+      { path: 'membercenter', component: HomeComponent, },
       { path: 'custom/:id', component: CustomListComponent },
       { path: 'custom/detail/:cateid/:id', component: CustomDetailComponent },
       { path: 'news', component: NewsListComponent },
