@@ -19,6 +19,10 @@ namespace Tectransit.Modles
         public string Taxid { get; set; }
         public bool Ismultreceiver { get; set; }
         public int Status { get; set; }
+        public string Storecode { get; set; }
+        public string Mawbfile { get; set; }
+        public string Shippingfile { get; set; }
+        public long Brokerid { get; set; }
         public string Remark1 { get; set; }
         public string Remark2 { get; set; }
         public string Remark3 { get; set; }

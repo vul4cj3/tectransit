@@ -1865,6 +1865,8 @@ namespace Tectransit.Modles
 
                 entity.Property(e => e.Accountid).HasColumnName("ACCOUNTID");
 
+                entity.Property(e => e.Brokerid).HasColumnName("BROKERID");
+
                 entity.Property(e => e.Createby)
                     .HasColumnName("CREATEBY")
                     .HasMaxLength(300);
@@ -1887,6 +1889,11 @@ namespace Tectransit.Modles
                 entity.Property(e => e.Mawbdate)
                     .HasColumnName("MAWBDATE")
                     .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Mawbfile)
+                    .HasColumnName("MAWBFILE")
+                    .HasMaxLength(300)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Mawbno)
@@ -1917,12 +1924,22 @@ namespace Tectransit.Modles
 
                 entity.Property(e => e.Remark3).HasColumnName("REMARK3");
 
+                entity.Property(e => e.Shippingfile)
+                    .HasColumnName("SHIPPINGFILE")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Shippingno)
                     .HasColumnName("SHIPPINGNO")
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Status).HasColumnName("STATUS");
+
+                entity.Property(e => e.Storecode)
+                    .HasColumnName("STORECODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Taxid)
                     .HasColumnName("TAXID")
