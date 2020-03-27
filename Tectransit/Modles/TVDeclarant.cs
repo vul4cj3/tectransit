@@ -10,6 +10,7 @@ namespace Tectransit.Modles
         public string Taxid { get; set; }
         public string Phone { get; set; }
         public string Mobile { get; set; }
+        public string Zipcode { get; set; }
         public string Addr { get; set; }
         public string IdphotoF { get; set; }
         public string IdphotoB { get; set; }

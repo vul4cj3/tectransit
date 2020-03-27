@@ -686,7 +686,7 @@ namespace Tectransit.Datas
         }
 
         //寄給客服信箱
-        public void SendMasterMail(string fromUser, string ToUser, string Mailsubject, string Mailbody, string ccUser)
+        public void SendMasterMail(string fromUser, string Mailsubject, string Mailbody, string ccUser)
         {
             #region  send mail
             string smtpServer = "mail.t3ex-group.com";
@@ -704,14 +704,20 @@ namespace Tectransit.Datas
             mms.Body = Mailbody;
             //信件內容 是否採用Html格式
             mms.IsBodyHtml = true;
+            
+            //寄給TECTPE_MG權限組
+            string sql = $@"SELECT A.USERCODE, A.EMAIL FROM T_S_USER A
+                            LEFT JOIN T_S_USERROLEMAP B ON A.USERCODE = B.USERCODE
+                            LEFT JOIN T_S_ROLE C ON C.ROLECODE = B.ROLECODE
+                            WHERE C.ROLECODE = 'TECTPE_MG' AND A.ISENABLE = 'true'";
 
+            DataTable DT = DBUtil.SelectDataTable(sql);
             //加入信件的收件人address
-            if (!string.IsNullOrEmpty(ToUser))
+            if (DT.Rows.Count > 0)
             {
-                string[] ToList = ToUser.Split(';');
-                for(int i = 0; i < ToList.Length; i++)
+                for(int i = 0; i < DT.Rows.Count; i++)
                 {
-                    mms.To.Add(ToList[i]);
+                    mms.To.Add(DT.Rows[i]["EMAIL"]?.ToString());
                 }
             }            
             //加入信件的副本address

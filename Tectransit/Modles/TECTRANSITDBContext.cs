@@ -1762,6 +1762,11 @@ namespace Tectransit.Modles
                     .HasColumnName("TAXID")
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Zipcode)
+                    .HasColumnName("ZIPCODE")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TVShippingD>(entity =>
@@ -1906,12 +1911,15 @@ namespace Tectransit.Modles
 
                 entity.Property(e => e.Accountid).HasColumnName("ACCOUNTID");
 
-                entity.Property(e => e.Brokerfile)
-                    .HasColumnName("BROKERFILE")
+                entity.Property(e => e.Brokerfile1)
+                    .HasColumnName("BROKERFILE1")
                     .HasMaxLength(300)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Brokerid).HasColumnName("BROKERID");
+                entity.Property(e => e.Brokerfile2)
+                    .HasColumnName("BROKERFILE2")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Createby)
                     .HasColumnName("CREATEBY")
@@ -1921,6 +1929,8 @@ namespace Tectransit.Modles
                     .HasColumnName("CREDATE")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.Exbrokerid).HasColumnName("EXBROKERID");
+
                 entity.Property(e => e.Exportdate)
                     .HasColumnName("EXPORTDATE")
                     .HasColumnType("datetime");
@@ -1929,6 +1939,8 @@ namespace Tectransit.Modles
                     .HasColumnName("FLIGHTNUM")
                     .HasMaxLength(100)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Imbrokerid).HasColumnName("IMBROKERID");
 
                 entity.Property(e => e.Ismultreceiver).HasColumnName("ISMULTRECEIVER");
 

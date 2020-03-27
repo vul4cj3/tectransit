@@ -5,22 +5,30 @@
       <!-- content start -->
       <div class="main-card">
         <div class="card-header">
-          <div class="srhlist">
-            <div class="form-input">
-              <label>主單號</label>
-              <input type="text" id="smawbno">
+          <div class="row">
+            <div class="srhlist">
+              <div class="form-input">
+                <label>建單時間</label>
+                <input type="date" id="credates"> -
+                <input type="date" id="credatee">
+              </div>
             </div>
-            <div class="form-input">
-              <label>建單時間</label>
-              <input type="date" id="credates"> -
-              <input type="date" id="credatee">
+            <div class="btn-right">
+              <a (click)="srhData()">查詢</a>
+              <ng-container *ngIf="this.shippingType === 't1'">
+                <a (click)="doDelete()">刪除</a>
+              </ng-container>
             </div>
           </div>
-          <div class="btn-right">
-            <a (click)="srhData()">查詢</a>
-            <ng-container *ngIf="this.shippingType === 't1'">
-              <a (click)="doDelete()">刪除</a>
-            </ng-container>
+          <div class="row">
+            <div class="form-input">
+              <input type="radio" name="files" id="chkfile1"><label for="chkfile1">消倉表</label>
+              <input type="radio" name="files" id="chkfile2"><label for="chkfile2">材積與實重表</label>
+              <input type="file">
+            </div>
+            <div class="btn-right">
+              <a (click)="srhData()">匯入</a>
+            </div>
           </div>
         </div>
         <div class="card-contain">
@@ -43,10 +51,13 @@
                   </ng-container>
                 </td>
                 <td style="width: 20%;"><label for="chk{{idx}}">{{item.shippingno}}</label></td>
-                <td style="width: 20%;">{{item.mawbno}}</td>
                 <td style="width: 10%;">{{item.status | shippstatus}}</td>
                 <td style="width: 20%;">{{item.credate}}</td>
                 <td style="width: 20%;">{{item.exportdate}}</td>
+                <td style="width: 20%;"><a *ngIf="item.brokerfilE1 !== ''" [href]="item.brokerfilE1" target="_blank"
+                    title="材積與實重表">
+                    <img width="15px" height="15px" src="/res/assets/util/file-icon.svg" alt="材積與實重表">
+                  </a></td>
                 <td style="width: 5%;">
                   <a routerLink="/cus/shipping/edit/{{this.shippingType}}/{{item.id}}">
                     <span class="mem-icon">

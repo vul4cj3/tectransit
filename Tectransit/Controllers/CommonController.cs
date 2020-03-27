@@ -243,8 +243,8 @@ namespace Tectransit.Controllers
                     return new { status = "99", msg = "驗證碼輸入錯誤！" };
 
                 string F_User = "TEC Website System<ebs.sys@t3ex-group.com>";
-                string T_User = _configuration.GetSection("WebsitSetting")["csMail"];
-                string subject = $"TEC轉運平台 - 聯絡我們({htData["NAME"]}/{htData["EMAIL"]})";
+                //string T_User = _configuration.GetSection("WebsitSetting")["csMail"];
+                string subject = $"TEC代運平台 - 聯絡我們({htData["NAME"]}/{htData["EMAIL"]})";
                 string body = "";
 
                 //移除html
@@ -260,7 +260,7 @@ namespace Tectransit.Controllers
 
                 string C_User = "";
 
-                objCommon.SendMasterMail(F_User, T_User, subject, body, C_User);
+                objCommon.SendMasterMail(F_User, subject, body, C_User);
 
                 return new { status = "0", msg = "送出成功！" };
             }

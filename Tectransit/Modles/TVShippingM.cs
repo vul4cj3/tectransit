@@ -26,8 +26,10 @@ namespace Tectransit.Modles
         public string Storecode { get; set; }
         public string Mawbfile { get; set; }
         public string Shippingfile { get; set; }
-        public string Brokerfile { get; set; }
-        public long Brokerid { get; set; }
+        public string Brokerfile1 { get; set; }
+        public string Brokerfile2 { get; set; }
+        public long Imbrokerid { get; set; }
+        public long Exbrokerid { get; set; }
         public string Remark1 { get; set; }
         public string Remark2 { get; set; }
         public string Remark3 { get; set; }

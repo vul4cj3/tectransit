@@ -355,7 +355,7 @@ namespace Tectransit.Controllers
             try
             {
                 Hashtable htData = new Hashtable();
-                htData["USERPASSWORD"] = objComm.GetMd5Hash("thi_2636");
+                htData["USERPASSWORD"] = "thi_2636";
                 htData["ISRESETPW"] = "1";
                 htData["_usercode"] = Request.Cookies["_usercode"];
                 htData["_username"] = Request.Cookies["_username"];
@@ -882,7 +882,7 @@ namespace Tectransit.Controllers
             Hashtable htData = sData;
             int newSeq = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT USERSEQ AS COL1 FROM T_S_USER ORDER BY USERSEQ DESC")) ? 1 : Convert.ToInt32(DBUtil.GetSingleValue1($@"SELECT USERSEQ AS COL1 FROM T_S_USER ORDER BY USERSEQ DESC")) + 1;
             htData["USERSEQ"] = newSeq;
-            htData["USERPASSWORD"] = objComm.GetMd5Hash("thi_2636");
+            htData["USERPASSWORD"] = objComm.GetMd5Hash(htData["USERPASSWORD"]?.ToString());
             htData["ISRESETPW"] = true;
             htData["CREDATE"] = DateTime.Now;
             htData["CREATEBY"] = sData["_usercode"];
@@ -906,7 +906,8 @@ namespace Tectransit.Controllers
                 if (sData["USERCODE"] != null)
                     rowTSU.Usercode = sData["USERCODE"]?.ToString();
                 if (sData["USERPASSWORD"] != null)
-                    rowTSU.Userpassword = sData["USERPASSWORD"]?.ToString();
+                    if (!string.IsNullOrEmpty((sData["USERPASSWORD"]?.ToString()).Trim()))
+                        rowTSU.Userpassword = objComm.GetMd5Hash(sData["USERPASSWORD"]?.ToString());
                 if (sData["USERSEQ"] != null)
                     rowTSU.Userseq = sData["USERSEQ"]?.ToString();
                 if (sData["USERNAME"] != null)

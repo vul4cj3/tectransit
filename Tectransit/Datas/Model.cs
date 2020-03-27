@@ -469,12 +469,23 @@ namespace Tectransit.Datas
         public string TOTAL { set; get; }
         public string TOTALWEIGHT { set; get; }
         public string TRACKINGTYPE { set; get; }
+        public string SHIPPERCOMPANY { set; get; }
+        public string SHIPPER { set; get; }
+        public string RECEIVERCOMPANY { set; get; }
         public string RECEIVER { set; get; }
+        public string RECEIVERZIPCODE { set; get; }
         public string RECEIVERADDR { set; get; }
         public string RECEIVERPHONE { set; get; }
         public string RECEIVERTAXID { set; get; }
         public string ISMULTRECEIVER { set; get; }
         public int STATUS { set; get; }
+        public string STORECODE { set; get; }
+        public string MAWBFILE { set; get; }
+        public string SHIPPINGFILE { set; get; }
+        public string BROKERFILE1 { set; get; }
+        public string BROKERFILE2 { set; get; }
+        public long IMBROKERID { set; get; }
+        public long EXBROKERID { set; get; }
         public string REMARK1 { set; get; }
         public string REMARK2 { set; get; }
         public string REMARK3 { set; get; }
@@ -493,12 +504,18 @@ namespace Tectransit.Datas
         public string TRANSFERNO { set; get; }
         public string TRACKINGNO { set; get; }
         public int DEPOTSTATUS { set; get; }
+        public string SHIPPERCOMPANY { set; get; }
+        public string SHIPPER { set; get; }
+        public string RECEIVERCOMPANY { set; get; }
         public string RECEIVER { set; get; }
+        public string RECEIVERZIPCODE { set; get; }
         public string RECEIVERADDR { set; get; }
         public string RECEIVERPHONE { set; get; }
         public string RECEIVERTAXID { set; get; }
         public string WEIGHT { set; get; }
         public string TOTALITEM { set; get; }
+        public string SHIPPERREMARK { set; get; }
+        public string LOGISTICS { set; get; }
         public string REMARK1 { set; get; }
         public string REMARK2 { set; get; }
         public string REMARK3 { set; get; }
@@ -527,6 +544,7 @@ namespace Tectransit.Datas
         public string IDPHOTOB { set; get; }
         public string PHONE { set; get; }
         public string MOBILE { set; get; }
+        public string ZIPCODE { set; get; }
         public string ADDR { set; get; }
         public string APPOINTMENT { set; get; }
         public long SHIPPINGID_M { set; get; }

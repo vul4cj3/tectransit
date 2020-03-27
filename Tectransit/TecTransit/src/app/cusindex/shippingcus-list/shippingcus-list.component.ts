@@ -16,7 +16,7 @@ export class ShippingcusListComponent implements OnInit {
   private transferdataUrl = 'GetShippingCusData';
   private delUrl = 'DelShippingCusData';
 
-  tableTitle = ['#', '集運單號', '主單號', '狀態', '建單時間', '發貨時間', '細項'];
+  tableTitle = ['#', '集運單號', '狀態', '建單時間', '發貨時間', '材積與實重表', '細項'];
 
   data: ShippingMCusInfo[];
   rowTotal = 0;
@@ -43,12 +43,11 @@ export class ShippingcusListComponent implements OnInit {
 
   srhData() {
     this.srhList = [];
-    const smawb = document.getElementById('smawbno') as HTMLInputElement;
     const sdate = document.getElementById('credates') as HTMLInputElement;
     const edate = document.getElementById('credatee') as HTMLInputElement;
 
     this.srhList.push({
-      status: this.shippingType, mawbno: smawb.value, cresdate: sdate.value, creedate: edate.value
+      status: this.shippingType, cresdate: sdate.value, creedate: edate.value
     });
 
     this.crePagination(this.currentpage, this.baseUrl + this.transferdataUrl);
@@ -62,6 +61,8 @@ export class ShippingcusListComponent implements OnInit {
             this.data = data.rows;
             this.rowTotal = data.total;
             this.currentpage = newPage;
+
+            console.log(this.data);
 
             this.commonService.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
           } else {

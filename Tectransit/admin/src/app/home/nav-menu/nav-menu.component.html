@@ -19,27 +19,37 @@
   </div>
   <!--Menu Section-->
   <div class="scrollbar-container ps">
-      <div class="app-sidebar__inner">
-          <!--<h5 class="app-sidebar__heading">Title</h5>-->
-          <div class="metismenu vertical-nav-menu" *ngFor="let item of menuItem let idx = index">
-              <ul class="metismenu-container">
-                  <li class="metismenu-item">
-                      <a class="metismenu-link" (click)="activeNav[idx]=!activeNav[idx]">
-                          <i class="metismenu-icon {{item.iconurl}}"></i>
-                          {{item.menuname}}
-                          <i class="metismenu-state-icon pe-7s-angle-down caret-left" [ngClass]="{'rotate-minus-90': activeNav[idx]}"></i>
-                      </a>
-                      <ul class="metismenu-container" [ngClass]="{'visible': activeNav[idx]}">
-                        <ng-container *ngFor="let subitem of menuSubItem">
-                        <li class="metismenu-item" *ngIf="subitem.parentcode == item.menucode">
-                          <a class="metismenu-link" routerLinkActive="active" routerLink="{{subitem.menuurl}}"><i class="metismenu-icon"></i>{{subitem.menuname}}</a>
-                        </li>
-                      </ng-container>
-                      </ul>
+    <div class="app-sidebar__inner">
+      <!--<h5 class="app-sidebar__heading">Title</h5>-->
+      <div class="metismenu vertical-nav-menu" *ngFor="let item of menuItem let idx = index">
+        <ul class="metismenu-container">
+          <li class="metismenu-item">
+            <a class="metismenu-link" (click)="activeNav[idx]=!activeNav[idx]">
+              <i class="metismenu-icon {{item.iconurl}}"></i>
+              {{item.menuname}}
+              <i class="metismenu-state-icon pe-7s-angle-down caret-left"
+                [ngClass]="{'rotate-minus-90': activeNav[idx]}"></i>
+            </a>
+            <ul class="metismenu-container" [ngClass]="{'visible': activeNav[idx]}">
+              <ng-container *ngFor="let subitem of menuSubItem">
+                <ng-container *ngIf="subitem.menuurl.indexOf('e-commerce.t3ex-tec.com') > 0">
+                  <li class="metismenu-item" *ngIf="subitem.parentcode == item.menucode">
+                    <a class="metismenu-link" href="{{subitem.menuurl}}" target="_blank"><i
+                        class="metismenu-icon"></i>{{subitem.menuname}}</a>
                   </li>
-              </ul>
-          </div>
+                </ng-container>
+                <ng-container *ngIf="subitem.menuurl.indexOf('e-commerce.t3ex-tec.com') < 0">
+                  <li class="metismenu-item" *ngIf="subitem.parentcode == item.menucode">
+                    <a class="metismenu-link" routerLinkActive="active" routerLink="{{subitem.menuurl}}"><i
+                        class="metismenu-icon"></i>{{subitem.menuname}}</a>
+                  </li>
+                </ng-container>
+              </ng-container>
+            </ul>
+          </li>
+        </ul>
       </div>
+    </div>
   </div>
   <div class="app-sidebar-bg opacity-06" style="background-image: url('/admin/assets/bg/sidebar-img.jpg');"></div>
 </div>

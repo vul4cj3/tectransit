@@ -13,10 +13,6 @@
                 <span>{{masterData.shippingno}}</span>
               </div>
               <div class="form-control">
-                <label>主單號</label>
-                <span>{{masterData.mawbno}}</span>
-              </div>
-              <div class="form-control">
                 <label>訂單狀態</label>
                 <span>{{masterData.status | shippstatus}}</span>
               </div>
@@ -28,22 +24,40 @@
                 <label>總件數</label>
                 <span>{{masterData.total}}</span>
               </div>
-              <div class="form-control" *ngIf="masterData.ismultreceiver !== 'Y'">
-                <label>收件人</label>
-                <span>{{masterData.receiver}}</span>
-              </div>
-              <div class="form-control" *ngIf="masterData.ismultreceiver !== 'Y'">
-                <label>收件人電話</label>
-                <span>{{masterData.receiverphone}}</span>
-              </div>
-              <div class="form-control" *ngIf="masterData.ismultreceiver !== 'Y'">
-                <label>身分證字號</label>
-                <span>{{masterData.receivertaxid}}</span>
-              </div>
-              <div class="form-control" *ngIf="masterData.ismultreceiver !== 'Y'">
-                <label>收件人地址</label>
-                <span>{{masterData.receiveraddr}}</span>
-              </div>
+              <ng-container *ngIf="masterData.ismultreceiver !== 'Y'">
+                <div class="form-control" *ngIf="masterData.shippercompany !== ''">
+                  <label>寄件公司</label>
+                  <span>{{masterData.shippercompany}}</span>
+                </div>
+                <div class="form-control" *ngIf="masterData.shipper !== ''">
+                  <label>寄件人</label>
+                  <span>{{masterData.shipper}}</span>
+                </div>
+                <div class="form-control">
+                  <label>收件公司</label>
+                  <span>{{masterData.receivercompany}}</span>
+                </div>
+                <div class="form-control">
+                  <label>收件人</label>
+                  <span>{{masterData.receiver}}</span>
+                </div>
+                <div class="form-control">
+                  <label>收件人電話</label>
+                  <span>{{masterData.receiverphone}}</span>
+                </div>
+                <div class="form-control">
+                  <label>身分證字號</label>
+                  <span>{{masterData.receivertaxid}}</span>
+                </div>
+                <div class="form-control">
+                  <label>郵遞區號</label>
+                  <span>{{masterData.receiverzipcode}}</span>
+                </div>
+                <div class="form-control">
+                  <label>收件人地址</label>
+                  <span>{{masterData.receiveraddr}}</span>
+                </div>
+              </ng-container>
             </div>
             <!-- master data end-->
             <!-- header&datail start-->
@@ -66,21 +80,47 @@
                   <label>商品總數量</label>
                   <span>{{item.totalitem}}</span>
                 </div>
-                <div class="form-control" *ngIf="masterData.ismultreceiver === 'Y'">
-                  <label>收件人</label>
-                  <span>{{item.receiver}}</span>
+                <ng-container *ngIf="masterData.ismultreceiver === 'Y'">
+                  <div class="form-control" *ngIf="item.shippercompany !== ''">
+                    <label>寄件公司</label>
+                    <span>{{item.shippercompany}}</span>
+                  </div>
+                  <div class="form-control" *ngIf="item.shipper !== ''">
+                    <label>寄件人</label>
+                    <span>{{item.shipper}}</span>
+                  </div>
+                  <div class="form-control">
+                    <label>收件公司</label>
+                    <span>{{item.receivercompany}}</span>
+                  </div>
+                  <div class="form-control">
+                    <label>收件人</label>
+                    <span>{{item.receiver}}</span>
+                  </div>
+                  <div class="form-control">
+                    <label>收件人電話</label>
+                    <span>{{item.receiverphone}}</span>
+                  </div>
+                  <div class="form-control">
+                    <label>身分證字號</label>
+                    <span>{{item.receivertaxid}}</span>
+                  </div>
+                  <div class="form-control">
+                    <label>郵遞區號</label>
+                    <span>{{item.receiverzipcode}}</span>
+                  </div>
+                  <div class="form-control-large">
+                    <label>收件人地址</label>
+                    <span>{{item.receiveraddr}}</span>
+                  </div>
+                </ng-container>
+                <div class="form-control" *ngIf="item.logistics !== ''">
+                  <label>出貨商</label>
+                  <span>{{item.logistics | shippstatus:"log"}}</span>
                 </div>
-                <div class="form-control" *ngIf="masterData.ismultreceiver === 'Y'">
-                  <label>收件人電話</label>
-                  <span>{{item.receiverphone}}</span>
-                </div>
-                <div class="form-control" *ngIf="masterData.ismultreceiver === 'Y'">
-                  <label>身分證字號</label>
-                  <span>{{item.receivertaxid}}</span>
-                </div>
-                <div class="form-control-large" *ngIf="masterData.ismultreceiver === 'Y'">
-                  <label>收件人地址</label>
-                  <span>{{item.receiveraddr}}</span>
+                <div class="form-control" *ngIf="item.shipperremark !== ''">
+                  <label>備註</label>
+                  <span>{{item.shipperremark}}</span>
                 </div>
                 <div class="form-control" *ngIf="item.depotstatus !== 0">
                   <label>點收狀態</label>
@@ -126,7 +166,8 @@
                   <a class="btn-form" (click)="saveData(this.dataForm.value)" title="保存">
                     <img width="30px" height="30px" src="/res/assets/util/save-icon.svg" alt="保存">
                   </a>
-                  <a class="btn-form" style="position: absolute; left:30px; top:7px;" (click)="chgDec('c', item.id)" title="取消">
+                  <a class="btn-form" style="position: absolute; left:30px; top:7px;" (click)="chgDec('c', item.id)"
+                    title="取消">
                     <img class="close" width="16px" height="16px" src="/res/assets/util/close-icon.svg" alt="取消">
                   </a>
                 </div>
@@ -138,6 +179,7 @@
                       <th>身分證字號</th>
                       <th>連絡電話</th>
                       <th>手機</th>
+                      <th>郵遞區號</th>
                       <th>地址</th>
                       <th>證件檔案</th>
                       <th>委任書</th>
@@ -150,6 +192,7 @@
                         <td>{{decitem.taxid}}</td>
                         <td>{{decitem.phone}}</td>
                         <td>{{decitem.mobile}}</td>
+                        <td>{{decitem.zipcode}}</td>
                         <td>{{decitem.addr}}</td>
                         <td>
                           <a *ngIf="decitem.idphotof !== ''" [href]="decitem.idphotof" target="_blank" title="身分證檔案1">
@@ -182,6 +225,7 @@
                           <th class="required" style="width: 10%">身分證字號</th>
                           <th style="width: 10%">連絡電話</th>
                           <th style="width: 5%;">手機</th>
+                          <th style="width: 5%;">郵遞區號</th>
                           <th style="width: 5%;">地址</th>
                           <th style="width: 5%;">證件檔案</th>
                           <th style="width: 5%;">委任書</th>
@@ -197,14 +241,15 @@
                             <td><input type="text" formControlName="taxid"></td>
                             <td><input type="text" formControlName="phone"></td>
                             <td><input type="text" formControlName="mobile"></td>
+                            <td><input type="text" formControlName="zipcode"></td>
                             <td><input type="text" formControlName="addr"></td>
                             <td>
-                            <label for="imgupload{{item.id}}_{{idec}}" class="custom-file-upload">
+                              <label for="imgupload{{item.id}}_{{idec}}" class="custom-file-upload">
                                 <img width="16px" height="16px" src="/res/assets/util/upload-icon.svg">
                                 <span>上傳</span>
                               </label>
-                              <input type="file" id="imgupload{{item.id}}_{{idec}}" #imgupload accept="image/*" class="custom-file"
-                                multiple (change)="imgChange($event, item.id, idec)">
+                              <input type="file" id="imgupload{{item.id}}_{{idec}}" #imgupload accept="image/*"
+                                class="custom-file" multiple (change)="imgChange($event, item.id, idec)">
                               <div class="img-preview-container">
                                 <div id="img-preview{{item.id}}_{{idec}}" class="img-preview">
                                 </div>

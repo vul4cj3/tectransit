@@ -7,7 +7,12 @@
   <div class="contain">
     <div class="nav">
       <ul>
-        <li *ngFor="let item of data"><a [routerLink]="item.menuurl">{{item.menuname}}</a></li>
+        <ng-container *ngFor="let item of data">
+          <li *ngIf="item.menuurl.indexOf('e-commerce.t3ex-tec.com') < 0"><a
+              [routerLink]="item.menuurl">{{item.menuname}}</a></li>
+          <li *ngIf="item.menuurl.indexOf('e-commerce.t3ex-tec.com') > 0"><a [href]="item.menuurl"
+              target="_blank">{{item.menuname}}</a></li>
+        </ng-container>
         <li><a (click)="doLogout()">登出</a></li>
       </ul>
     </div>

@@ -3,15 +3,15 @@
     <div class="inner-border">
       <div class="warn-item">
         <div class="warn-icon"></div>
-        <p>匯入前請先下載<a href="/res/assets/doc/sample.xlsx" target="_blank">匯入用Excel檔</a>，並確實填寫資料！</p>
+        <p>請上傳<i>已消倉表&材積與實重表</i>，<i class="required">已消倉表檔名開頭必須為stock/材積與實重表檔名開頭必須為weight</i>，否則將無法匯入！</p>
+      </div>
+      <div class="warn-item">
+        <div class="warn-icon"></div>
+        <p>匯入已消倉表前請先下載<a href="/res/assets/doc/sample.xlsx" target="_blank">匯入用範本檔</a>，並確實填寫資料！</p>
       </div>
       <div class="warn-item">
         <div class="warn-icon"></div>
         <p>匯入成功後，請至<i>集運單管理</i>查看！</p>
-      </div>
-      <div class="warn-item">
-        <div class="warn-icon"></div>
-        <p>若主單號已匯入過，則會<i class="required">直接覆蓋掉原本匯入的資料！</i></p>
       </div>
       <div class="warn-item">
         <div class="warn-icon"></div>
@@ -24,7 +24,7 @@
       <label for="filesupload" class="custom-file-upload">
         <img width="16px" height="16px" src="/res/assets/util/upload-icon.svg">
       </label>
-      <input type="file" id="filesupload" #filesupload accept=".xlsx,.xls" (change)="fileChange($event)">
+      <input type="file" id="filesupload" #filesupload multiple accept=".xlsx,.xls,.pdf" (change)="fileChange($event)">
     </div>
     <div class="btn">
       <a (click)='saveData()'>匯入</a>

@@ -33,6 +33,7 @@ export class UserEditComponent implements OnInit {
     this.dataForm = this.formBuilder.group({
       userid: 0,
       usercode: ['', Validators.required],
+      userpassword: [''],
       username: '',
       userdesc: '',
       userseq: '',

@@ -23,16 +23,27 @@ export class EntrustcusImportComponent implements OnInit {
 
   fileChange(e) {
     this.fileList = [];
-    this.fileList.push({ file: e.target.files[0] });
+    for (const item of e.target.files) {
+      this.fileList.push({ file: item });
+    }
+
+    console.log(this.fileList);
   }
 
   saveData() {
+    if (this.fileList.length > 2) {
+      return alert('最多只能上傳兩個檔案！');
+    }
+
     if (this.fileList.length > 0) {
       const process = document.getElementById('process-msg') as HTMLDivElement;
       process.innerHTML = '<span>匯入中，請稍後片刻……</span>';
 
       const formdata = new FormData();
-      formdata.append('fileUpload', this.fileList[0].file);
+      // tslint:disable-next-line: prefer-for-of
+      for (let i = 0; i < this.fileList.length; i++) {
+        formdata.append('fileUpload' + i, this.fileList[i].file);
+      }
 
       this.commonservice.Upload(formdata, this.importUrl)
         .subscribe(data => {
