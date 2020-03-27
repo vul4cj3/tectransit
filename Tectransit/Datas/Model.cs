@@ -109,6 +109,7 @@ namespace Tectransit.Datas
     public class AccountInfo
     {
         public long ROWID { set; get; }
+        public string RANKTYPE { set; get; }
         public long USERID { set; get; }
         public string USERSEQ { set; get; }
         public string USERCODE { set; get; }

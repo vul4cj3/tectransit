@@ -58,11 +58,11 @@ namespace Tectransit.Datas
 
         }
 
-        //取得所有後台選單資料
-        public dynamic GetAllMenu(string code)
+        //取得選單資料(後台or前台)
+        public dynamic GetAllMenu(string code, string isback)
         {
             DataTable dtMenulist = DBUtil.SelectDataTable($@"SELECT A.MENUSEQ, A.MENUCODE, A.PARENTCODE,A.MENUURL, A.MENUNAME, A.ICONURL FROM T_S_MENU A
-                                                             WHERE A.ISBACK = 'true' AND ISENABLE = 'true'
+                                                             WHERE A.ISBACK = '{isback}' AND ISENABLE = 'true'
                                                              ORDER BY A.MENUCODE");
             if (dtMenulist.Rows.Count > 0)
             {
@@ -77,7 +77,10 @@ namespace Tectransit.Datas
                     m.MENUNAME = dtMenulist.Rows[i]["MENUNAME"]?.ToString();
                     m.ICONURL = dtMenulist.Rows[i]["ICONURL"]?.ToString();
                     // 0:無權限 1:有權限
-                    m.HASPOWER = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT MENUCODE AS COL1 FROM T_S_ROLEMENUMAP WHERE ROLECODE = '{code}' AND MENUCODE = '{m.MENUCODE}'")) ? "0" : "1";
+                    if (isback == "true")
+                        m.HASPOWER = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT MENUCODE AS COL1 FROM T_S_ROLEMENUMAP WHERE ROLECODE = '{code}' AND MENUCODE = '{m.MENUCODE}'")) ? "0" : "1";
+                    else
+                        m.HASPOWER = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT MENUCODE AS COL1 FROM T_S_RANKMENUMAP WHERE RANKID = {code} AND MENUCODE = '{m.MENUCODE}'")) ? "0" : "1";
 
                     if (m.PARENTCODE == "0")
                         pmenuList.Add(m);
@@ -154,7 +157,7 @@ namespace Tectransit.Datas
         public dynamic GetAllCusRank(string code)
         {
             DataTable dtlist = DBUtil.SelectDataTable($@"SELECT A.ID AS RANKID, A.RANKCODE, A.RANKNAME, A.RANKSEQ FROM T_S_RANK A
-                                                         WHERE A.RANKTYPE = '2'
+                                                         WHERE A.RANKTYPE != '1'
                                                          ORDER BY A.RANKSEQ");
             if (dtlist.Rows.Count > 0)
             {
@@ -361,9 +364,10 @@ namespace Tectransit.Datas
         //取得前台選單
         public dynamic GetMenu_Fornt()
         {
-            DataTable dtMenulist = DBUtil.SelectDataTable($@"SELECT ID AS MENUID, MENUCODE, PARENTCODE, MENUURL, MENUSEQ, MENUNAME
-                                                             FROM T_S_MENU
-                                                             WHERE ISBACK = 'false' AND ISVISIBLE = 'true' AND ISENABLE = 'true'
+            DataTable dtMenulist = DBUtil.SelectDataTable($@"SELECT A.ID AS MENUID, A.MENUCODE, A.PARENTCODE, A.MENUURL, A.MENUSEQ, A.MENUNAME
+                                                             FROM T_S_MENU A
+                                                             LEFT JOIN T_S_RANKMENUMAP B ON A.MENUCODE = B.MENUCODE
+                                                             WHERE A.ISBACK = 'false' AND A.ISVISIBLE = 'true' AND A.ISENABLE = 'true' AND B.RANKID = 1
                                                              ORDER BY MENUSEQ");
             if (dtMenulist.Rows.Count > 0)
             {
@@ -379,10 +383,10 @@ namespace Tectransit.Datas
                     m.MENUNAME = dtMenulist.Rows[i]["MENUNAME"]?.ToString();
                     m.MENUSEQ = Convert.ToInt32(dtMenulist.Rows[i]["MENUSEQ"]);
 
-                    if (m.PARENTCODE == "0")
+                    //if (m.PARENTCODE == "0")
                         pmenuList.Add(m);
-                    else
-                        dmenuList.Add(m);
+                    //else
+                    //    dmenuList.Add(m);
                 }
 
                 DataTable dtAboutlist = DBUtil.SelectDataTable($@"SELECT ID AS CATEID, TITLE

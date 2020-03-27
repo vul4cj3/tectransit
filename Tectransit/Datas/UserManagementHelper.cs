@@ -62,6 +62,7 @@ namespace Tectransit.Datas
             {
                 RankInfo m = new RankInfo();
                 m.RANKID = Convert.ToInt64(DT.Rows[0]["ID"]);
+                m.RANKTYPE = DT.Rows[0]["RANKTYPE"]?.ToString();
                 m.RANKSEQ = DT.Rows[0]["RANKSEQ"]?.ToString();
                 m.RANKCODE = DT.Rows[0]["RANKCODE"]?.ToString();
                 m.RANKNAME = DT.Rows[0]["RANKNAME"]?.ToString();
@@ -131,6 +132,12 @@ namespace Tectransit.Datas
             if (DT.Rows.Count > 0)
             {
                 AccountInfo m = new AccountInfo();
+
+                sql = $@"SELECT C.RANKTYPE AS COL1 FROM T_S_ACCOUNT A
+                         LEFT JOIN T_S_ACRANKMAP B ON A.USERCODE = B.USERCODE
+                         LEFT JOIN T_S_RANK C ON B.RANKID = C.ID
+                         WHERE A.ID = {sID}";
+                m.RANKTYPE = DBUtil.GetSingleValue1(sql);
                 m.USERID = Convert.ToInt64(DT.Rows[0]["ID"]);
                 m.WAREHOUSENO = DT.Rows[0]["WAREHOUSENO"]?.ToString();
                 m.USERSEQ = DT.Rows[0]["USERSEQ"]?.ToString();

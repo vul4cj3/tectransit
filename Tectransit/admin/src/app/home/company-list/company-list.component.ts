@@ -54,6 +54,7 @@ export class CompanyListComponent implements OnInit {
   resetData() {
     // built form controls and default form value
     this.srhForm = this.formBuilder.group({
+      sranktype: 'ALL',
       susercode: '',
       susername: '',
       semail: ''

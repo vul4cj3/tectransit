@@ -169,7 +169,7 @@ export class RoleListComponent implements OnInit {
   /* Popup window function */
   openModal(id: string, code: string) {
     this.pRolecode = code;
-    this.commonService.getAllMenu(code).subscribe(data => {
+    this.commonService.getAllMenu(code, '1').subscribe(data => {
       if (data.status === '0') {
         this.menuItem = data.pList;
         this.menuSubItem = data.item;

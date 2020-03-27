@@ -11,81 +11,86 @@ import { CommonService } from 'src/app/services/common.service';
 })
 export class CompanyrankEditComponent implements OnInit {
 
-    /* Web api url */
-    private baseUrl = window.location.origin + '/api/UserHelp/';
-    private rankUrl = 'GetTSRankData';
-    private rankEditUrl = 'EditTSRankData';
+  /* Web api url */
+  private baseUrl = window.location.origin + '/api/UserHelp/';
+  private rankUrl = 'GetTSRankData';
+  private rankEditUrl = 'EditTSRankData';
 
-    dataChange;
-    dataForm: FormGroup;
-    rankID = '';
-    rankData: RankInfo;
-    isErr = false;
+  dataChange;
+  dataForm: FormGroup;
+  rankID = '';
+  rankData: RankInfo;
+  isErr = false;
 
-    constructor(
-      private formBuilder: FormBuilder,
-      private route: ActivatedRoute,
-      private commonService: CommonService
-    ) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private commonService: CommonService
+  ) { }
 
-    ngOnInit() {
-      // built form controls and default form value
-      this.dataForm = this.formBuilder.group({
-        rankid: 0,
-        rankcode: ['', Validators.required],
-        rankname: '',
-        ranktype: '2',
-        rankdesc: '',
-        rankseq: '',
-        isenable: '1',
-        credate: '',
-        creby: '',
-        upddate: '',
-        updby: ''
-      });
+  ngOnInit() {
+    // built form controls and default form value
+    this.dataForm = this.formBuilder.group({
+      rankid: 0,
+      rankcode: ['', Validators.required],
+      ranktype: ['0', Validators.required],
+      rankname: '',
+      rankdesc: '',
+      rankseq: '',
+      isenable: '1',
+      credate: '',
+      creby: '',
+      upddate: '',
+      updby: ''
+    });
 
-      // get parameters id then get data
-      this.rankID = this.route.snapshot.paramMap.get('id');
+    // get parameters id then get data
+    this.rankID = this.route.snapshot.paramMap.get('id');
 
-      if (this.rankID !== '0') {
-        this.getData(this.rankID);
-      }
+    if (this.rankID !== '0') {
+      this.getData(this.rankID);
+    }
+  }
+
+  getData(id) {
+    this.commonService.getSingleData(id, this.baseUrl + this.rankUrl)
+      .subscribe(data => {
+        this.dataForm.patchValue(data.rows);
+        this.dataForm.controls.ranktype.disable();
+        this.dataForm.controls.rankcode.disable();
+        this.rankData = data.rows;
+      },
+        error => {
+          console.log(error);
+        });
+  }
+
+  saveData(form) {
+
+    // check Form
+    if (this.dataForm.invalid) {
+      this.isErr = true;
+      return alert('權限組代碼不能為空！');
     }
 
-    getData(id) {
-      this.commonService.getSingleData(id, this.baseUrl + this.rankUrl)
+    if (this.dataForm.controls.ranktype.value === '0') {
+      return alert('必須選擇類別！');
+    }
+
+    if (this.rankID !== '0') {
+      this.dataChange = this.commonService.formChanges(form, this.rankData);
+    } else { this.dataChange = form; }
+
+    if (Object.keys(this.dataChange).length > 0) {
+      const postData = { id: this.rankID, formdata: this.dataChange };
+      this.commonService.editSingleData(postData, this.baseUrl + this.rankEditUrl)
         .subscribe(data => {
-          this.dataForm.patchValue(data.rows);
-          this.dataForm.controls.rankcode.disable();
-          this.rankData = data.rows;
+          alert(data.msg);
         },
           error => {
             console.log(error);
           });
-    }
-
-    saveData(form) {
-
-      // check Form
-      if (this.dataForm.invalid) {
-        this.isErr = true;
-        return alert('權限組代碼不能為空！');
-      }
-
-      if (this.rankID !== '0') {
-        this.dataChange = this.commonService.formChanges(form, this.rankData);
-      } else { this.dataChange = form; }
-
-      if (Object.keys(this.dataChange).length > 0) {
-        const postData = { id: this.rankID, formdata: this.dataChange };
-        this.commonService.editSingleData(postData, this.baseUrl + this.rankEditUrl)
-          .subscribe(data => {
-            alert(data.msg);
-          },
-            error => {
-              console.log(error);
-            });
-      } else { alert('頁面無數據被修改！'); }
-    }
+    } else { alert('頁面無數據被修改！'); }
+  }
 
 }

@@ -20,6 +20,14 @@
         <form [formGroup]="dataForm" (ngSubmit)="saveData(dataForm.value)">
           <input type="hidden" id="userid" formControlName="userid">
           <div class="form-group">
+              <label for="ranktype">類別</label>
+              <select id="ranktype" class="mb-2 form-control middle" formControlName="ranktype">
+                <option value="0">請選擇</option>
+                <option value="2">廠商</option>
+                <option value="3">報關行</option>
+              </select>
+            </div>
+          <div class="form-group">
             <label for="usercode">用戶帳號</label>
             <input type="text" id="usercode" class="form-control middle" formControlName="usercode">
           </div>

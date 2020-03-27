@@ -67,10 +67,12 @@ namespace Tectransit.Controllers
             return objCommon.GetMenu_Fornt();
         }
 
-        [HttpGet("{id}")]
-        public dynamic GetAllMenu(string id)
+        [HttpGet("{id}/{type}")]
+        public dynamic GetAllMenu(string id, string type)
         {
-            return objCommon.GetAllMenu(id);
+            string isBack = type == "0" ? "false" : "true";
+
+            return objCommon.GetAllMenu(id, isBack);
         }        
 
         [HttpGet("{id}")]

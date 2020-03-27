@@ -20,6 +20,14 @@
           <form [formGroup]="dataForm" (ngSubmit)="saveData(dataForm.value)">
             <input type="hidden" id="rankid" formControlName="rankid">
             <div class="form-group">
+              <label for="ranktype">類別</label>
+              <select id="ranktype" class="mb-2 form-control middle" formControlName="ranktype">
+                <option value="0">請選擇</option>
+                <option value="2">廠商</option>
+                <option value="3">報關行</option>
+              </select>
+            </div>
+            <div class="form-group">
               <label for="rankcode">權限組代碼</label>
               <input type="text" id="rankcode" class="form-control middle" [ngClass]="{'is-invalid': isErr}"
                 formControlName="rankcode" placeholder="請輸入英數字組合">
@@ -38,7 +46,6 @@
                 <input type="text" id="rankseq" class="form-control small" formControlName="rankseq">
               </div>
             -->
-            <input type="hidden" id="ranktype" formControlName="ranktype" value="2">
             <div class="form-group">
               <label for="isenable">啟用/停用</label>
               <select id="isenable" class="mb-2 form-control middle" formControlName="isenable">

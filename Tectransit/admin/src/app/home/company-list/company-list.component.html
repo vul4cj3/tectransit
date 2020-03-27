@@ -19,6 +19,15 @@
         <div class="card-body">
           <div class="form-inline">
             <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
+              <label for="sranktype" class="mr-sm-2">類別</label>
+              <select id="sranktype" class="mb-2 mr-2 dropdown-toggle btn btn-outline-secondary"
+                formControlName="sranktype">
+                <option value="ALL">全部</option>
+                <option value="2">廠商</option>
+                <option value="3">報關行</option>
+              </select>
+            </div>
+            <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
               <label for="susercode" class="mr-sm-2">帳號</label>
               <input type="text" id="susercode" formControlName="susercode" class="form-control">
             </div>
@@ -46,7 +55,7 @@
 <div class="row">
   <div class="col-md-12">
     <div class="main-card mb-3 card">
-      <div class="card-header">廠商列表
+      <div class="card-header">列表
         <div class="btn-actions-pane-right">
           <div class="btn-group-sm btn-group" role="group">
             <button class="mb-2 mr-2 btn-hover-shine btn btn-info" routerLink="/company/edit/0">新增</button>

@@ -97,8 +97,8 @@ export class CommonService {
   }
 
   /* --- System settings power data --- */
-  getAllMenu(code) {
-    return this.http.get<any>(`${this.baseUrl + this.allnavUrl}/${code}`)
+  getAllMenu(code, stype) {
+    return this.http.get<any>(`${this.baseUrl + this.allnavUrl}/${code}/${stype}`)
       .pipe(map(data => {
         return data;
       }));

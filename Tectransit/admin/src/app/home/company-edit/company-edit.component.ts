@@ -32,6 +32,7 @@ export class CompanyEditComponent implements OnInit {
   ngOnInit() {
     // built form controls and default form value
     this.dataForm = this.formBuilder.group({
+      ranktype: '0',
       userid: 0,
       usercode: ['', Validators.required],
       userpassword: [''],
@@ -66,6 +67,7 @@ export class CompanyEditComponent implements OnInit {
     this.commonService.getSingleData(id, this.baseUrl + this.userUrl)
       .subscribe(data => {
         this.dataForm.patchValue(data.rows);
+        this.dataForm.controls.ranktype.disable();
         this.dataForm.controls.usercode.disable();
         this.userData = data.rows;
       },
@@ -80,6 +82,10 @@ export class CompanyEditComponent implements OnInit {
     if (this.dataForm.invalid) {
       this.isErr = true;
       return alert('用戶代碼&用戶密碼不能為空！');
+    }
+
+    if (this.dataForm.controls.ranktype.value === '0') {
+      return alert('類別必須選擇！');
     }
 
     if (this.userID !== '0') {

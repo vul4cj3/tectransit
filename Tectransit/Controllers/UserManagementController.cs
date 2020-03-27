@@ -43,10 +43,15 @@ namespace Tectransit.Controllers
                 Hashtable htData = new Hashtable();
                 foreach (var t in temp)
                     htData[srhKey[t.Key]] = t.Value?.ToString();
-
-                if (!string.IsNullOrEmpty(htData["RANKTYPE"]?.ToString()))
-                    sWhere += (sWhere == "" ? "WHERE" : " AND") + " RANKTYPE = '" + htData["RANKTYPE"]?.ToString() + "'";
                 
+                if (!string.IsNullOrEmpty(htData["RANKTYPE"]?.ToString()))
+                {
+                    if (htData["RANKTYPE"]?.ToString() != "ALL")
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " RANKTYPE = '" + htData["RANKTYPE"]?.ToString() + "'";
+                    else
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " RANKTYPE != '1'";
+                }
+
                 if (!string.IsNullOrEmpty(htData["RANKCODE"]?.ToString()))
                     sWhere += (sWhere == "" ? "WHERE" : " AND") + " RANKCODE LIKE '%" + htData["RANKCODE"]?.ToString() + "%'";
 
@@ -152,6 +157,99 @@ namespace Tectransit.Controllers
                 string err = ex.Message.ToString();
                 return err;
             }
+        }
+
+        /* --- TWOTABLE MAP --- */
+
+        [HttpPost]
+        public dynamic EditRankMenuData([FromBody] object form)
+        {
+            try
+            {
+                var jsonData = JObject.FromObject(form);
+                string rankid = jsonData.Value<string>("id");
+                JArray arrData = jsonData.Value<JArray>("formdata");
+
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JObject temp = (JObject)arrData[i];
+
+                    Hashtable htData = new Hashtable();
+                    foreach (var t in temp)
+                    {
+                        Dictionary<string, string> dataKey = new Dictionary<string, string>();
+                        dataKey.Add("id", "MENUCODE");
+                        dataKey.Add("isenable", "ISENABLE");
+                        if (t.Key == "isenable")
+                            htData[dataKey[t.Key]] = t.Value?.ToString().ToLower() == "true" ? "1" : "0";
+                        else
+                            htData[dataKey[t.Key]] = t.Value?.ToString();
+
+                        htData["RANKID"] = rankid;
+                        htData["_usercode"] = Request.Cookies["_usercode"];
+                        htData["_username"] = Request.Cookies["_username"];
+                    }
+
+                    AL.Add(htData);
+                }
+
+                //Insert Or Delete
+                if (AL.Count > 0)
+                {
+                    for (int i = 0; i < AL.Count; i++)
+                    {
+                        Hashtable sData = (Hashtable)AL[i];
+                        var query = _context.TSRankmenumap.Where(q => q.Rankid == Convert.ToInt64(sData["RANKID"]) && q.Menucode == sData["MENUCODE"].ToString()).FirstOrDefault();
+                        if (sData["ISENABLE"]?.ToString() == "1")
+                        {
+                            if (query == null)
+                            {
+                                insertRankMenu(sData);
+
+                                //add user log
+                                objComm.AddUserControlLog(sData, $"ranks/{rankid}", "廠商權限管理 - 選單權限", 1, sData["MENUCODE"]?.ToString());
+                            }
+                        }
+                        else
+                        {
+                            if (query != null)
+                            {
+                                delRankMenu(query);
+
+                                //add user log
+                                objComm.AddUserControlLog(sData, $"ranks/{rankid}", "廠商權限管理 - 選單權限", 3, sData["MENUCODE"]?.ToString());
+                            }
+
+                        }
+                    }                    
+
+                }
+
+                return new { status = "0", msg = "保存成功！" };
+
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "保存失敗！" };
+            }
+        }
+
+        private void insertRankMenu(Hashtable sData)
+        {
+            TSRankmenumap rowRM = new TSRankmenumap();
+            rowRM.Rankid = Convert.ToInt64(sData["RANKID"]);
+            rowRM.Menucode = sData["MENUCODE"]?.ToString();
+
+            _context.TSRankmenumap.Add(rowRM);
+            _context.SaveChanges();
+        }
+
+        private void delRankMenu(TSRankmenumap rm)
+        {
+            _context.TSRankmenumap.Remove(rm);
+            _context.SaveChanges();
         }
         #endregion
 
@@ -301,13 +399,14 @@ namespace Tectransit.Controllers
             if (temp.Count > 0)
             {
                 Dictionary<string, string> srhKey = new Dictionary<string, string>();
+                srhKey.Add("sranktype", "RANKTYPE");
                 srhKey.Add("susercode", "USERCODE");
                 srhKey.Add("susername", "USERNAME");
                 srhKey.Add("semail", "EMAIL");
                 Hashtable htData = new Hashtable();
                 foreach (var t in temp)
                     htData[srhKey[t.Key]] = t.Value?.ToString();
-
+                
                 if (!string.IsNullOrEmpty(htData["USERCODE"]?.ToString()))
                     sWhere += (sWhere == "" ? "WHERE" : " AND") + " A.USERCODE LIKE '%" + htData["USERCODE"]?.ToString() + "%'";
 
@@ -317,12 +416,19 @@ namespace Tectransit.Controllers
                 if (!string.IsNullOrEmpty(htData["EMAIL"]?.ToString()))
                     sWhere += (sWhere == "" ? "WHERE" : " AND") + " A.EMAIL LIKE '%" + htData["EMAIL"]?.ToString() + "%'";
 
-                sWhere += (sWhere == "" ? "WHERE" : " AND") + " C.RANKTYPE = 2";
+                if (!string.IsNullOrEmpty(htData["RANKTYPE"]?.ToString()))
+                {
+                    if (htData["RANKTYPE"]?.ToString() != "ALL")
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " C.RANKTYPE = '" + htData["RANKTYPE"]?.ToString() + "'";
+                    else
+                        sWhere += (sWhere == "" ? "WHERE" : " AND") + " C.RANKTYPE != '1'";
+                }
 
             }
 
             return objUsm.GetCompanyListData(sWhere, pageIndex, pageSize);
         }
+        
 
         [HttpPost]
         public dynamic EditTSCompanyEnableData([FromBody] object form)
@@ -1479,8 +1585,11 @@ namespace Tectransit.Controllers
             {
                 if (id == 0)
                 {
-                    //前台用戶自行註冊新增
-                    //InsertAccount(htData);
+                    //目前後台只開放新增廠商會員
+                    InsertAccount(htData);
+
+                    htData["RANKID"] = htData["RANKTYPE"];
+                    insertACRank(htData);
                 }
                 else
                 {
@@ -1518,6 +1627,8 @@ namespace Tectransit.Controllers
         {
             Hashtable htData = sData;
             int newSeq = string.IsNullOrEmpty(DBUtil.GetSingleValue1($@"SELECT USERSEQ AS COL1 FROM T_S_ACCOUNT ORDER BY USERSEQ DESC")) ? 1 : Convert.ToInt32(DBUtil.GetSingleValue1($@"SELECT USERSEQ AS COL1 FROM T_S_ACCOUNT ORDER BY USERSEQ DESC")) + 1;
+            htData["USERPASSWORD"] = objComm.GetMd5Hash(htData["USERPASSWORD"]?.ToString());
+            htData["ADDR"] = htData["ADDRESS"];
             htData["USERSEQ"] = newSeq;
             htData["LOGINCOUNT"] = 0;
             htData["LASTLOGINDATE"] = DateTime.Now;
@@ -1526,8 +1637,16 @@ namespace Tectransit.Controllers
             htData["UPDDATE"] = htData["CREDATE"];
             htData["UPDBY"] = htData["CREATEBY"];
 
-            string sql = @"INSERT INTO T_S_ACCOUNT(USERCODE, USERPASSWORD, USERSEQ, USERNAME, USERDESC, WAREHOUSENO, EMAIL, TAXID, IDPHOTO_F, IDPHOTO_B, PHONE, MOBILE, ADDR, ISENABLE, LOGINCOUNT, LASTLOGINDATE, CREDATE, CREATEBY, UPDDATE, UPDBY) 
-                                        VALUES (@USERCODE, @USERPASSWORD, @USERSEQ, @USERNAME, @USERDESC, @WAREHOUSENO, @EMAIL, @TAXID, @IDPHOTO_F, @IDPHOTO_B, @PHONE, @MOBILE, @ADDR, @ISENABLE, @LOGINCOUNT, @LASTLOGINDATE, @CREDATE, @CREATEBY, @UPDDATE, @UPDBY)";
+            string sql = @"INSERT INTO T_S_ACCOUNT(USERCODE, USERPASSWORD, USERSEQ, USERNAME, USERDESC,
+                                                   COMPANYNAME, RATEID, WAREHOUSENO, EMAIL, TAXID,
+                                                   IDPHOTO_F, IDPHOTO_B, PHONE, MOBILE, ADDR,
+                                                   ISENABLE, LOGINCOUNT, LASTLOGINDATE, CREDATE, CREATEBY,
+                                                   UPDDATE, UPDBY) 
+                                        VALUES (@USERCODE, @USERPASSWORD, @USERSEQ, @USERNAME, @USERDESC,
+                                                   @COMPANYNAME, @RATEID, @WAREHOUSENO, @EMAIL, @TAXID,
+                                                   @IDPHOTO_F, @IDPHOTO_B, @PHONE, @MOBILE, @ADDR,
+                                                   @ISENABLE, @LOGINCOUNT, @LASTLOGINDATE, @CREDATE, @CREATEBY,
+                                                   @UPDDATE, @UPDBY)";
 
             DBUtil.EXECUTE(sql, htData);
         }
@@ -1600,6 +1719,7 @@ namespace Tectransit.Controllers
             _context.SaveChanges();
         }
         
+
         private void UpdateTransferM(Hashtable sData)
         {
             var query = _context.TETransferM.Where(q => q.Id == Convert.ToInt64(sData["ID"])).FirstOrDefault();

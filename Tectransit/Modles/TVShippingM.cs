@@ -13,7 +13,11 @@ namespace Tectransit.Modles
         public string Total { get; set; }
         public string Totalweight { get; set; }
         public int Trackingtype { get; set; }
+        public string Shippercompany { get; set; }
+        public string Shipper { get; set; }
+        public string Receivercompany { get; set; }
         public string Receiver { get; set; }
+        public string Receiverzipcode { get; set; }
         public string Receiveraddr { get; set; }
         public string Receiverphone { get; set; }
         public string Taxid { get; set; }
@@ -22,6 +26,7 @@ namespace Tectransit.Modles
         public string Storecode { get; set; }
         public string Mawbfile { get; set; }
         public string Shippingfile { get; set; }
+        public string Brokerfile { get; set; }
         public long Brokerid { get; set; }
         public string Remark1 { get; set; }
         public string Remark2 { get; set; }

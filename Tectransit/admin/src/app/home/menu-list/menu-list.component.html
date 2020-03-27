@@ -101,23 +101,24 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let fitem of Frontdata let idx = index">
-                      <td class="text-center text-muted">
-                        <span *ngIf="fitem.parentcode === '0'">&#x25B8;</span>
-                      <b>{{fitem.menuname}}</b>
+                    <tr *ngFor="let item of Frontdata let idx = index">
+                      <td class="text-left"
+                        [ngClass]="{'text-left': item.parentcode === '0', 'text-right': item.parentcode !== '0'}">
+                        <span *ngIf="item.parentcode === '0'">&#x25B8;</span>
+                        <b>{{item.menuname}}</b>
                       </td>
-                      <td>{{fitem.menucode}}</td>
-                      <td>{{fitem.menuurl}}</td>
-                      <td>{{fitem.menudesc}}</td>
-                      <td>{{fitem.credate}}</td>
-                      <td>{{fitem.creby}}</td>
-                      <td>{{fitem.upddate}}</td>
-                      <td>{{fitem.updby}}</td>
+                      <td>{{item.menucode}}</td>
+                      <td>{{item.menuurl}}</td>
+                      <td>{{item.menudesc}}</td>
+                      <td>{{item.credate}}</td>
+                      <td>{{item.creby}}</td>
+                      <td>{{item.upddate}}</td>
+                      <td>{{item.updby}}</td>
                       <td class="text-center text-muted">
                         <label class="chkbox-container">
                           <input type="checkbox" name="visibleChk" id="vchk{{idx}}"
                             (click)="visibleSelChange($event.toElement.value, $event.toElement.checked)"
-                            [checked]="fitem.isvisible === '1'" value="{{fitem.menuid}}">
+                            [checked]="item.isvisible === '1'" value="{{item.menuid}}">
                           <span class="checkmark"></span>
                         </label>
                       </td>
@@ -125,12 +126,12 @@
                         <label class="chkbox-container">
                           <input type="checkbox" name="activeChk" id="achk{{idx}}"
                             (click)="enableSelChange($event.toElement.value, $event.toElement.checked)"
-                            [checked]="fitem.isenable === '0'" value="{{fitem.menuid}}">
+                            [checked]="item.isenable === '0'" value="{{item.menuid}}">
                           <span class="checkmark"></span>
                         </label>
                       </td>
                       <td>
-                        <a (click)="openModal('custom-modal-1', fitem.menuid)">
+                        <a (click)="openModal('custom-modal-1', item.menuid)">
                           <span class="symbol-edit">
                             <i class="pe-7s-note2"></i>
                           </span>

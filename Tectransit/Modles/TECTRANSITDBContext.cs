@@ -40,6 +40,7 @@ namespace Tectransit.Modles
         public virtual DbSet<TSDepotrecord> TSDepotrecord { get; set; }
         public virtual DbSet<TSMenu> TSMenu { get; set; }
         public virtual DbSet<TSRank> TSRank { get; set; }
+        public virtual DbSet<TSRankmenumap> TSRankmenumap { get; set; }
         public virtual DbSet<TSRole> TSRole { get; set; }
         public virtual DbSet<TSRolebuttonmap> TSRolebuttonmap { get; set; }
         public virtual DbSet<TSRolemenumap> TSRolemenumap { get; set; }
@@ -1328,6 +1329,20 @@ namespace Tectransit.Modles
                     .HasColumnType("datetime");
             });
 
+            modelBuilder.Entity<TSRankmenumap>(entity =>
+            {
+                entity.ToTable("T_S_RANKMENUMAP");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Menucode)
+                    .HasColumnName("MENUCODE")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Rankid).HasColumnName("RANKID");
+            });
+
             modelBuilder.Entity<TSRole>(entity =>
             {
                 entity.ToTable("T_S_ROLE");
@@ -1805,6 +1820,11 @@ namespace Tectransit.Modles
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Logistics)
+                    .HasColumnName("LOGISTICS")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Receiver)
                     .HasColumnName("RECEIVER")
                     .HasMaxLength(50);
@@ -1813,9 +1833,18 @@ namespace Tectransit.Modles
                     .HasColumnName("RECEIVERADDR")
                     .HasMaxLength(300);
 
+                entity.Property(e => e.Receivercompany)
+                    .HasColumnName("RECEIVERCOMPANY")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.Receiverphone)
                     .HasColumnName("RECEIVERPHONE")
                     .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Receiverzipcode)
+                    .HasColumnName("RECEIVERZIPCODE")
+                    .HasMaxLength(10)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Remark1).HasColumnName("REMARK1");
@@ -1823,6 +1852,18 @@ namespace Tectransit.Modles
                 entity.Property(e => e.Remark2).HasColumnName("REMARK2");
 
                 entity.Property(e => e.Remark3).HasColumnName("REMARK3");
+
+                entity.Property(e => e.Shipper)
+                    .HasColumnName("SHIPPER")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Shippercompany)
+                    .HasColumnName("SHIPPERCOMPANY")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Shipperremark)
+                    .HasColumnName("SHIPPERREMARK")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.ShippingidM).HasColumnName("SHIPPINGID_M");
 
@@ -1864,6 +1905,11 @@ namespace Tectransit.Modles
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Accountid).HasColumnName("ACCOUNTID");
+
+                entity.Property(e => e.Brokerfile)
+                    .HasColumnName("BROKERFILE")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Brokerid).HasColumnName("BROKERID");
 
@@ -1913,9 +1959,18 @@ namespace Tectransit.Modles
                     .HasColumnName("RECEIVERADDR")
                     .HasMaxLength(300);
 
+                entity.Property(e => e.Receivercompany)
+                    .HasColumnName("RECEIVERCOMPANY")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.Receiverphone)
                     .HasColumnName("RECEIVERPHONE")
                     .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Receiverzipcode)
+                    .HasColumnName("RECEIVERZIPCODE")
+                    .HasMaxLength(10)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Remark1).HasColumnName("REMARK1");
@@ -1923,6 +1978,14 @@ namespace Tectransit.Modles
                 entity.Property(e => e.Remark2).HasColumnName("REMARK2");
 
                 entity.Property(e => e.Remark3).HasColumnName("REMARK3");
+
+                entity.Property(e => e.Shipper)
+                    .HasColumnName("SHIPPER")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Shippercompany)
+                    .HasColumnName("SHIPPERCOMPANY")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Shippingfile)
                     .HasColumnName("SHIPPINGFILE")
