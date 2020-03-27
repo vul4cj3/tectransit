@@ -64,7 +64,19 @@ namespace Tectransit.Controllers
         [HttpGet]
         public dynamic GetNavMenu_Front()
         {
-            return objCommon.GetMenu_Fornt();
+            return objCommon.GetMenu_Fornt(1);
+        }
+
+        [HttpGet]
+        public dynamic GetCusMenu()
+        {
+            Hashtable htData = new Hashtable();
+            htData["_cuscode"] = Request.Cookies["_cuscode"];
+            htData["_cusname"] = Request.Cookies["_cusname"];
+
+            htData["RANKID"] = DBUtil.GetSingleValue1($@"SELECT RANKID AS COL1 FROM T_S_ACRANKMAP WHERE USERCODE = '{htData["_cuscode"]?.ToString()}'");
+
+            return objCommon.GetMenu_Fornt(Convert.ToInt64(htData["RANKID"]));
         }
 
         [HttpGet("{id}/{type}")]

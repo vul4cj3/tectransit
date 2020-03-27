@@ -97,7 +97,7 @@ namespace Tectransit.Controllers
             htData["USERCODE"] = jsonData.Value<string>("USERCODE");
             htData["PASSWORD"] = jsonData.Value<string>("PASSWORD");
             htData["CAPTCHA"] = jsonData.Value<string>("CODE");
-            htData["RANKTYPE"] = 2;//廠商
+            htData["RANKTYPE"] = "2,3";//廠商&報關行
             htData["HOSTNAME"] = HttpContext.Request.Host.Host;
             htData["ClientIP"] = clientIP;
 

@@ -362,12 +362,12 @@ namespace Tectransit.Datas
         }
 
         //取得前台選單
-        public dynamic GetMenu_Fornt()
+        public dynamic GetMenu_Fornt(long id)
         {
             DataTable dtMenulist = DBUtil.SelectDataTable($@"SELECT A.ID AS MENUID, A.MENUCODE, A.PARENTCODE, A.MENUURL, A.MENUSEQ, A.MENUNAME
                                                              FROM T_S_MENU A
                                                              LEFT JOIN T_S_RANKMENUMAP B ON A.MENUCODE = B.MENUCODE
-                                                             WHERE A.ISBACK = 'false' AND A.ISVISIBLE = 'true' AND A.ISENABLE = 'true' AND B.RANKID = 1
+                                                             WHERE A.ISBACK = 'false' AND A.ISVISIBLE = 'true' AND A.ISENABLE = 'true' AND B.RANKID = {id}
                                                              ORDER BY MENUSEQ");
             if (dtMenulist.Rows.Count > 0)
             {
