@@ -296,6 +296,14 @@ export class CommonService {
       }));
   }
 
+  editBrokerData(imcode: string, excode: string, arraydata, pageUrl: string) {
+    const postData = { imid: imcode, exid: excode, formdata: arraydata };
+    return this.http.post<any>(pageUrl, postData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
   delData(arraydata, pageUrl: string) {
     const postData = { formdata: arraydata };
     return this.http.post<any>(pageUrl, postData)
@@ -306,6 +314,13 @@ export class CommonService {
 
   fileUpload(formData, pageUrl: string) {
     return this.http.post<any>(pageUrl, formData)
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  Upload(form, pageUrl: string) {
+    return this.http.post<any>(pageUrl, form)
       .pipe(map(data => {
         return data;
       }));

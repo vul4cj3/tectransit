@@ -466,6 +466,7 @@ namespace Tectransit.Datas
         public string COMPANYNAME { set; get; }
         public string SHIPPINGNO { set; get; }
         public string MAWBNO { set; get; }
+        public string FLIGHTNUM { set; get; }
         public string TOTAL { set; get; }
         public string TOTALWEIGHT { set; get; }
         public string TRACKINGTYPE { set; get; }
@@ -481,11 +482,14 @@ namespace Tectransit.Datas
         public int STATUS { set; get; }
         public string STORECODE { set; get; }
         public string MAWBFILE { set; get; }
-        public string SHIPPINGFILE { set; get; }
+        public string SHIPPINGFILE1 { set; get; }
+        public string SHIPPINGFILE2 { set; get; }
         public string BROKERFILE1 { set; get; }
         public string BROKERFILE2 { set; get; }
         public long IMBROKERID { set; get; }
+        public string IMBROKER { set; get; }
         public long EXBROKERID { set; get; }
+        public string EXBROKER { set; get; }
         public string REMARK1 { set; get; }
         public string REMARK2 { set; get; }
         public string REMARK3 { set; get; }

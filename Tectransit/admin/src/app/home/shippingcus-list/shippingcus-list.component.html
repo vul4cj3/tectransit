@@ -45,6 +45,41 @@
           </div>
         </div>
       </form>
+
+      <div class="card-body">
+        <div class="form-inline">
+          <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
+            <input type="radio" name="files" id="chkfile1" class="form-control">
+            <label for="chkfile1" class="mr-sm-2">已消倉表</label>
+            <input type="radio" name="files" id="chkfile2" class="form-control">
+            <label for="chkfile2" class="mr-sm-2">材積與實重表</label>
+            <input type="radio" name="files" id="chkfile3" class="form-control">
+            <label for="chkfile3" class="mr-sm-2">MAWB</label>
+            <input type="file" id="filesupload" #filesupload multiple accept=".xlsx,.xls,.pdf"
+              (change)="fileChange($event)">
+            <div>
+              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doImport()">匯入/上傳</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-inline">
+          <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
+            <label for="selexbr" class="mr-sm-2">出口報關行</label>
+            <select id="selexbr">
+              <option value="0">請選擇</option>
+              <option *ngFor="let exitem of exBroker" [value]="exitem.userid">{{exitem.companyname}}</option>
+            </select>
+            <label for="selimbr" class="mr-sm-2">進口報關行</label>
+            <select id="selimbr">
+              <option value="0">請選擇</option>
+              <option *ngFor="let imitem of imBroker" [value]="imitem.userid">{{imitem.companyname}}</option>
+            </select>
+            <div>
+              <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doSeprate()">分配</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -102,13 +137,42 @@
                     <span class="checkmark"></span>
                   </label>
                 </td>
-                <td>{{item.shippingno}}</td>
+                <td><label for="chk{{idx}}">{{item.shippingno}}</label></td>
                 <td>{{item.mawbno}}</td>
                 <td>{{item.companyname}}</td>
-                <td>{{item.accountcode}}</td>
+                <td>{{item.exbroker}}</td>
+                <td>{{item.imbroker}}</td>
                 <td>{{item.credate}}</td>
                 <td>{{item.upddate}}</td>
-                <td>{{item.status | shippstatus}}</td>
+                <td>
+                  <a *ngIf="item.shippingfilE1 != ''" href="../{{item.shippingfilE1}}" target="_blank" title="原檔">
+                    <span class="symbol-edit">
+                      <i class="fas fa-file-alt"></i>
+                    </span>
+                  </a>
+                  <a *ngIf="item.shippingfilE2 != ''" href="../{{item.shippingfilE2}}" target="_blank" title="台空">
+                    <span class="symbol-edit">
+                      <i class="far fa-file-alt"></i>
+                    </span>
+                  </a>
+                </td>
+                <td>
+                  <a *ngIf="item.brokerfilE1 != ''" href="../{{item.brokerfilE1}}" target="_blank" title="原檔">
+                    <span class="symbol-edit">
+                      <i class="fas fa-file-alt"></i>
+                    </span>
+                  </a>
+                  <a *ngIf="item.brokerfilE2 != ''" href="../{{item.brokerfilE2}}" target="_blank" title="台空">
+                    <span class="symbol-edit">
+                      <i class="far fa-file-alt"></i>
+                    </span>
+                  </a>
+                </td>
+                <td><a *ngIf="item.mawbfile != ''" href="../{{item.mawbfile}}" target="_blank" title="MAWB">
+                    <span class="symbol-edit">
+                      <i class="far fa-file-alt"></i>
+                    </span>
+                  </a></td>
                 <td>
                   <a routerLink="/shippingcus/edit/{{item.id}}">
                     <span class="symbol-edit">

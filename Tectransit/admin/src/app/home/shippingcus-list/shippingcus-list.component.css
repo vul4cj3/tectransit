@@ -1,3 +1,11 @@
 .form-group {
   padding-bottom: 10px;
 }
+
+td a {
+  margin-right: 5px;
+}
+
+select {
+  margin-right: 5px;
+}

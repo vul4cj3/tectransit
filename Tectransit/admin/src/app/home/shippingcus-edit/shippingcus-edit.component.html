@@ -36,6 +36,26 @@
             </div>
           </div>
           <div class="col-md-4">
+            <div class="position-relative form-inline" *ngIf="!isModify">
+              <span>航班號</span>
+              <p>{{masterData.flightnum}}</p>
+            </div>
+            <div class="position-relative form-inline" *ngIf="isModify">
+              <label class="text-requied" for="flightnum">航班號</label>
+              <input type="text" id="flightnum" class="form-control" formControlName="flightnum">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline" *ngIf="!isModify">
+              <span>倉儲代碼</span>
+              <p>{{masterData.storecode}}</p>
+            </div>
+            <div class="position-relative form-inline" *ngIf="isModify">
+              <label class="text-requied" for="storecode">倉儲代碼</label>
+              <input type="text" id="storecode" class="form-control" formControlName="storecode">
+            </div>
+          </div>
+          <div class="col-md-4">
             <div class="position-relative form-inline">
               <span>廠商</span>
               <p>{{masterData.companyname}}</p>
@@ -80,6 +100,24 @@
             </div>
           </div>
           <div class="col-md-4">
+            <div class="position-relative form-inline">
+              <label for="exbrokerid">出口報關行</label>
+              <select id="exbrokerid" class="form-control" formControlName="exbrokerid">
+                <option value="0">請選擇</option>
+                <option *ngFor="let exitem of exBroker" [value]="exitem.userid">{{exitem.companyname}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline">
+              <label for="imbrokerid">進口報關行</label>
+              <select id="imbrokerid" class="form-control" formControlName="imbrokerid">
+                <option value="0">請選擇</option>
+                <option *ngFor="let imitem of imBroker" [value]="imitem.userid">{{imitem.companyname}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
             <div class="position-relative form-inline" *ngIf="!isModify">
               <label for="ismultreceiver">複數收件人</label>
               <img *ngIf="ismult"
@@ -92,29 +130,55 @@
             <input type="hidden" formControlName="ismultreceiver">
           </div>
         </div>
-        <div class="form-row">
+        <div class="form-row" *ngIf="!ismult">
           <div class="col-md-4">
-            <div class="position-relative form-inline" *ngIf="!ismult">
+            <div class="position-relative form-inline">
+              <label for="shippercompany">寄件公司</label>
+              <input type="text" id="shippercompany" class="form-control" formControlName="shippercompany">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline">
+              <label for="shipper">寄件人</label>
+              <input type="text" id="shipper" class="form-control" formControlName="shipper">
+            </div>
+          </div>
+        </div>
+        <div class="form-row" *ngIf="!ismult">
+          <div class="col-md-4">
+            <div class="position-relative form-inline">
+              <label for="receivercompany">收件公司</label>
+              <input type="text" id="receivercompany" class="form-control" formControlName="receivercompany">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline">
               <label for="receiver">收件人</label>
               <input type="text" id="receiver" class="form-control" formControlName="receiver">
             </div>
           </div>
           <div class="col-md-4">
-            <div class="position-relative form-inline" *ngIf="!ismult">
+            <div class="position-relative form-inline">
               <label for="receiverphone">收件人電話</label>
               <input type="text" id="receiverphone" class="form-control" formControlName="receiverphone">
             </div>
           </div>
+        </div>
+        <div class="form-row" *ngIf="!ismult">
           <div class="col-md-4">
-            <div class="position-relative form-inline" *ngIf="!ismult">
+            <div class="position-relative form-inline">
               <label for="receivertaxid">身分證字號</label>
               <input type="text" id="receivertaxid" class="form-control" formControlName="receivertaxid">
             </div>
           </div>
-        </div>
-        <div class="form-row">
           <div class="col-md-4">
-            <div class="position-relative form-inline" *ngIf="!ismult">
+            <div class="position-relative form-inline">
+              <label for="receiverzipcode">郵遞區號</label>
+              <input type="text" id="receiverzipcode" class="form-control" formControlName="receiverzipcode">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="position-relative form-inline">
               <label for="receiveraddr">收件人地址</label>
               <input type="text" id="receiveraddr" class="form-control" formControlName="receiveraddr">
             </div>
@@ -152,36 +216,66 @@
                   <p>{{item.totalitem}}</p>
                 </div>
               </div>
-              <div class="row-column">
-                <div class="header-row" *ngIf="ismult">
+              <div class="row-column" *ngIf="ismult">
+                <div class="header-row">
+                  <span>寄件公司</span>
+                  <p>{{item.shippercompany}}</p>
+                </div>
+                <div class="header-row">
+                  <span>寄件人</span>
+                  <p>{{item.shipper}}</p>
+                </div>
+              </div>
+              <div class="row-column" *ngIf="ismult">
+                <div class="header-row">
+                  <span>收件公司</span>
+                  <p>{{item.receivercompany}}</p>
+                </div>
+                <div class="header-row">
                   <span>收件人</span>
                   <p>{{item.receiver}}</p>
                 </div>
-                <div class="header-row" *ngIf="ismult">
+                <div class="header-row">
                   <span>收件人電話</span>
                   <p>{{item.receiverphone}}</p>
                 </div>
-                <div class="header-row" *ngIf="ismult">
+                <div class="header-row">
                   <span>身分證字號</span>
                   <p>{{item.receivertaxid}}</p>
                 </div>
-                <div class="header-row" *ngIf="ismult">
+              </div>
+              <div class="row-column" *ngIf="ismult">
+                <div class="header-row">
+                  <span>郵遞區號</span>
+                  <p>{{item.receiverzipcode}}</p>
+                </div>
+                <div class="header-row">
                   <span>收件人地址</span>
                   <p>{{item.receiveraddr}}</p>
                 </div>
               </div>
               <div class="row-column">
-                <div class="header-row" *ngIf="item.depotstatus !== '0'">
+                <div class="header-row" *ngIf="item.depotstatus !== 0">
                   <span>點收狀態</span>
                   <p>{{item.depotstatus | shippstatus:"check"}}</p>
                 </div>
-                <div class="header-row" *ngIf="item.depotstatus === '3'">
+                <div class="header-row" *ngIf="item.depotstatus === 3">
                   <span>點收說明</span>
                   <p>{{item.remark1}}</p>
                 </div>
                 <div class="header-row" *ngIf="item.trackingno !== ''">
                   <span>託運單號</span>
                   <p>{{item.trackingno}}</p>
+                </div>
+              </div>
+              <div class="row-column">
+                <div class="header-row" *ngIf="item.logistics !== ''">
+                  <span>出貨商</span>
+                  <p>{{item.logistics | shippstatus:'log'}}</p>
+                </div>
+                <div class="header-row" *ngIf="item.shipperremark !== ''">
+                  <span>備註</span>
+                  <p>{{item.shipperremark}}</p>
                 </div>
               </div>
             </div>
@@ -215,6 +309,7 @@
                     <th>身份證字號</th>
                     <th>連絡電話</th>
                     <th>手機</th>
+                    <th>郵遞區號</th>
                     <th>地址</th>
                     <th>身分證檔案</th>
                     <th>委任書</th>
@@ -227,6 +322,7 @@
                       <td>{{decitem.taxid}}</td>
                       <td>{{decitem.phone}}</td>
                       <td>{{decitem.mobile}}</td>
+                      <td>{{decitem.zipcode}}</td>
                       <td>{{decitem.addr}}</td>
                       <td>
                         <a *ngIf="decitem.idphotof !== ''" [href]="'/' + decitem.idphotof" target="_blank">
@@ -281,6 +377,22 @@
                 </div>
                 <div class="row-column" *ngIf="ismult">
                   <div class="header-row">
+                    <label for="shippercompany{{ibox}}">寄件公司</label>
+                    <input type="text" id="shippercompany{{ibox}}" class="form-control"
+                      formControlName="shippercompany">
+                  </div>
+                  <div class="header-row">
+                    <label for="shipper{{ibox}}">寄件人</label>
+                    <input type="text" id="shipper{{ibox}}" class="form-control" formControlName="shipper">
+                  </div>
+                </div>
+                <div class="row-column" *ngIf="ismult">
+                  <div class="header-row">
+                    <label for="receivercompany{{ibox}}">收件公司</label>
+                    <input type="text" id="receivercompany{{ibox}}" class="form-control"
+                      formControlName="receivercompany">
+                  </div>
+                  <div class="header-row">
                     <label for="receiver{{ibox}}">收件人</label>
                     <input type="text" id="receiver{{ibox}}" class="form-control" formControlName="receiver">
                   </div>
@@ -292,9 +404,31 @@
                     <label for="receivertaxid{{ibox}}">身分證字號</label>
                     <input type="text" id="receivertaxid{{ibox}}" class="form-control" formControlName="receivertaxid">
                   </div>
+                </div>
+                <div class="row-column" *ngIf="ismult">
+                  <div class="header-row">
+                    <label for="receiverzipcode{{ibox}}">郵遞區號</label>
+                    <input type="text" id="receiverzipcode{{ibox}}" class="form-control"
+                      formControlName="receiverzipcode">
+                  </div>
                   <div class="header-row">
                     <label for="receiveraddr{{ibox}}">收件人地址</label>
                     <input type="text" id="receiveraddr{{ibox}}" class="form-control" formControlName="receiveraddr">
+                  </div>
+                </div>
+                <div class="row-column">
+                  <div class="header-row">
+                    <label for="logistics{{ibox}}">出貨商</label>
+                    <select id="logistics{{ibox}}" class="form-control" formControlName="logistics">
+                      <option value="0">請選擇</option>
+                      <option value="1">嘉里大榮</option>
+                      <option value="2">大智通</option>
+                      <option value="3">日翊</option>
+                    </select>
+                  </div>
+                  <div class="header-row">
+                    <label for="shipperremark{{ibox}}">備註</label>
+                    <input type="text" id="shipperremark{{ibox}}" class="form-control" formControlName="shipperremark">
                   </div>
                 </div>
                 <a class="box-close" (click)="removebox(ibox)">
@@ -360,6 +494,7 @@
                       <th class="text-requied">身份證字號</th>
                       <th>連絡電話</th>
                       <th>手機</th>
+                      <th>郵遞區號</th>
                       <th>地址</th>
                       <th>刪除</th>
                     </tr>
@@ -372,6 +507,7 @@
                         <td><input type="text" class="form-control" formControlName="taxid"></td>
                         <td><input type="text" class="form-control" formControlName="phone"></td>
                         <td><input type="text" class="form-control" formControlName="mobile"></td>
+                        <td><input type="text" class="form-control" formControlName="zipcode"></td>
                         <td style="width:500px"><input type="text" class="form-control largepx" formControlName="addr">
                         </td>
                         <input type="hidden" formControlName="idphotof">

@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ShippstatusPipe implements PipeTransform {
 
-  transform(value: number, type: string = 's'): any {
+  transform(value: any, type: string = 's'): any {
     if (type === 'pay') {
       if (value === 0) {
         return '未付款';
@@ -23,6 +23,16 @@ export class ShippstatusPipe implements PipeTransform {
         return '未點收到';
       } else if (value === 3) {
         return '其他';
+      } else { }
+    } else if (type === 'log') {
+      if (value === '0') {
+        return '';
+      } else if (value === '1') {
+        return '嘉里大榮';
+      } else if (value === '2') {
+        return '大智通(7-11)';
+      } else if (value === '3') {
+        return '日翊(全家)';
       } else { }
     } else {
       if (value === 0) {

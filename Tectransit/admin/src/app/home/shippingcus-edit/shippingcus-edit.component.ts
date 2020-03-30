@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
-import { ShippingMCusInfo, ShippingHCusInfo, ShippingDCusInfo, DeclarantCusInfo } from 'src/app/_Helper/models';
+import { ShippingMCusInfo, ShippingHCusInfo, ShippingDCusInfo, DeclarantCusInfo, AccountInfo } from 'src/app/_Helper/models';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
 
@@ -14,6 +14,7 @@ export class ShippingcusEditComponent implements OnInit {
   /* Web api url */
   private baseUrl = window.location.origin + '/api/UserHelp/';
   private dataUrl = 'GetSingleShippingCusData';
+  private brokerdataUrl = 'GetBrokerData';
   private dataEditUrl = 'EditShippingCusData';
 
   dataChange;
@@ -23,6 +24,9 @@ export class ShippingcusEditComponent implements OnInit {
   headerData: ShippingHCusInfo[];
   detailData: ShippingDCusInfo[];
   declarData: DeclarantCusInfo[];
+
+  imBroker: AccountInfo[];
+  exBroker: AccountInfo[];
 
   isModify = false;
   cusStatus;
@@ -46,7 +50,7 @@ export class ShippingcusEditComponent implements OnInit {
 
     if (this.shippingMID !== '0') {
       this.resetForm();
-      this.getData();
+      this.getEditData();
     }
   }
 
@@ -55,14 +59,22 @@ export class ShippingcusEditComponent implements OnInit {
     this.dataForm = this.formBuilder.group({
       id: 0,
       mawbno: ['0', Validators.required],
+      flightnum: [''],
+      storecode: [''],
       total: ['0', Validators.required],
       totalweight: ['0', Validators.required],
+      shippercompany: [''],
+      shipper: [''],
+      receivercompany: [''],
       receiver: [''],
+      receiverzipcode: [''],
       receiveraddr: [''],
       receiverphone: [''],
       receivertaxid: [''],
       ismultreceiver: 'N',
       status: '1',
+      exbrokerid: '0',
+      imbrokerid: '0',
       boxform: this.formBuilder.array([
         // this.initBox()
       ])
@@ -70,6 +82,21 @@ export class ShippingcusEditComponent implements OnInit {
       //   // this.initDec()
       // ])
     });
+  }
+
+  getEditData() {
+    this.commonService.getData(this.baseUrl + this.brokerdataUrl)
+      .subscribe(res => {
+        if (res.status === '0') {
+          this.imBroker = res.imList;
+          this.exBroker = res.exList;
+        }
+        this.getData();
+      }, error => {
+        console.log(error);
+      });
+
+
   }
 
   getData() {
@@ -115,8 +142,20 @@ export class ShippingcusEditComponent implements OnInit {
       const control = this.dataForm.get('boxform') as FormArray;
       for (let i = 0; i < control.length; i++) {
         const temp = control.controls[i] as FormGroup;
+        if (temp.controls.shippercompany === undefined) {
+          temp.addControl('shippercompany', new FormControl(''));
+        }
+        if (temp.controls.shipper === undefined) {
+          temp.addControl('shipper', new FormControl(''));
+        }
+        if (temp.controls.receivercompany === undefined) {
+          temp.addControl('receivercompany', new FormControl(''));
+        }
         if (temp.controls.receiver === undefined) {
           temp.addControl('receiver', new FormControl(''));
+        }
+        if (temp.controls.receiverzipcode === undefined) {
+          temp.addControl('receiverzipcode', new FormControl(''));
         }
         if (temp.controls.receiveraddr === undefined) {
           temp.addControl('receiveraddr', new FormControl(''));
@@ -133,8 +172,20 @@ export class ShippingcusEditComponent implements OnInit {
       const control = this.dataForm.get('boxform') as FormArray;
       for (let i = 0; i < control.length; i++) {
         const temp = control.controls[i] as FormGroup;
+        if (temp.controls.shippercompany !== undefined) {
+          temp.removeControl('shippercompany');
+        }
+        if (temp.controls.shipper !== undefined) {
+          temp.removeControl('shipper');
+        }
+        if (temp.controls.receivercompany !== undefined) {
+          temp.removeControl('receivercompany');
+        }
         if (temp.controls.receiver !== undefined) {
           temp.removeControl('receiver');
+        }
+        if (temp.controls.receiverzipcode !== undefined) {
+          temp.removeControl('receiverzipcode');
         }
         if (temp.controls.receiveraddr !== undefined) {
           temp.removeControl('receiveraddr');
@@ -163,13 +214,19 @@ export class ShippingcusEditComponent implements OnInit {
         transferno: ['', [Validators.required]],
         weight: [''],
         totalitem: [''],
+        logistics: [''],
+        shipperremark: [''],
         productform: this.formBuilder.array([
           this.initProduct()
         ]),
         decform: this.formBuilder.array([
           this.initDec()
         ]),
+        shippercompany: [''],
+        shipper: [''],
+        receivercompany: [''],
         receiver: [''],
+        receiverzipcode: [''],
         receiveraddr: [''],
         receiverphone: [''],
         receivertaxid: [''],
@@ -181,6 +238,8 @@ export class ShippingcusEditComponent implements OnInit {
         transferno: ['', [Validators.required]],
         weight: [''],
         totalitem: [''],
+        logistics: [''],
+        shipperremark: [''],
         productform: this.formBuilder.array([
           this.initProduct()
         ]),
@@ -210,6 +269,7 @@ export class ShippingcusEditComponent implements OnInit {
       taxid: ['', Validators.required],
       phone: [''],
       mobile: [''],
+      zipcode: [''],
       addr: [''],
       idphotof: [''],
       idphotob: [''],
@@ -275,11 +335,17 @@ export class ShippingcusEditComponent implements OnInit {
             transferno: [this.headerData[i].transferno],
             weight: [this.headerData[i].weight],
             totalitem: [this.headerData[i].totalitem],
+            logistics: [this.headerData[i].logistics],
+            shipperremark: [this.headerData[i].shipperremark],
             productform: this.formBuilder.array([
             ]),
             decform: this.formBuilder.array([
             ]),
+            shippercompany: [this.headerData[i].shippercompany],
+            shipper: [this.headerData[i].shipper],
+            receivercompany: [this.headerData[i].receivercompany],
             receiver: [this.headerData[i].receiver],
+            receiverzipcode: [this.headerData[i].receiverzipcode],
             receiveraddr: [this.headerData[i].receiveraddr],
             receiverphone: [this.headerData[i].receiverphone],
             receivertaxid: [this.headerData[i].receivertaxid]
@@ -291,6 +357,8 @@ export class ShippingcusEditComponent implements OnInit {
             transferno: [this.headerData[i].transferno],
             weight: [this.headerData[i].weight],
             totalitem: [this.headerData[i].totalitem],
+            logistics: [this.headerData[i].logistics],
+            shipperremark: [this.headerData[i].shipperremark],
             productform: this.formBuilder.array([
             ]),
             decform: this.formBuilder.array([
@@ -323,6 +391,7 @@ export class ShippingcusEditComponent implements OnInit {
               taxid: [this.declarData[k].taxid, Validators.required],
               phone: [this.declarData[k].phone],
               mobile: [this.declarData[k].mobile],
+              zipcode: [this.declarData[k].zipcode],
               addr: [this.declarData[k].addr],
               idphotof: [this.declarData[k].idphotof],
               idphotob: [this.declarData[k].idphotob],
@@ -349,7 +418,7 @@ export class ShippingcusEditComponent implements OnInit {
     this.commonService.editShippingData(postData, this.baseUrl + this.dataEditUrl)
       .subscribe(data => {
         if (data.status === '0') {
-          this.getData();
+          this.getEditData();
           alert(data.msg);
         } else {
           alert(data.msg);

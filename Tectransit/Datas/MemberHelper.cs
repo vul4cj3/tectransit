@@ -823,10 +823,10 @@ namespace Tectransit.Datas
 
         public void InsertTVDeclarant(Hashtable sData)
         {
-            string sql = $@"INSERT INTO T_V_DECLARANT (NAME, TAXID, PHONE, ADDR, SHIPPINGID_M, SHIPPINGID_H)
-                           VALUES (N'{sData["NAME"]}', N'{sData["TAXID"]}', {sData["PHONE"]}, N'{sData["ADDR"]}', {sData["SHIPPINGIDM"]}, {sData["SHIPPINGIDH"]})";
+            string sql = $@"INSERT INTO T_V_DECLARANT (NAME, TAXID, PHONE, ZIPCODE, ADDR, SHIPPINGID_M, SHIPPINGID_H)
+                           VALUES (@NAME, @TAXID, @PHONE, @ZIPCODE, @ADDR, @SHIPPINGIDM, @SHIPPINGIDH)";
 
-            DBUtil.EXECUTE(sql);
+            DBUtil.EXECUTE(sql, sData);
 
         }
 

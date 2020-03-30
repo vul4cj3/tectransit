@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { StationInfo, ShippingMCusInfo } from 'src/app/_Helper/models';
+import { StationInfo, ShippingMCusInfo, AccountInfo } from 'src/app/_Helper/models';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { CommonService } from 'src/app/services/common.service';
 import { ShippstatusPipe } from 'src/app/_Helper/shippstatus.pipe';
@@ -17,18 +17,25 @@ export class ShippingcusListComponent implements OnInit {
   /* Web api url*/
   private baseUrl = window.location.origin + '/api/UserHelp/';
   private dataUrl = 'GetTVShippingMListData';
+  private brokerdataUrl = 'GetBrokerData';
+  private brokereditUrl = 'EditTVShippingMBroker';
   private statusUrl = 'EditTVShippingMStatus';
   private delUrl = 'DelTVShippingMData';
+  private importUrl = 'CoverCusShippingData';
 
-  tableTitle = ['#', '集運單號', '主單號', '廠商', '會員帳號', '建單時間', '更新時間', '狀態', '編輯'];
+  tableTitle = ['#', '集運單號', '主單號', '廠商', '出口報關', '進口報關', '建單時間', '更新時間', '已消倉表', '材積與實重表', 'MAWB', '編輯'];
   data: ShippingMCusInfo[];
   rowTotal = 0;
   currentpage = 1;
   pageSize = 20;
   srhForm: FormGroup;
 
+  imBroker: AccountInfo[];
+  exBroker: AccountInfo[];
+
   tempList: any = [];
   chkList: any = [];
+  fileList: any = [];
 
   status = 0;
 
@@ -40,7 +47,7 @@ export class ShippingcusListComponent implements OnInit {
 
   ngOnInit() {
     this.resetData();
-    this.crePagination(this.currentpage);
+    this.getData();
   }
 
   searchData() {
@@ -63,6 +70,19 @@ export class ShippingcusListComponent implements OnInit {
       sstatus: parseInt(sessionStorage.getItem('cusstatus'), 0)
     });
 
+  }
+
+  getData() {
+    this.commonService.getData(this.baseUrl + this.brokerdataUrl)
+      .subscribe(res => {
+        if (res.status === '0') {
+          this.imBroker = res.imList;
+          this.exBroker = res.exList;
+        }
+        this.crePagination(this.currentpage);
+      }, error => {
+        console.log(error);
+      });
   }
 
   crePagination(newPage: number) {
@@ -153,6 +173,86 @@ export class ShippingcusListComponent implements OnInit {
           });
 
     } else { alert('頁面無項目變更！'); }
+  }
+
+  fileChange(e) {
+    this.fileList = [];
+    if (e.target.files[0] !== undefined) {
+      this.fileList.push({ file: e.target.files[0] });
+    }
+  }
+
+  doImport() {
+    const schk1 = document.getElementById('chkfile1') as HTMLInputElement;
+    const schk2 = document.getElementById('chkfile2') as HTMLInputElement;
+    const schk3 = document.getElementById('chkfile3') as HTMLInputElement;
+
+    if (!schk1.checked && !schk2.checked && !schk3.checked) {
+      return alert('必須選擇文件類別！');
+    } else if (this.chkList.length !== 1) {
+      return alert('請選擇一筆資料！');
+    } else if (this.fileList.length !== 1) {
+      return alert('請選擇要匯入的檔案！');
+    }
+
+    let type = '';
+    if (schk1.checked) {
+      type = 'SHIPPINGFILE';
+    } else if (schk2.checked) {
+      type = 'BROKERFILE';
+    } else {
+      type = 'MAWBFILE';
+    }
+
+    const formdata = new FormData();
+    formdata.append('type', type);
+    formdata.append('id', this.chkList[0]);
+    formdata.append('fileUpload', this.fileList[0].file);
+
+    this.commonService.Upload(formdata, this.baseUrl + this.importUrl)
+      .subscribe(data => {
+        if (data.status === '0') {
+          alert(data.msg);
+          this.crePagination(this.currentpage);
+          this.chkList = [];
+          this.fileList = [];
+        } else {
+          alert(data.msg);
+        }
+      },
+        error => {
+          console.log(error);
+        });
+
+  }
+
+  doSeprate() {
+    const selim = document.getElementById('selimbr') as HTMLSelectElement;
+    const selex = document.getElementById('selexbr') as HTMLSelectElement;
+
+    if (selim.value === '0' && selex.value === '0') {
+      return alert('出口或進口報關行必須選擇！');
+    } else if (this.chkList.length <= 0) {
+      return alert('請至少選擇一筆資料！');
+    }
+
+    if (this.chkList.length > 0) {
+      this.commonService.editBrokerData(selim.value, selex.value, this.chkList, this.baseUrl + this.brokereditUrl)
+        .subscribe(data => {
+          if (data.status === '0') {
+            alert(data.msg);
+            this.crePagination(this.currentpage);
+            this.chkList = [];
+          } else {
+            alert(data.msg);
+          }
+        },
+          error => {
+            console.log(error);
+          });
+
+    } else { alert('頁面無項目變更！'); }
+
   }
 
   doDelete() {

@@ -2,11 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using OfficeOpenXml;
 using Tectransit.Datas;
 using Tectransit.Modles;
 
@@ -15,12 +19,15 @@ namespace Tectransit.Controllers
     [Route("api/UserHelp/[action]")]
     public class UserManagementController : Controller
     {
+        public IConfiguration _configuration { get; }
         UserManagementHelper objUsm = new UserManagementHelper();
         CommonHelper objComm = new CommonHelper();
         private readonly TECTRANSITDBContext _context;
+        
 
-        public UserManagementController(TECTRANSITDBContext context)
+        public UserManagementController(IConfiguration Configuration, TECTRANSITDBContext context)
         {
+            _configuration = Configuration;
             _context = context;
         }
 
@@ -801,6 +808,20 @@ namespace Tectransit.Controllers
             }
         }
 
+        [HttpGet]
+        public dynamic GetBrokerData()
+        {
+            try
+            {
+                return objUsm.GetBrokerData();
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "取得失敗！" };
+            }
+        }
+
         [HttpPost]
         public dynamic EditTVShippingMStatus([FromBody] object form)
         {
@@ -917,6 +938,86 @@ namespace Tectransit.Controllers
         }
 
         [HttpPost]
+        public dynamic EditTVShippingMBroker([FromBody] object form)
+        {
+            try
+            {
+                string Shippingno = "";
+                var jsonData = JObject.FromObject(form);
+
+                Hashtable htData = new Hashtable();
+                if (jsonData.Value<string>("imid") != "0")
+                    htData["IMBROKERID"] = jsonData.Value<string>("imid");
+                if (jsonData.Value<string>("exid") != "0")
+                    htData["EXBROKERID"] = jsonData.Value<string>("exid");
+                //get cookies
+                htData["_usercode"] = Request.Cookies["_usercode"];
+                htData["_username"] = Request.Cookies["_username"];
+
+                JArray arrData = jsonData.Value<JArray>("formdata");                
+                ArrayList AL = new ArrayList();
+                for (int i = 0; i < arrData.Count; i++)
+                {
+                    JValue temp = (JValue)arrData[i];
+
+                    AL.Add(temp);
+                }
+
+                if (AL.Count > 0)
+                {
+                    for (int j = 0; j < AL.Count; j++)
+                    {
+                        //未入庫狀態的才可更新
+                        htData["ID"] = AL[j].ToString();
+                        string tempSno = DBUtil.GetSingleValue1($@"SELECT SHIPPINGNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = @ID AND STATUS = 0", htData);
+                        if (!string.IsNullOrEmpty(tempSno))
+                        {
+                            updateCusShippingM(htData);
+                            
+                            Shippingno += (Shippingno == "" ? "" : ",") + tempSno;
+                        }
+
+                    }
+
+                    #region 寄信通知進出口報關行(未入庫狀態才寄)
+                    string F_User = "TEC Website System<ebs.sys@t3ex-group.com>";
+                    string subject = $"TEC代運平台 - 報關資料通知";
+                    string domainUrl = _configuration.GetSection("WebsitSetting")["domain"];
+                    string C_User = _configuration.GetSection("WebsitSetting")["csMail"];
+                    string body = "";
+                    body += $"<p>集運單號：{Shippingno}</p>";
+                    body += $"<p>報關資料已上傳，請至<a href='{domainUrl}cuslogin' target='_blank'>台灣空運後台系統</a>下載！</p>";
+                    body += "<p style='color:#ff0000'>[此為系統自動寄送信件，請勿直接回覆，謝謝！]</p>";
+
+                    string IMACID = DBUtil.GetSingleValue1($@"SELECT IMBROKERID AS COL1 FROM T_V_SHIPPING_M WHERE ID = @IMBROKERID AND STATUS = 0", htData);
+                    string EXACID = DBUtil.GetSingleValue1($@"SELECT EXBROKERID AS COL1 FROM T_V_SHIPPING_M WHERE ID = @EXBROKERID AND STATUS = 0", htData);
+
+                    if (!string.IsNullOrEmpty(IMACID) && IMACID != "0")
+                    {
+                        string T_User = DBUtil.GetSingleValue1($@"SELECT EMAIL AS COL1 FROM T_S_ACCOUNT WHERE ID = {IMACID}");
+                        objComm.SendMail(F_User, T_User, subject, body, C_User);
+                    }
+
+                    if (!string.IsNullOrEmpty(EXACID) && EXACID != "0")
+                    {
+                        string T_User = DBUtil.GetSingleValue1($@"SELECT EMAIL AS COL1 FROM T_S_ACCOUNT WHERE ID = {EXACID}");
+                        objComm.SendMail(F_User, T_User, subject, body, C_User);
+                    }
+                    #endregion
+
+                    return new { status = "99", msg = "分配完成，並已寄送通知信給報關行！" };
+                }
+                
+                return new { status = "99", msg = "操作失敗！" };
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "操作失敗！" };
+            }
+        }
+
+        [HttpPost]
         public dynamic EditShippingCusData([FromBody]object form)
         {
             try
@@ -958,20 +1059,30 @@ namespace Tectransit.Controllers
                 Hashtable mData = new Hashtable();
                 mData["ID"] = arrData.Value<string>("id");
                 mData["MAWBNO"] = arrData.Value<string>("mawbno");
+                mData["FLIGHTNUM"] = arrData.Value<string>("flightnum");
                 mData["TOTAL"] = arrData.Value<string>("total");
                 mData["TOTALWEIGHT"] = arrData.Value<string>("totalweight");
+                mData["SHIPPERCOMPANY"] = arrData.Value<string>("shippercompany");
+                mData["SHIPPER"] = arrData.Value<string>("shipper");
+                mData["RECEIVERCOMPANY"] = arrData.Value<string>("receivercompany");
                 mData["RECEIVER"] = arrData.Value<string>("receiver");
+                mData["RECEIVERZIPCODE"] = arrData.Value<string>("receiverzipcode");
                 mData["RECEIVERADDR"] = arrData.Value<string>("receiveraddr");
                 mData["RECEIVERPHONE"] = arrData.Value<string>("receiverphone");
                 mData["RECEIVERTAXID"] = arrData.Value<string>("receivertaxid");                
                 mData["ISMULTRECEIVER"] = arrData.Value<string>("ismultreceiver").ToUpper();
                 mData["STATUS"] = arrData.Value<string>("status");
+                mData["STORECODE"] = arrData.Value<string>("storecode");
+                mData["IMBROKERID"] = arrData.Value<string>("imbrokerid");
+                mData["EXBROKERID"] = arrData.Value<string>("exbrokerid");
                 mData["_usercode"] = Request.Cookies["_usercode"];
                 mData["_username"] = Request.Cookies["_username"];
 
                 if (mData["ISMULTRECEIVER"]?.ToString() == "Y")
                 {
+                    mData["RECEIVERCOMPANY"] = "";
                     mData["RECEIVER"] = "";
+                    mData["RECEIVERZIPCODE"] = "";
                     mData["RECEIVERADDR"] = "";
                     mData["RECEIVERPHONE"] = "";
                     mData["RECEIVERTAXID"] = "";
@@ -1116,7 +1227,33 @@ namespace Tectransit.Controllers
                 string tempShipping = DBUtil.GetSingleValue1($@"SELECT SHIPPINGNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {mData["ID"]?.ToString()} AND STATUS = 0");
                 if (!string.IsNullOrEmpty(tempShipping))
                     objComm.InsertDepotRecord(2, tempShipping);
+
                 
+                #region 寄信通知進出口報關行(未入庫狀態才寄)
+                string F_User = "TEC Website System<ebs.sys@t3ex-group.com>";
+                string subject = $"TEC代運平台 - 報關資料通知";
+                string domainUrl = _configuration.GetSection("WebsitSetting")["domain"];
+                string C_User = _configuration.GetSection("WebsitSetting")["csMail"];
+                string body = "";                
+                body += $"<p>集運單號：{tempShipping}</p>";
+                body += $"<p>報關資料已上傳，請至<a href='{domainUrl}cuslogin' target='_blank'>台灣空運後台系統</a>下載！</p>";
+                body += "<p style='color:#ff0000'>[此為系統自動寄送信件，請勿直接回覆，謝謝！]</p>";
+
+                string IMACID = DBUtil.GetSingleValue1($@"SELECT IMBROKERID AS COL1 FROM T_V_SHIPPING_M WHERE ID = {mData["ID"]?.ToString()} AND STATUS = 0");
+                string EXACID = DBUtil.GetSingleValue1($@"SELECT EXBROKERID AS COL1 FROM T_V_SHIPPING_M WHERE ID = {mData["ID"]?.ToString()} AND STATUS = 0");
+
+                if (!string.IsNullOrEmpty(IMACID) && IMACID != "0") {
+                    string T_User = DBUtil.GetSingleValue1($@"SELECT EMAIL AS COL1 FROM T_S_ACCOUNT WHERE ID = {IMACID}");                    
+                    objComm.SendMail(F_User, T_User, subject, body, C_User);
+                }
+
+                if (!string.IsNullOrEmpty(EXACID) && EXACID != "0")
+                {
+                    string T_User = DBUtil.GetSingleValue1($@"SELECT EMAIL AS COL1 FROM T_S_ACCOUNT WHERE ID = {EXACID}");
+                    objComm.SendMail(F_User, T_User, subject, body, C_User);
+                }
+                #endregion
+
 
                 //add user operation log
                 Hashtable logData = new Hashtable();
@@ -1134,6 +1271,129 @@ namespace Tectransit.Controllers
                 return new { status = "99", msg = "保存失敗！" };
             }
         }
+
+        //重匯集運單(匯入Excel)
+        [HttpPost]
+        [DisableRequestSizeLimit]
+        public dynamic CoverCusShippingData()
+        {
+            try
+            {
+                Hashtable htData = new Hashtable();
+                string type = Request.Form["type"];
+                htData["ID"] = Convert.ToInt64(Request.Form["id"]);
+                htData["_usercode"] = Request.Cookies["_usercode"];
+                var file = Request.Form.Files;
+                string ACID = DBUtil.GetSingleValue1($@"SELECT ACCOUNTID AS COL1 FROM T_V_SHIPPING_M WHERE ID = @ID", htData);
+                string usercode = DBUtil.GetSingleValue1($@"SELECT USERCODE AS COL1 FROM T_S_ACCOUNT WHERE ID = {ACID}");
+                var folderName = Path.Combine(@"tectransit\dist\tectransit\assets\import", usercode);
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+                if (!Directory.Exists(pathToSave))
+                {
+                    Directory.CreateDirectory(pathToSave);
+                }
+
+                if (file.Count > 0)
+                {
+                    //save file                    
+                    if (type == "SHIPPINGFILE")
+                        htData["SHIPPINGFILE2"] = file[0].FileName;
+                    else if (type == "BROKERFILE")
+                        htData["BROKERFILE2"] = file[0].FileName;
+                    else
+                        htData["MAWBFILE"] = file[0].FileName;
+
+                    var fileName = Guid.NewGuid() + Path.GetExtension(file[0].FileName).ToLower();
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file[0].CopyTo(stream);
+                    }
+
+                    if (htData["SHIPPINGFILE2"] != null)
+                        htData["SHIPPINGFILE2"] = fileName;
+                    else if (htData["BROKERFILE2"] != null)
+                        htData["BROKERFILE2"] = fileName;
+                    else { htData["MAWBFILE"] = fileName; }
+
+
+                    //更新消倉表
+                    if (htData["SHIPPINGFILE2"] != null)
+                    {
+
+                        //鎖單檢查
+                        bool IsLock = false;
+                        string IMBRID = DBUtil.GetSingleValue1($@"SELECT IMBROKERID AS COL1 FROM T_V_SHIPPING_M WHERE ID = @ID", htData);
+                        string EXBRID = DBUtil.GetSingleValue1($@"SELECT EXBROKERID AS COL1 FROM T_V_SHIPPING_M WHERE ID = @ID", htData);
+                        if (IMBRID != "0" || EXBRID != "0")
+                            IsLock = true;
+
+                        if (IsLock)
+                            return new { status = "99", msg = "匯入失敗，此單已選定報關人員，需取消報關人員資料才可重匯！" };
+
+                        //import excel to database
+                        string SHIPPINGNO = UpdateCusShippingData(usercode, htData);
+
+
+                        if (!string.IsNullOrEmpty(SHIPPINGNO))
+                        {
+                            if (SHIPPINGNO == "error00")
+                            {
+                                return new { status = "99", msg = "匯入失敗，重複匯入已存在的袋號！" };
+                            }
+                            else if (SHIPPINGNO == "error99")
+                            {
+                                return new { status = "99", msg = "匯入失敗！" };
+                            }
+                            else
+                            {
+                                //寫入拋轉紀錄
+                                objComm.InsertDepotRecord(2, SHIPPINGNO);
+                                
+                                return new { status = "0", msg = "匯入成功！" };
+                            }
+                        }
+                        else
+                        {
+                            return new { status = "99", msg = "匯入失敗！" };
+                        }
+                    }
+
+
+                    //更新材積與實重表
+                    if (htData["BROKERFILE2"] != null)
+                    {
+                        htData["BROKERFILE2"] = $"res/assets/import/{usercode}/" + htData["BROKERFILE2"];
+                        updateCusShippingM(htData);
+                        
+                        return new { status = "0", msg = "匯入成功！" };
+                    }
+
+                    //更新MAWB
+                    if (htData["MAWBFILE"] != null)
+                    {
+                        htData["MAWBFILE"] = $"res/assets/import/{usercode}/" + htData["MAWBFILE"];
+                        updateCusShippingM(htData);
+
+                        return new { status = "0", msg = "匯入成功！" };
+                    }
+
+                    return new { status = "99", msg = "匯入失敗！" };
+
+                }
+                else
+                    return new { status = "99", msg = "匯入失敗，無上傳任何檔案！" };
+
+
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message.ToString();
+                return new { status = "99", msg = "匯入失敗！" };
+            }
+        }
+        
         #endregion
 
         #region /* --- Twotable Map --- */
@@ -1899,15 +2159,46 @@ namespace Tectransit.Controllers
             var query = _context.TVShippingM.Where(q => q.Id == Convert.ToInt64(sData["ID"])).FirstOrDefault();
             if (query != null)
             {
-                query.Mawbno = sData["MAWBNO"]?.ToString();
-                query.Total = sData["TOTAL"]?.ToString();
-                query.Totalweight = sData["TOTALWEIGHT"]?.ToString();
-                query.Receiver = sData["RECEIVER"]?.ToString();
-                query.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
-                query.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
-                query.Taxid = sData["RECEIVERTAXID"]?.ToString();
-                query.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
-                query.Status = Convert.ToInt32(sData["STATUS"]);
+                if (sData["MAWBNO"] != null)
+                    query.Mawbno = sData["MAWBNO"]?.ToString();
+                if (sData["FLIGHTNUM"] != null)
+                    query.Flightnum = sData["FLIGHTNUM"]?.ToString();
+                if (sData["TOTAL"] != null)
+                    query.Total = sData["TOTAL"]?.ToString();
+                if (sData["TOTALWEIGHT"] != null)
+                    query.Totalweight = sData["TOTALWEIGHT"]?.ToString();
+                if (sData["SHIPPERCOMPANY"] != null)
+                    query.Shippercompany = sData["SHIPPERCOMPANY"]?.ToString();
+                if (sData["SHIPPER"] != null)
+                    query.Shipper = sData["SHIPPER"]?.ToString();
+                if (sData["RECEIVERCOMPANY"] != null)
+                    query.Receivercompany = sData["RECEIVERCOMPANY"]?.ToString();
+                if (sData["RECEIVER"] != null)
+                    query.Receiver = sData["RECEIVER"]?.ToString();
+                if (sData["RECEIVERZIPCODE"] != null)
+                    query.Receiverzipcode = sData["RECEIVERZIPCODE"]?.ToString();
+                if (sData["RECEIVERADDR"] != null)
+                    query.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
+                if (sData["RECEIVERPHONE"] != null)
+                    query.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
+                if (sData["RECEIVERTAXID"] != null)
+                    query.Taxid = sData["RECEIVERTAXID"]?.ToString();
+                if (sData["ISMULTRECEIVER"] != null)
+                    query.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
+                if (sData["STATUS"] != null)
+                    query.Status = Convert.ToInt32(sData["STATUS"]);
+                if (sData["STORECODE"] != null)
+                    query.Storecode = sData["STORECODE"]?.ToString();
+                if (sData["IMBROKERID"] != null)
+                    query.Imbrokerid = Convert.ToInt64(sData["IMBROKERID"]);
+                if (sData["EXBROKERID"] != null)
+                    query.Exbrokerid = Convert.ToInt64(sData["EXBROKERID"]);
+                if (sData["MAWBFILE"] != null)
+                    query.Mawbfile = sData["MAWBFILE"]?.ToString();
+                if (sData["SHIPPINGFILE2"] != null)
+                    query.Shippingfile2 = sData["SHIPPINGFILE2"]?.ToString();
+                if (sData["BROKERFILE2"] != null)
+                    query.Brokerfile2 = sData["BROKERFILE2"]?.ToString();
 
                 query.Upddate = DateTime.Now;
                 query.Updby = sData["_usercode"]?.ToString();
@@ -1915,6 +2206,7 @@ namespace Tectransit.Controllers
                 _context.SaveChanges();
             }
         }
+        
 
         private long InsertCusShippingH(Hashtable sData)
         {
@@ -1926,10 +2218,17 @@ namespace Tectransit.Controllers
                 TVH.Transferno = sData["TRANSFERNO"]?.ToString();
                 TVH.Weight = sData["WEIGHT"]?.ToString();
                 TVH.Totalitem = sData["TOTALITEM"]?.ToString();
+                TVH.Shippercompany = sData["SHIPPERCOMPANY"]?.ToString();
+                TVH.Shipper = sData["SHIPPER"]?.ToString();
+                TVH.Receivercompany = sData["RECEIVERCOMPANY"]?.ToString();
+                TVH.Receivercompany = sData["RECEIVERCOMPANY"]?.ToString();
                 TVH.Receiver = sData["RECEIVER"]?.ToString();
+                TVH.Receiverzipcode = sData["RECEIVERZIPCODE"]?.ToString();
                 TVH.Receiveraddr = sData["RECEIVERADDR"]?.ToString();
                 TVH.Receiverphone = sData["RECEIVERPHONE"]?.ToString();
                 TVH.Taxid = sData["RECEIVERTAXID"]?.ToString();
+                TVH.Logistics = sData["LOGISTICS"]?.ToString();
+                TVH.Shipperremark = sData["SHIPPERREMARK"]?.ToString();
                 TVH.ShippingidM = Convert.ToInt64(sData["SHIPPINGIDM"]);
 
                 _context.TVShippingH.Add(TVH);
@@ -1956,10 +2255,16 @@ namespace Tectransit.Controllers
                 query.Transferno = sData["TRANSFERNO"]?.ToString();
                 query.Weight = sData["WEIGHT"]?.ToString();
                 query.Totalitem = sData["TOTALITEM"]?.ToString();
+                query.Shippercompany = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["SHIPPERCOMPANY"]?.ToString() : "";
+                query.Shipper = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["SHIPPER"]?.ToString() : "";
+                query.Receivercompany = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVERCOMPANY"]?.ToString() : "";
                 query.Receiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVER"]?.ToString() : "";
+                query.Receiverzipcode = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVERZIPCODE"]?.ToString() : "";
                 query.Receiveraddr = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVERADDR"]?.ToString() : "";
                 query.Receiverphone = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVERPHONE"]?.ToString() : "";
                 query.Taxid= sData["ISMULTRECEIVER"]?.ToString() == "Y" ? sData["RECEIVERTAXID"]?.ToString() : "";
+                query.Logistics= sData["LOGISTICS"]?.ToString();
+                query.Shipperremark= sData["SHIPPERREMARK"]?.ToString();
 
                 _context.SaveChanges();
             }
@@ -2008,6 +2313,7 @@ namespace Tectransit.Controllers
                 TVD.Taxid = sData["TAXID"]?.ToString();
                 TVD.Phone = sData["PHONE"]?.ToString();
                 TVD.Mobile = sData["MOBILE"]?.ToString();
+                TVD.Zipcode = sData["ZIPCODE"]?.ToString();
                 TVD.Addr = sData["ADDR"]?.ToString();
                 TVD.IdphotoF = sData["IDPHOTOF"]?.ToString();
                 TVD.IdphotoB = sData["IDPHOTOB"]?.ToString();
@@ -2034,6 +2340,7 @@ namespace Tectransit.Controllers
                 query.Taxid = sData["TAXID"]?.ToString();
                 query.Phone = sData["PHONE"]?.ToString();
                 query.Mobile = sData["MOBILE"]?.ToString();
+                query.Zipcode = sData["ZIPCODE"]?.ToString();
                 query.Addr = sData["ADDR"]?.ToString();
 
                 _context.SaveChanges();
@@ -2060,6 +2367,258 @@ namespace Tectransit.Controllers
                 sql = $@"DELETE FROM {table} WHERE SHIPPINGID_M = @SHIPPINGIDM";
 
             DBUtil.EXECUTE(sql, sData);
+        }
+
+        //覆蓋集運單(Excel to DB)
+        public string UpdateCusShippingData(string usercode, Hashtable data)
+        {
+            using (TransactionScope ts = new TransactionScope())
+            {
+                try
+                {
+                    var folderName = Path.Combine(@"tectransit\dist\tectransit\assets\import", usercode);
+                    var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                    var fullPath = Path.Combine(pathToSave, data["SHIPPINGFILE2"]?.ToString());
+                    FileInfo newFile = new FileInfo(fullPath);
+
+                    using (ExcelPackage ep = new ExcelPackage(newFile))
+                    {
+                        long MID = 0;
+                        long HID = 0;
+                        decimal TotalWGM = 0; //總重(主單)
+                        decimal Total = 0; //總件數(主單) 
+                        decimal TotalWG = 0; //各提單總重(商品)
+                        decimal Totalitem = 0; //各提單總件數(商品) 
+                                               //List<string> Box = new List<string>();
+                        List<string> Rec = new List<string>();
+
+                        MID = Convert.ToInt64(data["ID"]);
+
+                        ExcelWorksheet ws = ep.Workbook.Worksheets[1];
+                        var rowCt = ws.Dimension.End.Row;
+                        Hashtable htData = new Hashtable();
+                        htData["SHIPPINGFILE2"] = $"res/assets/import/{usercode}/{data["SHIPPINGFILE2"]}";//消艙表url                        
+
+                        htData["NEWNUM"] = "";//編號(比對用)
+                        htData["NEWNO"] = "";//袋號(比對用)
+                        htData["NEWTOTALWG"] = "";//袋重(比對用)
+                        htData["NEWBOXNO"] = "";//提單號碼(比對用)
+                        htData["_cuscode"] = usercode;//用戶帳號
+                        string ACID = DBUtil.GetSingleValue1($@"SELECT ID AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{usercode}' AND ISENABLE = 'true'");
+                        htData["ACCOUNTID"] = ACID;//用戶ID
+                        htData["MAWBDATE"] = ws.Cells[1, 6].Value?.ToString().Trim();//消倉單日期
+                        htData["MAWBNO"] = string.IsNullOrEmpty(ws.Cells[1, 10].Value?.ToString()) ? "" : (ws.Cells[1, 10].Value?.ToString().Trim()).Replace(" ", "").Replace("　", "").Replace("\r", ""); ;//MAWB
+                        htData["FLIGHTNUM"] = string.IsNullOrEmpty(ws.Cells[1, 15].Value?.ToString()) ? "" : ws.Cells[1, 15].Value?.ToString().Trim();//航班號
+
+                        //刪除集運單底下所有資料(保留主單)
+                        if (MID != 0)
+                        {
+                            Hashtable sData = new Hashtable();
+                            sData["SHIPPINGIDM"] = MID;
+                            DeleteTVData_All("T_V_DECLARANT", sData);
+                            DeleteTVData_All("T_V_SHIPPING_D", sData);
+                            DeleteTVData_All("T_V_SHIPPING_H", sData);
+                        }
+
+
+                        for (int i = 3; i <= rowCt; i++)
+                        {
+                            #region Excel資料欄位
+                            htData["NEWNUM"] = ws.Cells[i, 1].Value?.ToString().Trim();
+                            htData["NEWNO"] = ws.Cells[i, 2].Value?.ToString().Trim();
+                            htData["NEWTOTALWG"] = ws.Cells[i, 3].Value?.ToString().Trim();
+                            htData["NEWBOXNO"] = ws.Cells[i, 4].Value?.ToString().Trim();
+
+                            if (!string.IsNullOrEmpty(ws.Cells[i, 2].Value?.ToString().Trim()))
+                                htData["CLEARANCENO"] = ws.Cells[i, 2].Value?.ToString().Trim();//袋號=清關條碼
+
+                            if (!string.IsNullOrEmpty(ws.Cells[i, 3].Value?.ToString().Trim()))
+                                htData["TOTALWEIGHT"] = ws.Cells[i, 3].Value?.ToString().Trim();//總重量
+
+                            htData["TRANSFERNO"] = ws.Cells[i, 4].Value?.ToString().Trim();//提單號碼                        
+                            htData["TOTAL"] = ws.Cells[i, 5].Value?.ToString().Trim();//件數                    
+                            htData["WEIGHT"] = ws.Cells[i, 6].Value?.ToString().Trim();//提單重量
+                            htData["PRODUCT"] = ws.Cells[i, 7].Value?.ToString().Trim();//品名
+                            htData["QUANTITY"] = ws.Cells[i, 8].Value?.ToString().Trim();//數量
+
+
+                            //檢查袋號是否已匯入過(排除自己)
+                            bool IsExist = false;
+                            string chksql = $@"SELECT DISTINCT CLEARANCENO FROM T_V_SHIPPING_M A
+                                           LEFT JOIN T_V_SHIPPING_H B ON A.ID = B.SHIPPINGID_M
+                                           WHERE A.ACCOUNTID = {ACID} AND A.STATUS = 0 AND A.ID != {MID}";
+
+                            DataTable DT = DBUtil.SelectDataTable(chksql);
+                            if (DT.Rows.Count > 0)
+                            {
+                                for (int z = 0; z < DT.Rows.Count; z++)
+                                {
+                                    if (!string.IsNullOrEmpty(DT.Rows[z]["CLEARANCENO"]?.ToString()))
+                                        if (DT.Rows[z]["CLEARANCENO"]?.ToString() == htData["CLEARANCENO"]?.ToString())
+                                            IsExist = true;
+
+                                }
+                            }
+
+                            if (IsExist)
+                                return "error00";
+
+
+                            //提單重&總件數
+                            if (!string.IsNullOrEmpty(htData["PRODUCT"]?.ToString()))
+                            {
+                                if (string.IsNullOrEmpty(htData["NEWBOXNO"]?.ToString()) && !string.IsNullOrEmpty(htData["WEIGHT"]?.ToString()))
+                                    TotalWG += Convert.ToDecimal(htData["WEIGHT"]);
+
+                                else
+                                    TotalWG = Convert.ToDecimal(htData["WEIGHT"]);
+
+
+                                if (string.IsNullOrEmpty(htData["NEWBOXNO"]?.ToString()) && !string.IsNullOrEmpty(htData["QUANTITY"]?.ToString()))
+                                {
+                                    Totalitem += Convert.ToDecimal(htData["QUANTITY"]);
+                                    htData["TOTALITEM"] = Totalitem;
+                                }
+                                else
+                                {
+                                    Totalitem = Convert.ToDecimal(htData["QUANTITY"]);
+                                    htData["TOTALITEM"] = Totalitem;
+                                }
+
+                            }
+
+                            htData["UNIT"] = ws.Cells[i, 9].Value?.ToString().Trim();//單位
+                            htData["ORIGIN"] = ws.Cells[i, 10].Value?.ToString().Trim();//產地
+                            htData["UNITPRICE"] = ws.Cells[i, 11].Value?.ToString().Trim();//單價
+
+                            htData["SHIPPERCOMPANY"] = ws.Cells[i, 12].Value?.ToString().Trim();//寄件公司
+                            htData["SHIPPER"] = ws.Cells[i, 13].Value?.ToString().Trim();//寄件人
+                            htData["RECEIVERCOMPANY"] = ws.Cells[i, 14].Value?.ToString().Trim();//收件公司
+                            htData["RECEIVER"] = ws.Cells[i, 15].Value?.ToString().Trim();//收件人                            
+                            htData["RECEIVERPHONE"] = ws.Cells[i, 16].Value?.ToString().Trim();//收件人電話
+                            htData["RECEIVERZIPCODE"] = ws.Cells[i, 17].Value?.ToString().Trim();//收件人郵遞區號
+                            htData["RECEIVERADDR"] = ws.Cells[i, 18].Value?.ToString().Trim();//收件人地址
+                            htData["TAXID"] = ws.Cells[i, 19].Value?.ToString().Trim();//統編or身分證字號
+                            htData["SHIPPERREMARK"] = ws.Cells[i, 20].Value?.ToString().Trim();//備註(樂一番用)
+                            htData["LOGISTICS"] = ws.Cells[i, 21].Value?.ToString().Trim();//出貨商                            
+                            #endregion
+
+
+                            //if product detail blank then break for loop
+                            if (string.IsNullOrEmpty(htData["PRODUCT"]?.ToString()) && string.IsNullOrEmpty(htData["QUANTITY"]?.ToString()) && string.IsNullOrEmpty(htData["UNITPRICE"]?.ToString()))
+                            {
+                                break;
+                            }
+
+                            //new master data & new header data
+                            if (!string.IsNullOrEmpty(htData["NEWBOXNO"]?.ToString()))
+                            {
+
+                                htData["SHIPPINGIDM"] = MID;
+                                HID = objUsm.InsertCusShippingH(htData);
+                            }
+                            else
+                            {
+                                htData["SHIPPINGIDH"] = HID;
+                                htData["WEIGHT"] = TotalWG;
+                                objUsm.UpdateCusShippingH(htData);
+                            }
+
+                            //New Detail
+                            if (MID != 0 && HID != 0)
+                            {
+                                if (!string.IsNullOrEmpty(htData["PRODUCT"]?.ToString()) && !string.IsNullOrEmpty(htData["QUANTITY"]?.ToString()))
+                                {
+                                    htData["SHIPPINGIDM"] = MID;
+                                    htData["SHIPPINGIDH"] = HID;
+                                    objUsm.InsertCusShippingD(htData);
+                                }
+                            }
+
+                            if (MID != 0)
+                            {
+                                //New Declarant
+                                Hashtable sData = new Hashtable();
+                                sData["SHIPPINGIDM"] = MID;
+                                sData["SHIPPINGIDH"] = HID;
+                                sData["NAME"] = htData["RECEIVER"]?.ToString();
+                                sData["TAXID"] = htData["TAXID"]?.ToString();
+                                sData["PHONE"] = htData["RECEIVERPHONE"]?.ToString();
+                                sData["ZIPCODE"] = htData["RECEIVERZIPCODE"]?.ToString();
+                                sData["ADDR"] = htData["RECEIVERADDR"]?.ToString();
+
+                                if (!string.IsNullOrEmpty(htData["NEWBOXNO"]?.ToString()))
+                                    objUsm.InsertTVDeclarant(sData);
+
+                                //check receiver
+                                int chk = 0;
+                                foreach (var r in Rec)
+                                    if (r == htData["RECEIVER"]?.ToString())
+                                        chk++;
+                                if (chk == 0 && !string.IsNullOrEmpty(htData["RECEIVER"]?.ToString()))
+                                    Rec.Add(htData["RECEIVER"]?.ToString());
+
+                                decimal ReceiverCt = Rec.Count();
+
+                                //Update Master Data
+                                string WG = ws.Cells[i, 3].Value?.ToString().Trim();
+                                string QTY = ws.Cells[i, 8].Value?.ToString().Trim();
+                                if (!string.IsNullOrEmpty(WG))
+                                    TotalWGM += Convert.ToDecimal(WG);
+                                if (!string.IsNullOrEmpty(QTY))
+                                    Total += Convert.ToDecimal(QTY);
+                                Hashtable tempData = new Hashtable();
+                                tempData["SHIPPINGFILE2"] = htData["SHIPPINGFILE2"]?.ToString();
+                                tempData["MAWBNO"] = htData["MAWBNO"];
+                                tempData["FLIGHTNUM"] = htData["FLIGHTNUM"];
+                                tempData["ID"] = MID;
+                                tempData["TOTAL"] = Total;
+                                tempData["TOTALWEIGHT"] = TotalWGM;
+                                tempData["ISMULTRECEIVER"] = ReceiverCt > 1 ? "Y" : "N";
+                                // 單一收件人
+                                if (ReceiverCt == 1)
+                                {
+                                    tempData["RECEIVERCOMPANY"] = htData["RECEIVERCOMPANY"]?.ToString();
+                                    tempData["RECEIVER"] = htData["RECEIVER"]?.ToString();
+                                    tempData["RECEIVERZIPCODE"] = htData["RECEIVERZIPCODE"]?.ToString();
+                                    tempData["RECEIVERPHONE"] = htData["RECEIVERPHONE"]?.ToString();
+                                    tempData["RECEIVERADDR"] = htData["RECEIVERADDR"]?.ToString();
+                                    tempData["TAXID"] = htData["TAXID"]?.ToString();
+                                }
+                                else
+                                {
+                                    tempData["RECEIVERCOMPANY"] = "";
+                                    tempData["RECEIVER"] = "";
+                                    tempData["RECEIVERZIPCODE"] = "";
+                                    tempData["RECEIVERPHONE"] = "";
+                                    tempData["RECEIVERADDR"] = "";
+                                    tempData["TAXID"] = "";
+                                }
+                                tempData["UPDDATE"] = DateTime.Now;
+                                tempData["UPDBY"] = htData["_usercode"];
+
+                                objUsm.UpdateCusShippingM(tempData);
+                            }
+                        }
+
+                        ws.Dispose();
+
+                        //匯入成功回傳集運單號
+                        string SHIPPINGNO = DBUtil.GetSingleValue1($@"SELECT SHIPPINGNO AS COL1 FROM T_V_SHIPPING_M WHERE ID = {MID}");
+
+                        ts.Complete();
+
+
+                        return SHIPPINGNO;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    string err = ex.Message.ToString();
+                    return "error99";
+                }
+            }
         }
         #endregion
     }
