@@ -835,7 +835,7 @@ namespace Tectransit.Datas
             sData["ISMULTRECEIVER"] = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
 
             string sql = $@"UPDATE T_V_SHIPPING_M SET
-                                                       SHIPPINGFILE = @SHIPPINGFILE,
+                                                       SHIPPINGFILE1 = @SHIPPINGFILE1,
                                                        BROKERFILE1 = @BROKERFILE1,
                                                        TOTAL = @TOTAL,
                                                        TOTALWEIGHT = @TOTALWEIGHT,

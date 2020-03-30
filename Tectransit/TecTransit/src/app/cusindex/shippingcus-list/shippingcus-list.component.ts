@@ -15,6 +15,7 @@ export class ShippingcusListComponent implements OnInit {
   private baseUrl = '/api/Member/';
   private transferdataUrl = 'GetShippingCusData';
   private delUrl = 'DelShippingCusData';
+  private importUrl = 'CoverCusShippingData';
 
   tableTitle = ['#', '集運單號', '狀態', '建單時間', '發貨時間', '材積與實重表', '細項'];
 
@@ -27,9 +28,10 @@ export class ShippingcusListComponent implements OnInit {
   tempList: any = [];
   chkList: any = [];
   srhList: any = [];
+  fileList: any = [];
 
   constructor(
-    public commonService: CommonService,
+    public commonservice: CommonService,
     private route: ActivatedRoute
   ) { }
 
@@ -54,7 +56,7 @@ export class ShippingcusListComponent implements OnInit {
   }
 
   crePagination(newPage: number, pageurl) {
-    this.commonService.getListData(this.srhList, newPage, this.pageSize, pageurl)
+    this.commonservice.getListData(this.srhList, newPage, this.pageSize, pageurl)
       .subscribe(
         data => {
           if (data.total > 0) {
@@ -64,13 +66,13 @@ export class ShippingcusListComponent implements OnInit {
 
             console.log(this.data);
 
-            this.commonService.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
+            this.commonservice.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
           } else {
             this.data = null;
             this.rowTotal = 0;
             this.currentpage = 1;
 
-            this.commonService.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
+            this.commonservice.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
           }
         },
         error => {
@@ -82,21 +84,23 @@ export class ShippingcusListComponent implements OnInit {
     if (newPage !== this.currentpage) {
       const pageurl = this.baseUrl + this.transferdataUrl;
 
-      this.commonService.getListData(this.srhList, newPage, this.pageSize, pageurl)
+      this.commonservice.getListData(this.srhList, newPage, this.pageSize, pageurl)
         .subscribe(
           data => {
             if (data.total > 0) {
               this.data = data.rows;
               this.rowTotal = data.total;
               this.currentpage = newPage;
+              this.chkList = [];
 
-              this.commonService.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
+              this.commonservice.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
             } else {
               this.data = null;
               this.rowTotal = 0;
               this.currentpage = 1;
+              this.chkList = [];
 
-              this.commonService.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
+              this.commonservice.set_pageNumArray(this.rowTotal, this.pageSize, this.currentpage);
             }
           },
           error => {
@@ -121,11 +125,59 @@ export class ShippingcusListComponent implements OnInit {
 
   }
 
+  fileChange(e) {
+    this.fileList = [];
+    if (e.target.files[0] !== undefined) {
+      this.fileList.push({ file: e.target.files[0] });
+    }
+  }
+
+  doImport() {
+    const schk1 = document.getElementById('chkfile1') as HTMLInputElement;
+    const schk2 = document.getElementById('chkfile2') as HTMLInputElement;
+
+    if (!schk1.checked && !schk2.checked) {
+      return alert('必須選擇要重匯的文件類別！');
+    } else if (this.chkList.length !== 1) {
+      return alert('請選擇一筆資料！');
+    } else if (this.fileList.length !== 1) {
+      return alert('請選擇要匯入的檔案！');
+    }
+
+    let type = '';
+    if (schk1.checked) {
+      type = 'SHIPPINGFILE';
+    } else {
+      type = 'BROKERFILE';
+    }
+
+    const formdata = new FormData();
+    formdata.append('type', type);
+    formdata.append('id', this.chkList[0]);
+    formdata.append('fileUpload', this.fileList[0].file);
+
+    this.commonservice.Upload(formdata, this.baseUrl + this.importUrl)
+      .subscribe(data => {
+        if (data.status === '0') {
+          alert(data.msg);
+          this.crePagination(this.currentpage, this.baseUrl + this.transferdataUrl);
+          this.chkList = [];
+          this.fileList = [];
+        } else {
+          alert(data.msg);
+        }
+      },
+        error => {
+          console.log(error);
+        });
+
+  }
+
   doDelete() {
     const IsConfirm = confirm('確定要刪除？');
     if (IsConfirm === true) {
       if (this.chkList.length > 0) {
-        this.commonService.delData(this.chkList, this.baseUrl + this.delUrl)
+        this.commonservice.delData(this.chkList, this.baseUrl + this.delUrl)
           .subscribe(data => {
             if (data.status === '0') {
               alert(data.msg);

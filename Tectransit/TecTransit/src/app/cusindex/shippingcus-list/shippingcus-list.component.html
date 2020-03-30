@@ -6,6 +6,16 @@
       <div class="main-card">
         <div class="card-header">
           <div class="row">
+            <div class="form-input">
+              <input type="radio" name="files" id="chkfile1"><label for="chkfile1">已消倉表</label>
+              <input type="radio" name="files" id="chkfile2"><label for="chkfile2">材積與實重表</label>
+              <input type="file" id="filesupload" #filesupload multiple accept=".xlsx,.xls,.pdf" (change)="fileChange($event)">
+            </div>
+            <div class="btn-right">
+              <a (click)="doImport()">匯入</a>
+            </div>
+          </div>
+          <div class="row">
             <div class="srhlist">
               <div class="form-input">
                 <label>建單時間</label>
@@ -18,16 +28,6 @@
               <ng-container *ngIf="this.shippingType === 't1'">
                 <a (click)="doDelete()">刪除</a>
               </ng-container>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-input">
-              <input type="radio" name="files" id="chkfile1"><label for="chkfile1">消倉表</label>
-              <input type="radio" name="files" id="chkfile2"><label for="chkfile2">材積與實重表</label>
-              <input type="file">
-            </div>
-            <div class="btn-right">
-              <a (click)="srhData()">匯入</a>
             </div>
           </div>
         </div>
@@ -75,8 +75,8 @@
         </div>
         <!--pagination section start-->
         <div class="card-footer">
-          <app-pagination [currentPage]="this.currentpage" [preApper]="this.commonService.preApper"
-            [nextApper]="this.commonService.nextApper" [pageNum]="this.commonService.pageNum"
+          <app-pagination [currentPage]="this.currentpage" [preApper]="this.commonservice.preApper"
+            [nextApper]="this.commonservice.nextApper" [pageNum]="this.commonservice.pageNum"
             (pageChanged)="changeData($event)"></app-pagination>
         </div>
         <!--pagination section end-->

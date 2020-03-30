@@ -26,8 +26,6 @@ export class EntrustcusImportComponent implements OnInit {
     for (const item of e.target.files) {
       this.fileList.push({ file: item });
     }
-
-    console.log(this.fileList);
   }
 
   saveData() {

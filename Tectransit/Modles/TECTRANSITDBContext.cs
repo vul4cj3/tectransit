@@ -1999,8 +1999,13 @@ namespace Tectransit.Modles
                     .HasColumnName("SHIPPERCOMPANY")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Shippingfile)
-                    .HasColumnName("SHIPPINGFILE")
+                entity.Property(e => e.Shippingfile1)
+                    .HasColumnName("SHIPPINGFILE1")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Shippingfile2)
+                    .HasColumnName("SHIPPINGFILE2")
                     .HasMaxLength(300)
                     .IsUnicode(false);
 
