@@ -19,6 +19,7 @@ namespace Tectransit.Modles
         public string Receiveraddr { get; set; }
         public string Receiverphone { get; set; }
         public string Taxid { get; set; }
+        public string Boxweight { get; set; }
         public string Weight { get; set; }
         public string Totalitem { get; set; }
         public string Shipperremark { get; set; }

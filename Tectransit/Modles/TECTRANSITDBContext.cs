@@ -1815,6 +1815,11 @@ namespace Tectransit.Modles
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.Boxweight)
+                    .HasColumnName("BOXWEIGHT")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Clearanceno)
                     .HasColumnName("CLEARANCENO")
                     .HasMaxLength(100)

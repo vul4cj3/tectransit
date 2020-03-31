@@ -1,1 +1,66 @@
-<p>exbroker-list works!</p>
+<div class="shipping">
+    <div class="shipping-contain">
+      <div class="shippingform">
+        <div class="header">
+          <span class="mem-icon"><i class="fas fa-file-alt"></i>報關資料</span>
+        </div>
+        <!-- content start -->
+        <div class="main-card">
+          <div class="card-header">
+            <div class="row">
+              <div class="srhlist">
+                <div class="form-input">
+                  <label>建單時間</label>
+                  <input type="date" id="credates"> -
+                  <input type="date" id="credatee">
+                </div>
+              </div>
+              <div class="btn-right">
+                <a (click)="srhData()">查詢</a>
+              </div>
+            </div>
+          </div>
+          <div class="card-contain">
+            <table class="shipping-table">
+              <thead>
+                <tr>
+                  <th *ngFor="let titleItem of tableTitle let id = index" [ngClass]="{'text-center': id === 0}">
+                    {{titleItem}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of data let idx = index">
+                  <td style="width: 20%;">{{item.shippingno}}</td>
+                  <td style="width: 20%;">
+                    <ng-container *ngIf="item.brokerfilE2 !== ''; else brokerfile">
+                      <a *ngIf="item.brokerfilE2 !== ''" [href]="item.brokerfilE2" target="_blank" title="報關檔">
+                        <img width="15px" height="15px" src="/res/assets/util/file-icon.svg" alt="報關檔">
+                      </a>
+                    </ng-container>
+                    <ng-template #brokerfile>
+                      <a *ngIf="item.brokerfilE1 !== ''" [href]="item.brokerfilE1" target="_blank" title="報關檔">
+                        <img width="15px" height="15px" src="/res/assets/util/file-icon.svg" alt="報關檔">
+                      </a>
+                    </ng-template>
+                  </td>
+                  <td style="width: 20%;">{{item.credate}}</td>
+                </tr>
+                <!-- 資料筆數=0顯示 -->
+                <tr *ngIf="data === null">
+                  <td colspan="8"><span class="warn">尚無資料</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--pagination section start-->
+          <div class="card-footer">
+            <app-pagination [currentPage]="this.currentpage" [preApper]="this.commonservice.preApper"
+              [nextApper]="this.commonservice.nextApper" [pageNum]="this.commonservice.pageNum"
+              (pageChanged)="changeData($event)"></app-pagination>
+          </div>
+          <!--pagination section end-->
+        </div>
+        <!-- content end -->
+      </div>
+    </div>
+  </div>

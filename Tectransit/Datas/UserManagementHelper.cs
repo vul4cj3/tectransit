@@ -634,10 +634,10 @@ namespace Tectransit.Datas
 
                 string sql = $@"INSERT INTO T_V_SHIPPING_H (CLEARANCENO, TRANSFERNO, SHIPPERCOMPANY, SHIPPER, RECEIVERCOMPANY,
                                                             RECEIVER, RECEIVERZIPCODE, RECEIVERADDR, RECEIVERPHONE, TAXID,
-                                                            WEIGHT, TOTALITEM, SHIPPERREMARK, LOGISTICS, SHIPPINGID_M)
+                                                            BOXWEIGHT, WEIGHT, TOTALITEM, SHIPPERREMARK, LOGISTICS, SHIPPINGID_M)
                                 VALUES (@CLEARANCENO, @TRANSFERNO, @SHIPPERCOMPANY, @SHIPPER, @RECEIVERCOMPANY,
                                                             @RECEIVER, @RECEIVERZIPCODE, @RECEIVERADDR, @RECEIVERPHONE, @TAXID,
-                                                            @WEIGHT, @TOTALITEM, @SHIPPERREMARK, @LOGISTICS, @SHIPPINGIDM)";
+                                                            @TOTALWEIGHT, @WEIGHT, @TOTALITEM, @SHIPPERREMARK, @LOGISTICS, @SHIPPINGIDM)";
 
                 DBUtil.EXECUTE(sql, sData);
 

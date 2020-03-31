@@ -293,7 +293,11 @@ export interface ShippingMCusInfo {
   receivertaxid: string;
   ismultreceiver: string;
   status: number;
+  mawbfile: string;
+  shippingfilE1: string;
+  shippingfilE2: string;
   brokerfilE1: string;
+  brokerfilE2: string;
   remark1: string;
   remark2: string;
   remark3: string;
