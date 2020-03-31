@@ -103,7 +103,7 @@ namespace Tectransit.Service.Library
                             masterData.total = MasterDT.Rows[0]["TOTAL"]?.ToString();
                             masterData.totalweight = MasterDT.Rows[0]["TOTALWEIGHT"]?.ToString();
                             
-                            sql = $@"SELECT A.ID AS HID, A.CLEARANCENO, A.TRANSFERNO, A.WEIGHT, A.TOTALITEM, A.RECEIVER, A.TAXID, A.RECEIVERPHONE, A.RECEIVERADDR
+                            sql = $@"SELECT A.ID AS HID, A.CLEARANCENO, A.TRANSFERNO, A.WEIGHT, A.TOTALITEM, A.RECEIVER, A.TAXID, A.RECEIVERPHONE, A.RECEIVERZIPCODE, A.RECEIVERADDR
                                      FROM T_V_SHIPPING_H A
 									 WHERE A.SHIPPINGID_M = {MasterDT.Rows[0]["ID"]?.ToString()}
                                      ORDER BY A.CLEARANCENO";
@@ -122,6 +122,7 @@ namespace Tectransit.Service.Library
                                     if (Convert.ToBoolean(MasterDT.Rows[0]["ISMULTRECEIVER"]) == true)
                                     {
                                         item.receiver = hData.Rows[k]["RECEIVER"]?.ToString();
+                                        item.receiverzipcode = hData.Rows[k]["RECEIVERZIPCODE"]?.ToString();
                                         item.receiveraddr = hData.Rows[k]["RECEIVERADDR"]?.ToString();
                                         item.receiverphone = hData.Rows[k]["RECEIVERPHONE"]?.ToString();
                                         item.taxid = hData.Rows[k]["TAXID"]?.ToString();
@@ -129,6 +130,7 @@ namespace Tectransit.Service.Library
                                     else
                                     {
                                         item.receiver = MasterDT.Rows[0]["RECEIVER"]?.ToString();
+                                        item.receiverzipcode = MasterDT.Rows[0]["RECEIVERZIPCODE"]?.ToString();
                                         item.receiveraddr = MasterDT.Rows[0]["RECEIVERADDR"]?.ToString();
                                         item.receiverphone = MasterDT.Rows[0]["RECEIVERPHONE"]?.ToString();
                                         item.taxid = MasterDT.Rows[0]["TAXID"]?.ToString();

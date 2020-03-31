@@ -32,6 +32,7 @@ namespace Tectransit.Service.Library
         public string weight { get; set; }
         public string totalitem { get; set; }
         public string receiver { get; set; }
+        public string receiverzipcode { get; set; }
         public string receiveraddr { get; set; }
         public string receiverphone { get; set; }
         public string taxid { get; set; }
