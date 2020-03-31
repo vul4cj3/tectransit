@@ -17,7 +17,7 @@ export class NavMenucusComponent implements OnInit {
   constructor(
     private cusloginservice: CusloginService,
     private commonservice: CommonService
-  ) { }
+  ) { this.GetMenuData(); }
 
   ngOnInit() {
     this.GetMenuData();

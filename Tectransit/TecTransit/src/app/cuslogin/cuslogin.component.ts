@@ -76,7 +76,7 @@ export class CusloginComponent implements OnInit {
       .subscribe(
         data => {
           if (data.status === 'success') {
-            document.location.href = '/cus/profile';
+            this.router.navigate(['/cus/profile']);
           } else {
             this.refreshCaptcha();
             this.isErr = true;

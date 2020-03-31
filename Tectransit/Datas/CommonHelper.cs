@@ -717,18 +717,19 @@ namespace Tectransit.Datas
             {
                 for(int i = 0; i < DT.Rows.Count; i++)
                 {
-                    mms.To.Add(DT.Rows[i]["EMAIL"]?.ToString());
+                    if (!string.IsNullOrEmpty(DT.Rows[i]["EMAIL"]?.ToString()))
+                        mms.To.Add(DT.Rows[i]["EMAIL"]?.ToString());
                 }
             }            
             //加入信件的副本address
-            if (!string.IsNullOrEmpty(ccUser))
-            {
-                string[] CcList = ccUser.Split(';');
-                for (int i = 0; i < CcList.Length; i++)
-                {
-                    mms.CC.Add(CcList[i]);
-                }
-            }
+            //if (!string.IsNullOrEmpty(ccUser))
+            //{
+            //    string[] CcList = ccUser.Split(';');
+            //    for (int i = 0; i < CcList.Length; i++)
+            //    {
+            //        mms.CC.Add(CcList[i]);
+            //    }
+            //}
             //備存
             //mms.CC.Add(new MailAddress("ebs.sys@t3ex-group.com"));
 
