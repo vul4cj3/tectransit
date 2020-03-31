@@ -989,19 +989,21 @@ namespace Tectransit.Controllers
                     body += $"<p>報關資料已上傳，請至<a href='{domainUrl}cuslogin' target='_blank'>台灣空運後台系統</a>下載！</p>";
                     body += "<p style='color:#ff0000'>[此為系統自動寄送信件，請勿直接回覆，謝謝！]</p>";
 
-                    string IMACID = DBUtil.GetSingleValue1($@"SELECT IMBROKERID AS COL1 FROM T_V_SHIPPING_M WHERE ID = @IMBROKERID AND STATUS = 0", htData);
-                    string EXACID = DBUtil.GetSingleValue1($@"SELECT EXBROKERID AS COL1 FROM T_V_SHIPPING_M WHERE ID = @EXBROKERID AND STATUS = 0", htData);
+                    string IMACID = DBUtil.GetSingleValue1($@"SELECT IMBROKERID AS COL1 FROM T_V_SHIPPING_M WHERE ID = @ID AND STATUS = 0", htData);
+                    string EXACID = DBUtil.GetSingleValue1($@"SELECT EXBROKERID AS COL1 FROM T_V_SHIPPING_M WHERE ID = @ID AND STATUS = 0", htData);
 
                     if (!string.IsNullOrEmpty(IMACID) && IMACID != "0")
                     {
                         string T_User = DBUtil.GetSingleValue1($@"SELECT EMAIL AS COL1 FROM T_S_ACCOUNT WHERE ID = {IMACID}");
-                        objComm.SendMail(F_User, T_User, subject, body, C_User);
+                        if (!string.IsNullOrEmpty(T_User))
+                            objComm.SendMail(F_User, T_User, subject, body, C_User);
                     }
 
                     if (!string.IsNullOrEmpty(EXACID) && EXACID != "0")
                     {
                         string T_User = DBUtil.GetSingleValue1($@"SELECT EMAIL AS COL1 FROM T_S_ACCOUNT WHERE ID = {EXACID}");
-                        objComm.SendMail(F_User, T_User, subject, body, C_User);
+                        if (!string.IsNullOrEmpty(T_User))
+                            objComm.SendMail(F_User, T_User, subject, body, C_User);
                     }
                     #endregion
 
@@ -1072,7 +1074,7 @@ namespace Tectransit.Controllers
                 mData["RECEIVERTAXID"] = arrData.Value<string>("receivertaxid");                
                 mData["ISMULTRECEIVER"] = arrData.Value<string>("ismultreceiver").ToUpper();
                 mData["STATUS"] = arrData.Value<string>("status");
-                mData["STORECODE"] = arrData.Value<string>("storecode");
+                //mData["STORECODE"] = arrData.Value<string>("storecode");
                 mData["IMBROKERID"] = arrData.Value<string>("imbrokerid");
                 mData["EXBROKERID"] = arrData.Value<string>("exbrokerid");
                 mData["_usercode"] = Request.Cookies["_usercode"];
@@ -2187,8 +2189,8 @@ namespace Tectransit.Controllers
                     query.Ismultreceiver = sData["ISMULTRECEIVER"]?.ToString() == "Y" ? true : false;
                 if (sData["STATUS"] != null)
                     query.Status = Convert.ToInt32(sData["STATUS"]);
-                if (sData["STORECODE"] != null)
-                    query.Storecode = sData["STORECODE"]?.ToString();
+                //if (sData["STORECODE"] != null)
+                //    query.Storecode = sData["STORECODE"]?.ToString();
                 if (sData["IMBROKERID"] != null)
                     query.Imbrokerid = Convert.ToInt64(sData["IMBROKERID"]);
                 if (sData["EXBROKERID"] != null)
@@ -2569,6 +2571,7 @@ namespace Tectransit.Controllers
                                     Total += Convert.ToDecimal(QTY);
                                 Hashtable tempData = new Hashtable();
                                 tempData["SHIPPINGFILE2"] = htData["SHIPPINGFILE2"]?.ToString();
+                                tempData["STORECODE"] = "C2011"; //倉儲代碼
                                 tempData["MAWBNO"] = htData["MAWBNO"];
                                 tempData["FLIGHTNUM"] = htData["FLIGHTNUM"];
                                 tempData["ID"] = MID;

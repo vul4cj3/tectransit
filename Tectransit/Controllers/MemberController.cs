@@ -2403,6 +2403,7 @@ namespace Tectransit.Controllers
                                 Hashtable tempData = new Hashtable();
                                 tempData["SHIPPINGFILE1"] = htData["SHIPPINGFILE1"]?.ToString();
                                 tempData["BROKERFILE1"] = htData["BROKERFILE1"]?.ToString();
+                                tempData["STORECODE"] = "C2011"; //倉儲代碼
                                 tempData["ID"] = MID;
                                 tempData["TOTAL"] = Total;
                                 tempData["TOTALWEIGHT"] = TotalWGM;
@@ -2656,6 +2657,7 @@ namespace Tectransit.Controllers
                                 Hashtable tempData = new Hashtable();
                                 tempData["SHIPPINGFILE1"] = htData["SHIPPINGFILE1"]?.ToString();
                                 tempData["BROKERFILE1"] = htData["BROKERFILE1"]?.ToString();
+                                tempData["STORECODE"] = "C2011"; //倉儲代碼
                                 tempData["ID"] = MID;
                                 tempData["TOTAL"] = Total;
                                 tempData["TOTALWEIGHT"] = TotalWGM;

@@ -712,6 +712,7 @@ namespace Tectransit.Datas
                                                        RECEIVERADDR = @RECEIVERADDR,
                                                        RECEIVERPHONE = @RECEIVERPHONE,
                                                        TAXID = @TAXID,
+                                                       STORECODE = @STORECODE,
                                                        UPDDATE = @UPDDATE,
                                                        UPDBY = @UPDBY
                              WHERE ID = @ID";

@@ -14,6 +14,8 @@ import { ShareModule } from '../share/share.module';
 import { NavMenucusComponent } from './nav-menucus/nav-menucus.component';
 import { CusindexComponent } from './cusindex.component';
 import { CommonService } from '../services/common.service';
+import { ImbrokerListComponent } from './imbroker-list/imbroker-list.component';
+import { ExbrokerListComponent } from './exbroker-list/exbroker-list.component';
 
 
 
@@ -26,7 +28,9 @@ import { CommonService } from '../services/common.service';
     ShippingcusEditComponent,
     ShippingcusHeaderComponent,
     EntrustcusImportComponent,
-    NavMenucusComponent
+    NavMenucusComponent,
+    ImbrokerListComponent,
+    ExbrokerListComponent
   ],
   imports: [
     CommonModule,

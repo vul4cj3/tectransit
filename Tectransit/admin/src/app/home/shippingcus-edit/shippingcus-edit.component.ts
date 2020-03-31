@@ -60,7 +60,7 @@ export class ShippingcusEditComponent implements OnInit {
       id: 0,
       mawbno: ['0', Validators.required],
       flightnum: [''],
-      storecode: [''],
+      // storecode: [''],
       total: ['0', Validators.required],
       totalweight: ['0', Validators.required],
       shippercompany: [''],
