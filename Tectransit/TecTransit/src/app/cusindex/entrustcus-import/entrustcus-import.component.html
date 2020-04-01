@@ -24,7 +24,7 @@
       <label for="filesupload" class="custom-file-upload">
         <img width="16px" height="16px" src="/res/assets/util/upload-icon.svg">
       </label>
-      <input type="file" id="filesupload" #filesupload multiple accept=".xlsx,.xls,.pdf" (change)="fileChange($event)">
+      <input type="file" id="filesupload" #filesupload multiple accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/pdf" (change)="fileChange($event)">
     </div>
     <div class="btn">
       <a (click)='saveData()'>匯入</a>

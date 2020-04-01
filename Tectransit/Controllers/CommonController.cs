@@ -255,12 +255,9 @@ namespace Tectransit.Controllers
                 body += $"<p>連絡電話：{htData["PHONE"]}</p>";
                 body += $"<p>電子信箱：{htData["EMAIL"]}</p>";
                 body += $"<p>內容：</p>";
-                body += $"<p>{htData["MESSAGE"]}</p><br/>";
-                body += "<p style='color:#ff0000'>[此為系統自動寄送信件，請勿直接回覆，謝謝！]</p>";
+                body += $"<p>{htData["MESSAGE"]}</p><br/>";                
 
-                string C_User = "";
-
-                objCommon.SendMasterMail(F_User, subject, body, C_User);
+                objCommon.SendMasterMail(F_User, subject, body);
 
                 return new { status = "0", msg = "送出成功！" };
             }
@@ -500,6 +497,7 @@ namespace Tectransit.Controllers
                 return new { status = "99", imgurl = "" };
             }
         }
+        
 
     }
 

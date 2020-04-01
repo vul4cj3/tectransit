@@ -1797,10 +1797,8 @@ namespace Tectransit.Controllers
                                 string cus = DBUtil.GetSingleValue1($@"SELECT COMPANYNAME AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{usercode}'");
                                 body += $"<p>企業戶：{cus}</p>";
                                 body += $"<p>集運單號：{SHIPPINGNO}</p>";
-                                body += "<p style='color:#ff0000'>[此為系統自動寄送信件，請勿直接回覆，謝謝！]</p>";
-
-                                string C_User = "";
-                                objComm.SendMasterMail(F_User, subject, body, C_User);
+                                
+                                objComm.SendMasterMail(F_User, subject, body);
                                 #endregion
 
                                 return new { status = "0", msg = "匯入成功！" };
@@ -1911,10 +1909,8 @@ namespace Tectransit.Controllers
                                 string cus = DBUtil.GetSingleValue1($@"SELECT COMPANYNAME AS COL1 FROM T_S_ACCOUNT WHERE USERCODE = '{usercode}'");
                                 body += $"<p>企業戶：{cus}</p>";
                                 body += $"<p>集運單號：{SHIPPINGNO}</p>";
-                                body += "<p style='color:#ff0000'>[此為系統自動寄送信件，請勿直接回覆，謝謝！]</p>";
-
-                                string C_User = "";
-                                objComm.SendMasterMail(F_User, subject, body, C_User);
+                                
+                                objComm.SendMasterMail(F_User, subject, body);
                                 #endregion
 
                                 return new { status = "0", msg = "匯入成功！" };
@@ -1943,10 +1939,8 @@ namespace Tectransit.Controllers
                         body += $"<p>企業戶：{cus}</p>";
                         body += $"<p>集運單號：{SHIPPINGNO}</p>";
                         body += $"<p>材積與實重表已更新！</p>";
-                        body += "<p style='color:#ff0000'>[此為系統自動寄送信件，請勿直接回覆，謝謝！]</p>";
-
-                        string C_User = "";
-                        objComm.SendMasterMail(F_User, subject, body, C_User);
+                        
+                        objComm.SendMasterMail(F_User, subject, body);
                         #endregion
 
                         return new { status = "0", msg = "匯入成功！" };

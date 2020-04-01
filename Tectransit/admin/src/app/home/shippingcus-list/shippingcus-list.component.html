@@ -55,7 +55,7 @@
             <label for="chkfile2" class="mr-sm-2">材積與實重表</label>
             <input type="radio" name="files" id="chkfile3" class="form-control">
             <label for="chkfile3" class="mr-sm-2">MAWB</label>
-            <input type="file" id="filesupload" #filesupload multiple accept=".xlsx,.xls,.pdf"
+            <input type="file" id="filesupload" #filesupload multiple accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/pdf"
               (change)="fileChange($event)">
             <div>
               <button class="mb-2 mr-2 btn-hover-shine btn btn-info" (click)="doImport()">匯入/上傳</button>

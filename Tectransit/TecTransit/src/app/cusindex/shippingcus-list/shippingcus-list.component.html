@@ -9,7 +9,7 @@
             <div class="form-input">
               <input type="radio" name="files" id="chkfile1"><label for="chkfile1">已消倉表</label>
               <input type="radio" name="files" id="chkfile2"><label for="chkfile2">材積與實重表</label>
-              <input type="file" id="filesupload" #filesupload multiple accept=".xlsx,.xls,.pdf" (change)="fileChange($event)">
+              <input type="file" id="filesupload" #filesupload multiple accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/pdf" (change)="fileChange($event)">
             </div>
             <div class="btn-right">
               <a (click)="doImport()">匯入</a>

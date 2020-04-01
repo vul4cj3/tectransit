@@ -648,101 +648,217 @@ namespace Tectransit.Datas
             return num;
         }
 
-        public void SendMail(string fromUser, string ToUser, string Mailsubject, string Mailbody, string ccUser)
+        public void SendMail(string FromName, string ToUser, string Mailsubject, string Body, string ccUser)
         {
-            #region  send mail
-            string smtpServer = "mail.t3ex-group.com";
-            int smtpPort = 25;
-            string mailAccount = "tomato";
-            string mailPwd = "1qaz2WSX";
+            string myMailEncoding = "utf-8";
 
-            //建立MailMessage物件
-            System.Net.Mail.MailMessage mms = new System.Net.Mail.MailMessage();
-            //指定一位寄信人MailAddress
-            mms.From = new MailAddress(fromUser);
-            //信件主旨
-            mms.Subject = Mailsubject;
-            //信件內容
-            mms.Body = Mailbody;
-            //信件內容 是否採用Html格式
-            mms.IsBodyHtml = true;
+            string myFromEmail = "tomato@t3ex-group.com";
+            string myFromName = FromName;
+            MailAddress from = new MailAddress(myFromEmail, myFromName, Encoding.GetEncoding(myMailEncoding));
 
-            //加入信件的收件人address
-            mms.To.Add(ToUser);
-            //加入信件的副本address
-            mms.CC.Add(ccUser);
-            //備存
-            //mms.CC.Add(new MailAddress("ebs.sys@t3ex-group.com"));
+            //string myToEmail = "";
+            //string myToName = "";
+            //MailAddress to = new MailAddress(myToEmail, myToName, Encoding.GetEncoding(myMailEncoding));
 
-            using (SmtpClient client = new SmtpClient(smtpServer, smtpPort))//或公司、客戶的smtp_server
+            Body += @"<br/><br/><br/><br/><br/>=================================================<br/>此為系統自動發送通知<br/>請勿直接回信";
+
+            try
             {
-                if (!string.IsNullOrEmpty(mailAccount) && !string.IsNullOrEmpty(mailPwd))//.config有帳密的話
+                SmtpClient sc = new SmtpClient("mail.t3ex-group.com");
+                sc.UseDefaultCredentials = false;
+                sc.Port = 587;
+                sc.Credentials = new NetworkCredential("tomato", "1qaz2WSX");
+                MailMessage myMessage = new MailMessage();
+                myMessage.From = from;
+
+                string[] UserList = ToUser.Split(';');
+                for (int i = 0; i < UserList.Length; i++)
                 {
-                    client.Credentials = new NetworkCredential(mailAccount, mailPwd);//寄信帳密
+                    if (!string.IsNullOrEmpty(UserList[i]))
+                    {
+                        MailAddress to = new MailAddress(UserList[i], "", Encoding.GetEncoding(myMailEncoding));
+                        myMessage.To.Add(to);
+                    }
                 }
-                client.Send(mms);//寄出一封信
-            }//end using 
-            #endregion
+
+                string[] CCUserList = ccUser.Split(';');
+                for (int i = 0; i < CCUserList.Length; i++)
+                {
+                    if (!string.IsNullOrEmpty(CCUserList[i])) {
+                        MailAddress CC = new MailAddress(CCUserList[i], "", Encoding.GetEncoding(myMailEncoding));
+                        myMessage.CC.Add(CC);
+                    }
+                }
+                myMessage.Subject = Mailsubject;
+                myMessage.SubjectEncoding = Encoding.GetEncoding(myMailEncoding);
+                myMessage.Body = Body;
+                myMessage.BodyEncoding = Encoding.GetEncoding(myMailEncoding);
+                myMessage.IsBodyHtml = true;
+                myMessage.Priority = MailPriority.High;
+                
+                sc.Send(myMessage);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        //寄給客服信箱
-        public void SendMasterMail(string fromUser, string Mailsubject, string Mailbody, string ccUser)
+        public void SendMasterMail(string FromName, string Mailsubject, string Body)
         {
-            #region  send mail
-            string smtpServer = "mail.t3ex-group.com";
-            int smtpPort = 25;
-            string mailAccount = "tomato";
-            string mailPwd = "1qaz2WSX";
+            string myMailEncoding = "utf-8";
 
-            //建立MailMessage物件
-            System.Net.Mail.MailMessage mms = new System.Net.Mail.MailMessage();
-            //指定一位寄信人MailAddress
-            mms.From = new MailAddress(fromUser);
-            //信件主旨
-            mms.Subject = Mailsubject;
-            //信件內容
-            mms.Body = Mailbody;
-            //信件內容 是否採用Html格式
-            mms.IsBodyHtml = true;
-            
-            //寄給TECTPE_MG權限組
-            string sql = $@"SELECT A.USERCODE, A.EMAIL FROM T_S_USER A
+            string myFromEmail = "tomato@t3ex-group.com";
+            string myFromName = FromName;
+            MailAddress from = new MailAddress(myFromEmail, myFromName, Encoding.GetEncoding(myMailEncoding));
+
+            //string myToEmail = "";
+            //string myToName = "";
+            //MailAddress to = new MailAddress(myToEmail, myToName, Encoding.GetEncoding(myMailEncoding));
+
+            Body += @"<br/><br/><br/><br/><br/>=================================================<br/>此為系統自動發送通知<br/>請勿直接回信";
+
+            try
+            {
+                SmtpClient sc = new SmtpClient("mail.t3ex-group.com");
+                sc.UseDefaultCredentials = false;
+                sc.Port = 587;
+                sc.Credentials = new NetworkCredential("tomato", "1qaz2WSX");
+                MailMessage myMessage = new MailMessage();
+                myMessage.From = from;
+
+                //寄給TECTPE_MG權限組
+                string sql = $@"SELECT A.USERCODE, A.USERNAME, A.EMAIL FROM T_S_USER A
                             LEFT JOIN T_S_USERROLEMAP B ON A.USERCODE = B.USERCODE
                             LEFT JOIN T_S_ROLE C ON C.ROLECODE = B.ROLECODE
                             WHERE C.ROLECODE = 'TECTPE_MG' AND A.ISENABLE = 'true'";
 
-            DataTable DT = DBUtil.SelectDataTable(sql);
-            //加入信件的收件人address
-            if (DT.Rows.Count > 0)
-            {
-                for(int i = 0; i < DT.Rows.Count; i++)
+                DataTable DT = DBUtil.SelectDataTable(sql);
+                //加入信件的收件人address
+                if (DT.Rows.Count > 0)
                 {
-                    if (!string.IsNullOrEmpty(DT.Rows[i]["EMAIL"]?.ToString()))
-                        mms.To.Add(DT.Rows[i]["EMAIL"]?.ToString());
+                    for (int i = 0; i < DT.Rows.Count; i++)
+                    {
+                        if (!string.IsNullOrEmpty(DT.Rows[i]["EMAIL"]?.ToString()))
+                        {
+                            MailAddress to = new MailAddress(DT.Rows[i]["EMAIL"]?.ToString(), DT.Rows[i]["USERNAME"]?.ToString(), Encoding.GetEncoding(myMailEncoding));
+                            myMessage.To.Add(to);
+                        }
+                    }
                 }
-            }            
-            //加入信件的副本address
-            //if (!string.IsNullOrEmpty(ccUser))
-            //{
-            //    string[] CcList = ccUser.Split(';');
-            //    for (int i = 0; i < CcList.Length; i++)
-            //    {
-            //        mms.CC.Add(CcList[i]);
-            //    }
-            //}
-            //備存
-            //mms.CC.Add(new MailAddress("ebs.sys@t3ex-group.com"));
+                
+                myMessage.Subject = Mailsubject;
+                myMessage.SubjectEncoding = Encoding.GetEncoding(myMailEncoding);
+                myMessage.Body = Body;
+                myMessage.BodyEncoding = Encoding.GetEncoding(myMailEncoding);
+                myMessage.IsBodyHtml = true;
+                myMessage.Priority = MailPriority.High;
 
-            using (SmtpClient client = new SmtpClient(smtpServer, smtpPort))//或公司、客戶的smtp_server
+                sc.Send(myMessage);
+            }
+            catch (Exception ex)
             {
-                if (!string.IsNullOrEmpty(mailAccount) && !string.IsNullOrEmpty(mailPwd))//.config有帳密的話
-                {
-                    client.Credentials = new NetworkCredential(mailAccount, mailPwd);//寄信帳密
-                }
-                client.Send(mms);//寄出一封信
-            }//end using 
-            #endregion
+                throw ex;
+            }
         }
+
+        #region 寄信程式(Old)
+        //public void OldSendMail(string fromUser, string ToUser, string Mailsubject, string Mailbody, string ccUser)
+        //{
+        //    #region  send mail
+        //    string smtpServer = "mail.t3ex-group.com";
+        //    int smtpPort = 25;
+        //    string mailAccount = "tomato";
+        //    string mailPwd = "1qaz2WSX";
+
+        //    //建立MailMessage物件
+        //    System.Net.Mail.MailMessage mms = new System.Net.Mail.MailMessage();
+        //    //指定一位寄信人MailAddress
+        //    mms.From = new MailAddress(fromUser);
+        //    //信件主旨
+        //    mms.Subject = Mailsubject;
+        //    //信件內容
+        //    mms.Body = Mailbody;
+        //    //信件內容 是否採用Html格式
+        //    mms.IsBodyHtml = true;
+
+        //    //加入信件的收件人address
+        //    mms.To.Add(ToUser);
+        //    //加入信件的副本address
+        //    mms.CC.Add(ccUser);
+        //    //備存
+        //    //mms.CC.Add(new MailAddress("ebs.sys@t3ex-group.com"));
+
+        //    using (SmtpClient client = new SmtpClient(smtpServer, smtpPort))//或公司、客戶的smtp_server
+        //    {
+        //        if (!string.IsNullOrEmpty(mailAccount) && !string.IsNullOrEmpty(mailPwd))//.config有帳密的話
+        //        {
+        //            client.Credentials = new NetworkCredential(mailAccount, mailPwd);//寄信帳密
+        //        }
+        //        client.Send(mms);//寄出一封信
+        //    }//end using 
+        //    #endregion
+        //}
+
+        ////寄給客服信箱
+        //public void OldSendMasterMail(string fromUser, string Mailsubject, string Mailbody, string ccUser)
+        //{
+        //    #region  send mail
+        //    string smtpServer = "mail.t3ex-group.com";
+        //    int smtpPort = 25;
+        //    string mailAccount = "tomato";
+        //    string mailPwd = "1qaz2WSX";
+
+        //    //建立MailMessage物件
+        //    System.Net.Mail.MailMessage mms = new System.Net.Mail.MailMessage();
+        //    //指定一位寄信人MailAddress
+        //    mms.From = new MailAddress(fromUser);
+        //    //信件主旨
+        //    mms.Subject = Mailsubject;
+        //    //信件內容
+        //    mms.Body = Mailbody;
+        //    //信件內容 是否採用Html格式
+        //    mms.IsBodyHtml = true;
+
+        //    //寄給TECTPE_MG權限組
+        //    string sql = $@"SELECT A.USERCODE, A.EMAIL FROM T_S_USER A
+        //                    LEFT JOIN T_S_USERROLEMAP B ON A.USERCODE = B.USERCODE
+        //                    LEFT JOIN T_S_ROLE C ON C.ROLECODE = B.ROLECODE
+        //                    WHERE C.ROLECODE = 'TECTPE_MG' AND A.ISENABLE = 'true'";
+
+        //    DataTable DT = DBUtil.SelectDataTable(sql);
+        //    //加入信件的收件人address
+        //    if (DT.Rows.Count > 0)
+        //    {
+        //        for(int i = 0; i < DT.Rows.Count; i++)
+        //        {
+        //            if (!string.IsNullOrEmpty(DT.Rows[i]["EMAIL"]?.ToString()))
+        //                mms.To.Add(DT.Rows[i]["EMAIL"]?.ToString());
+        //        }
+        //    }            
+        //    //加入信件的副本address
+        //    //if (!string.IsNullOrEmpty(ccUser))
+        //    //{
+        //    //    string[] CcList = ccUser.Split(';');
+        //    //    for (int i = 0; i < CcList.Length; i++)
+        //    //    {
+        //    //        mms.CC.Add(CcList[i]);
+        //    //    }
+        //    //}
+        //    //備存
+        //    //mms.CC.Add(new MailAddress("ebs.sys@t3ex-group.com"));
+
+        //    using (SmtpClient client = new SmtpClient(smtpServer, smtpPort))//或公司、客戶的smtp_server
+        //    {
+        //        if (!string.IsNullOrEmpty(mailAccount) && !string.IsNullOrEmpty(mailPwd))//.config有帳密的話
+        //        {
+        //            client.Credentials = new NetworkCredential(mailAccount, mailPwd);//寄信帳密
+        //        }
+        //        client.Send(mms);//寄出一封信
+        //    }//end using 
+        //    #endregion
+        //}
+        #endregion
 
         //寫入拋轉厚生倉API紀錄
         /// <summary>

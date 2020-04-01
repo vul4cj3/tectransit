@@ -1007,10 +1007,10 @@ namespace Tectransit.Controllers
                     }
                     #endregion
 
-                    return new { status = "99", msg = "分配完成，並已寄送通知信給報關行！" };
+                    return new { status = "0", msg = "分配完成，並已寄送通知信給報關行！" };
                 }
                 
-                return new { status = "99", msg = "操作失敗！" };
+                return new { status = "99", msg = "操作失敗，無資料被更新！" };
             }
             catch (Exception ex)
             {
