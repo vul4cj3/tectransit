@@ -24,7 +24,7 @@
     "angular-bootstrap-md": "^8.8.0",
     "bootstrap": "^4.4.1",
     "ckeditor4-angular": "^1.0.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "open-iconic": "^1.1.1",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
